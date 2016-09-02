@@ -115,8 +115,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.4"
-     inkscape:cx="303.34119"
-     inkscape:cy="686.65897"
+     inkscape:cx="259.76976"
+     inkscape:cy="750.2304"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -174,19 +174,19 @@
        y="466.57358" />
     <text
        xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:15px;line-height:125%;font-family:'Open Sans';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;text-anchor:start;text-align:start;writing-mode:lr;-inkscape-font-specification:'Open Sans, Normal';font-stretch:normal;font-variant:normal;"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:15px;line-height:125%;font-family:'Open Sans';-inkscape-font-specification:'Open Sans, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        x="82.85714"
        y="503.79077"
        id="text4159"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
-         id="tspan4161"
          x="82.85714"
-         y="503.79077">Benkontroller</tspan><tspan
+         y="503.79077"
+         id="tspan4163">Benkontroller</tspan><tspan
          sodipodi:role="line"
          x="82.85714"
-         y="553.79077"
-         id="tspan4163">Avr?</tspan></text>
+         y="522.54077"
+         id="tspan5128">Avr?</tspan></text>
     <rect
        style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.82247317;stroke-opacity:1"
        id="rect4157-5"
