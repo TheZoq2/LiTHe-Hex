@@ -1,4 +1,4 @@
-\documentclass[a4paper,titlepage]{article}
+\documentclass[a4paper,titlepage,12pt]{article}
 \usepackage[utf8]{inputenc} %Make sure all UTF8 characters work in the document
 \usepackage{listings} %Add code sections
 \usepackage{color}
@@ -18,20 +18,35 @@
 
 \renewcommand{\dateseparator}{-}
 
-\author{
-    Emil Segerbäck - emise935
-    \and
-    Frans Skarman - frask812
-    \and
-    Hannes Tuhkala - hantu447
-    \and
-    Malcolm Vigren - malvi108
-    \and
-    Noak Ringman - noari093
-    \and
-    Olav Övrebö - olaov121
-    \and
-    Robin Sliwa - robsl733}
+%\author{
+%    Emil Segerbäck - emise935
+%    \and
+%    Frans Skarman - frask812
+%    \and
+%    Hannes Tuhkala - hantu447
+%    \and
+%    Malcolm Vigren - malvi108
+%    \and
+%    Noak Ringman - noari093
+%    \and
+%    Olav Övrebö - olaov121
+%    \and
+%    Robin Sliwa - robsl733}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Header and footer
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+
+\lhead{FIN LOGGA}
+\chead{LiTHe Hex}
+\rhead{\today}
+
+\lfoot{TSEA29 - Konstruktion med mikrodatorer \\ LIPS Kravspecifikation}
+\rfoot{Grupp 9}
+
 
 \title{\textbf{Kravspecifikation}}
 \date{\today}
@@ -40,30 +55,127 @@
 	\maketitle
 	\newpage
 
-\section{Inledning}
-Vi ska göra en dator som ska kunna köra ett enkelt plattformspel, 
-i stil med t.ex. Super Mario. Spelaren styr en åsnepingvin med ett USB-tangentbord,
-ljudeffekter/spelmusik ska spelas i fyrkantsvågor genom den enkla 
-monohögtalaren och själva spelet ska visas på en VGA-skärm.
+	
+	\begin{center}
 
-Vi tänker oss att CPU:n ska ha en pipelinead arkitektur.
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		%						Medlemmar
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Grovt blockschema}
+		\section*{Projektidentitet}
+		Grupp 9, Ht 2016, LiTHe Hex
 
-\section{Kravslista}
-Vår dator \textbf{ska} ha:
-\begin{itemize}
-    \item VGA-skärm med en upplösning på 640x480 pixlar med 8bitars grafik
-    \item Skärmuppdelning bestående av tiles som ska vara 16x16 pixlar
-    \item Sprites som visas på skärmen med samma storlek som en tile
-	\item Tangentbordsstyrning
-    \item Musik
-    \item En accelererad gravitation (mer realistisk)
-\end{itemize}
-Vår dator \textbf{bör} ha:
-\begin{itemize}
-	\item Möjlighet för inladdning av banor
-	\item Passande ljudeffekter 
-	\item Flera typer av fiender
-\end{itemize}
+		Linköpings tekniska högskola, ISY
+
+		\begin{table}[h]
+			\begin{tabular}[pos]{| l | l | l | l |}
+				\hline
+				\textbf{Namn} & \textbf{Ansvar} & \textbf{Telefon} & \textbf{E-Post} \\ \hline
+				Frans Skarman & Dokumentansvarig & 0708798660 & frask812@student.liu.se \\ \hline
+			\end{tabular}
+		\end{table}
+
+
+		Kundinfo?
+
+		\textbf{Kursansvarig}: Tomas Svensson Rum 3B:528 013-28 13 68 tomas.svensson@liu.se
+
+		\textbf{Handledare}:
+
+
+		
+		\newpage
+
+
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		%						Historik
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+		\section*{Dokumenthistorik}
+		\begin{table}[h]
+			\begin{tabular}[pos]{| l | l | l | l | l |}
+				\hline
+				\textbf{Version} & \textbf{Datum} & \textbf{Utförda förändringar} 
+				& \textbf{Utförda av} & \textbf{Granskad} \\ \hline
+
+				0.1 & 2016-09-05 & Första utkastet & ckr & \\ \hline
+
+			\end{tabular}
+		\end{table}
+
+	\end{center}
+
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%						Inledning
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+	\newpage
+
+	\section{Inledning}
+	\textbf{text}
+
+	\textbf{fin figur}
+
+	\subsection{Parter}
+	\textbf{text}
+	\subsection{Syfte och mål}
+	\textbf{text}
+	\subsection{Användning}
+	\textbf{text}
+	\subsection{Bakgrundsinformation}
+	\textbf{text}
+	\subsection{Definitioner}
+
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%						Översikt
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+	\section{Översikt av systemet}
+	\textbf{text}
+	\subsection{Grov beskrivning av produkten}
+	\textbf{text}
+	\subsection{Produktkomponenter}
+	\textbf{text}
+	\subsection{Beroenden  till andra system}
+	\textbf{text}
+	\subsection{Ingående delsystem}
+	\textbf{text}
+	\subsection{Avgränsningar}
+	\textbf{text}
+	\subsection{Designfilosofi}
+	\textbf{text}
+	\subsection{Generella krav på hela systemet}
+	\textbf{Kravspec}
+
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%						Centralenhet
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\section{Centralenhet}
+	\textbf{text}
+	\subsection{Inledande beskrivning av centralenhet}
+	\textbf{text}
+	\subsection{Gränssnitt}
+	\textbf{text}
+
+
+
+
 \end{document}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%						Templates
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\iffalse
+	\begin{table}[H]
+		\label{tab:label}
+		\begin{tabular}{|l|l|l|l|}
+		\hline
+		Krav nr x & Förändring & kravtext & prioritet & 
+		\hline
+		\end{tabular}
+	\end{table}
+\fi
