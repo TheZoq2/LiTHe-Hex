@@ -1,5 +1,13 @@
 # Inledning
+I detta dokument kommer det att framgå vilken funktionalitet som produkten kommer att ha vid leverans. All funktionalitet har strukturerats i olika krav där det blir tydligt hur vida kravet är uppfyllt eller inte. Krav har olika nivåer där nivå 1 är se krav som måste ha uppfyllts vid leverans. Nivå 2 ses som bör krav och uppfylls i mån om tid. Varje krav kommer att ha följande struktur. 
+Krav nr X
+Förändring
+Kravtext
+Kravnivå
+
 ## Parter
+Projektet har parter som består av beställare/kund Tomas Svensson lektor vid Linköpings tekniska högskola och producent projektgrupp 9 bestående av 7 studenter från D-programmet vid Linköpings tekniska högskola. 
+
 ## Syfte och mål
 Syftet och målet med projektet är att utveckla en sexbent robot som, själv, kan navigera sig ut ur en labyrint. I labyrinten ska roboten även kunna ta sig över hinder för att komma vidare. 
 ## Användning
@@ -101,7 +109,7 @@ Roboten ska kunna kliva över hinder med (INSERT HÖJD HÄR)
 
 
 # Delsystem sensorer
-Delsystem sensorer är en mikrodator som ska läsa in data från sensorer för att sedan skicka det vidare till centralenheten. Sensorer är avståndsmätare och möjlighet att läsa av färg (kamera). 
+Delsystem sensorer är en mikrodator som ska läsa in data från sensorer för att sedan skicka det vidare till centralenheten. Sensorer är avståndsmätare och möjlighet att läsa av färg (eventuellt en kamera). 
 
 Krav nr 
 Original
@@ -153,9 +161,13 @@ konstruerad på ett sådant sätt att det ska gå att programmera roboten för
 kartläggning av ett utrymme.
 
 # Ekonomi
-Vid projektets slutförande skall 960 timmars arbetstid ha nedlagts mot projektets slutförande.
+Vid projektets slutförande skall 960 timmars arbetstid ha nedlagts.
 
 # Leveranskrav och delleveranser
+Delleveranser är leverans av projektplan, leverans av designspecifikation 
+och slutleverans. Slutleveransen består av en presentation av projektet, 
+demonstration av roboten i autonomnt och manuellt läge i form av en tävling,
+samt överlämning av kod, hårdvara och dokumentation.
 
 # Dokumentation
 Tidplan 
