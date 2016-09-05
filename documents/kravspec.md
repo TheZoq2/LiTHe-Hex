@@ -58,7 +58,7 @@ Centralenheten ska kunna hålla koll på positionen i labyrinten med hjälp av s
 # Delsystem motorikenhet
 
 # Delsystem sensorer
-Delsystem sensorer är en mikrodator som ska läsa in data från sensorer för att sedan skicka det vidare till huvudstyrenheten. Sensorer är avståndsmätare och möjlighet att läsa av färg (kamera). 
+Delsystem sensorer är en mikrodator som ska läsa in data från sensorer för att sedan skicka det vidare till centralenheten. Sensorer är avståndsmätare och möjlighet att läsa av färg (kamera). 
 
 Krav nr 
 Original
