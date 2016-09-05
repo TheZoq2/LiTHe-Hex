@@ -52,7 +52,8 @@ Centralenheten ska kunna ta emot, behandla och skicka information till motoriken
 
 Krav nr
 Original
-
+Centralenheten ska kunna hålla koll på positionen i labyrinten med hjälp av sensorerna.
+1
 
 # Delsystem motorikenhet
 
