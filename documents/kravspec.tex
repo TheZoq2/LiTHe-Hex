@@ -152,11 +152,16 @@
 	andra enheterna. 
 
 	\subsection{Produktkomponenter}
-	\textbf{text}
+	I leveransen ska det ingå en autonom sexbent robot med tillhörande GUI som kan 
+	användas för att styra roboten manuellt. Teknisk dokumentation och demonstration 
+	ingår även. 
 	\subsection{Beroenden  till andra system}
-	\textbf{text}
+	Det beroende som finns är centralenhetens Wi-Fi-kommunikation som används för 
+	att kommunicera med en dator.
 	\subsection{Ingående delsystem}
-	\textbf{text}
+	1. Centralenheten
+	2. Motorikenhet
+	3. Sensorenhet
 	\subsection{Avgränsningar}
 	\textbf{text}
 	\subsection{Designfilosofi}
@@ -168,30 +173,99 @@
 		\label{tab:label}
 		\begin{tabularx}{\textwidth}{|l|l|X|l|}
 		\hline
-		\textbf{Krav nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
+			\textbf{Krav nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
 				\\ \hline
 	
-		1 & original & Roboten ska autonomt kunna navigera sig igenom tvävlingsbanan & 1
+			1 & original & Roboten ska autonomt kunna navigera sig igenom tvävlingsbanan & 1
+					\\ \hline
+
+			2 & original & Det ska finnas en knapp på roboten eller på GUIt som startar
+				roboten i tävlingen & 1
 				\\ \hline
 
-		2 & original & Det ska finnas en knapp på roboten eller på GUIt som startar
-			roboten i tävlingen& 1
-			\\ \hline
+			3 & original & Roboten ska gå att styra manuellt via en WiFi-länk& 1
+				\\ \hline
+		
+			4 & original & Robotens sensordata ska gå att läsa med en dator via Wi-Fi & 1
+				\\ \hline
+
+			5 & original & Robotens styrbeslut ska gå att läsa med en dator via Wi-Fi & 1
+				\\ \hline
 		\end{tabularx}
 	\end{table}
 
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%						Centralenhet
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\section{Delsystem centralenhet}
+	Centralenheten ska styra alla andra delsystem i konstruktionen, samt sköta
+	kommunikation till omvärlden via bland annat Wi-Fi. Denna utgörs av en Raspberry
+	Pi, som är en passande dator då den har inbyggd hårdvara för WiFi och Wi-Fi samt
+	ett operativsystem, som gör att programmering kan ske på en relativt hög nivå.
+	\subsection{Inledande beskrivning av centralenhet}
+	\textbf{table}
+	\subsection{Gränssnitt}
+	\begin{table}[h!]
+		\label{tab:label}
+		\begin{tabularx}{\textwidth}{|l|l|X|l|}
+			\hline
+			\textbf{Krav nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
+				\\ \hline
+
+			1 & original & Centralenheten ska kunna kommunicera med en dator via Wi-Fi. & 1
+				\\ \hline
+
+			2 & original & Centralenheten ska kunna ta emot och behandla data från 
+				sensorenheten.& 1
+				\\ \hline
+
+			3 & original & Centralenheten ska kunna ta emot, behandla och skicka 
+				information  till motorikenheten& 1
+				\\ \hline
+
+
+		\end{tabularx}
+	\end{table}
+
+	\subsection{Funktionella krav för centralenhet}
+	\begin{table}[h!]
+		\label{tab:label}
+		\begin{tabularx}{\textwidth}{|l|l|X|l|}
+			\hline
+			\textbf{Krav nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
+				\\ \hline
+
+			4 & original & Centralenheten ska kuna hålla koll på sin position i labyrinten 
+				med hjälp av sensorerna & 2
+				\\ \hline
+		\end{tabularx}
+	\end{table}
+
+
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%						Centralenhet
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 	\section{Centralenhet}
 	\textbf{text}
 	\subsection{Inledande beskrivning av centralenhet}
 	\textbf{table}
 	\subsection{Gränssnitt}
 	\textbf{table}
+	\subsection{Designkrav}
+	\textbf{table}
 	\subsection{Funktionella krav för centralenhet}
 
 
+	\section{Centralenhet}
+	\textbf{text}
+	\subsection{Inledande beskrivning av centralenhet}
+	\textbf{table}
+	\subsection{Gränssnitt}
+	\textbf{table}
+	\subsection{Designkrav}
+	\textbf{table}
+	\subsection{Funktionella krav för centralenhet}
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%						Extrakrav
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
