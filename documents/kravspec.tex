@@ -5,6 +5,7 @@
 \usepackage{graphicx}
 \usepackage{titling}
 \usepackage{textcomp}
+\usepackage{tabularx}
 \usepackage[hyphens]{url}
 \usepackage[bottom]{footmisc}
 \usepackage[yyyymmdd]{datetime}
@@ -112,14 +113,21 @@
 	\newpage
 
 	\section{Inledning}
-	\textbf{text}
-
+	I detta dokument kommer det att framgå vilken funktionalitet som produkten kommer 
+	att ha vid leverans. All funktionalitet har strukturerats i olika krav där det 
+	blir tydligt hur vida kravet är uppfyllt eller inte. Krav har olika nivåer där
+	nivå 1 är se krav som måste ha uppfyllts vid leverans. Nivå 2 ses som bör krav 
+	och uppfylls i mån om tid. Varje krav kommer att ha följande struktur. 
 	\textbf{fin figur}
 
 	\subsection{Parter}
-	\textbf{text}
+	Projektet har parter som består av beställare/kund Tomas Svensson lektor vid 
+	Linköpings tekniska högskola och producent projektgrupp 9 bestående av 7 
+	studenter från D-programmet vid Linköpings tekniska högskola. 
 	\subsection{Syfte och mål}
-	\textbf{text}
+	Syftet och målet med projektet är att utveckla en sexbent robot som själv
+	kan navigera sig ut ur en labyrint. I labyrinten ska roboten även kunna ta 
+	sig över hinder för att komma vidare. 
 	\subsection{Användning}
 	\textbf{text}
 	\subsection{Bakgrundsinformation}
@@ -131,9 +139,18 @@
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 	\section{Översikt av systemet}
-	\textbf{text}
+	\begin{figure}[h!]
+		\centering
+		\includegraphics[width=0.8\linewidth]{images/overview.png}
+		\caption{Översikt av systemet}
+		\label{fig:images/overview}
+	\end{figure}
 	\subsection{Grov beskrivning av produkten}
-	\textbf{text}
+	Systemet ska innehålla tre enheter. En centralenhet för kommunikation med en dator,
+	en motorikenhet som sköter hur benen rör sig och en sista enhet för sensorer.
+	Centralenheten är även den enhet som tar beslut och kommunicerar med de 
+	andra enheterna. 
+
 	\subsection{Produktkomponenter}
 	\textbf{text}
 	\subsection{Beroenden  till andra system}
@@ -145,7 +162,23 @@
 	\subsection{Designfilosofi}
 	\textbf{text}
 	\subsection{Generella krav på hela systemet}
-	\textbf{Kravspec}
+
+	%Generella krav på systemet
+	\begin{table}[h!]
+		\label{tab:label}
+		\begin{tabularx}{\textwidth}{|l|l|X|l|}
+		\hline
+		\textbf{Krav nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
+				\\ \hline
+	
+		1 & original & Roboten ska autonomt kunna navigera sig igenom tvävlingsbanan & 1
+				\\ \hline
+
+		2 & original & Det ska finnas en knapp på roboten eller på GUIt som startar
+			roboten i tävlingen& 1
+			\\ \hline
+		\end{tabularx}
+	\end{table}
 
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%						Centralenhet
@@ -153,9 +186,34 @@
 	\section{Centralenhet}
 	\textbf{text}
 	\subsection{Inledande beskrivning av centralenhet}
-	\textbf{text}
+	\textbf{table}
 	\subsection{Gränssnitt}
-	\textbf{text}
+	\textbf{table}
+	\subsection{Funktionella krav för centralenhet}
+
+
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%						Extrakrav
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\section{Prestandakrav}
+	\textbf{table}
+	\section{Krav på vidareutveckling}
+	\textbf{table}
+	\section{Tillförlitlighet}
+	\textbf{table}
+	\section{Leveranskrav och  delleveranser}
+	\textbf{table}
+	\section{Dokumentation}
+	\textbf{table}
+	\section{Kvalitetskrav}
+	\textbf{table}
+	\section{Underhållsbarhet}
+	\textbf{table}
+	\section{Referenser}
+	\textbf{table}
+
+
+
 
 
 
@@ -170,12 +228,15 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \iffalse
-	\begin{table}[H]
+	\begin{table}[h!]
 		\label{tab:label}
-		\begin{tabular}{|l|l|l|l|}
+		\begin{tabularx}{\textwidth}{|l|l|X|l|}
 		\hline
-		Krav nr x & Förändring & kravtext & prioritet & 
-		\hline
-		\end{tabular}
+		\textbf{Krav nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
+		\\ \hline
+	
+		1 & original & Roboten ska autonomt kunna navigera sig igenom tvävlingsbanan & 1
+		\\ \hline
+		\end{tabularx}
 	\end{table}
 \fi
