@@ -92,10 +92,11 @@ Krav nr
 Original
 Roboten ska kunna gå framåt, bakåt, ?höger och vänster?, samt rotera.
 1
+
 Krav nr 
 Original
-Roboten ska kunna upptäcka och kliva över hinder med (INSERT HÖJD HÄR) 
-2?
+Roboten ska kunna kliva över hinder med (INSERT HÖJD HÄR) 
+1?
 
 
 # Delsystem sensorer
