@@ -111,7 +111,7 @@ Roboten ska kunna kliva över hinder med (INSERT HÖJD HÄR)
 
 
 # Delsystem sensorer
-Delsystem sensorer är en mikrodator som ska läsa in data från sensorer för att sedan skicka det vidare till centralenheten. Sensorer är avståndsmätare och möjlighet att läsa av färg (kamera). 
+Delsystem sensorer är en mikrodator som ska läsa in data från sensorer för att sedan skicka det vidare till centralenheten. Sensorer är avståndsmätare och möjlighet att läsa av färg (eventuellt en kamera). 
 
 Krav nr 
 Original
@@ -163,7 +163,7 @@ konstruerad på ett sådant sätt att det ska gå att programmera roboten för
 kartläggning av ett utrymme.
 
 # Ekonomi
-Vid projektets slutförande skall 960 timmars arbetstid ha nedlagts mot projektets slutförande.
+Vid projektets slutförande skall 960 timmars arbetstid ha nedlagts.
 
 # Leveranskrav och delleveranser
 Delleveranser är leverans av projektplan, leverans av designspecifikation 
