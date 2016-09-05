@@ -9,6 +9,7 @@
 (översiktsbild av systemet)
 
 ## Grov beskrivning av systemet
+(BILD)
 Systemet ska innehålla tre enheter. En Raspberry Pi som agerar som centralenhet, en motorikenhet som sköter hur benen rör sig och en sista enhet för sensorer. Centralenheten är den enhet som kommunicerar med de andra enheterna. 
 
 Krav nr
@@ -56,6 +57,7 @@ Det beroende som finns är Raspberry Pi:s blåtandskommunikation som används f�
 ## Designkrav
 
 # Delsystem centralenhet
+(BILD)
 Centralenheten ska styra alla andra delsystem i konstruktionen, samt sköta
 kommunikation till omvärlden via bland annat Bluetooth. Denna utgörs av en Raspberry
 Pi, som är en passande dator då den har inbyggd hårdvara för WiFi och Bluetooth samt
@@ -87,6 +89,7 @@ Roboten ska kunna undvika att kollidera med väggar i banan.
 1
 
 # Delsystem motorikenhet
+(BILD)
 
 Krav nr 
 Original
@@ -100,7 +103,8 @@ Roboten ska kunna kliva över hinder med (INSERT HÖJD HÄR)
 
 
 # Delsystem sensorer
-Delsystem sensorer är en mikrodator som ska läsa in data från sensorer för att sedan skicka det vidare till centralenheten. Sensorer är avståndsmätare och möjlighet att läsa av färg (kamera). 
+(BILD)
+Delsystem sensorer är en mikrodator som ska läsa in data från sensorer för att sedan skicka det vidare till centralenheten. Sensorer är avståndsmätare och möjlighet att ??läsa av färg (kamera)??. 
 
 Krav nr 
 Original
@@ -157,5 +161,10 @@ Vid projektets slutförande skall 960 timmars arbetstid ha nedlagts mot projekte
 # Leveranskrav och delleveranser
 
 # Dokumentation
+Tidplan 
+Systemskiss 
+Projektplan
+Teknisk dokumentation 
+Användarhandledning 
 
 
