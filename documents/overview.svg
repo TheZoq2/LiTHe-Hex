@@ -115,8 +115,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.4"
-     inkscape:cx="259.76976"
-     inkscape:cy="750.2304"
+     inkscape:cx="332.6269"
+     inkscape:cy="480.2304"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -164,7 +164,7 @@
          x="227.14285"
          y="316.29077"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:30px;line-height:125%;font-family:'Open Sans';-inkscape-font-specification:'Open Sans, Normal';text-align:start;writing-mode:lr-tb;text-anchor:start"
-         id="tspan4165">Raspberry PI</tspan></text>
+         id="tspan4165">Raspberry PI?</tspan></text>
     <rect
        style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.85131544;stroke-opacity:1"
        id="rect4157"
@@ -240,5 +240,27 @@
        d="m 323.57143,189.50506 0,58.57143"
        id="path4983"
        inkscape:connector-curvature="0" />
+    <rect
+       style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.85131544;stroke-opacity:1"
+       id="rect4157-6"
+       width="154.43439"
+       height="74.434395"
+       x="50.63995"
+       y="577.28784" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:15px;line-height:125%;font-family:'Open Sans';-inkscape-font-specification:'Open Sans, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="79.202179"
+       y="609.29352"
+       id="text4159-94"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         x="79.202179"
+         y="609.29352"
+         id="tspan4163-2">PWM controller</tspan><tspan
+         sodipodi:role="line"
+         x="79.202179"
+         y="628.04352"
+         id="tspan5128-0">CPLD/FPGA?</tspan></text>
   </g>
 </svg>

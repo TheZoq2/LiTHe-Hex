@@ -19,6 +19,24 @@
 ## Designkrab
 ## Funktionella krav för delsystem 1...n
 
+#Motorikkontrollern
+Benkontrollerns syfte är att ta data om vilket håll roboten ska gå från
+styrenheten och styra benen enligt de instruktionerna. Den ska 
+bestå av en AVR processor som tar kommandon från styrdatorn och skickar servopositioner 
+till de individuella servona.
+
+
+##Designkrav
+| krav nr | ? | beskrivning                                                                                                                  |
+| n       | o | Motorikkontrollern ska kunna ta steg  i olika riktningar på kommando från centralenhet                                       |
+| n       | o | Motorikkontrollern ska kunna skicka data om höjden på underlaget till centralenheten                                         |
+| n       | o | Motorikkontrollern ska klara av 2 olika gång lägen. Ett där den går snabbt och ett där den går långsamt med högre prescition |
+
+
+
+
+
+
 # Prestandakrav
 
 # Krav på vidareutveckling
