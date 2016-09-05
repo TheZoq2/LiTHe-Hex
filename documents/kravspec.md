@@ -32,24 +32,24 @@ Det ska finnas en knapp där man startar roboten i tävlingen.
 
 Krav nr
 Original
-Roboten ska gå att styra med dator via blåtandslänk (Fram, bakåt, rotera, ...). 
+Roboten ska gå att styra med dator via Wi-Fislänk (Fram, bakåt, rotera, ...). 
 1
 
 Krav nr
 Original
-Robotens sensordata ska gå att läsa med dator via blåtandslänk. 
+Robotens sensordata ska gå att läsa med dator via Wi-Fi. 
 1
 
 Krav nr
 Original
-Robotens styrbeslut ska gå att läsa med dator via blåtandslänk. 
+Robotens styrbeslut ska gå att läsa med dator via Wi-Fi. 
 1
 
 
 ## Produktkomponenter
 
 ## Beroenden till andra system
-Det beroende som finns är Raspberry Pi:s blåtandskommunikation som används för att kommunicera med en dator.
+Det beroende som finns är Raspberry Pi:s Wi-Fi-kommunikation som används för att kommunicera med en dator.
 
 ## Ingående delsystem
 1. Centralenheten (Raspberry Pi)
@@ -67,13 +67,13 @@ Det beroende som finns är Raspberry Pi:s blåtandskommunikation som används f�
 # Delsystem centralenhet
 (BILD)
 Centralenheten ska styra alla andra delsystem i konstruktionen, samt sköta
-kommunikation till omvärlden via bland annat Bluetooth. Denna utgörs av en Raspberry
-Pi, som är en passande dator då den har inbyggd hårdvara för WiFi och Bluetooth samt
+kommunikation till omvärlden via bland annat Wi-Fi. Denna utgörs av en Raspberry
+Pi, som är en passande dator då den har inbyggd hårdvara för WiFi och Wi-Fi samt
 ett operativsystem, som gör att programmering kan ske på en relativt hög nivå.
 
 Krav nr
 Original
-Centralenheten ska kunna kommunicera med en dator via wifi.
+Centralenheten ska kunna kommunicera med en dator via Wi-Fi.
 1
 
 Krav nr
@@ -94,6 +94,26 @@ Centralenheten ska kunna hålla koll på positionen i labyrinten med hjälp av s
 Krav nr
 Original
 Roboten ska kunna undvika att kollidera med väggar i banan. 
+1
+
+# Delsystem GUI
+Gränssnittet mot datorn ska vara i form av en webbsida, som centralenheten 
+tillhandahåller via en Wi-Fi hotspot.
+
+Krav nr
+Original
+Gränssnittet ska förmedla information som ges av sensorerna och annan information
+relevant för felsökning.
+1
+
+Krav nr
+Original
+Det manuella läget ska kunna styras från gränssnittet med hjälp av en joysticḱ.
+1
+
+Krav nr
+Original
+Det autonoma läget ska initieras och bevakas från gränssnittet.
 1
 
 # Delsystem motorikenhet
