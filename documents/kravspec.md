@@ -1,5 +1,5 @@
 # Inledning
-I detta dokument kommer det att framgå vilken funktionalitet som produkten kommer att ha vid leverans. All funktionalitet har strukturerats i olika krav där det blir tydligt hur vida kravet är uppfyllt eller inte. Krav har olika nivåer där nivå 1 är se krav som måste ha uppfyllts vid leverans. Nivå 2 ses som bör krav och uppfylls i mån om tid. Varje krav kommer att ha följande struktur. 
+I detta dokument kommer det att framgå vilken funktionalitet som produkten kommer att ha vid leverans. All funktionalitet har strukturerats i olika krav där det blir tydligt huruvida kravet är uppfyllt eller inte. Krav har olika nivåer där nivå 1 är se krav som måste ha uppfyllts vid leverans. Nivå 2 ses som bör krav och uppfylls i mån om tid. Varje krav kommer att ha följande struktur. 
 Krav nr X
 Förändring
 Kravtext
@@ -46,6 +46,7 @@ Robotens styrbeslut ska gå att läsa med dator via blåtandslänk.
 
 
 ## Produktkomponenter
+I leveransen ska det ingå en autonom sexbent robot med tillhörande GUI som kan användas för att styra roboten manuellt. Teknisk dokumentation och demonstration ingår även. 
 
 ## Beroenden till andra system
 Det beroende som finns är centralenhetens blåtandskommunikation som används för att kommunicera med en dator.
