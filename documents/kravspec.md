@@ -166,6 +166,10 @@ kartläggning av ett utrymme.
 Vid projektets slutförande skall 960 timmars arbetstid ha nedlagts mot projektets slutförande.
 
 # Leveranskrav och delleveranser
+Delleveranser är leverans av projektplan, leverans av designspecifikation 
+och slutleverans. Slutleveransen består av en presentation av projektet, 
+demonstration av roboten i autonomnt och manuellt läge i form av en tävling,
+samt överlämning av kod, hårdvara och dokumentation.
 
 # Dokumentation
 Tidplan 
