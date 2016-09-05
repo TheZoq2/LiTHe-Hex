@@ -1,7 +1,7 @@
 # Inledning
 ## Parter
-
 ## Syfte och mål
+Syftet och målet med projektet är att utveckla en sexbent robot som, själv, kan navigera sig ut ur en labyrint. I labyrinten ska roboten även kunna ta sig över hinder för att komma vidare. 
 ## Användning
 ## bakgrundsinformation
 
@@ -58,7 +58,7 @@ Centralenheten ska kunna hålla koll på positionen i labyrinten med hjälp av s
 # Delsystem motorikenhet
 
 # Delsystem sensorer
-Delsystem sensorer är en mikrodator som ska läsa in data från sensorer för att sedan skicka det vidare till huvudstyrenheten. Sensorer är avståndsmätare och möjlighet att läsa av färg (kamera). 
+Delsystem sensorer är en mikrodator som ska läsa in data från sensorer för att sedan skicka det vidare till centralenheten. Sensorer är avståndsmätare och möjlighet att läsa av färg (kamera). 
 
 Krav nr 
 Original
