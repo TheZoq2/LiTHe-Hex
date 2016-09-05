@@ -57,36 +57,36 @@ Original
 # Delsystem motorikenhet
 
 # Delsystem sensorer
-Delsystem sensorer är en mikrodator som ska läsa in data från sensorer för att sedan skicka det vidare till huvudstyrenheten. Sensorer är avståndsmätare och möjlighet att läsa av färg. 
+Delsystem sensorer är en mikrodator som ska läsa in data från sensorer för att sedan skicka det vidare till huvudstyrenheten. Sensorer är avståndsmätare och möjlighet att läsa av färg (kamera). 
 
 Krav nr 
 Original
-Sensorenheten ska tolka avståndsmätarnas data.
+Sensorenheten ska kunna tolka avståndsmätarnas data.
 1
 
 Krav nr 
 Original
-Sensorenheten ska tolka olika färger från färgsensorn. 
+Sensorenheten ska kunna tolka olika färger från färgsensorn. 
 1
 
 Krav nr 
 Original
-Sensorenheten ska kommunicera med centralenheten. Det är tolkad data från sensorer som ska skickas. 
+Sensorenheten ska kunna kommunicera med centralenheten. Det är tolkad data från sensorer som ska skickas. 
 1
 
 # Prestandakrav
 Roboten ska kunna gå framåt, bakåt, höger och vänster, samt rotera. Den ska kunna
 upptäcka och kliva över hinder med (INSERT HÖJD HÄR). Den ska kunna navigera
-utan att gå in i väggar.
+utan att kollidera med väggar.
 
 # Krav på vidareutveckling
-Roboten ska kunna utvecklas vidare för att få en mer avancerad styrning av benen, 
-som t ex att den ska gå snabbare och mer jämnt. Koden och hårdvaran ska också vara
+Roboten ska kunna utvecklas vidare för att få en mer avancerad styrning av benen. 
+Exempelvis skall den kunna gå snabbare och jämnare. Koden och hårdvaran ska också vara
 konstruerad på ett sådant sätt att det ska gå att programmera roboten för
 kartläggning av ett utrymme.
 
 # Ekonomi
-960 timmar.
+Vid projektets slutförande skall 960 timmars arbetstid ha nedlagts mot projektets slutförande.
 
 # Leveranskrav och delleveranser
 
