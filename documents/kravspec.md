@@ -14,11 +14,10 @@ Syftet och målet med projektet är att utveckla en sexbent robot som, själv, k
 ## bakgrundsinformation
 
 # Översikt av systemet
-(översiktsbild av systemet)
+(översiktsbild av systemet, finns i /documents/images/)
 
 ## Grov beskrivning av systemet
-(BILD)
-Systemet ska innehålla tre enheter. En Raspberry Pi som agerar som centralenhet, en motorikenhet som sköter hur benen rör sig och en sista enhet för sensorer. Centralenheten är den enhet som kommunicerar med de andra enheterna. 
+Systemet ska innehålla tre enheter. En centralenhet för kommunikation med en dator, en motorikenhet som sköter hur benen rör sig och en sista enhet för sensorer. Centralenheten är även den enhet som tar beslut och kommunicerar med de andra enheterna. 
 
 Krav nr
 Original
@@ -49,10 +48,10 @@ Robotens styrbeslut ska gå att läsa med dator via Wi-Fi.
 ## Produktkomponenter
 
 ## Beroenden till andra system
-Det beroende som finns är Raspberry Pi:s Wi-Fi-kommunikation som används för att kommunicera med en dator.
+Det beroende som finns är centralenhetens Wi-Fi-kommunikation som används för att kommunicera med en dator.
 
 ## Ingående delsystem
-1. Centralenheten (Raspberry Pi)
+1. Centralenheten
 2. Motorikenhet
 3. Sensorenhet
 
@@ -65,7 +64,6 @@ Det beroende som finns är Raspberry Pi:s Wi-Fi-kommunikation som används för 
 ## Designkrav
 
 # Delsystem centralenhet
-(BILD)
 Centralenheten ska styra alla andra delsystem i konstruktionen, samt sköta
 kommunikation till omvärlden via bland annat Wi-Fi. Denna utgörs av en Raspberry
 Pi, som är en passande dator då den har inbyggd hårdvara för WiFi och Wi-Fi samt
