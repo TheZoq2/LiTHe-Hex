@@ -41,7 +41,7 @@ Det beroende som finns är centralenhetens WiFi-kommunikation som används för 
 3. Sensorenheten
 
 ## Avgränsningar
-Roboten är inte tänkt att klara avancerade former på labyrinten, utan ska endast klara av den bana som beskrivs i Bilaga A: Banregler.
+Roboten behöver inte klara mer avancerade former på labyrinten den beskriven i Bilaga A: Banregler.
 
 ## Generella krav på hela systemet
 
@@ -85,11 +85,6 @@ Original
 Roboten ska kunna röra sig åt höger och vänster.
 2
 
-
-# Delsystem 1...n
-## Inledande beskrivning av delsystem 1...n
-## Gränssnitt
-## Designkrav
 
 # Delsystem centralenhet
 Centralenheten ska styra alla andra delsystem i konstruktionen, samt sköta
