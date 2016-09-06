@@ -62,11 +62,6 @@ Roboten ska kunna styras med dator via WiFi-länk.
 
 - Krav nr
 Original
-Roboten ska kunna röra sig framåt och bakåt samt rotera.
-1
-
-- Krav nr
-Original
 Robotens sensordata ska gå att läsa med dator via WiFi. 
 1
 
@@ -75,99 +70,55 @@ Original
 Robotens styrbeslut ska gå att läsa med dator via WiFi. 
 1
 
-- Krav nr
-Original
-Roboten ska kunna gå över hinder beskrivet i Bilaga A: Banregler.
-2
+- Krav nr Original Roboten ska kunna gå över hinder beskrivet i Bilaga A: Banregler.  2
 
-- Krav nr
-Original
-Roboten ska kunna röra sig åt höger och vänster.
-2
-
+- Krav nr Original Roboten ska inte kollidera med väggarna i labyrinten.  1
 
 # Delsystem centralenhet
 Centralenheten ska styra alla andra delsystem i konstruktionen, samt sköta
 kommunikation till omvärlden via bland annat WiFi. Denna utgörs av en Raspberry
-Pi, som är en passande dator då den har inbyggd hårdvara för WiFi och WiFi samt
+Pi, som är en passande dator då den har inbyggd hårdvara för WiFi samt
 ett operativsystem, som gör att programmering kan ske på en relativt hög nivå.
 
-Krav nr
-Original
-Centralenheten ska kunna kommunicera med en dator via WiFi.
-1
+- Krav nr Original Centralenheten ska kunna kommunicera med en dator via WiFi.  1
 
-Krav nr
-Original
-Centralenheten ska kunna ta emot och behandla data från sensorenheten.
-1
+- Krav nr Original Centralenheten ska kunna ta emot och behandla data från sensorenheten.  1
 
-Krav nr
-Original
-Centralenheten ska kunna ta emot, behandla och skicka information till motorikenheten. 
-1
+- Krav nr Original Centralenheten ska kunna ta emot, behandla och skicka information till motorikenheten.  1
 
-Krav nr
-Original
-Centralenheten ska kunna hålla koll på positionen i labyrinten med hjälp av sensorerna.
-1
-
-Krav nr
-Original
-Roboten ska kunna undvika att kollidera med väggar i banan. 
-1
-
+- Krav nr Original Centralenheten ska kunna hålla koll på positionen i labyrinten med hjälp av sensorerna.  1
+ 
 # Delsystem GUI
 Gränssnittet mot datorn ska vara i form av en webbsida, som centralenheten 
 tillhandahåller via en WiFi-hotspot.
 
-Krav nr
-Original
-Gränssnittet ska förmedla information som ges av sensorerna och annan information
-relevant för felsökning.
-1
-
-Krav nr
-Original
-Det manuella läget ska kunna styras från gränssnittet med hjälp av en joysticḱ.
-1
-
-Krav nr
-Original
-Det autonoma läget ska initieras och bevakas från gränssnittet.
-1
+- Krav nr Original Gränssnittet ska förmedla information som ges av sensorerna och annan information relevant för felsökning.  1
+ 
+- Krav nr Original Det manuella läget ska kunna styras från gränssnittet med hjälp av en joysticḱ.  1
+ 
+- Krav nr Original Det autonoma läget ska initieras och bevakas från gränssnittet.  1
 
 # Delsystem motorikenhet
 (BILD)
 
-Krav nr 
-Original
-Roboten ska kunna gå framåt, bakåt, ?höger och vänster?, samt rotera.
-1
+- Krav nr Original Roboten ska kunna gå framåt, bakåt, ?höger och vänster?, samt rotera.  1
+ 
+- Krav nr Original Roboten ska kunna kliva över hinder med (INSERT HÖJD HÄR) 1?
 
-Krav nr 
-Original
-Roboten ska kunna kliva över hinder med (INSERT HÖJD HÄR) 
-1?
+- Krav nr Original Roboten ska kunna röra sig framåt och bakåt samt rotera.  1
 
+- Krav nr Original Roboten ska kunna röra sig åt höger och vänster.  2
 
 # Delsystem sensorer
 Delsystem sensorer är en mikrodator som ska läsa in data från sensorer för att sedan skicka det vidare till centralenheten. Sensorer är avståndsmätare och möjlighet att läsa av färg (eventuellt en kamera). 
 
-Krav nr 
-Original
-Sensorenheten ska kunna tolka avståndsmätarnas data.
-1
+- Krav nr Original Sensorenheten ska kunna tolka avståndsmätarnas data.  1
+ 
+- Krav nr Original Sensorenheten ska kunna tolka olika färger från färgsensorn.  1
+ 
+- Krav nr Original Sensorenheten ska kunna kommunicera med centralenheten. Det är tolkad data från sensorer som ska skickas.  1
 
-Krav nr 
-Original
-Sensorenheten ska kunna tolka olika färger från färgsensorn. 
-1
-
-Krav nr 
-Original
-Sensorenheten ska kunna kommunicera med centralenheten. Det är tolkad data från sensorer som ska skickas. 
-1
+- Krav nr Original Roboten ska kunna röra sig åt höger och vänster.  2
 
 #Motorikkontrollern
 Benkontrollerns syfte är att ta data om vilket håll roboten ska gå från
