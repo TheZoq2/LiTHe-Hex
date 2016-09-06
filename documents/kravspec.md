@@ -70,9 +70,8 @@ Original
 Robotens styrbeslut ska gå att läsa med dator via WiFi. 
 1
 
-- Krav nr Original Roboten ska kunna gå över hinder beskrivet i Bilaga A: Banregler.  2
-
 - Krav nr Original Roboten ska inte kollidera med väggarna i labyrinten.  1
+
 
 # Delsystem centralenhet
 Centralenheten ska styra alla andra delsystem i konstruktionen, samt sköta
@@ -96,16 +95,16 @@ tillhandahåller via en WiFi-hotspot.
  
 - Krav nr Original Det manuella läget ska kunna styras från gränssnittet med hjälp av en joysticḱ.  1
  
-- Krav nr Original Det autonoma läget ska initieras och bevakas från gränssnittet.  1
+- Krav nr Original Det autonoma läget ska kunna initieras och bevakas från gränssnittet.  1
 
 # Delsystem motorikenhet
-(BILD)
-
-- Krav nr Original Roboten ska kunna gå framåt, bakåt, ?höger och vänster?, samt rotera.  1
- 
-- Krav nr Original Roboten ska kunna kliva över hinder med (INSERT HÖJD HÄR) 1?
+Detta delsystem består av en mikrodator som styr servona i benen, så att
+centralenheten kan ge enkla kommandon för rörelse.
 
 - Krav nr Original Roboten ska kunna röra sig framåt och bakåt samt rotera.  1
+
+- Krav nr Original Roboten ska kunna kliva över hinder beskrivet i Bilaga A:
+  Banregler. 2
 
 - Krav nr Original Roboten ska kunna röra sig åt höger och vänster.  2
 
@@ -117,8 +116,6 @@ Delsystem sensorer är en mikrodator som ska läsa in data från sensorer för a
 - Krav nr Original Sensorenheten ska kunna tolka olika färger från färgsensorn.  1
  
 - Krav nr Original Sensorenheten ska kunna kommunicera med centralenheten. Det är tolkad data från sensorer som ska skickas.  1
-
-- Krav nr Original Roboten ska kunna röra sig åt höger och vänster.  2
 
 #Motorikkontrollern
 Benkontrollerns syfte är att ta data om vilket håll roboten ska gå från
