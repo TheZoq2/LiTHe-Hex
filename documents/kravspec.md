@@ -98,15 +98,22 @@ tillhandahåller via en WiFi-hotspot.
 - Krav nr Original Det autonoma läget ska kunna initieras och bevakas från gränssnittet.  1
 
 # Delsystem motorikenhet
-Detta delsystem består av en mikrodator som styr servona i benen, så att
-centralenheten kan ge enkla kommandon för rörelse.
+Benkontrollerns syfte är att ta data om vilket håll roboten ska gå, och styra benen enligt de instruktionerna. Den ska 
+bestå av en AVR-processor som tar kommandon från styrdatorn och skickar servopositioner 
+till de individuella servona.
 
-- Krav nr Original Roboten ska kunna röra sig framåt och bakåt samt rotera.  1
+- Krav nr Original Motorikenheten ska möjliggöra rörelse framåt och bakåt samt rotation.  1
 
-- Krav nr Original Roboten ska kunna kliva över hinder beskrivet i Bilaga A:
+- Krav nr Original Motorikenheten ska ge roboten två olika gånglägen, ett där
+  roboten går snabbt och en där roboten går med högre precision.
+
+- Krav nr Original Motorikenheten ska kunna skicka data om höjden på underlaget
+  till centralenheten. 2
+
+- Krav nr Original Motorikenheten ska möjliggöra kliv över hinder beskrivet i Bilaga A:
   Banregler. 2
 
-- Krav nr Original Roboten ska kunna röra sig åt höger och vänster.  2
+- Krav nr Original Motorikenheten ska möjliggöra rörelse åt höger och vänster.  2
 
 # Delsystem sensorer
 Delsystem sensorer är en mikrodator som ska läsa in data från sensorer för att sedan skicka det vidare till centralenheten. Sensorer är avståndsmätare och möjlighet att läsa av färg (eventuellt en kamera). 
@@ -116,23 +123,6 @@ Delsystem sensorer är en mikrodator som ska läsa in data från sensorer för a
 - Krav nr Original Sensorenheten ska kunna tolka olika färger från färgsensorn.  1
  
 - Krav nr Original Sensorenheten ska kunna kommunicera med centralenheten. Det är tolkad data från sensorer som ska skickas.  1
-
-#Motorikkontrollern
-Benkontrollerns syfte är att ta data om vilket håll roboten ska gå från
-styrenheten och styra benen enligt de instruktionerna. Den ska 
-bestå av en AVR processor som tar kommandon från styrdatorn och skickar servopositioner 
-till de individuella servona.
-
-
-##Designkrav
-| krav nr | ? | beskrivning                                                                                                                  |
-| n       | o | Motorikkontrollern ska kunna ta steg  i olika riktningar på kommando från centralenhet                                       |
-| n       | o | Motorikkontrollern ska kunna skicka data om höjden på underlaget till centralenheten                                         |
-| n       | o | Motorikkontrollern ska klara av 2 olika gång lägen. Ett där den går snabbt och ett där den går långsamt med högre prescition |
-
-
-
-
 
 
 # Prestandakrav
