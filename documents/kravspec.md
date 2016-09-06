@@ -29,7 +29,7 @@ Systemet ska innehålla tre enheter. En centralenhet för kommunikation med en d
 
 - Krav nr
 Original
-Roboten ska vara autonom 
+Roboten ska ha ett autonomt läge.
 1
 
 - Krav nr
@@ -39,7 +39,12 @@ Det ska finnas en knapp där man startar roboten i tävlingen.
 
 - Krav nr
 Original
-Roboten ska gå att styra med dator via Wi-Fislänk (Fram, bakåt, rotera, ...). 
+Roboten ska gå att styra med dator via Wi-Fi-länk. 
+1
+
+- Krav nr
+Original
+Roboten ska kunna röra sig framåt, bakåt samt rotera
 1
 
 - Krav nr
@@ -52,6 +57,10 @@ Original
 Robotens styrbeslut ska gå att läsa med dator via Wi-Fi. 
 1
 
+- Krav nr
+Original
+Roboten ska kunna gå över hinder beskrivet i Bilaga A: Banregler.
+2
 
 ## Produktkomponenter
 I leveransen ska det ingå en autonom sexbent robot med tillhörande GUI som kan användas för att styra roboten manuellt. Teknisk dokumentation och demonstration ingår även. 
