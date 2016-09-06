@@ -9,7 +9,10 @@ I detta dokument kommer det att framgå vilken funktionalitet som produkten komm
 Projektets parter utgörs av beställare/kund Tomas Svensson, lektor vid Linköpings tekniska högskola, samt producent projektgrupp 9, bestående av 7 studenter från D-programmet vid Linköpings tekniska högskola. 
 
 ## Syfte och mål
-Syftet och målet med projektet är att utveckla en sexbent robot som, själv, kan navigera sig ut ur en labyrint. I labyrinten ska roboten även kunna ta sig över hinder för att komma vidare. 
+Syftet med detta projekt är att bredda våra kunskaper inom konstruktion med
+mikrodatorer och arbete enligt projektmodellen LIPS.
+
+Målet med projektet är att ha utvecklat en sexbent robot som själv kan navigera sig ut ur en labyrint, samt styras manuellt. 
 ## Användning
 ## Bakgrundsinformation
 
