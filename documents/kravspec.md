@@ -26,6 +26,8 @@ Systemet ska innehålla tre enheter. En centralenhet för kommunikation med en d
 (översiktsbild av systemet, finns i /documents/images/)
 
 ## Grov beskrivning av produkten 
+Produkten är en sexbent robot som känner av sin omgivning, och kan gå autonomt
+genom en bana samt styras manuellt.
 
 ## Produktkomponenter
 I leveransen ska det ingå en autonom sexbent robot med tillhörande GUI som kan användas för att styra roboten manuellt. Teknisk dokumentation och demonstration ingår även. 
@@ -35,10 +37,11 @@ Det beroende som finns är centralenhetens WiFi-kommunikation som används för 
 
 ## Ingående delsystem
 1. Centralenheten
-2. Motorikenhet
-3. Sensorenhet
+2. Motorikenheten
+3. Sensorenheten
 
 ## Avgränsningar
+Roboten är inte tänkt att klara avancerade former på labyrinten, utan ska endast klara av den bana som beskrivs i Bilaga A: Banregler.
 
 ## Generella krav på hela systemet
 
