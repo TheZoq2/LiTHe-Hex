@@ -45,7 +45,7 @@
 \chead{LiTHe Hex}
 \rhead{\today}
 
-\lfoot{TSEA29 - Konstruktion med mikrodatorer \\ LIPS Kravspecifikation}
+\lfoot{TSEA29 - KMM \\ LIPS Kravspecifikation}
 \rfoot{Grupp 9}
 
 
@@ -131,41 +131,39 @@
 	\subsection{Användning}
 	\textbf{text}
 	\subsection{Bakgrundsinformation}
-	\textbf{text}
-	\subsection{Definitioner}
+	För regler om uppbyggnad om labyrinten roboten är tänkt att ta sig igenom, se
+	Bilaga A: Banregler.
 
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%						Översikt
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 	\section{Översikt av systemet}
+	Systemet ska innehålla tre enheter. En centralenhet för kommunikation med en dator, en motorikenhet
+	som sköter hur benen rör sig samt en sista enhet för sensorer. Centralenheten är även den enhet som
+	tar beslut och kommunicerar med de andra enheterna.
 	\begin{figure}[h!]
 		\centering
 		\includegraphics[width=0.8\linewidth]{images/overview.png}
 		\caption{Översikt av systemet}
 		\label{fig:images/overview}
 	\end{figure}
-	\subsection{Grov beskrivning av produkten}
-	Systemet ska innehålla tre enheter. En centralenhet för kommunikation med en dator,
-	en motorikenhet som sköter hur benen rör sig och en sista enhet för sensorer.
-	Centralenheten är även den enhet som tar beslut och kommunicerar med de 
-	andra enheterna. 
 
+	\subsection{Grov beskrivning av produkten}
+	Produkten är en sexbent robot som känner av sin omgivning, och kan gå autonomt
+	genom en bana samt styras manuellt.
 	\subsection{Produktkomponenter}
-	I leveransen ska det ingå en autonom sexbent robot med tillhörande GUI som kan 
-	användas för att styra roboten manuellt. Teknisk dokumentation och demonstration 
-	ingår även. 
+	I leveransen ska det ingå en autonom sexbent robot med tillhörande GUI som kan användas för att 
+	styra roboten manuellt. Teknisk dokumentation och demonstration ingår även. 
 	\subsection{Beroenden  till andra system}
 	Det beroende som finns är centralenhetens Wi-Fi-kommunikation som används för 
 	att kommunicera med en dator.
 	\subsection{Ingående delsystem}
 	1. Centralenheten
-	2. Motorikenhet
-	3. Sensorenhet
+	2. Motorikenheten
+	3. Sensorenheten
 	\subsection{Avgränsningar}
-	\textbf{text}
-	\subsection{Designfilosofi}
-	\textbf{text}
+	Roboten behöver inte klara mer avancerade former på labyrinten den beskriven i Bilaga A: Banregler.
 	\subsection{Generella krav på hela systemet}
 
 	%Generella krav på systemet
@@ -176,20 +174,19 @@
 			\textbf{Krav nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
 				\\ \hline
 	
-			1 & original & Roboten ska autonomt kunna navigera sig igenom tvävlingsbanan & 1
+			1 & original & Roboten ska ha ett autonomt läge. & 1
 					\\ \hline
 
-			2 & original & Det ska finnas en knapp på roboten eller på GUIt som startar
-				roboten i tävlingen & 1
+			2 & original & Det ska finnas en knapp där man startar roboten. & 1
 				\\ \hline
 
-			3 & original & Roboten ska gå att styra manuellt via en WiFi-länk& 1
+			3 & original & Roboten ska kunna styras med dator via WiFi-länk. & 1
 				\\ \hline
 		
-			4 & original & Robotens sensordata ska gå att läsa med en dator via Wi-Fi & 1
+			4 & original & Robotens sensordata ska gå att läsa med dator via Wi-Fi & 1
 				\\ \hline
 
-			5 & original & Robotens styrbeslut ska gå att läsa med en dator via Wi-Fi & 1
+			5 & original & Robotens styrbeslut ska gå att läsa med dator via Wi-Fi & 1
 				\\ \hline
 		\end{tabularx}
 	\end{table}
@@ -199,12 +196,11 @@
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	\section{Delsystem centralenhet}
 	Centralenheten ska styra alla andra delsystem i konstruktionen, samt sköta
-	kommunikation till omvärlden via bland annat Wi-Fi. Denna utgörs av en Raspberry
-	Pi, som är en passande dator då den har inbyggd hårdvara för WiFi och Wi-Fi samt
+	kommunikation till omvärlden via bland annat WiFi. Denna utgörs av en Raspberry
+	Pi, som är en passande dator då den har inbyggd hårdvara för WiFi samt
 	ett operativsystem, som gör att programmering kan ske på en relativt hög nivå.
-	\subsection{Inledande beskrivning av centralenhet}
-	\textbf{table}
-	\subsection{Gränssnitt}
+
+	\subsection{Krav}
 	\begin{table}[h!]
 		\label{tab:label}
 		\begin{tabularx}{\textwidth}{|l|l|X|l|}
@@ -212,22 +208,34 @@
 			\textbf{Krav nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
 				\\ \hline
 
-			1 & original & Centralenheten ska kunna kommunicera med en dator via Wi-Fi. & 1
+			1 & original & Centralenheten ska kunna kommunicera med en dator via WiFi. & 1
 				\\ \hline
 
-			2 & original & Centralenheten ska kunna ta emot och behandla data från 
-				sensorenheten.& 1
+			2 & original & Centralenheten ska kunna ta emot och behandla data från sensorenheten.& 1
 				\\ \hline
 
-			3 & original & Centralenheten ska kunna ta emot, behandla och skicka 
-				information  till motorikenheten& 1
+			3 & original & Centralenheten ska kunna ta emot, behandla och skicka information 
+				till motorikenheten. & 1
 				\\ \hline
 
-
+			4 & original & Centralenheten ska kunna hålla koll på positionen i labyrinten 
+				med hjälp av sensorerna. & 1
+				\\ \hline
 		\end{tabularx}
 	\end{table}
 
-	\subsection{Funktionella krav för centralenhet}
+
+
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%						Motorikenhet
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+	\section{Delsystem motorikenhet}
+	Benkontrollerns syfte är att ta data om vilket håll roboten ska gå, och styra benen enligt de
+	instruktionerna. Den ska bestå av en AVR-processor som tar kommandon från styrdatorn och skickar
+	servopositioner till de individuella servona.
+
+	\subsection{Krav}
 	\begin{table}[h!]
 		\label{tab:label}
 		\begin{tabularx}{\textwidth}{|l|l|X|l|}
@@ -235,56 +243,93 @@
 			\textbf{Krav nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
 				\\ \hline
 
-			4 & original & Centralenheten ska kuna hålla koll på sin position i labyrinten 
-				med hjälp av sensorerna & 2
+			1 & original & Motorikenheten ska möjliggöra rörelse framåt och bakåt samt rotation. & 1
 				\\ \hline
+
+			2 & original & Motorikenheten ska ge roboten två olika gånglägen, ett där roboten går 
+				snabbt och en där roboten går med högre precision.& 2
+				\\ \hline
+
+			3 & original & Motorikenheten ska kunna skicka data om höjden på underlaget
+  				till centralenheten. & 2
+				\\ \hline
+
+			4 & original & Motorikenheten ska möjliggöra kliv över hinder beskrivet i Bilaga A:
+  				Banregler. & 2
+				\\ \hline
+
+			5 & original & Motorikenheten ska möjliggöra rörelse åt höger och vänster. & 2 \\\hline
 		\end{tabularx}
 	\end{table}
 
 
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	%						Centralenhet
+	%						Sensorer
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\section{Delsystem sensorer}
+	Delsystem sensorer är en mikrodator som ska läsa in data från sensorer för att sedan skicka 
+	det vidare till centralenheten. Sensorer är avståndsmätare och eventuella extra sensorer 
+	för att detektera hinder (exempelvis en kamera).
 
-	\section{Centralenhet}
-	\textbf{text}
-	\subsection{Inledande beskrivning av centralenhet}
-	\textbf{table}
-	\subsection{Gränssnitt}
-	\textbf{table}
-	\subsection{Designkrav}
-	\textbf{table}
-	\subsection{Funktionella krav för centralenhet}
+	\subsection{Krav}
+	\begin{table}[h!]
+		\label{tab:label}
+		\begin{tabularx}{\textwidth}{|l|l|X|l|}
+			\hline
+			\textbf{Krav nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
+				\\ \hline
+
+			1 & original & Sensorenheten ska kunna tolka avståndsmätarnas data & 1
+				\\ \hline
+
+			2 & original & Sensorenheten ska kunna kommunicera med centralenheten. Det är 
+				tolkad data från sensorer som ska skickas.& 1
+				\\ \hline
+
+		\end{tabularx}
+	\end{table}
 
 
-	\section{Centralenhet}
-	\textbf{text}
-	\subsection{Inledande beskrivning av centralenhet}
-	\textbf{table}
-	\subsection{Gränssnitt}
-	\textbf{table}
-	\subsection{Designkrav}
-	\textbf{table}
-	\subsection{Funktionella krav för centralenhet}
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%						Sensorer
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%\section{Centralenhet}
+	%\textbf{text}
+	%\subsection{Inledande beskrivning av centralenhet}
+	%\textbf{table}
+	%\subsection{Gränssnitt}
+	%\textbf{table}
+	%\subsection{Designkrav}
+	%\textbf{table}
+	%\subsection{Funktionella krav för centralenhet}
+
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%						Extrakrav
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	\section{Prestandakrav}
-	\textbf{table}
 	\section{Krav på vidareutveckling}
-	\textbf{table}
-	\section{Tillförlitlighet}
-	\textbf{table}
-	\section{Leveranskrav och  delleveranser}
-	\textbf{table}
-	\section{Dokumentation}
-	\textbf{table}
-	\section{Kvalitetskrav}
-	\textbf{table}
-	\section{Underhållsbarhet}
-	\textbf{table}
-	\section{Referenser}
-	\textbf{table}
+	Roboten ska kunna utvecklas vidare för att få en mer avancerad styrning av benen. 
+	Exempelvis skall den kunna gå snabbare och jämnare. Koden och hårdvaran ska också vara
+	konstruerad på ett sådant sätt att det ska gå att programmera roboten för
+	kartläggning av ett utrymme.
+
+	\section{Ekonomi}
+	Vid projektets slutförande ska 960 timmars arbetstid ha nedlagts.
+
+	\section{Leveranskrav och delleveranser}
+	Delleveranser är leverans av projektplan, leverans av designspecifikation 
+	samt slutleverans. Slutleveransen består av en presentation av projektet, 
+	demonstration av roboten i autonomnt och manuellt läge i form av en tävling,
+	samt överlämning av kod, hårdvara och dokumentation.
+	
+	\section{Documentation}
+	\textbf{FORMAT?}
+	\textbf{
+		- Tidplan 
+		- Systemskiss 
+		- Projektplan
+		- Teknisk dokumentation 
+		- Användarhandledning 
+	}
 
 
 
