@@ -1,5 +1,5 @@
 # Inledning
-I detta dokument kommer det att framgå vilken funktionalitet som produkten kommer att ha vid leverans. All funktionalitet har strukturerats i olika krav där det blir tydligt huruvida kravet är uppfyllt eller inte. Krav har olika nivåer där nivå 1 är se krav som måste ha uppfyllts vid leverans. Nivå 2 ses som bör krav och uppfylls i mån om tid. Varje krav kommer att ha följande struktur. 
+I detta dokument kommer det att framgå vilken funktionalitet som produkten kommer att ha vid leverans. All funktionalitet har strukturerats i olika krav där det blir tydligt huruvida kravet är uppfyllt eller inte. Krav har olika nivåer där nivå 1 är de krav som måste ha uppfyllts vid leverans. Nivå 2 ses som bör-krav och uppfylls i mån om tid. Varje krav kommer att ha följande struktur:
 Krav nr X
 Förändring
 Kravtext
@@ -11,7 +11,7 @@ Projektet har parter som består av beställare/kund Tomas Svensson lektor vid L
 ## Syfte och mål
 Syftet och målet med projektet är att utveckla en sexbent robot som, själv, kan navigera sig ut ur en labyrint. I labyrinten ska roboten även kunna ta sig över hinder för att komma vidare. 
 ## Användning
-## bakgrundsinformation
+## Bakgrundsinformation
 
 # Översikt av systemet
 (översiktsbild av systemet, finns i /documents/images/)
