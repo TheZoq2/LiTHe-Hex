@@ -13,36 +13,41 @@ Syftet med detta projekt är att bredda våra kunskaper inom konstruktion med
 mikrodatorer och arbete enligt projektmodellen LIPS.
 
 Målet med projektet är att ha utvecklat en sexbent robot som själv kan navigera sig ut ur en labyrint, samt styras manuellt. 
+
 ## Användning
+
 ## Bakgrundsinformation
+För regler om uppbyggnad om labyrinten roboten är tänkt att ta sig igenom, se
+Bilaga A: Banregler.
 
 # Översikt av systemet
+Systemet ska innehålla tre enheter. En centralenhet för kommunikation med en dator, en motorikenhet som sköter hur benen rör sig samt en sista enhet för sensorer. Centralenheten är även den enhet som tar beslut och kommunicerar med de andra enheterna.
+
 (översiktsbild av systemet, finns i /documents/images/)
 
-## Grov beskrivning av systemet
-Systemet ska innehålla tre enheter. En centralenhet för kommunikation med en dator, en motorikenhet som sköter hur benen rör sig och en sista enhet för sensorer. Centralenheten är även den enhet som tar beslut och kommunicerar med de andra enheterna. 
+## Grov beskrivning av produkten 
 
-Krav nr
+- Krav nr
 Original
 Roboten ska vara autonom 
 1
 
-Krav nr
+- Krav nr
 Original
 Det ska finnas en knapp där man startar roboten i tävlingen. 
 1
 
-Krav nr
+- Krav nr
 Original
 Roboten ska gå att styra med dator via Wi-Fislänk (Fram, bakåt, rotera, ...). 
 1
 
-Krav nr
+- Krav nr
 Original
 Robotens sensordata ska gå att läsa med dator via Wi-Fi. 
 1
 
-Krav nr
+- Krav nr
 Original
 Robotens styrbeslut ska gå att läsa med dator via Wi-Fi. 
 1
