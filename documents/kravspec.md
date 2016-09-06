@@ -105,7 +105,7 @@ till de individuella servona.
 - Krav nr Original Motorikenheten ska möjliggöra rörelse framåt och bakåt samt rotation.  1
 
 - Krav nr Original Motorikenheten ska ge roboten två olika gånglägen, ett där
-  roboten går snabbt och en där roboten går med högre precision.
+  roboten går snabbt och en där roboten går med högre precision. 2
 
 - Krav nr Original Motorikenheten ska kunna skicka data om höjden på underlaget
   till centralenheten. 2
@@ -116,24 +116,12 @@ till de individuella servona.
 - Krav nr Original Motorikenheten ska möjliggöra rörelse åt höger och vänster.  2
 
 # Delsystem sensorer
-Delsystem sensorer är en mikrodator som ska läsa in data från sensorer för att sedan skicka det vidare till centralenheten. Sensorer är avståndsmätare och möjlighet att läsa av färg (eventuellt en kamera). 
+Delsystem sensorer är en mikrodator som ska läsa in data från sensorer för att sedan skicka det vidare till centralenheten. Sensorer är avståndsmätare och eventuella extra sensorer för att detektera hinder (exempelvis en kamera).
 
 - Krav nr Original Sensorenheten ska kunna tolka avståndsmätarnas data.  1
  
-- Krav nr Original Sensorenheten ska kunna tolka olika färger från färgsensorn.  1
- 
 - Krav nr Original Sensorenheten ska kunna kommunicera med centralenheten. Det är tolkad data från sensorer som ska skickas.  1
 
-
-# Prestandakrav
-Roboten ska kunna gå framåt, bakåt, höger och vänster, samt rotera. Den ska kunna
-upptäcka och kliva över hinder med (INSERT HÖJD HÄR). Den ska kunna navigera
-utan att kollidera med väggar.
-
-Krav nr
-Original
-Roboten ska kunna gå någorlunda i mitten och rakt farm i banan. 
-1
 
 # Krav på vidareutveckling
 Roboten ska kunna utvecklas vidare för att få en mer avancerad styrning av benen. 
