@@ -130,19 +130,20 @@ konstruerad på ett sådant sätt att det ska gå att programmera roboten för
 kartläggning av ett utrymme.
 
 # Ekonomi
-Vid projektets slutförande skall 960 timmars arbetstid ha nedlagts.
+Vid projektets slutförande ska 960 timmars arbetstid ha nedlagts.
 
 # Leveranskrav och delleveranser
 Delleveranser är leverans av projektplan, leverans av designspecifikation 
-och slutleverans. Slutleveransen består av en presentation av projektet, 
+samt slutleverans. Slutleveransen består av en presentation av projektet, 
 demonstration av roboten i autonomnt och manuellt läge i form av en tävling,
 samt överlämning av kod, hårdvara och dokumentation.
 
 # Dokumentation
-Tidplan 
-Systemskiss 
-Projektplan
-Teknisk dokumentation 
-Användarhandledning 
+
+- Tidplan 
+- Systemskiss 
+- Projektplan
+- Teknisk dokumentation 
+- Användarhandledning 
 
 
