@@ -1,9 +1,9 @@
 # Inledning
-I detta dokument kommer det att framgå vilken funktionalitet som produkten kommer att ha vid leverans. All funktionalitet har strukturerats i olika krav där det blir tydligt huruvida kravet är uppfyllt eller inte. Krav har olika nivåer där nivå 1 är de krav som måste ha uppfyllts vid leverans. Nivå 2 ses som bör-krav och uppfylls i mån om tid. Varje krav kommer att ha följande struktur:
-Krav nr X
-Förändring
-Kravtext
-Kravnivå
+I detta dokument kommer det att framgå vilken funktionalitet som produkten kommer att ha vid leverans. All funktionalitet har strukturerats i olika krav där det blir tydligt huruvida kravet är uppfyllt eller inte. Krav har olika nivåer där nivå 1 är de krav som måste ha uppfyllts vid leverans. Nivå 2 ses som bör-krav och uppfylls i mån av tid. Varje krav kommer att ha följande struktur:
+- Krav nr X
+- Förändring
+- Kravtext
+- Kravnivå
 
 ## Parter
 Projektet har parter som består av beställare/kund Tomas Svensson lektor vid Linköpings tekniska högskola och producent projektgrupp 9 bestående av 7 studenter från D-programmet vid Linköpings tekniska högskola. 
