@@ -27,46 +27,11 @@ Systemet ska innehålla tre enheter. En centralenhet för kommunikation med en d
 
 ## Grov beskrivning av produkten 
 
-- Krav nr
-Original
-Roboten ska ha ett autonomt läge.
-1
-
-- Krav nr
-Original
-Det ska finnas en knapp där man startar roboten i tävlingen. 
-1
-
-- Krav nr
-Original
-Roboten ska gå att styra med dator via Wi-Fi-länk. 
-1
-
-- Krav nr
-Original
-Roboten ska kunna röra sig framåt, bakåt samt rotera
-1
-
-- Krav nr
-Original
-Robotens sensordata ska gå att läsa med dator via Wi-Fi. 
-1
-
-- Krav nr
-Original
-Robotens styrbeslut ska gå att läsa med dator via Wi-Fi. 
-1
-
-- Krav nr
-Original
-Roboten ska kunna gå över hinder beskrivet i Bilaga A: Banregler.
-2
-
 ## Produktkomponenter
 I leveransen ska det ingå en autonom sexbent robot med tillhörande GUI som kan användas för att styra roboten manuellt. Teknisk dokumentation och demonstration ingår även. 
 
 ## Beroenden till andra system
-Det beroende som finns är centralenhetens Wi-Fi-kommunikation som används för att kommunicera med en dator.
+Det beroende som finns är centralenhetens WiFi-kommunikation som används för att kommunicera med en dator.
 
 ## Ingående delsystem
 1. Centralenheten
@@ -74,6 +39,48 @@ Det beroende som finns är centralenhetens Wi-Fi-kommunikation som används för
 3. Sensorenhet
 
 ## Avgränsningar
+
+## Generella krav på hela systemet
+
+- Krav nr
+Original
+Roboten ska ha ett autonomt läge.
+1
+
+- Krav nr
+Original
+Det ska finnas en knapp där man startar roboten. 
+1
+
+- Krav nr
+Original
+Roboten ska kunna styras med dator via WiFi-länk. 
+1
+
+- Krav nr
+Original
+Roboten ska kunna röra sig framåt och bakåt samt rotera.
+1
+
+- Krav nr
+Original
+Robotens sensordata ska gå att läsa med dator via WiFi. 
+1
+
+- Krav nr
+Original
+Robotens styrbeslut ska gå att läsa med dator via WiFi. 
+1
+
+- Krav nr
+Original
+Roboten ska kunna gå över hinder beskrivet i Bilaga A: Banregler.
+2
+
+- Krav nr
+Original
+Roboten ska kunna röra sig åt höger och vänster.
+2
 
 
 # Delsystem 1...n
@@ -83,13 +90,13 @@ Det beroende som finns är centralenhetens Wi-Fi-kommunikation som används för
 
 # Delsystem centralenhet
 Centralenheten ska styra alla andra delsystem i konstruktionen, samt sköta
-kommunikation till omvärlden via bland annat Wi-Fi. Denna utgörs av en Raspberry
-Pi, som är en passande dator då den har inbyggd hårdvara för WiFi och Wi-Fi samt
+kommunikation till omvärlden via bland annat WiFi. Denna utgörs av en Raspberry
+Pi, som är en passande dator då den har inbyggd hårdvara för WiFi och WiFi samt
 ett operativsystem, som gör att programmering kan ske på en relativt hög nivå.
 
 Krav nr
 Original
-Centralenheten ska kunna kommunicera med en dator via Wi-Fi.
+Centralenheten ska kunna kommunicera med en dator via WiFi.
 1
 
 Krav nr
@@ -114,7 +121,7 @@ Roboten ska kunna undvika att kollidera med väggar i banan.
 
 # Delsystem GUI
 Gränssnittet mot datorn ska vara i form av en webbsida, som centralenheten 
-tillhandahåller via en Wi-Fi hotspot.
+tillhandahåller via en WiFi-hotspot.
 
 Krav nr
 Original
