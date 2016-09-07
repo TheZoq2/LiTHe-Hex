@@ -11,6 +11,7 @@
 \usepackage[yyyymmdd]{datetime}
 \definecolor{listinggray}{gray}{0.9}
 \definecolor{lbcolor}{rgb}{0.9,0.9,0.9}
+\usepackage{longtable}
 
 %Set page size
 \usepackage{geometry}
@@ -151,7 +152,7 @@
 	Systemet ska innehålla tre enheter. En centralenhet för kommunikation med en dator, en motorikenhet
 	som sköter hur benen rör sig samt en sista enhet för sensorer. Centralenheten är även den enhet som
 	tar beslut och kommunicerar med de andra enheterna.
-	\begin{figure}[h!]
+	\begin{figure}[h]
 		\centering
 		\includegraphics[width=0.8\linewidth]{images/overview.png}
 		\caption{Översikt av systemet}
@@ -178,8 +179,7 @@
 	\subsection{Generella krav på hela systemet}
 
 	%Generella krav på systemet
-	\begin{table}[h!]
-		\label{tab:label}
+	\begin{table}[h]
 		\begin{tabularx}{\textwidth}{|c|l|X|l|}
 		\hline
 			\textbf{Nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
@@ -212,7 +212,7 @@
 	ett operativsystem, som gör att programmering kan ske på en relativt hög nivå.
 
 	\subsection{Krav}
-	\begin{table}[h!]
+	\begin{table}[h]
 		\label{tab:label}
 		\begin{tabularx}{\textwidth}{|c|l|X|l|}
 			\hline
@@ -247,7 +247,7 @@
 	servopositioner till de individuella servona.
 
 	\subsection{Krav}
-	\begin{table}[h!]
+	\begin{table}[h]
 		\label{tab:label}
 		\begin{tabularx}{\textwidth}{|c|l|X|l|}
 			\hline
@@ -283,7 +283,7 @@
 	för att detektera hinder (exempelvis en kamera).
 
 	\subsection{Krav}
-	\begin{table}[h!]
+	\begin{table}[h]
 		\label{tab:label}
 		\begin{tabularx}{\textwidth}{|c|l|X|l|}
 			\hline
@@ -350,7 +350,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \iffalse
-	\begin{table}[h!]
+	\begin{table}[h]
 		\label{tab:label}
 		\begin{tabularx}{\textwidth}{|c|l|X|l|}
 		\hline
