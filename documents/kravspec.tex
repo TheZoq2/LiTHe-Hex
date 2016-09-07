@@ -42,9 +42,7 @@
 \usepackage{fancyhdr}
 \pagestyle{fancy}
 
-\lhead{
-	\includegraphics[width=0.15\linewidth]{images/logo_full.png}
-	}
+\lhead{\includegraphics[width=0.15\linewidth]{images/logo_full.png}}
 \chead{LiTHe Hex}
 \rhead{\today}
 \setlength\headheight{26pt} 
@@ -52,11 +50,22 @@
 \lfoot{TSEA29 - KMM \\ LIPS Kravspecifikation}
 \rfoot{Grupp 9}
 
+\pretitle{%
+    \begin{center}
+        \LARGE
+        \includegraphics[width=6cm]{images/logo_full.png}\\[\bigskipamount]
+}
 
-\title{\textbf{Kravspecifikation}}
-\date{\today}
+\posttitle{\end{center}}
 
 \begin{document}
+
+    \title{\textbf{LiTHe Hex - Kravspecifikation} \\
+        \vspace*{0.5\baselineskip}
+        Version 0.1}
+
+    \date{\today}
+
 	\maketitle
 	\newpage
 
@@ -76,13 +85,13 @@
 			\begin{tabular}[pos]{| l | l | l | l |}
 				\hline
 				\textbf{Namn} & \textbf{Ansvar} & \textbf{Telefon} & \textbf{E-post} \\ \hline
-				Emil Segerbäck & & & emise935@student.liu.se \\ \hline
+				Emil Segerbäck & & 0704969769 & emise935@student.liu.se \\ \hline
 				Frans Skarman & Dokumentansvarig & 0708798660 & frask812@student.liu.se \\ \hline
 				Hannes Tuhkala & & & hantu447@student.liu.se \\ \hline
 				Malcolm Vigren & Projektledare & 0725341681 & malvi108@student.liu.se \\ \hline
-				Noak Ringman &  &  & noari093@student.liu.se \\ \hline
+				Noak Ringman &  & & noari093@student.liu.se \\ \hline
 				Olav Övrebö &  &  & olaov121@student.liu.se \\ \hline
-				Robin Sliwa &  &  & robsl733@student.liu.se \\ \hline
+				Robin Sliwa &  & 0731096561 & robsl733@student.liu.se \\ \hline
 			\end{tabular}
 		\end{table}
 
