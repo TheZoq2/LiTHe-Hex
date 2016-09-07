@@ -136,20 +136,22 @@
 	I detta dokument kommer det att framgå vilken funktionalitet som produkten kommer 
 	att ha vid leverans. All funktionalitet har strukturerats i olika krav där det 
 	blir tydligt hur vida kravet är uppfyllt eller inte. Krav har olika nivåer där
-	nivå 1 är se krav som måste ha uppfyllts vid leverans. Nivå 2 ses som bör krav 
-	och uppfylls i mån om tid. Varje krav kommer att ha följande struktur. 
-	\textbf{fin figur}
+	nivå 1 är ska-krav som måste ha uppfyllts vid leverans. Nivå 2 ses som bör-krav 
+	och uppfylls i mån om tid.
 
 	\subsection{Parter}
-	Projektet har parter som består av beställare/kund Tomas Svensson lektor vid 
-	Linköpings tekniska högskola och producent projektgrupp 9 bestående av 7 
-	studenter från D-programmet vid Linköpings tekniska högskola. 
+	%Projektets parter utgörs av beställare och kund Tomas Svensson, lektor vid Linköpings
+	%tekniska högskola, samt producent projektgrupp 9, bestående av 7 studenter från 
+	%D-programmet vid Linköpings tekniska högskola. 
+	Projektets beställare och kund är Tomas Svensson, lektor vid Linköpings tekniska högskola.
+	Projektets producent är projektgrupp 9, bestående av 7 studenter från D-programmet också vid 
+	Linköpings tekniska högskola.
 	\subsection{Syfte och mål}
 	Syftet och målet med projektet är att utveckla en sexbent robot som själv
 	kan navigera sig ut ur en labyrint. I labyrinten ska roboten även kunna ta 
 	sig över hinder för att komma vidare. 
 	\subsection{Bakgrundsinformation}
-	För regler om uppbyggnad om labyrinten roboten är tänkt att ta sig igenom, se
+	För regler om uppbyggnad av labyrinten som roboten är tänkt att ta sig igenom, se
 	Bilaga A: Banregler.
 
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -159,7 +161,7 @@
   \newpage
 	\section{Översikt av systemet}
 	Systemet ska innehålla tre enheter. En centralenhet för kommunikation med en dator, en motorikenhet
-	som sköter hur benen rör sig samt en sista enhet för sensorer. Centralenheten är även den enhet som
+	som sköter hur benen rör sig samt en sensorenhet som tolkar sensordata. Centralenheten är även den enhet som
 	tar beslut och kommunicerar med de andra enheterna.
 	\begin{figure}[h]
 		\centering
@@ -173,7 +175,7 @@
 	genom en bana samt styras manuellt.
 	\subsection{Produktkomponenter}
 	I leveransen ska det ingå en autonom sexbent robot med tillhörande GUI som kan användas för att 
-	styra roboten manuellt. Teknisk dokumentation och demonstration ingår även. 
+	styra roboten manuellt. Även Teknisk dokumentation och demonstration ingår. 
 	\subsection{Beroenden  till andra system}
 	Det beroende som finns är centralenhetens Wi-Fi-kommunikation som används för 
 	att kommunicera med en dator.
@@ -198,7 +200,7 @@
 					\\ \hline
 
 			\nextReqNr & Original & Det ska finnas en knapp där man startar 
-				roboten. & 1
+				robotens autonoma mod. & 1
 				\\ \hline
 
 			\nextReqNr & Original & Roboten ska kunna styras med dator 
