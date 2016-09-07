@@ -56,6 +56,10 @@
 \title{\textbf{Kravspecifikation}}
 \date{\today}
 
+\newcounter{reqNr}
+\setcounter{reqNr}{0}
+\newcommand{\nextReqNr}{\stepcounter{reqNr}\arabic{reqNr}}
+
 \begin{document}
 	\maketitle
 	\newpage
@@ -185,19 +189,23 @@
 			\textbf{Nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
 				\\ \hline
 	
-			1 & Original & Roboten ska ha ett autonomt läge. & 1
+			\nextReqNr & Original & Roboten ska ha ett autonomt läge. & 1
 					\\ \hline
 
-			2 & Original & Det ska finnas en knapp där man startar roboten. & 1
+			\nextReqNr & Original & Det ska finnas en knapp där man startar 
+				roboten. & 1
 				\\ \hline
 
-			3 & Original & Roboten ska kunna styras med dator via WiFi-länk. & 1
+			\nextReqNr & Original & Roboten ska kunna styras med dator 
+				via WiFi-länk. & 1
 				\\ \hline
 		
-			4 & Original & Robotens sensordata ska gå att läsa med dator via Wi-Fi & 1
+			\nextReqNr & Original & Robotens sensordata ska gå att läsa 
+				med dator via Wi-Fi & 1
 				\\ \hline
 
-			5 & Original & Robotens styrbeslut ska gå att läsa med dator via Wi-Fi & 1
+			\nextReqNr & Original & Robotens styrbeslut ska gå att läsa 
+				med dator via Wi-Fi & 1
 				\\ \hline
 		\end{tabularx}
 	\end{table}
@@ -219,21 +227,24 @@
 			\textbf{Nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
 				\\ \hline
 
-			1 & Original & Centralenheten ska kunna kommunicera med en dator via WiFi. & 1
+			\nextReqNr & Original & Centralenheten ska kunna kommunicera 
+				med en dator via WiFi. & 1
 				\\ \hline
 
-			2 & Original & Centralenheten ska kunna ta emot och behandla data från sensorenheten.& 1
+			\nextReqNr & Original & Centralenheten ska kunna ta emot och 
+				behandla data från sensorenheten.& 1
 				\\ \hline
 
-			3 & Original & Centralenheten ska kunna ta emot, behandla och skicka information 
-				till motorikenheten. & 1
+			\nextReqNr & Original & Centralenheten ska kunna ta emot, 
+				behandla och skicka information till motorikenheten. & 1
 				\\ \hline
 
-			4 & Original & Centralenheten ska kunna hålla koll på positionen i labyrinten 
-				med hjälp av sensorerna. & 1
+			\nextReqNr & Original & Centralenheten ska kunna hålla koll 
+				på positionen i labyrinten med hjälp av sensorerna. & 1
 				\\ \hline
 
-            5 & Original & Centralenheten ska kunna upptäcka hinder. & 2
+			\nextReqNr & Original & Centralenheten ska kunna upptäcka hinder. & 2
+			\\ \hline
 
 		\end{tabularx}
 	\end{table}
@@ -257,22 +268,28 @@
 			\textbf{Nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
 				\\ \hline
 
-			1 & Original & Motorikenheten ska möjliggöra rörelse framåt och bakåt samt rotation. & 1
+			\nextReqNr & Original & Motorikenheten ska möjliggöra rörelse framåt och 
+				bakåt samt rotation. & 1
 				\\ \hline
 
-			2 & Original & Motorikenheten ska ge roboten två olika gånglägen, ett där roboten går 
+			\nextReqNr & Original & Motorikenheten ska ge roboten två olika gånglägen,
+				ett där roboten går 
 				snabbt och en där roboten går med högre precision.& 2
 				\\ \hline
 
-			3 & Original & Motorikenheten ska kunna skicka data om höjden på underlaget
+			\nextReqNr & Original & Motorikenheten ska kunna skicka data om höjden 
+				på underlaget
   				till centralenheten. & 2
 				\\ \hline
 
-			4 & Original & Motorikenheten ska möjliggöra kliv över hinder beskrivet i Bilaga A:
+			\nextReqNr & Original & Motorikenheten ska möjliggöra kliv över hinder 
+				beskrivet i Bilaga A:
   				Banregler. & 2
 				\\ \hline
 
-			5 & Original & Motorikenheten ska möjliggöra rörelse åt höger och vänster. & 2 \\\hline
+			\nextReqNr & Original & Motorikenheten ska möjliggöra rörelse åt höger 
+				och vänster. & 2 
+				\\\hline
 
 		\end{tabularx}
 	\end{table}
@@ -294,11 +311,11 @@
 			\textbf{Nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
 				\\ \hline
 
-			1 & Original & Sensorenheten ska kunna tolka avståndsmätarnas data & 1
+			\nextReqNr & Original & Sensorenheten ska kunna tolka avståndsmätarnas data & 1
 				\\ \hline
 
-			2 & Original & Sensorenheten ska kunna kommunicera med centralenheten. Det är 
-				tolkad data från sensorer som ska skickas.& 1
+			\nextReqNr & Original & Sensorenheten ska kunna kommunicera med 
+				centralenheten. Det är tolkad data från sensorer som ska skickas.& 1
 				\\ \hline
 
 		\end{tabularx}
