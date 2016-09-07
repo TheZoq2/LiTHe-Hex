@@ -43,9 +43,7 @@
 \usepackage{fancyhdr}
 \pagestyle{fancy}
 
-\lhead{
-	\includegraphics[width=0.15\linewidth]{images/logo_full.png}
-	}
+\lhead{\includegraphics[width=0.15\linewidth]{images/logo_full.png}}
 \chead{LiTHe Hex}
 \rhead{\today}
 \setlength\headheight{26pt} 
@@ -53,15 +51,26 @@
 \lfoot{TSEA29 - KMM \\ LIPS Kravspecifikation}
 \rfoot{Grupp 9}
 
+\pretitle{%
+    \begin{center}
+        \LARGE
+        \includegraphics[width=6cm]{images/logo_full.png}\\[\bigskipamount]
+}
 
-\title{\textbf{Kravspecifikation}}
-\date{\today}
+\posttitle{\end{center}}
 
 \newcounter{reqNr}
 \setcounter{reqNr}{0}
 \newcommand{\nextReqNr}{\stepcounter{reqNr}\arabic{reqNr}}
 
 \begin{document}
+
+    \title{\textbf{LiTHe Hex - Kravspecifikation} \\
+        \vspace*{0.5\baselineskip}
+        Version 0.1}
+
+    \date{\today}
+
 	\maketitle
 	\newpage
 
@@ -110,7 +119,7 @@
 				\textbf{Version} & \textbf{Datum} & \textbf{Utförda förändringar} 
 				& \textbf{Utförda av} & \textbf{Granskad} \\ \hline
 
-				0.1 & 2016-09-05 & Första utkastet & ckr & \\ \hline
+				0.1 & 2016-09-07 & Första utkastet & ckr & \\ \hline
 
 			\end{tabular}
 		\end{table}
@@ -307,7 +316,7 @@
 			\textbf{Nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
 				\\ \hline
 
-			\nextReqNr & Original & Sensorenheten ska kunna tolka avståndsmätarnas data & 1
+			\nextReqNr & Original & Sensorenheten ska kunna tolka avstånds- mätarnas data & 1
 				\\ \hline
 
 			\nextReqNr & Original & Sensorenheten ska kunna kommunicera med 
