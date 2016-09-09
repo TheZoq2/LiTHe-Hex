@@ -1,0 +1,371 @@
+\documentclass[a4paper,titlepage,12pt]{article}
+\usepackage[utf8]{inputenc} %Make sure all UTF8 characters work in the document
+\usepackage{color}
+\usepackage{graphicx}
+\usepackage{titling}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage[yyyymmdd]{datetime}
+\usepackage[figurename=Figur]{caption}
+\usepackage{pbox}
+\usepackage{booktabs}
+
+%Set page size
+\usepackage{geometry}
+\geometry{margin=3cm}
+
+\renewcommand{\dateseparator}{-}
+\renewcommand{\contentsname}{Innehållsförteckning}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Header and footer
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+
+\lhead{\includegraphics[width=0.15\linewidth]{images/logo_full.png}}
+\chead{Projektplan för sexbent robot}
+\rhead{\today}
+\setlength\headheight{26pt} 
+
+\lfoot{TSEA29 --- KMM \\ LIPS Projektplan}
+\rfoot{Grupp 9 \\ LiTHe Hex}
+
+\pretitle{%
+    \begin{center}
+        \LARGE
+        \includegraphics[width=6cm]{images/logo_full.png}\\[\bigskipamount]
+}
+
+\posttitle{\end{center}}
+
+\newcounter{milNr}
+\setcounter{milNr}{0}
+\newcommand{\nextMilNr}{\stepcounter{milNr}\arabic{milNr}}
+
+\newcounter{bpNr}
+\setcounter{bpNr}{0}
+\newcommand{\nextBPNr}{\stepcounter{bpNr}\arabic{bpNr}}
+
+\newcounter{aktNr}
+\setcounter{aktNr}{0}
+\newcommand{\nextAktNr}{\stepcounter{aktNr}\arabic{aktNr}}
+
+\begin{document}
+    \title{\LARGE
+        \textbf{Projektplan för sexbent robot} \\
+        \vspace*{0.5\baselineskip}
+        \large
+        Redaktör Frans Skarman \\
+        Grupp 9 \\
+        \small
+        \vspace*{0.5\baselineskip}
+        Version 0.1}
+
+    \date{\today}
+
+	\maketitle
+	
+	\newpage
+	
+	\begin{center}
+
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		%						Medlemmar
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+		\section*{Projektidentitet}
+		Grupp 9, Ht 2016, LiTHe Hex
+
+		Linköpings Tekniska Högskola, ISY
+
+		\begin{table}[h]
+			\begin{center}
+				\begin{tabular}[pos]{ l l l }
+					\textbf{Namn} & \textbf{Ansvar} & \textbf{E-post} \\ \midrule
+					Emil Segerbäck & & emise935@student.liu.se \\ \midrule
+					Frans Skarman & Dokumentansvarig & frask812@student.liu.se \\ \midrule
+					Hannes Tuhkala & & hantu447@student.liu.se \\ \midrule
+					Malcolm Vigren & Projektledare & malvi108@student.liu.se \\ \midrule
+					Noak Ringman &  & noari093@student.liu.se \\ \midrule
+					Olav Övrebö &  & olaov121@student.liu.se \\ \midrule
+					Robin Sliwa &  & robsl733@student.liu.se \\
+				\end{tabular}
+			\end{center}
+		\end{table}
+
+		\centering
+		\textbf{Kursansvarig}: Tomas Svensson Rum 3B:528 013--28 13 68 tomas.svensson@liu.se
+
+		\newpage
+		\tableofcontents
+		\newpage
+
+
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		%						Historik
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+		\section*{Dokumenthistorik}
+		\begin{table}[h]
+			\begin{tabular}[pos]{ l l l l l }
+				\textbf{Version} & \textbf{Datum} & \textbf{Utförda förändringar} 
+				& \textbf{Utförda av} & \textbf{Granskad} \\ \midrule
+
+				0.1 & 2016--09--09 & Första utkastet & Projektgruppen & \\
+
+			\end{tabular}
+		\end{table}
+	\end{center}
+
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%						Inledning
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+	\newpage
+
+	\section{Beställare}
+	Text
+
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%						Översikt
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+	\newpage
+	\section{Översiktlig beskrivning av projektet}
+	Text
+
+	\subsection{Syfte och mål}
+	Här var det text här var det text här var det text
+	här var det text här var det text här var det text
+	här var det text här var det text här var det text.
+	
+	
+	\subsection{Leveranser}
+	Här var det text här var det text här var det text
+	här var det text här var det text här var det text
+	här var det text här var det text här var det text.
+	
+	
+	\subsection{Begränsningar}
+	Här var det text här var det text här var det text
+	här var det text här var det text här var det text
+	här var det text här var det text här var det text.
+	
+	
+	\section{Fasplan}
+	Här var det text här var det text här var det text
+	här var det text här var det text här var det text
+	här var det text här var det text här var det text.
+	
+	\subsection{Före projektstart}
+	Här var det text här var det text här var det text
+	här var det text här var det text här var det text
+	här var det text här var det text här var det text.
+	
+	
+	\subsection{Under projektet}
+	Här var det text här var det text här var det text
+	här var det text här var det text här var det text
+	här var det text här var det text här var det text.
+	
+	
+	\subsection{Efter projektet}
+	Här var det text här var det text här var det text
+	här var det text här var det text här var det text
+	här var det text här var det text här var det text.
+	
+	
+	\section{Organisationsplan för hela projektet}
+	Här var det text här var det text här var det text
+	här var det text här var det text här var det text
+	här var det text här var det text här var det text.
+
+	\subsection{Organisationsplan per fas}
+	Här var det text här var det text här var det text
+	här var det text här var det text här var det text
+	här var det text här var det text här var det text.
+	
+	
+	\subsection{Organisationsplan hos kunden}
+	Här var det text här var det text här var det text
+	här var det text här var det text här var det text
+	här var det text här var det text här var det text.
+	
+	
+	\subsection{Villkor för samarbetet inom projektgruppen}
+	Här var det text här var det text här var det text
+	här var det text här var det text här var det text
+	här var det text här var det text här var det text.
+	
+	\subsection{Definition av arbetsinnehåll och ansvar}
+	Här var det text här var det text här var det text
+	här var det text här var det text här var det text
+	här var det text här var det text här var det text.
+	
+	
+	\section{Dokumentplan}
+	Här var det dokumentplan:
+	
+	\begin{table}[h]
+		\begin{center}
+			\begin{tabular}[pos]{ l l l l l }
+				\textbf{Dokument} & \textbf{Ansvarig/godkänns av} & \textbf{Syfte} & \textbf{Distribueras till} & \textbf{Färdigdatum} \\ \midrule
+				& & & & \\ \midrule
+			\end{tabular}
+		\end{center}
+	\end{table}
+	
+	
+	\section{Utvecklingsmetodik}
+	Här var det text här var det text här var det text
+	här var det text här var det text här var det text
+	här var det text här var det text här var det text.
+	
+	
+	\section{Utbildningsplan}
+	Här var det text här var det text här var det text
+	här var det text här var det text här var det text
+	här var det text här var det text här var det text.
+	
+	
+	\subsection{Egen utbildning}
+	Här var det text här var det text här var det text
+	här var det text här var det text här var det text
+	här var det text här var det text här var det text.
+	
+	
+	\subsection{Kundens utbildning}
+	Här var det text här var det text här var det text
+	här var det text här var det text här var det text
+	här var det text här var det text här var det text.
+	
+	
+	\section{Rapporteringsplan}
+	Här var det text här var det text här var det text
+	här var det text här var det text här var det text
+	här var det text här var det text här var det text.
+	
+	
+	\section{Mötesplan}
+	Här var det text här var det text här var det text
+	här var det text här var det text här var det text
+	här var det text här var det text här var det text.
+	
+	
+	\section{Resursplan}
+	Här var det text här var det text här var det text
+	här var det text här var det text här var det text
+	här var det text här var det text här var det text.
+	
+	
+	\subsection{Personer}
+	Här var det text här var det text här var det text
+	här var det text här var det text här var det text
+	här var det text här var det text här var det text.
+	
+	
+	\subsection{Material}
+	Här var det text här var det text här var det text
+	här var det text här var det text här var det text
+	här var det text här var det text här var det text.
+	
+	
+	\subsection{Lokaler}
+	Här var det text här var det text här var det text
+	här var det text här var det text här var det text
+	här var det text här var det text här var det text.
+	
+	
+	\subsection{Ekonomi}
+	Här var det text här var det text här var det text
+	här var det text här var det text här var det text
+	här var det text här var det text här var det text.
+	
+	
+	\section{Milstolpar och beslutspunkter}
+	Här var det text här var det text här var det text
+	här var det text här var det text här var det text
+	här var det text här var det text här var det text.
+	
+	
+	\subsection{Milstolpar}
+	\begin{table}[h]
+		\begin{center}
+			\begin{tabular}[pos]{ l l l }
+				\textbf{Nr} & \textbf{Beskrivning} & \textbf{Datum} \\ \midrule
+				\nextMilNr{} & & \\ \midrule
+			\end{tabular}
+		\end{center}
+	\end{table}
+	
+	
+	\subsection{Beslutspunkter}
+	\begin{table}[h]
+		\begin{center}
+			\begin{tabular}[pos]{ l l l }
+				\textbf{Nr} & \textbf{Beskrivning} & \textbf{Datum} \\ \midrule
+				\nextBPNr{} & & \\ \midrule
+			\end{tabular}
+		\end{center}
+	\end{table}
+	
+	
+	\section{Aktiviteter}
+	\begin{table}[h]
+		\begin{center}
+			\begin{tabular}[pos]{ l l l l }
+				\textbf{Nr} & \textbf{Aktivitet} & \textbf{Beskrivning} & \textbf{Beräknad tid tim} \\ \midrule
+				\nextAktNr{} & & & \\ \midrule
+			\end{tabular}
+		\end{center}
+	\end{table}
+
+	
+	\section{Tidplan}
+	Här var det text här var det text här var det text
+	här var det text här var det text här var det text
+	här var det text här var det text här var det text.
+	
+	
+	\section{Förändringsplan}
+	Här var det text här var det text här var det text
+	här var det text här var det text här var det text
+	här var det text här var det text här var det text.
+	
+	
+	\section{Kvalitetsplan}
+	Här var det text här var det text här var det text
+	här var det text här var det text här var det text
+	här var det text här var det text här var det text.
+	
+	
+	\subsection{Granskningar}
+	Här var det text här var det text här var det text
+	här var det text här var det text här var det text
+	här var det text här var det text här var det text.
+	
+	
+	\subsection{Testplan}
+	Här var det text här var det text här var det text
+	här var det text här var det text här var det text
+	här var det text här var det text här var det text.
+	
+	
+	\section{Riskanalys}
+	Här var det text här var det text här var det text
+	här var det text här var det text här var det text
+	här var det text här var det text här var det text.
+	
+	
+	\section{Prioriteringar}
+	Här var det text här var det text här var det text
+	här var det text här var det text här var det text
+	här var det text här var det text här var det text.
+	
+	
+	\section{Projektavslut}
+	Här var det text här var det text här var det text
+	här var det text här var det text här var det text
+	här var det text här var det text här var det text.
+\end{document}
