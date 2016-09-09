@@ -6,13 +6,13 @@
 \usepackage{titling}
 \usepackage{textcomp}
 \usepackage{tabularx}
+\usepackage{longtable}
 \usepackage[hyphens]{url}
 \usepackage[bottom]{footmisc}
 \usepackage[yyyymmdd]{datetime}
 \usepackage[figurename=Figur]{caption}
 \definecolor{listinggray}{gray}{0.9}
 \definecolor{lbcolor}{rgb}{0.9,0.9,0.9}
-\usepackage{longtable}
 \usepackage{pbox}
 \usepackage{booktabs}
 
@@ -191,15 +191,15 @@
 	\subsection{Generella krav på hela systemet}
 
 	%Generella krav på systemet
-	\begin{table}[h]
-		\begin{tabularx}{\textwidth}{ c l X l }
+	%\begin{table}[h]
+		\begin{longtable}[c]{ c l>{\raggedright}p{0.6\textwidth} l }
 			\textbf{Nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
 				\\ \midrule
 			\nextReqNr{} & Original & Roboten ska ha ett autonomt läge. & Utgått
 					\\ \midrule
 	
 			\arabic{reqNr}A & \newContent{2016--09--09} & Roboten ska ha ett autonomt läge där den kan ta
-                              sig igenom en bana enligt banspecifikationen & 1
+					sig igenom en bana enligt banspecifikationen & 1
 					\\ \midrule
 
 			\nextReqNr{} & Original & Roboten ska ha en knapp med vilken man startar 
@@ -246,8 +246,8 @@
             \nextReqNrII{} & \newRequirement{2016--09--09} & Varje delsystem
             ska innehålla minst en processor. & 1
 				\\ \bottomrule
-		\end{tabularx}
-	\end{table}
+		\end{longtable}
+	%\end{table}
 
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%						Centralenhet
@@ -262,7 +262,7 @@
 
 	\subsection{Krav}
 	\begin{table}[h]
-		\begin{tabularx}{\textwidth}{c l X l}
+		\begin{longtable}[c]{ c l>{\raggedright}p{0.6\textwidth} l }
 			\textbf{Nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
 				\\ \midrule
 
@@ -290,7 +290,7 @@
 
 			\nextReqNrII{} & \newRequirement{2016--09--09} & Centralenheten ska kunna använda
 			datan från sensor- och motorikenheten för att navigera i banan.  & 1
-		\end{tabularx}
+		\end{longtable}
 	\end{table}
 
 
@@ -306,8 +306,8 @@
 	höjd till centralenheten.
 
 	\subsection{Krav}
-	\begin{table}[h]
-		\begin{tabularx}{\textwidth}{c l X l}
+	%\begin{table}[h]
+		\begin{longtable}[c]{ c l>{\raggedright}p{0.6\textwidth} l }
 			\textbf{Nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
 				\\ \midrule
 
@@ -332,8 +332,8 @@
 			\nextReqNr{} & Original & Motorikenheten ska möjliggöra rörelse åt höger 
 				och vänster. & 2 
 
-		\end{tabularx}
-	\end{table}
+		\end{longtable}
+	%\end{table}
 
 
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -345,8 +345,8 @@
 	för att detektera hinder.
 
 	\subsection{Krav}
-	\begin{table}[h]
-		\begin{tabularx}{\textwidth}{c l X l}
+	%\begin{table}[h]
+		\begin{longtable}[c]{ c l>{\raggedright}p{0.6\textwidth} l }
 			\textbf{Nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
 				\\ \midrule
 
@@ -356,8 +356,8 @@
 			\nextReqNr{} & Original & Sensorenheten ska kunna kommunicera med 
 				centralenheten. & 1
 
-		\end{tabularx}
-	\end{table}
+		\end{longtable}
+	%\end{table}
 
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%						Grafiskt användargränssnitt
@@ -367,20 +367,20 @@
     tillhandahålla ett grafiskt användargränssnitt där användaren kan skicka
     styrkommandon och läsa sensordata.
 	\subsection{Krav}
-	\begin{table}[h]
-      \begin{tabularx}{\textwidth}{c l X l}
-        \textbf{Nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
-        \\ \midrule
+	%\begin{table}[h]
+		\begin{longtable}[c]{ c l>{\raggedright}p{0.6\textwidth} l }
+			\textbf{Nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
+			\\ \midrule
 
-        \nextReqNr{} & Original & Användaren ska kunna styra roboten från
-                                  det grafiska gränssnittet. & 1
-        \\ \midrule
+			\nextReqNr{} & Original & Användaren ska kunna styra roboten från
+									  det grafiska gränssnittet. & 1
+			\\ \midrule
 
-        \nextReqNr{} & Original & Användaren ska kunna läsa sensordata i det
-                                  grafiska gränssnittet. & 1
+			\nextReqNr{} & Original & Användaren ska kunna läsa sensordata i det
+									  grafiska gränssnittet. & 1
 
-      \end{tabularx}
-	\end{table}
+      \end{longtable}
+	%\end{table}
 
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%						Extrakrav
@@ -393,15 +393,15 @@
 
 	\section{Ekonomi}
 
-	\begin{table}[h]
-		\begin{tabularx}{\textwidth}{c l X l}
+	%\begin{table}[h]
+		\begin{longtable}[c]{ c l>{\raggedright}p{0.6\textwidth} l }
 			\textbf{Nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
 			\\ \midrule
 			
 			\nextReqNr{} & 2016--09--09 & Efter godkänd projektplan får
             maximalt 1120 arbetstimmar användas på projektet. & 1
-		\end{tabularx}
-	\end{table}
+		\end{longtable}
+	%\end{table}
 
 	\section{Leveranskrav och delleveranser}
 	Delleveranser är leverans av projektplan, leverans av designspecifikation 
@@ -410,9 +410,8 @@
 	samt överlämning av kod, hårdvara och dokumentation.
 
 	\subsection{Krav}
-	\begin{table}[h]
-		\label{tab:Krav leverans}
-		\begin{tabularx}{\textwidth}{|c|l|X|l|}
+	%\begin{table}[h]
+		\begin{longtable}[c]{ c l>{\raggedright}p{0.6\textwidth} l }
 			\hline
 			\textbf{Nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
 				\\ \hline
@@ -453,8 +452,8 @@
             till beställaren senast 2016-12-22. & 1
 				\\ \hline
 
-		\end{tabularx}
-	\end{table}
+		\end{longtable}
+	%\end{table}
 	
 	\section{Dokumentation}
     Följande dokumentation inkluderas i projektet:
@@ -469,9 +468,8 @@
     \end{itemize}
 
 	\subsection{Krav}
-	\begin{table}[h]
-		\label{tab:Krav dokumentation}
-		\begin{tabularx}{\textwidth}{|c|l|X|l|}
+	%\begin{table}[h]
+		\begin{longtable}[c]{ c l>{\raggedright}p{0.6\textwidth} l }
 			\hline
 			\textbf{Nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
 				\\ \hline
@@ -480,8 +478,8 @@
             enligt LIPS-mallar. & 1
 				\\ \hline
 
-		\end{tabularx}
-	\end{table}
+		\end{longtable}
+	%\end{table}
 
 \end{document}
 
