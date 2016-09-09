@@ -14,6 +14,7 @@
 \definecolor{lbcolor}{rgb}{0.9,0.9,0.9}
 \usepackage{longtable}
 \usepackage{pbox}
+\usepackage{booktabs}
 
 %Set page size
 \usepackage{geometry}
@@ -35,7 +36,7 @@
 \rhead{\today}
 \setlength\headheight{26pt} 
 
-\lfoot{TSEA29 - KMM \\ LIPS Kravspecifikation}
+\lfoot{TSEA29 --- KMM \\ LIPS Kravspecifikation}
 \rfoot{Grupp 9}
 
 \pretitle{%
@@ -85,22 +86,23 @@
 
 		\begin{table}[h]
 			\begin{center}
-				\begin{tabular}[pos]{| l | l | l |}
-					\hline
-					\textbf{Namn} & \textbf{Ansvar} & \textbf{E-post} \\ \hline
-					Emil Segerbäck & & emise935@student.liu.se \\ \hline
-					Frans Skarman & Dokumentansvarig & frask812@student.liu.se \\ \hline
-					Hannes Tuhkala & & hantu447@student.liu.se \\ \hline
-					Malcolm Vigren & Projektledare & malvi108@student.liu.se \\ \hline
-					Noak Ringman &  & noari093@student.liu.se \\ \hline
-					Olav Övrebö &  & olaov121@student.liu.se \\ \hline
-					Robin Sliwa &  & robsl733@student.liu.se \\ \hline
+				\begin{tabular}[pos]{ l l l }
+					\toprule
+					\textbf{Namn} & \textbf{Ansvar} & \textbf{E-post} \\ \midrule
+					Emil Segerbäck & & emise935@student.liu.se \\ \midrule
+					Frans Skarman & Dokumentansvarig & frask812@student.liu.se \\ \midrule
+					Hannes Tuhkala & & hantu447@student.liu.se \\ \midrule
+					Malcolm Vigren & Projektledare & malvi108@student.liu.se \\ \midrule
+					Noak Ringman &  & noari093@student.liu.se \\ \midrule
+					Olav Övrebö &  & olaov121@student.liu.se \\ \midrule
+					Robin Sliwa &  & robsl733@student.liu.se \\
+                    \bottomrule
 				\end{tabular}
 			\end{center}
 		\end{table}
 
 		\centering
-		\textbf{Kursansvarig}: Tomas Svensson Rum 3B:528 013-28 13 68 tomas.svensson@liu.se
+		\textbf{Kursansvarig}: Tomas Svensson Rum 3B:528 013--28 13 68 tomas.svensson@liu.se
 
 
 		
@@ -113,13 +115,14 @@
 
 		\section*{Dokumenthistorik}
 		\begin{table}[h]
-			\begin{tabular}[pos]{| l | l | l | l | l |}
-				\hline
+			\begin{tabular}[pos]{ l l l l l }
+                \toprule
 				\textbf{Version} & \textbf{Datum} & \textbf{Utförda förändringar} 
-				& \textbf{Utförda av} & \textbf{Granskad} \\ \hline
+				& \textbf{Utförda av} & \textbf{Granskad} \\ \midrule
 
-				0.1 & 2016-09-07 & Första utkastet & Projektgruppen & Tomas Svensson \\ \hline
-				0.2  & 2016-09-09 & Andra utkastet & Projektgruppen & \\ \hline
+				0.1 & 2016--09--07 & Första utkastet & Projektgruppen & Tomas Svensson \\ \midrule
+				0.2  & 2016--09--09 & Andra utkastet & Projektgruppen & \\
+                \bottomrule
 
 			\end{tabular}
 		\end{table}
@@ -148,7 +151,7 @@
 	sig över hinder för att komma vidare. 
 	\subsection{Bakgrundsinformation}
 	För regler om uppbyggnad av labyrinten som roboten är tänkt att ta sig igenom, se
-	Bilaga A: Banregler.
+	Bilaga A:\ Banregler.
 
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%						Översikt
@@ -162,8 +165,7 @@
 	\begin{figure}[h]
 		\centering
 		\includegraphics[width=0.5\linewidth]{../images/overview.png}
-		\caption{Översikt av systemet}
-		\label{fig:../images/overview}
+		\caption{Översikt av systemet\label{fig:overview}}
 	\end{figure}
 
 	\subsection{Grov beskrivning av produkten}
@@ -183,34 +185,34 @@
         \item Sensorenheten
     \end{itemize}
 	\subsection{Avgränsningar}
-	Roboten behöver inte klara mer avancerade former på labyrinten än de som beskrivs i Bilaga A: Banregler.
+	Roboten behöver inte klara mer avancerade former på labyrinten än de som beskrivs i Bilaga A:\ Banregler.
 	\subsection{Generella krav på hela systemet}
 
 	%Generella krav på systemet
 	\begin{table}[h]
-		\begin{tabularx}{\textwidth}{|c|l|X|l|}
-		\hline
+		\begin{tabularx}{\textwidth}{ c l X l }
+		\toprule
 			\textbf{Nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
-				\\ \hline
+				\\ \midrule
 	
-			\nextReqNr & Original & Roboten ska ha ett autonomt läge. & 1
-					\\ \hline
+			\nextReqNr{} & Original & Roboten ska ha ett autonomt läge. & 1
+					\\ \midrule
 
-			\nextReqNr & Original & Roboten ska ha en knapp med vilken man startar 
+			\nextReqNr{} & Original & Roboten ska ha en knapp med vilken man startar 
 				dess autonoma läge. & 1
-				\\ \hline
+				\\ \midrule
 
-			\nextReqNr & Original & Roboten ska kunna styras med dator 
+			\nextReqNr{} & Original & Roboten ska kunna styras med dator 
 				via WiFi-länk. & 1
-				\\ \hline
+				\\ \midrule
 		
-			\nextReqNr & Original & Robotens sensordata ska gå att läsa 
+			\nextReqNr{} & Original & Robotens sensordata ska gå att läsa 
 				med dator via WiFi & 1
-				\\ \hline
+				\\ \midrule
 
-			\nextReqNr & Original & Robotens styrbeslut ska gå att läsa 
+			\nextReqNr{} & Original & Robotens styrbeslut ska gå att läsa 
 				med dator via WiFi & 1
-				\\ \hline
+				\\ \bottomrule
 		\end{tabularx}
 	\end{table}
 
@@ -228,34 +230,34 @@
 	\subsection{Krav}
 	\begin{table}[h]
 		\label{tab:Krav centralenhet}
-		\begin{tabularx}{\textwidth}{|c|l|X|l|}
-			\hline
+		\begin{tabularx}{\textwidth}{c l X l}
+			\midrule
 			\textbf{Nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
-				\\ \hline
+				\\ \midrule
 
-			\nextReqNr & Original & Centralenheten ska kunna kommunicera 
+			\nextReqNr{} & Original & Centralenheten ska kunna kommunicera 
 				med en dator via WiFi. & 1
-				\\ \hline
+				\\ \midrule
 
-			\nextReqNr & Original & Centralenheten ska kunna ta emot och 
+			\nextReqNr{} & Original & Centralenheten ska kunna ta emot och 
 				behandla data från sensorenheten.& Utgått
-				\\ \hline
-			\arabic{reqNr}a & \newContent{2016-09-09} & Centralenheten ska kunna ta emot och 
+				\\ \midrule
+			\arabic{reqNr}a & \newContent{2016--09--09} & Centralenheten ska kunna ta emot och 
 				behandla data från sensorenheten.& 1
-				\\ \hline
+				\\ \midrule
 
 
-			\nextReqNr & Original & Centralenheten ska kunna ta emot från, 
+			\nextReqNr{} & Original & Centralenheten ska kunna ta emot från, 
 				behandla och skicka information till motorikenheten. & Utgått
-				\\ \hline
-			\arabic{reqNr}a & \newContent{2016-09-09} & Centralenheten ska kunna ta emot från
+				\\ \midrule
+			\arabic{reqNr}a & \newContent{2016--09--09} & Centralenheten ska kunna ta emot från
 				 och skicka information till motorikenheten. & 1
-				\\ \hline
+				\\ \midrule
 
-			\nextReqNr & Original & Centralenheten ska kunna upptäcka hinder. & 2
-			\\ \hline
+			\nextReqNr{} & Original & Centralenheten ska kunna upptäcka hinder. & 2
+			\\ \midrule
 
-			\nextReqNr & 
+			\nextReqNr{} & 
 
 		\end{tabularx}
 	\end{table}
@@ -275,32 +277,32 @@
 	\subsection{Krav}
 	\begin{table}[h]
 		\label{tab:Krav motorikenhet}
-		\begin{tabularx}{\textwidth}{|c|l|X|l|}
-			\hline
+		\begin{tabularx}{\textwidth}{c l X l}
+			\midrule
 			\textbf{Nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
-				\\ \hline
+				\\ \midrule
 
-			\nextReqNr & Original & Motorikenheten ska möjliggöra rörelse framåt och 
+			\nextReqNr{} & Original & Motorikenheten ska möjliggöra rörelse framåt och 
 				bakåt samt rotation. & 1
-				\\ \hline
+				\\ \midrule
 
-			\nextReqNr & Original & Motorikenheten ska ge roboten två olika gånglägen,
+			\nextReqNr{} & Original & Motorikenheten ska ge roboten två olika gånglägen,
 				ett där roboten går 
 				snabbt och ett där roboten går med högre precision.& 2
-				\\ \hline
+				\\ \midrule
 
-			\nextReqNr & Original & Motorikenheten ska kunna skicka data om höjden 
+			\nextReqNr{} & Original & Motorikenheten ska kunna skicka data om höjden 
 				på underlaget till centralenheten. & 2
-				\\ \hline
+				\\ \midrule
 
-			\nextReqNr & Original & Motorikenheten ska möjliggöra kliv över hinder 
-				beskrivna i Bilaga A:
+			\nextReqNr{} & Original & Motorikenheten ska möjliggöra kliv över hinder 
+				beskrivna i Bilaga A:\
   				Banregler. & 2
-				\\ \hline
+				\\ \midrule
 
-			\nextReqNr & Original & Motorikenheten ska möjliggöra rörelse åt höger 
+			\nextReqNr{} & Original & Motorikenheten ska möjliggöra rörelse åt höger 
 				och vänster. & 2 
-				\\\hline
+				\\\midrule
 
 		\end{tabularx}
 	\end{table}
@@ -317,17 +319,17 @@
 	\subsection{Krav}
 	\begin{table}[h]
 		\label{tab:Krav sensorenhet}
-		\begin{tabularx}{\textwidth}{|c|l|X|l|}
-			\hline
+		\begin{tabularx}{\textwidth}{c l X l}
+			\midrule
 			\textbf{Nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
-				\\ \hline
+				\\ \midrule
 
-			\nextReqNr & Original & Sensorenheten ska kunna tolka avstånds- mätarnas data. & 1
-				\\ \hline
+			\nextReqNr{} & Original & Sensorenheten ska kunna tolka avstånds- mätarnas data. & 1
+				\\ \midrule
 
-			\nextReqNr & Original & Sensorenheten ska kunna kommunicera med 
+			\nextReqNr{} & Original & Sensorenheten ska kunna kommunicera med 
 				centralenheten. & 1
-				\\ \hline
+				\\ \midrule
 
 		\end{tabularx}
 	\end{table}
@@ -346,13 +348,13 @@
 
 	\begin{table}[h]
 		\label{tab:Krav ekonomi}
-		\begin{tabularx}{\textwidth}{|c|l|X|l|}
-			\hline
+		\begin{tabularx}{\textwidth}{c l X l}
+			\midrule
 			\textbf{Nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
-			\\ \hline
+			\\ \midrule
 			
-			\nextReqNr & 2016-09-09 & Vid projektets slutförande ska 1120 timmars arbetstid ha nedlagts. & 1
-			\\ \hline
+			\nextReqNr{} & 2016--09--09 & Vid projektets slutförande ska 1120 timmars arbetstid ha nedlagts. & 1
+			\\ \midrule
 		\end{tabularx}
 	\end{table}
 
@@ -382,16 +384,16 @@
 %						Templates
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\iffalse
+\iffalse{}
 	\begin{table}[h]
 		\label{tab:Krav template}
-		\begin{tabularx}{\textwidth}{|c|l|X|l|}
-		\hline
+		\begin{tabularx}{\textwidth}{c l X l}
+		\midrule
 		\textbf{Nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
-		\\ \hline
+		\\ \midrule
 	
 		1 & Original & Roboten ska autonomt kunna navigera sig igenom tvävlingsbanan & 1
-		\\ \hline
+		\\ \midrule
 		\end{tabularx}
 	\end{table}
 \fi
