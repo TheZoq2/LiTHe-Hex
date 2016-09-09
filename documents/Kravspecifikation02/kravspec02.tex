@@ -53,6 +53,7 @@
 
     \title{\textbf{LiTHe Hex - Kravspecifikation} \\
         \vspace*{0.5\baselineskip}
+        Redaktör Frans Skarman \\
         Version 0.2}
 
     \date{\today}
@@ -165,8 +166,9 @@
 	\subsection{Beroenden  till andra system}
     För manuell styrning är roboten beroende av WiFi-kommunikation med en dator.
 	\subsection{Ingående delsystem}
+    De ingående delsystemen är:
+    
     \begin{itemize}
-	    De ingående delsystemen är:
         \item Centralenheten
         \item Motorikenheten
         \item Sensorenheten
@@ -177,12 +179,14 @@
 
 	%Generella krav på systemet
 	\begin{table}[h]
-		\begin{tabularx}{\textwidth}{|c|l|X|l|}
+		\begin{tabularx}{\textwidth}{|c|X|X|l|}
 		\hline
 			\textbf{Nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
 				\\ \hline
+			\nextReqNr & Original & Roboten ska ha ett autonomt läge. & Utgått
+					\\ \hline
 	
-			\nextReqNr & 2016-09-09 & Roboten ska ha ett autonomt läge där den kan ta
+			\arabic{reqNr}A & Nytt innehåll i krav \arabic{reqNr} den 2016-09-09 & Roboten ska ha ett autonomt läge där den kan ta
                               sig igenom en bana enligt banspecifikationen & 1
 					\\ \hline
 
@@ -217,7 +221,7 @@
 
 	\subsection{Krav}
 	\begin{table}[h]
-		\label{tab:label}
+		\label{tab:Krav centralenhet}
 		\begin{tabularx}{\textwidth}{|c|l|X|l|}
 			\hline
 			\textbf{Nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
@@ -255,7 +259,7 @@
 
 	\subsection{Krav}
 	\begin{table}[h]
-		\label{tab:label}
+		\label{tab:Krav motorikenhet}
 		\begin{tabularx}{\textwidth}{|c|l|X|l|}
 			\hline
 			\textbf{Nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
@@ -297,7 +301,7 @@
 
 	\subsection{Krav}
 	\begin{table}[h]
-		\label{tab:label}
+		\label{tab:Krav sensorenhet}
 		\begin{tabularx}{\textwidth}{|c|l|X|l|}
 			\hline
 			\textbf{Nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
@@ -340,6 +344,8 @@
 		\item Projektplan
 		\item Teknisk dokumentation 
 		\item Användarhandledning 
+        \item Designspecifikation
+        \item Efterstudie
     \end{itemize}
 \end{document}
 
@@ -352,7 +358,7 @@
 
 \iffalse
 	\begin{table}[h]
-		\label{tab:label}
+		\label{tab:Krav template}
 		\begin{tabularx}{\textwidth}{|c|l|X|l|}
 		\hline
 		\textbf{Nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
