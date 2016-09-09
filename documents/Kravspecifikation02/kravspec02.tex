@@ -13,6 +13,7 @@
 \definecolor{listinggray}{gray}{0.9}
 \definecolor{lbcolor}{rgb}{0.9,0.9,0.9}
 \usepackage{longtable}
+\usepackage{pbox}
 
 %Set page size
 \usepackage{geometry}
@@ -21,6 +22,7 @@
 
 \renewcommand{\dateseparator}{-}
 \renewcommand{\contentsname}{Innehållsförteckning}
+\renewcommand{\newContent}[1]{\pbox{5cm}{Nytt innehåll i \arabic{reqNr}\\#1}}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -30,7 +32,7 @@
 \pagestyle{fancy}
 
 \lhead{\includegraphics[width=0.15\linewidth]{../images/logo_full.png}}
-\chead{LiTHe Hex}
+\chead{Kravspecifikation för sexbent robot}
 \rhead{\today}
 \setlength\headheight{26pt} 
 
@@ -51,9 +53,14 @@
 
 \begin{document}
 
-    \title{\textbf{LiTHe Hex - Kravspecifikation} \\
+    \title{\LARGE
+        \textbf{Kravspecifikation för sexbent robot} \\
         \vspace*{0.5\baselineskip}
+        \large
         Redaktör Frans Skarman \\
+        Grupp 9 \\
+        \small
+        \vspace*{0.5\baselineskip}
         Version 0.2}
 
     \date{\today}
@@ -77,20 +84,22 @@
 		Linköpings Tekniska Högskola, ISY
 
 		\begin{table}[h]
-			\begin{tabular}[pos]{| l | l | l |}
-				\hline
-				\textbf{Namn} & \textbf{Ansvar} & \textbf{E-post} \\ \hline
-				Emil Segerbäck & & emise935@student.liu.se \\ \hline
-				Frans Skarman & Dokumentansvarig & frask812@student.liu.se \\ \hline
-				Hannes Tuhkala & & hantu447@student.liu.se \\ \hline
-				Malcolm Vigren & Projektledare & malvi108@student.liu.se \\ \hline
-				Noak Ringman &  & noari093@student.liu.se \\ \hline
-				Olav Övrebö &  & olaov121@student.liu.se \\ \hline
-				Robin Sliwa &  & robsl733@student.liu.se \\ \hline
-			\end{tabular}
+			\begin{center}
+				\begin{tabular}[pos]{| l | l | l |}
+					\hline
+					\textbf{Namn} & \textbf{Ansvar} & \textbf{E-post} \\ \hline
+					Emil Segerbäck & & emise935@student.liu.se \\ \hline
+					Frans Skarman & Dokumentansvarig & frask812@student.liu.se \\ \hline
+					Hannes Tuhkala & & hantu447@student.liu.se \\ \hline
+					Malcolm Vigren & Projektledare & malvi108@student.liu.se \\ \hline
+					Noak Ringman &  & noari093@student.liu.se \\ \hline
+					Olav Övrebö &  & olaov121@student.liu.se \\ \hline
+					Robin Sliwa &  & robsl733@student.liu.se \\ \hline
+				\end{tabular}
+			\end{center}
 		\end{table}
 
-
+		\centering
 		\textbf{Kursansvarig}: Tomas Svensson Rum 3B:528 013-28 13 68 tomas.svensson@liu.se
 
 
@@ -232,11 +241,18 @@
 				\\ \hline
 
 			\nextReqNr & Original & Centralenheten ska kunna ta emot och 
+				behandla data från sensorenheten.& Utgått
+				\\ \hline
+			\arabic{reqNr}a & \newContent{2016-09-09} & Centralenheten ska kunna ta emot och 
 				behandla data från sensorenheten.& 1
 				\\ \hline
 
+
 			\nextReqNr & Original & Centralenheten ska kunna ta emot från, 
-				behandla och skicka information till motorikenheten. & 1
+				behandla och skicka information till motorikenheten. & Utgått
+				\\ \hline
+			\arabic{reqNr}a & Original & Centralenheten ska kunna ta emot från
+				 och skicka information till motorikenheten. & 1
 				\\ \hline
 
 			\nextReqNr & Original & Centralenheten ska kunna upptäcka hinder. & 2
@@ -328,7 +344,18 @@
 	kartläggning av ett utrymme.
 
 	\section{Ekonomi}
-	Vid projektets slutförande ska 1120 timmars arbetstid ha nedlagts.
+
+	\begin{table}[h]
+		\label{tab:Krav ekonomi}
+		\begin{tabularx}{\textwidth}{|c|l|X|l|}
+			\hline
+			\textbf{Nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
+			\\ \hline
+			
+			\nextReqNr & 2016-09-09 & Vid projektets slutförande ska 1120 timmars arbetstid ha nedlagts. & 1
+			\\ \hline
+		\end{tabularx}
+	\end{table}
 
 	\section{Leveranskrav och delleveranser}
 	Delleveranser är leverans av projektplan, leverans av designspecifikation 
