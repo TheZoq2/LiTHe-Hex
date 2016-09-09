@@ -55,7 +55,7 @@
 \newcommand{\nextReqNrII}{\stepcounter{reqNrII}\arabic{reqNrII}}
 
 \newcommand{\newContent}[1] {\pbox{5cm}{Nytt innehåll i \arabic{reqNr}\\#1}}
-\newcommand{\newRec}[1] {\pbox{5cm}{Nytt krav\\#1}}
+\newcommand{\newRequirement}[1] {\pbox{5cm}{Nytt krav \\#1}}
 
 \begin{document}
 
@@ -198,8 +198,11 @@
 		\hline
 			\textbf{Nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
 				\\ \hline
+			\nextReqNr & Original & Roboten ska ha ett autonomt läge. & Utgått
+					\\ \hline
 	
-			\nextReqNr & Original & Roboten ska ha ett autonomt läge. & 1
+			\arabic{reqNr}A & \newContent{2016-09-09} & Roboten ska ha ett autonomt läge där den kan ta
+                              sig igenom en bana enligt banspecifikationen & 1
 					\\ \hline
 
 			\nextReqNr & Original & Roboten ska ha en knapp med vilken man startar 
@@ -216,6 +219,13 @@
 
 			\nextReqNr & Original & Robotens styrbeslut ska gå att läsa 
 				med dator via WiFi & 1
+				\\ \hline
+      
+      % needs a new number!
+			\nextReqNr & \newRequirement{2016-09-09} & Via WiFi ska roboten kunna reagera på förljande
+                              kommandon: framåt, bakåt, stop, framåt vänster,
+                              framåt höger, rotera vänster, rotera höger,
+                              autonomt läge av och på & 1
 				\\ \hline
 		\end{tabularx}
 	\end{table}
@@ -250,7 +260,6 @@
 				behandla data från sensorenheten.& 1
 				\\ \hline
 
-
 			\nextReqNr & Original & Centralenheten ska kunna ta emot från, 
 				behandla och skicka information till motorikenheten. & Utgått
 				\\ \hline
@@ -261,10 +270,9 @@
 			\nextReqNr & Original & Centralenheten ska kunna upptäcka hinder. & 2
 			\\ \hline
 
-			\nextReqNrII & \newRec{2016-09-09} & Centralenheten ska kunna använda
+			\nextReqNrII & \newRequirement{2016-09-09} & Centralenheten ska kunna använda
 			datan från sensor- och motorikenheten för att navigera i banan.  & 1
 			\\ \hline
-
 		\end{tabularx}
 	\end{table}
 
