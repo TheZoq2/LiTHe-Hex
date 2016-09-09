@@ -50,6 +50,7 @@
 \setcounter{reqNr}{0}
 \newcommand{\nextReqNr}{\stepcounter{reqNr}\arabic{reqNr}}
 \newcommand{\newContent}[1] {\pbox{5cm}{Nytt innehåll i \arabic{reqNr}\\#1}}
+\newcommand{\newRequirement}[1] {\pbox{5cm}{Nytt krav \\#1}}
 
 \begin{document}
 
@@ -213,6 +214,13 @@
 
 			\nextReqNr & Original & Robotens styrbeslut ska gå att läsa 
 				med dator via WiFi & 1
+				\\ \hline
+      
+      % needs a new number!
+			\nextReqNr & \newRequirement{2016-09-09} & Via WiFi ska roboten kunna reagera på förljande
+                              kommandon: framåt, bakåt, stop, framåt vänster,
+                              framåt höger, rotera vänster, rotera höger,
+                              autonomt läge av och på & 1
 				\\ \hline
 		\end{tabularx}
 	\end{table}
