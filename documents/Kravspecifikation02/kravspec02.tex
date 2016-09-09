@@ -56,7 +56,7 @@
 \newcommand{\nextReqNrII}{\stepcounter{reqNrII}\arabic{reqNrII}}
 
 \newcommand{\newContent}[1] {\pbox{5cm}{Nytt innehåll i \arabic{reqNr}\\#1}}
-\newcommand{\newRequirement}[1] {\pbox{5cm}{Nytt krav \\#1}}
+\newcommand{\newRequirement}[1] {\pbox{5cm}{Tillagt \\#1}}
 
 \begin{document}
 
@@ -246,7 +246,7 @@
 
             \nextReqNrII{} & \newRequirement{2016--09--09} & Varje delsystem
             ska innehålla minst en processor. & 1
-				\\ \bottomrule
+				\\ 
 		\end{longtable}
 	%\end{table}
 
@@ -390,7 +390,7 @@
 		\textbf{Nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
 		\\ \midrule
 		
-		\nextReqNr{} & 2016--09--09 & Efter godkänd projektplan får
+		\nextReqNrII{} \newRequirement{2016-09-09} & Efter godkänd projektplan får
 		maximalt 1120 arbetstimmar användas på projektet. & 1
 	\end{longtable}
 
@@ -406,41 +406,41 @@
 		\textbf{Nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
 			\\ \hline
 
-		\nextReqNr & Tillagd 2016-09-09 & Första versionen av
+		\nextReqNrII & \newRequirement{2016-09-09} & Första versionen av
 			designspecifikationen ska vara inlämnad till handledaren senast
 			2016-11-01. & 1
 			\\ \hline
 
-		\nextReqNr & Tillagd 2016-09-09 & Slutgiltig designspecifikation
+		\nextReqNrII & \newRequirement{2016-09-09} & Slutgiltig designspecifikation
 			ska vara godkänd av handledaren senast 2016-11-04. & 1
 			\\ \hline
 			
-		\nextReqNr & Tillagd 2016-09-09 & Slutpresentation av projektet ska
+		\nextReqNrII & \newRequirement{2016-09-09} & Slutpresentation av projektet ska
 		ske 2016-12-19. & 1
 			\\ \hline
 
-		\nextReqNr & Tillagd 2016-09-09 & Slutpresentationen ska bestå av
+		\nextReqNrII & \newRequirement{2016-09-09} & Slutpresentationen ska bestå av
 		ett bildspel på projektor. & 1
 			\\ \hline
 
-		\nextReqNr & Tillagd 2016-09-09 & Slutpresentationen ska ha en
+		\nextReqNrII & \newRequirement{2016-09-09} & Slutpresentationen ska ha en
 		längd mellan 15-20 minuter. & 1
 			\\ \hline
 
-		\nextReqNr & Tillagd 2016-09-09 & Demonstrationen av projektet ska
+		\nextReqNrII & \newRequirement{2016-09-09} & Demonstrationen av projektet ska
 		bestå av tävlingar med andra grupper som gjort projekt med sexbent
 		robot, och ska äga rum 2016-12-20. Tävlingsregler beskrivs i Bilaga
 		A: Ban- och regelspecifikation. & 1
 			\\ \hline
 
-		\nextReqNr & Tillagd 2016-09-09 & Senast tre dagar innan
+		\nextReqNrII & \newRequirement{2016-09-09} & Senast tre dagar innan
 			presentationen av projektet ska den tekniska dokumentationen
 			samt användarhandledning vara inlämnad till beställaren. & 1
 			\\ \hline
 
-		\nextReqNr & Tillagd 2016-09-09 & Efterstudien ska vara inlämnad
+		\nextReqNrII & \newRequirement{2016-09-09} & Efterstudien ska vara inlämnad
 		till beställaren senast 2016-12-22. & 1
-			\\ \hline
+			\\ 
 
 	\end{longtable}
 	
@@ -458,13 +458,12 @@
 
 	\subsection{Krav}
 	\begin{longtable}[c]{ c l>{\raggedright}p{0.6\textwidth} l }
-		\hline
 		\textbf{Nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
-			\\ \hline
+			\\ \midrule
 
-		\nextReqNr & Tillagd 2016-09-09 & Alla dokument ska vara skrivna
+		\nextReqNrII & \newRequirement{2016-09-09} & Alla dokument ska vara skrivna
 		enligt LIPS-mallar. & 1
-			\\ \hline
+			\\ 
 
 	\end{longtable}
 
