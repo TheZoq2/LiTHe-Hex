@@ -49,6 +49,11 @@
 \newcounter{reqNr}
 \setcounter{reqNr}{0}
 \newcommand{\nextReqNr}{\stepcounter{reqNr}\arabic{reqNr}}
+
+\newcounter{reqNrII}
+\setcounter{reqNrII}{16}
+\newcommand{\nextReqNrII}{\stepcounter{reqNrII}\arabic{reqNrII}}
+
 \newcommand{\newContent}[1] {\pbox{5cm}{Nytt innehåll i \arabic{reqNr}\\#1}}
 \newcommand{\newRequirement}[1] {\pbox{5cm}{Nytt krav \\#1}}
 
@@ -264,6 +269,10 @@
 
 			\nextReqNr & Original & Centralenheten ska kunna upptäcka hinder. & 2
 			\\ \hline
+
+			\nextReqNrII & \newRequirement{2016-09-09} & Centralenheten ska kunna använda
+			datan från sensor- och motorikenheten för att navigera i banan.  & 1
+			\\ \hline
 		\end{tabularx}
 	\end{table}
 
@@ -381,7 +390,6 @@
         \item Efterstudie
     \end{itemize}
 \end{document}
-
 
 
 
