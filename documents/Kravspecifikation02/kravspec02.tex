@@ -93,7 +93,6 @@
 		\begin{table}[h]
 			\begin{center}
 				\begin{tabular}[pos]{ l l l }
-					\toprule
 					\textbf{Namn} & \textbf{Ansvar} & \textbf{E-post} \\ \midrule
 					Emil Segerbäck & & emise935@student.liu.se \\ \midrule
 					Frans Skarman & Dokumentansvarig & frask812@student.liu.se \\ \midrule
@@ -102,7 +101,6 @@
 					Noak Ringman &  & noari093@student.liu.se \\ \midrule
 					Olav Övrebö &  & olaov121@student.liu.se \\ \midrule
 					Robin Sliwa &  & robsl733@student.liu.se \\
-                    \bottomrule
 				\end{tabular}
 			\end{center}
 		\end{table}
@@ -122,13 +120,11 @@
 		\section*{Dokumenthistorik}
 		\begin{table}[h]
 			\begin{tabular}[pos]{ l l l l l }
-                \toprule
 				\textbf{Version} & \textbf{Datum} & \textbf{Utförda förändringar} 
 				& \textbf{Utförda av} & \textbf{Granskad} \\ \midrule
 
 				0.1 & 2016--09--07 & Första utkastet & Projektgruppen & Tomas Svensson \\ \midrule
 				0.2  & 2016--09--09 & Andra utkastet & Projektgruppen & \\
-                \bottomrule
 
 			\end{tabular}
 		\end{table}
@@ -197,7 +193,6 @@
 	%Generella krav på systemet
 	\begin{table}[h]
 		\begin{tabularx}{\textwidth}{ c l X l }
-		\toprule
 			\textbf{Nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
 				\\ \midrule
 			\nextReqNr{} & Original & Roboten ska ha ett autonomt läge. & Utgått
@@ -228,7 +223,6 @@
                               kommandon: framåt, bakåt, stop, framåt vänster,
                               framåt höger, rotera vänster, rotera höger,
                               autonomt läge av och på & 1
-				\\ \bottomrule
 		\end{tabularx}
 	\end{table}
 
@@ -246,7 +240,6 @@
 	\subsection{Krav}
 	\begin{table}[h]
 		\begin{tabularx}{\textwidth}{c l X l}
-			\toprule
 			\textbf{Nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
 				\\ \midrule
 
@@ -273,7 +266,6 @@
 
 			\nextReqNrII{} & \newRequirement{2016--09--09} & Centralenheten ska kunna använda
 			datan från sensor- och motorikenheten för att navigera i banan.  & 1
-			\\ \bottomrule
 		\end{tabularx}
 	\end{table}
 
@@ -292,7 +284,6 @@
 	\subsection{Krav}
 	\begin{table}[h]
 		\begin{tabularx}{\textwidth}{c l X l}
-			\toprule
 			\textbf{Nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
 				\\ \midrule
 
@@ -316,7 +307,6 @@
 
 			\nextReqNr{} & Original & Motorikenheten ska möjliggöra rörelse åt höger 
 				och vänster. & 2 
-				\\ \bottomrule
 
 		\end{tabularx}
 	\end{table}
@@ -333,7 +323,6 @@
 	\subsection{Krav}
 	\begin{table}[h]
 		\begin{tabularx}{\textwidth}{c l X l}
-			\toprule
 			\textbf{Nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
 				\\ \midrule
 
@@ -342,11 +331,32 @@
 
 			\nextReqNr{} & Original & Sensorenheten ska kunna kommunicera med 
 				centralenheten. & 1
-				\\ \bottomrule
 
 		\end{tabularx}
 	\end{table}
 
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%						Grafiskt användargränssnitt
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    \section{Grafiskt användargränssnitt}
+    På centralenheten ska en webserver köras. Webserverns syfte är att
+    tillhandahålla ett grafiskt användargränssnitt där användaren kan skicka
+    styrkommandon och läsa sensordata.
+	\subsection{Krav}
+	\begin{table}[h]
+      \begin{tabularx}{\textwidth}{c l X l}
+        \textbf{Nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
+        \\ \midrule
+
+        \nextReqNr{} & Original & Användaren ska kunna styra roboten från
+                                  det grafiska gränssnittet. & 1
+        \\ \midrule
+
+        \nextReqNr{} & Original & Användaren ska kunna läsa sensordata i det
+                                  grafiska gränssnittet. & 1
+
+      \end{tabularx}
+	\end{table}
 
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%						Extrakrav
@@ -361,12 +371,10 @@
 
 	\begin{table}[h]
 		\begin{tabularx}{\textwidth}{c l X l}
-			\toprule
 			\textbf{Nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
 			\\ \midrule
 			
 			\nextReqNr{} & 2016--09--09 & Vid projektets slutförande ska 1120 timmars arbetstid ha nedlagts. & 1
-			\\ \bottomrule
 		\end{tabularx}
 	\end{table}
 
@@ -398,12 +406,10 @@
 \iffalse{}
 	\begin{table}[h]
 		\begin{tabularx}{\textwidth}{c l X l}
-		\toprule
 		\textbf{Nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
 		\\ \midrule
 	
 		1 & Original & Roboten ska autonomt kunna navigera sig igenom tvävlingsbanan & 1
-		\\ \bottomrule
 		\end{tabularx}
 	\end{table}
 \fi
