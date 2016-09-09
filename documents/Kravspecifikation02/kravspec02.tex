@@ -50,7 +50,13 @@
 \newcounter{reqNr}
 \setcounter{reqNr}{0}
 \newcommand{\nextReqNr}{\stepcounter{reqNr}\arabic{reqNr}}
+
+\newcounter{reqNrII}
+\setcounter{reqNrII}{16}
+\newcommand{\nextReqNrII}{\stepcounter{reqNrII}\arabic{reqNrII}}
+
 \newcommand{\newContent}[1] {\pbox{5cm}{Nytt innehåll i \arabic{reqNr}\\#1}}
+\newcommand{\newRequirement}[1] {\pbox{5cm}{Nytt krav \\#1}}
 
 \begin{document}
 
@@ -194,8 +200,11 @@
 		\toprule
 			\textbf{Nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
 				\\ \midrule
+			\nextReqNr{} & Original & Roboten ska ha ett autonomt läge. & Utgått
+					\\ \midrule
 	
-			\nextReqNr{} & Original & Roboten ska ha ett autonomt läge. & 1
+			\arabic{reqNr}A & \newContent{2016--09--09} & Roboten ska ha ett autonomt läge där den kan ta
+                              sig igenom en bana enligt banspecifikationen & 1
 					\\ \midrule
 
 			\nextReqNr{} & Original & Roboten ska ha en knapp med vilken man startar 
@@ -212,6 +221,13 @@
 
 			\nextReqNr{} & Original & Robotens styrbeslut ska gå att läsa 
 				med dator via WiFi & 1
+                \\ \midrule
+      
+      % needs a new number!
+			\nextReqNr{} & \newRequirement{2016--09--09} & Via WiFi ska roboten kunna reagera på förljande
+                              kommandon: framåt, bakåt, stop, framåt vänster,
+                              framåt höger, rotera vänster, rotera höger,
+                              autonomt läge av och på & 1
 				\\ \bottomrule
 		\end{tabularx}
 	\end{table}
@@ -231,7 +247,7 @@
 	\begin{table}[h]
 		\label{tab:Krav centralenhet}
 		\begin{tabularx}{\textwidth}{c l X l}
-			\midrule
+			\toprule
 			\textbf{Nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
 				\\ \midrule
 
@@ -246,7 +262,6 @@
 				behandla data från sensorenheten.& 1
 				\\ \midrule
 
-
 			\nextReqNr{} & Original & Centralenheten ska kunna ta emot från, 
 				behandla och skicka information till motorikenheten. & Utgått
 				\\ \midrule
@@ -257,8 +272,9 @@
 			\nextReqNr{} & Original & Centralenheten ska kunna upptäcka hinder. & 2
 			\\ \midrule
 
-			\nextReqNr{} & 
-
+			\nextReqNrII{} & \newRequirement{2016--09--09} & Centralenheten ska kunna använda
+			datan från sensor- och motorikenheten för att navigera i banan.  & 1
+			\\ \bottomrule
 		\end{tabularx}
 	\end{table}
 
@@ -278,7 +294,7 @@
 	\begin{table}[h]
 		\label{tab:Krav motorikenhet}
 		\begin{tabularx}{\textwidth}{c l X l}
-			\midrule
+			\toprule
 			\textbf{Nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
 				\\ \midrule
 
@@ -302,7 +318,7 @@
 
 			\nextReqNr{} & Original & Motorikenheten ska möjliggöra rörelse åt höger 
 				och vänster. & 2 
-				\\\midrule
+				\\ \bottomrule
 
 		\end{tabularx}
 	\end{table}
@@ -320,7 +336,7 @@
 	\begin{table}[h]
 		\label{tab:Krav sensorenhet}
 		\begin{tabularx}{\textwidth}{c l X l}
-			\midrule
+			\toprule
 			\textbf{Nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
 				\\ \midrule
 
@@ -329,7 +345,7 @@
 
 			\nextReqNr{} & Original & Sensorenheten ska kunna kommunicera med 
 				centralenheten. & 1
-				\\ \midrule
+				\\ \bottomrule
 
 		\end{tabularx}
 	\end{table}
@@ -349,12 +365,12 @@
 	\begin{table}[h]
 		\label{tab:Krav ekonomi}
 		\begin{tabularx}{\textwidth}{c l X l}
-			\midrule
+			\toprule
 			\textbf{Nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
 			\\ \midrule
 			
 			\nextReqNr{} & 2016--09--09 & Vid projektets slutförande ska 1120 timmars arbetstid ha nedlagts. & 1
-			\\ \midrule
+			\\ \bottomrule
 		\end{tabularx}
 	\end{table}
 
@@ -379,7 +395,6 @@
 
 
 
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %						Templates
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -388,12 +403,12 @@
 	\begin{table}[h]
 		\label{tab:Krav template}
 		\begin{tabularx}{\textwidth}{c l X l}
-		\midrule
+		\toprule
 		\textbf{Nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
 		\\ \midrule
 	
 		1 & Original & Roboten ska autonomt kunna navigera sig igenom tvävlingsbanan & 1
-		\\ \midrule
+		\\ \bottomrule
 		\end{tabularx}
 	\end{table}
 \fi
