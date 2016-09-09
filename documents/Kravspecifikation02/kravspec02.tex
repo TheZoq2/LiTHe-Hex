@@ -22,7 +22,6 @@
 
 \renewcommand{\dateseparator}{-}
 \renewcommand{\contentsname}{Innehållsförteckning}
-\renewcommand{\newContent}[1]{\pbox{5cm}{Nytt innehåll i \arabic{reqNr}\\#1}}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -50,6 +49,7 @@
 \newcounter{reqNr}
 \setcounter{reqNr}{0}
 \newcommand{\nextReqNr}{\stepcounter{reqNr}\arabic{reqNr}}
+\newcommand{\newContent}[1] {\pbox{5cm}{Nytt innehåll i \arabic{reqNr}\\#1}}
 
 \begin{document}
 
@@ -251,12 +251,14 @@
 			\nextReqNr & Original & Centralenheten ska kunna ta emot från, 
 				behandla och skicka information till motorikenheten. & Utgått
 				\\ \hline
-			\arabic{reqNr}a & Original & Centralenheten ska kunna ta emot från
+			\arabic{reqNr}a & \newContent{2016-09-09} & Centralenheten ska kunna ta emot från
 				 och skicka information till motorikenheten. & 1
 				\\ \hline
 
 			\nextReqNr & Original & Centralenheten ska kunna upptäcka hinder. & 2
 			\\ \hline
+
+			\nextReqNr & 
 
 		\end{tabularx}
 	\end{table}
