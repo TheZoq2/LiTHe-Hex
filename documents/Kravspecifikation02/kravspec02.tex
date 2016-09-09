@@ -1,3 +1,4 @@
+% !TeX spellcheck = en_US
 \documentclass[a4paper,titlepage,12pt]{article}
 \usepackage[utf8]{inputenc} %Make sure all UTF8 characters work in the document
 \usepackage{listings} %Add code sections
@@ -200,7 +201,7 @@
 					\\ \midrule
 	
 			\arabic{reqNr}A & \newContent{2016--09--09} & Roboten ska ha ett autonomt läge där den kan ta
-					sig igenom en bana enligt banspecifikationen & 1
+					sig igenom en bana enligt Bilaga A:\ Ban- och regelspecifikation. & 1
 					\\ \midrule
 
 			\nextReqNr{} & Original & Roboten ska ha en knapp med vilken man startar 
@@ -212,32 +213,26 @@
 				\\ \midrule
 		
 			\nextReqNr{} & Original & Robotens sensordata ska gå att läsa 
-				med dator via WiFi & 1
+				med dator via WiFi. & 1
 				\\ \midrule
 
 			\nextReqNr{} & Original & Robotens styrbeslut ska gå att läsa 
-				med dator via WiFi & 1
+				med dator via WiFi. & 1
                 \\ \midrule
       
-			\nextReqNrII{} & \newRequirement{2016--09--09} & Via WiFi ska roboten kunna reagera på förljande
+			\nextReqNrII{} & \newRequirement{2016--09--09} & Via WiFi ska roboten kunna reagera på följande
 				kommandon: framåt, bakåt, stop, framåt vänster,
 				framåt höger, rotera vänster, rotera höger,
-				autonomt läge av och på & 1
+				autonomt läge av och på. & 1
 				\\ \midrule
 
 			\nextReqNrII{} & \newRequirement{2016--09--09} & Roboten ska ha en display som visar information
-				om robotens nuvarande status & 2
+				om robotens nuvarande status. & 2
 				\\ \midrule
 
 			\nextReqNrII{} & \newRequirement{2016--09--09} & Roboten ska ha en regleralgoritm för att hålla sig
 				nära mitten av banan. & 2
 				\\ \midrule
-
-			\nextReqNrII{} & \newRequirement{2016--09--09} & Via WiFi ska roboten kunna reagera på förljande
-                              kommandon: framåt, bakåt, stop, framåt vänster,
-                              framåt höger, rotera vänster, rotera höger,
-                              autonomt läge av och på & 1
-                \\ \midrule
 
             \nextReqNrII{} & \newRequirement{2016--09--09} & Gränssnitten
             mellan delsystemen ska vara noggrannt specificerade i
@@ -326,7 +321,11 @@
 			\\ \midrule
 
 		\nextReqNr{} & Original & Motorikenheten ska möjliggöra rörelse åt höger 
-			och vänster. & 2 
+			och vänster. & Utgått 
+			\\ \midrule
+
+		\arabic{reqNr}A & \newContent{2016--09--09} & Motorikenheten ska möjliggöra rörelse åt höger
+			och vänster. & 1
 
 	\end{longtable}
 
@@ -356,7 +355,7 @@
 	%						Grafiskt användargränssnitt
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     \section{Grafiskt användargränssnitt}
-    På centralenheten ska en webserver köras. Webserverns syfte är att
+    På centralenheten ska en webbserver köras. Webbserverns syfte är att
     tillhandahålla ett grafiskt användargränssnitt där användaren kan skicka
     styrkommandon och läsa sensordata.
 	\subsection{Krav}
@@ -368,15 +367,17 @@
 								  det grafiska gränssnittet. & 1
 		\\ \midrule
 
-		\nextReqNrII{} & \newRequirement{2016--09--09} & Användaren ska kunna läsa sensordata i det grafiska gränssnittet. & 1 \\
-
-		\nextReqNrII{} & \newRequirement{2016--09--09} & Användaren ska kunna byta
-		mellan autonomt och manuellt läge i det grafiska gränssnittet & 1
+		\nextReqNrII{} & \newRequirement{2016--09--09} & Användaren ska kunna läsa sensordata i det grafiska gränssnittet. & 1
+		
 		\\ \midrule
 
-		\nextReqNrII{} & \newRequirement{2016--09--09} & Robotens regleralgortms styrparametrar
-			ska kunna ändras via det grafiska gränssnittet& 1
-			\\ \midrule
+		\nextReqNrII{} & \newRequirement{2016--09--09} & Användaren ska kunna byta
+		mellan autonomt och manuellt läge i det grafiska gränssnittet. & 1
+		\\ \midrule
+
+		\nextReqNrII{} & \newRequirement{2016--09--09} & Robotens regleralgoritms styrparametrar
+		ska kunna ändras via det grafiska gränssnittet. & 1
+		\\ \midrule
 
 	\end{longtable}
 
@@ -405,6 +406,7 @@
 	demonstration av roboten i autonomnt och manuellt läge i form av en tävling,
 	samt överlämning av kod, hårdvara och dokumentation.
 
+	\newpage
 	\subsection{Krav}
 	\begin{longtable}[c]{ c l>{\raggedright}p{0.6\textwidth} l }
 		\textbf{Nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
@@ -452,7 +454,7 @@
 			samt användarhandledning vara inlämnad till beställaren. & 1
 			\\ \midrule
 
-		\nextReqNrII{} & \newRequirement{2016--09--09} & En tidsrapport & 1
+		\nextReqNrII{} & \newRequirement{2016--09--09} & Tidrapporter ska lämnas in på förbestämda datum.  & 1
 			\\ \midrule
 
 		\nextReqNrII{} & \newRequirement{2016--09--09} & Efterstudien ska vara inlämnad
@@ -465,7 +467,7 @@
     Följande dokumentation inkluderas i projektet:
     \begin{itemize}
 		\item Tidplan
-        \item Tidsrapporter
+        \item Tidrapporter
 		\item Systemskiss 
 		\item Projektplan
 		\item Teknisk dokumentation 
