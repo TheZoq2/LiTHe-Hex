@@ -1,3 +1,4 @@
+% !TeX spellcheck = en_US
 \documentclass[a4paper,titlepage,12pt]{article}
 \usepackage[utf8]{inputenc} %Make sure all UTF8 characters work in the document
 \usepackage{listings} %Add code sections
@@ -6,13 +7,15 @@
 \usepackage{titling}
 \usepackage{textcomp}
 \usepackage{tabularx}
+\usepackage{longtable}
 \usepackage[hyphens]{url}
 \usepackage[bottom]{footmisc}
 \usepackage[yyyymmdd]{datetime}
 \usepackage[figurename=Figur]{caption}
 \definecolor{listinggray}{gray}{0.9}
 \definecolor{lbcolor}{rgb}{0.9,0.9,0.9}
-\usepackage{longtable}
+\usepackage{pbox}
+\usepackage{booktabs}
 
 %Set page size
 \usepackage{geometry}
@@ -20,6 +23,7 @@
 \usepackage{parskip} 
 
 \renewcommand{\dateseparator}{-}
+\renewcommand{\contentsname}{Innehållsförteckning}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -29,12 +33,12 @@
 \pagestyle{fancy}
 
 \lhead{\includegraphics[width=0.15\linewidth]{images/logo_full.png}}
-\chead{LiTHe Hex}
+\chead{Kravspecifikation för sexbent robot}
 \rhead{\today}
 \setlength\headheight{26pt} 
 
-\lfoot{TSEA29 - KMM \\ LIPS Kravspecifikation}
-\rfoot{Grupp 9}
+\lfoot{TSEA29 --- KMM \\ LIPS Kravspecifikation}
+\rfoot{Grupp 9 \\ LiTHe Hex}
 
 \pretitle{%
     \begin{center}
@@ -48,11 +52,24 @@
 \setcounter{reqNr}{0}
 \newcommand{\nextReqNr}{\stepcounter{reqNr}\arabic{reqNr}}
 
+\newcounter{reqNrII}
+\setcounter{reqNrII}{16}
+\newcommand{\nextReqNrII}{\stepcounter{reqNrII}\arabic{reqNrII}}
+
+\newcommand{\newContent}[1] {\pbox{5cm}{Nytt innehåll i \arabic{reqNr}\\#1}}
+\newcommand{\newRequirement}[1] {\pbox{5cm}{Tillagt \\#1}}
+
 \begin{document}
 
-    \title{\textbf{LiTHe Hex - Kravspecifikation} \\
+    \title{\LARGE
+        \textbf{Kravspecifikation för sexbent robot} \\
         \vspace*{0.5\baselineskip}
-        Version 0.1}
+        \large
+        Redaktör Frans Skarman \\
+        Grupp 9 \\
+        \small
+        \vspace*{0.5\baselineskip}
+        Version 1.0}
 
     \date{\today}
 
@@ -72,22 +89,27 @@
 		Linköpings Tekniska Högskola, ISY
 
 		\begin{table}[h]
-			\begin{tabular}[pos]{| l | l | l |}
-				\hline
-				\textbf{Namn} & \textbf{Ansvar} & \textbf{E-post} \\ \hline
-				Emil Segerbäck & & emise935@student.liu.se \\ \hline
-				Frans Skarman & Dokumentansvarig & frask812@student.liu.se \\ \hline
-				Hannes Tuhkala & & hantu447@student.liu.se \\ \hline
-				Malcolm Vigren & Projektledare & malvi108@student.liu.se \\ \hline
-				Noak Ringman &  & noari093@student.liu.se \\ \hline
-				Olav Övrebö &  & olaov121@student.liu.se \\ \hline
-				Robin Sliwa &  & robsl733@student.liu.se \\ \hline
-			\end{tabular}
+			\begin{center}
+				\begin{tabular}[pos]{ l l l }
+					\textbf{Namn} & \textbf{Ansvar} & \textbf{E-post} \\ \midrule
+					Emil Segerbäck & & emise935@student.liu.se \\ \midrule
+					Frans Skarman & Dokumentansvarig & frask812@student.liu.se \\ \midrule
+					Hannes Tuhkala & & hantu447@student.liu.se \\ \midrule
+					Malcolm Vigren & Projektledare & malvi108@student.liu.se \\ \midrule
+					Noak Ringman &  & noari093@student.liu.se \\ \midrule
+					Olav Övrebö &  & olaov121@student.liu.se \\ \midrule
+					Robin Sliwa &  & robsl733@student.liu.se \\
+				\end{tabular}
+			\end{center}
 		\end{table}
 
+		\centering
+		\textbf{Kursansvarig}: Tomas Svensson Rum 3B:528 013--28 13 68 tomas.svensson@liu.se
 
-		\textbf{Kursansvarig}: Tomas Svensson Rum 3B:528 013-28 13 68 tomas.svensson@liu.se
-
+		\newpage
+		\tableofcontents
+		
+		\newpage
 
 		
 		\newpage
@@ -99,12 +121,13 @@
 
 		\section*{Dokumenthistorik}
 		\begin{table}[h]
-			\begin{tabular}[pos]{| l | l | l | l | l |}
-				\hline
+			\begin{tabular}[pos]{ l l l l l }
 				\textbf{Version} & \textbf{Datum} & \textbf{Utförda förändringar} 
-				& \textbf{Utförda av} & \textbf{Granskad} \\ \hline
+				& \textbf{Utförda av} & \textbf{Granskad} \\ \midrule
 
-				0.1 & 2016-09-07 & Första utkastet & Projektgruppen & \\ \hline
+				0.1 & 2016--09--07 & Första utkastet & Projektgruppen & Tomas Svensson \\ \midrule
+				0.2  & 2016--09--09 & Andra utkastet & Projektgruppen & Tomas Svensson \\ \midrule
+				1.0  & 2016--09--12 & Ändra alla krav till "Original" & Projektgruppen & \\
 
 			\end{tabular}
 		\end{table}
@@ -118,8 +141,7 @@
 	\newpage
 
 	\section{Inledning}
-	I detta dokument beskrivs funktionaliteten produkten kommer 
-	att ha vid leverans. All funktionalitet har strukturerats i olika krav där det 
+	I detta dokument beskrivs funktionaliteten produkten ska ha vid leverans. All funktionalitet har strukturerats i olika krav där det 
 	blir tydligt om kravet är uppfyllt eller inte. Krav har olika nivåer där
 	nivå 1 är ska-krav som måste ha uppfyllts vid leverans. Nivå 2 ses som bör-krav 
 	och uppfylls i mån av tid.
@@ -134,7 +156,7 @@
 	sig över hinder för att komma vidare. 
 	\subsection{Bakgrundsinformation}
 	För regler om uppbyggnad av labyrinten som roboten är tänkt att ta sig igenom, se
-	Bilaga A: Banregler.
+	Bilaga A:\ Ban- och regelspecifikation.
 
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%						Översikt
@@ -144,12 +166,11 @@
 	\section{Översikt av systemet}
 	Systemet ska innehålla tre enheter. En centralenhet för kommunikation med en dator, en motorikenhet
 	som sköter hur benen rör sig samt en sensorenhet som tolkar sensordata. Centralenheten är även den enhet som
-	tar beslut och kommunicerar med de andra enheterna.
+	tar beslut och kommunicerar med de andra enheterna. Se Figur. 1 för en översiktsbild av systemet.
 	\begin{figure}[h]
 		\centering
 		\includegraphics[width=0.5\linewidth]{images/overview.png}
-		\caption{Översikt av systemet}
-		\label{fig:images/overview}
+		\caption{Översikt av systemet\label{fig:overview}}
 	\end{figure}
 
 	\subsection{Grov beskrivning av produkten}
@@ -161,83 +182,101 @@
 	\subsection{Beroenden  till andra system}
     För manuell styrning är roboten beroende av WiFi-kommunikation med en dator.
 	\subsection{Ingående delsystem}
+    De ingående delsystemen är:
+    
     \begin{itemize}
         \item Centralenheten
         \item Motorikenheten
         \item Sensorenheten
     \end{itemize}
 	\subsection{Avgränsningar}
-	Roboten behöver inte klara mer avancerade former på labyrinten än de som beskrivs i Bilaga A: Banregler.
+	Roboten behöver inte klara mer avancerade former på labyrinten än de som beskrivs i Bilaga A:\ Ban- och regelspecifikation.
 	\subsection{Generella krav på hela systemet}
 
 	%Generella krav på systemet
-	\begin{table}[h]
-		\begin{tabularx}{\textwidth}{|c|l|X|l|}
-		\hline
+	%\begin{table}[h]
+		\begin{longtable}[c]{ c l>{\raggedright}p{0.6\textwidth} l }
 			\textbf{Nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
-				\\ \hline
+				\\ \midrule
 	
-			\nextReqNr & Original & Roboten ska ha ett autonomt läge. & 1
-					\\ \hline
+			\nextReqNr{} & Original & Roboten ska ha ett autonomt läge där den kan ta
+					sig igenom en bana enligt Bilaga A:\ Ban- och regelspecifikation. & 1
+					\\ \midrule
 
-			\nextReqNr & Original & Roboten ska ha en knapp med vilken man startar 
+			\nextReqNr{} & Original & Roboten ska ha en knapp med vilken man startar 
 				dess autonoma läge. & 1
-				\\ \hline
+				\\ \midrule
 
-			\nextReqNr & Original & Roboten ska kunna styras med dator 
+			\nextReqNr{} & Original & Roboten ska kunna styras med dator 
 				via WiFi-länk. & 1
-				\\ \hline
+				\\ \midrule
 		
-			\nextReqNr & Original & Robotens sensordata ska gå att läsa 
-				med dator via WiFi & 1
-				\\ \hline
+			\nextReqNr{} & Original & Robotens sensordata ska gå att läsa 
+				med dator via WiFi. & 1
+				\\ \midrule
 
-			\nextReqNr & Original & Robotens styrbeslut ska gå att läsa 
-				med dator via WiFi & 1
-				\\ \hline
-		\end{tabularx}
-	\end{table}
+			\nextReqNr{} & Original & Robotens styrbeslut ska gå att läsa 
+				med dator via WiFi. & 1
+                \\ \midrule
+      
+			\nextReqNr{} & Original & Via WiFi ska roboten kunna reagera på följande
+				kommandon: framåt, bakåt, stop, framåt vänster,
+				framåt höger, rotera vänster, rotera höger,
+				autonomt läge av och på. & 1
+				\\ \midrule
+
+			\nextReqNr{} & Original & Roboten ska ha en display som visar information
+				om robotens nuvarande status. & 2
+				\\ \midrule
+
+			\nextReqNr{} & Original & Roboten ska ha en regleralgoritm för att hålla sig
+				nära mitten av banan. & 2
+				\\ \midrule
+
+            \nextReqNr{} & Original & Gränssnitten
+            mellan delsystemen ska vara noggrannt specificerade i
+            designspecifikationen och den tekniska dokumentationen. & 1
+                \\ \midrule
+
+            \nextReqNr{} & Original & Varje delsystem
+            ska innehålla minst en processor. & 1
+				\\ 
+		\end{longtable}
+	%\end{table}
 
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%						Centralenhet
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	\section{Delsystem centralenhet}
 	Centralenheten ska styra alla andra delsystem i konstruktionen samt sköta
-	kommunikation till omvärlden via WiFi. Denna utgörs av en Raspberry
+	kommunikation till omvärlden via WiFi. Denna ska utgöras av en Raspberry
 	Pi, som är en passande dator då den har inbyggd hårdvara för WiFi. Den har 
 	också ett operativsystem gör att programmering kan ske på en relativt hög nivå.
 
-	\newpage
-
 	\subsection{Krav}
-	\begin{table}[h]
-		\label{tab:label}
-		\begin{tabularx}{\textwidth}{|c|l|X|l|}
-			\hline
-			\textbf{Nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
-				\\ \hline
+	\begin{longtable}[c]{ c l>{\raggedright}p{0.6\textwidth} l }
+		\textbf{Nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
+			\\ \midrule
 
-			\nextReqNr & Original & Centralenheten ska kunna kommunicera 
-				med en dator via WiFi. & 1
-				\\ \hline
+		\nextReqNr{} & Original & Centralenheten ska kunna kommunicera 
+			med en dator via WiFi. & 1
+			\\ \midrule
 
-			\nextReqNr & Original & Centralenheten ska kunna ta emot
-				data från sensorenheten..& 1
-				\\ \hline
+		\nextReqNr & Original & Centralenheten ska kunna ta emot 
+			data från sensorenheten.& 1
+			\\ \midrule
 
-			\nextReqNr & Original & Centralenheten ska kunna ta emot sensordata från, 
-				och skicka information till motorikenheten. & 1
-				\\ \hline
 
-			\nextReqNr & Original & Centralenheten ska kunna upptäcka hinder. & 2
-				\\ \hline
+		\nextReqNr & Original & Centralenheten ska kunna ta emot från
+			 och skicka information till motorikenheten. & 1
+			\\ \midrule
 
-			\nextReqNr & Original & Centralenheten ska kunna använda datan från
-				sensor- och motorikenheten för att navigera i banan & 2
-				\\ \hline
+		\nextReqNr{} & Original & Centralenheten ska kunna upptäcka hinder. & 2
+		\\ \midrule
 
-		\end{tabularx}
-	\end{table}
+		\nextReqNr{} & Original & Centralenheten ska kunna använda
+		datan från sensor- och motorikenheten för att navigera i banan.  & 1
+	\end{longtable}
 
 
 
@@ -252,37 +291,32 @@
 	höjd till centralenheten.
 
 	\subsection{Krav}
-	\begin{table}[h]
-		\label{tab:label}
-		\begin{tabularx}{\textwidth}{|c|l|X|l|}
-			\hline
-			\textbf{Nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
-				\\ \hline
+	\begin{longtable}[c]{ c l>{\raggedright}p{0.6\textwidth} l }
+		\textbf{Nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
+			\\ \midrule
 
-			\nextReqNr & Original & Motorikenheten ska möjliggöra rörelse framåt och 
-				bakåt samt rotation. & 1
-				\\ \hline
+		\nextReqNr{} & Original & Motorikenheten ska möjliggöra rörelse framåt och 
+			bakåt samt rotation. & 1
+			\\ \midrule
 
-			\nextReqNr & Original & Motorikenheten ska ge roboten två olika gånglägen,
-				ett där roboten går 
-				snabbt och ett där roboten går med högre precision.& 2
-				\\ \hline
+		\nextReqNr{} & Original & Motorikenheten ska ge roboten två olika gånglägen,
+			ett där roboten går 
+			snabbt och ett där roboten går med högre precision.& 2
+			\\ \midrule
 
-			\nextReqNr & Original & Motorikenheten ska kunna skicka data om höjden 
-				på underlaget till centralenheten. & 2
-				\\ \hline
+		\nextReqNr{} & Original & Motorikenheten ska kunna skicka data om höjden 
+			på underlaget till centralenheten. & 2
+			\\ \midrule
 
-			\nextReqNr & Original & Motorikenheten ska möjliggöra kliv över hinder 
-				beskrivna i Bilaga A:
-  				Banregler. & 2
-				\\ \hline
+		\nextReqNr{} & Original & Motorikenheten ska möjliggöra kliv över hinder 
+			beskrivna i Bilaga A:\
+			Ban- och regelspecifikation. & 2
+			\\ \midrule
 
-			\nextReqNr & Original & Motorikenheten ska möjliggöra rörelse åt höger 
-				och vänster. & 2 
-				\\\hline
+		\nextReqNr & Original & Motorikenheten ska möjliggöra rörelse åt höger
+			och vänster. & 1
 
-		\end{tabularx}
-	\end{table}
+	\end{longtable}
 
 
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -294,23 +328,47 @@
 	för att detektera hinder.
 
 	\subsection{Krav}
-	\begin{table}[h]
-		\label{tab:label}
-		\begin{tabularx}{\textwidth}{|c|l|X|l|}
-			\hline
-			\textbf{Nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
-				\\ \hline
+	\begin{longtable}[c]{ c l>{\raggedright}p{0.6\textwidth} l }
+		\textbf{Nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
+			\\ \midrule
 
-			\nextReqNr & Original & Sensorenheten ska kunna tolka avstånds- mätarnas data. & 1
-				\\ \hline
+		\nextReqNr{} & Original & Sensorenheten ska kunna tolka avstånds- mätarnas data. & 1
+			\\ \midrule
 
-			\nextReqNr & Original & Sensorenheten ska kunna kommunicera med 
-				centralenheten. & 1
-				\\ \hline
+		\nextReqNr{} & Original & Sensorenheten ska kunna kommunicera med 
+			centralenheten. & 1
 
-		\end{tabularx}
-	\end{table}
+	\end{longtable}
 
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%						Grafiskt användargränssnitt
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    \section{Grafiskt användargränssnitt}
+    På centralenheten ska en webbserver köras. Webbserverns syfte är att
+    tillhandahålla ett grafiskt användargränssnitt där användaren kan skicka
+    styrkommandon och läsa sensordata.
+	\subsection{Krav}
+	\begin{longtable}[c]{ c l>{\raggedright}p{0.6\textwidth} l }
+		\textbf{Nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
+		\\ \midrule
+
+		\nextReqNr{} & Original & Användaren ska kunna styra roboten från
+								  det grafiska gränssnittet. & 1
+		\\ \midrule
+
+		\nextReqNr{} & Original & Användaren ska kunna läsa sensordata i det grafiska gränssnittet. & 1
+		
+		\\ \midrule
+
+		\nextReqNr{} & Original & Användaren ska kunna byta
+		mellan autonomt och manuellt läge i det grafiska gränssnittet. & 1
+		\\ \midrule
+
+		\nextReqNr{} & Original & Robotens regleralgoritms styrparametrar
+		ska kunna ändras via det grafiska gränssnittet. & 1
+		\\ \midrule
+
+	\end{longtable}
 
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%						Extrakrav
@@ -322,25 +380,103 @@
 	kartläggning av ett utrymme.
 
 	\section{Ekonomi}
-	Vid projektets slutförande ska 1120 timmars arbetstid ha nedlagts.
+
+	\begin{longtable}[c]{ c l>{\raggedright}p{0.6\textwidth} l }
+		\textbf{Nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
+		\\ \midrule
+		
+		\nextReqNr{} & Original & Efter godkänd projektplan får
+			maximalt 1120 arbetstimmar användas på projektet. & 1
+	\end{longtable}
 
 	\section{Leveranskrav och delleveranser}
 	Delleveranser är leverans av projektplan, leverans av designspecifikation 
 	samt slutleverans. Slutleveransen består av en presentation av projektet, 
 	demonstration av roboten i autonomnt och manuellt läge i form av en tävling,
 	samt överlämning av kod, hårdvara och dokumentation.
+
+	\newpage
+	\subsection{Krav}
+	\begin{longtable}[c]{ c l>{\raggedright}p{0.6\textwidth} l }
+		\textbf{Nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
+			\\ \midrule
+
+		\nextReqNr{} & Original & Första versioner av
+        projektplan, tidplan och systemskiss ska vara inlämnade till
+        beställaren senast 2016--09--23. & 1
+			\\ \midrule
+
+		\nextReqNr{} & Original & Slutgiltiga versioner av
+        projektplan, tidplan och systemskiss ska vara inlämnade till
+        beställaren senast 2016--09--29. & 1
+			\\ \midrule
+
+		\nextReqNr{} & Original & Första versionen av
+			designspecifikationen ska vara inlämnad till handledaren senast
+			2016--11--01. & 1
+			\\ \midrule
+
+		\nextReqNr{} & Original & Slutgiltig designspecifikation
+			ska vara godkänd av handledaren senast 2016--11--04. & 1
+			\\ \midrule
+			
+		\nextReqNr{} & Original & Slutpresentation av projektet ska
+		ske 2016--12--19. & 1
+			\\ \midrule
+
+		\nextReqNr{} & Original & Slutpresentationen ska bestå av
+		ett bildspel på projektor. & 1
+			\\ \midrule
+
+		\nextReqNr{} & Original & Slutpresentationen ska ha en
+		längd mellan 15--20 minuter. & 1
+			\\ \midrule
+
+		\nextReqNr{} & Original & Demonstrationen av projektet ska
+		bestå av tävlingar med andra grupper som gjort projekt med sexbent
+		robot, och ska äga rum 2016--12--20. Tävlingsregler beskrivs i Bilaga
+		A:\ Ban- och regelspecifikation. & 1
+			\\ \midrule
+
+		\nextReqNr{} & Original & Senast tre dagar innan
+			presentationen av projektet ska den tekniska dokumentationen
+			samt användarhandledning vara inlämnad till beställaren. & 1
+			\\ \midrule
+
+		\nextReqNr{} & Original & Tidrapporter ska lämnas in på förbestämda datum.  & 1
+			\\ \midrule
+
+		\nextReqNr{} & Original & Efterstudien ska vara inlämnad
+		till beställaren senast 2016--12--22. & 1
+			\\ 
+
+	\end{longtable}
 	
 	\section{Dokumentation}
     Följande dokumentation inkluderas i projektet:
     \begin{itemize}
-		\item Tidplan 
+		\item Tidplan
+        \item Tidrapporter
 		\item Systemskiss 
 		\item Projektplan
 		\item Teknisk dokumentation 
 		\item Användarhandledning 
+        \item Designspecifikation
+        \item Efterstudie
     \end{itemize}
-\end{document}
 
+	\subsection{Krav}
+	\begin{longtable}[c]{ c l>{\raggedright}p{0.6\textwidth} l }
+		\textbf{Nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
+			\\ \midrule
+
+		\nextReqNr{} & Original & Alla dokument ska vara skrivna
+		enligt LIPS-mallar. & 1
+			\\ 
+
+	\end{longtable}
+
+\end{document}
 
 
 
@@ -348,16 +484,13 @@
 %						Templates
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\iffalse
+\iffalse{}
 	\begin{table}[h]
-		\label{tab:label}
-		\begin{tabularx}{\textwidth}{|c|l|X|l|}
-		\hline
+		\begin{tabularx}{\textwidth}{c l X l}
 		\textbf{Nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
-		\\ \hline
+		\\ \midrule
 	
 		1 & Original & Roboten ska autonomt kunna navigera sig igenom tvävlingsbanan & 1
-		\\ \hline
 		\end{tabularx}
 	\end{table}
 \fi
