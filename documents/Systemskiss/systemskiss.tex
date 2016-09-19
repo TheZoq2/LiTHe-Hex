@@ -76,7 +76,7 @@
 					Frans Skarman & Dokumentansvarig & frask812@student.liu.se \\ \midrule
 					Hannes Tuhkala & & hantu447@student.liu.se \\ \midrule
 					Malcolm Vigren & Projektledare & malvi108@student.liu.se \\ \midrule
-					Noak Ringman &  & noari093@student.liu.se \\ \midrule
+					Noak Ringman &  &noari093@student.liu.se \\ \midrule
 					Olav Övrebö &  & olaov121@student.liu.se \\ \midrule
 					Robin Sliwa &  & robsl733@student.liu.se \\
 				\end{tabular}
@@ -206,10 +206,37 @@
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	
 	\section{Motorikenheten}
-	Här var det text här var det text här var det text
-	här var det text här var det text här var det text
-	här var det text här var det text här var det text.
-	
+    	Motorikenheten översätter signaler från centralenheten, angeende önskad förflyttning, 
+    	till instruktioner för benens förflyttning, och förser centralenheten med data om
+    	benens motstånd.
+    
+    	\subsection{Alternativ 1: Anpassad gångstil}
+    	Motorikenheten mottar instruktioner från centralenheten, angeende önskad hastighet, 
+    	rotation och riktning för förflyttnnig. Den behandlar detta och räknar ut en lämplig 
+	gångstil, och signalerar nödvändiga vinklar till de sex benen. Vissa delmoment i 
+	förflyttningen görs hårdkodade. 
+    
+    	\subsubsection{Planläggning}
+	Första steget i motorikenheten för en anpassad gångstil är att utifrån efterfrågad
+    	förflyttning avgöra en önskad slutposition för respektive ben, som för roboten närmre 
+    	ett läge angivet av centralenheten. Utifrån hastighet kan förflyttningsvektorerna 
+    	från nuvarande läge för nuvarande ben skalas ner eller upp, inom rimligheten för vad
+    	benen kan nå. För flyttning sker för vänster fram- och bak-ben och höger 
+    	mittben, eller för höger fram- och bak-ben och vänster mittben, alternerande för varje
+    	förflyttningscykel. När ett sett förflyttas, skiftas de markfästa benen vid behov för 
+    	att flytta själva kroppen. Inför ett steg med ett ben hårdkodas ett lyft av benet. 
+	Även bestigning av hinder kan komma att hårdkodas.
+    
+    	\subsubsection{Invers kinematik}
+    	Andra steget i motorikenheten för en anpassad gångstil är beräkning av benens vinklar;
+    	utifrån kända längder på benen  och önskad vågrät vinkel och längd till slutposition 
+    	används trigonometri för att avgöra slutgiltiga aktuatorvinklar.
+    
+    	\subsection{Alternativ 2: Hårdkodad}
+    	Motorikenheten förses med en uppsättning hårdkodade instruktioner för benrörelser, och
+    	väljer bland dessa utifrån försedda indata. Hårdkodade rörelser inkluderar rotation på 
+    	plats, rörelse framåt (två hastigheter), bakåt och i sidled, rörelse med svag rotation, 
+    	bestigning av hinder (i mån av uppfyllande av detta sekundära krav). 
 	
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%						Sensorenheten
