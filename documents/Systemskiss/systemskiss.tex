@@ -328,11 +328,23 @@
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	\section{Grafiskt användargränssnitt}
     
+    På centralenheten ska en webbserver köras som tillhandahåller ett gränssnitt
+    för användaren där man kan läsa sensordata eller kontrollera roboten i
+    manuellt läge. Front-end ska skrivas i Elm och back-end i Elixir.
+
+    I det manuella läget styras med en joystick som är kopplad till användarens
+    dator.
+    
+    Eventuellt ska även video från en kamera på roboten streamas till gränssnittet.
+    
 
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%						Simuleringar
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	\section{Simuleringar}
-    
+    För att underlätta utvecklingen av vissa delar av projektet kommer vi att skriva
+	kod för att simulera de delarna. Simuleringarna ska kunna köra samma kod som ska
+	köras på roboten men visualisera resultatet utan resten av roboten. De två
+	delarna där simulering är mest aktuellt är inverse kinematics och gångstils koden.
 
 \end{document}
