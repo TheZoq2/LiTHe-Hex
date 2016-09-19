@@ -30,6 +30,8 @@
 \lfoot{TSEA29 --- KMM \\ LIPS Systemskiss}
 \rfoot{Grupp 9 \\ LiTHe Hex}
 
+\newcommand{\itc}{I\textsuperscript{2}C}
+
 \pretitle{%
     \begin{center}
         \LARGE
@@ -134,20 +136,20 @@
 	\end{figure}
 
 	\subsection{Kommunikation mellan enheterna}
-	Kommunikation kan ske med UART, SPI eller I\textsuperscript{2}C. AVR-processorerna har
-	2 UART-, 3 SPI- och en I\textsuperscript{2}C-ingång medan Raspberry PI:en har 1 UART-, 2 SPI- och
-	en I\textsuperscript{2}C-ingång. 
+	Kommunikation kan ske med UART, SPI eller \itc{}. AVR-processorerna har
+	2 UART-, 3 SPI- och en \itc{}-ingång medan Raspberry PI:en har 1 UART-, 2 SPI- och
+	en \itc{}-ingång. 
 
 	\subsubsection{Förslag 1}
-	Om vi vill ha en LIDAR-avståndsmätare kommer sensorenhetens I\textsuperscript{2}C-port att gå åt
+	Om vi vill ha en LIDAR-avståndsmätare kommer sensorenhetens \itc{}-port att gå åt
 	till kommunikation med avståndsmätaren. Sensorenheten måste alltså kommunicera med
 	centralenheten via UART eller SPI. Om kommunikationen sker med UART måste 
 	motorikenheten kommunicera med SPI eftersom att centralenheten endast har en
 	UART port.
 
 	\subsubsection{Förslsag 2}
-	Om både motorikenheten och sensorenheten har sin I2C buss tillgänglig kan 
-	kommunikationen mellan de tre enheterna ske via en gemensam I2C buss där
+	Om både motorikenheten och sensorenheten har sin \itc{} buss tillgänglig kan 
+	kommunikationen mellan de tre enheterna ske via en gemensam \itc{} buss där
 	centralenheten är master och de andra enheterna är slavar. 
 	
 	
