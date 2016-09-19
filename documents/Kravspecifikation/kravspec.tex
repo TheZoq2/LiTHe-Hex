@@ -194,55 +194,53 @@
 	\subsection{Generella krav på hela systemet}
 
 	%Generella krav på systemet
-	%\begin{table}[h]
-		\begin{longtable}[c]{ c l>{\raggedright}p{0.6\textwidth} l }
-			\textbf{Nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
+	\begin{longtable}[c]{ c l>{\raggedright}p{0.6\textwidth} l }
+		\textbf{Nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
+			\\ \midrule
+
+		\nextReqNr{} & Original & Roboten ska ha ett autonomt läge där den kan ta
+				sig igenom en bana enligt Bilaga A:\ Ban- och regelspecifikation. & 1
 				\\ \midrule
+
+		\nextReqNr{} & Original & Roboten ska ha en knapp med vilken man startar 
+			dess autonoma läge. & 1
+			\\ \midrule
+
+		\nextReqNr{} & Original & Roboten ska kunna styras med dator 
+			via WiFi-länk. & 1
+			\\ \midrule
 	
-			\nextReqNr{} & Original & Roboten ska ha ett autonomt läge där den kan ta
-					sig igenom en bana enligt Bilaga A:\ Ban- och regelspecifikation. & 1
-					\\ \midrule
+		\nextReqNr{} & Original & Robotens sensordata ska gå att läsa 
+			med dator via WiFi. & 1
+			\\ \midrule
 
-			\nextReqNr{} & Original & Roboten ska ha en knapp med vilken man startar 
-				dess autonoma läge. & 1
-				\\ \midrule
+		\nextReqNr{} & Original & Robotens styrbeslut ska gå att läsa 
+			med dator via WiFi. & 1
+            \\ \midrule
+  
+		\nextReqNr{} & Original & Via WiFi ska roboten kunna reagera på följande
+			kommandon: framåt, bakåt, stop, framåt vänster,
+			framåt höger, rotera vänster, rotera höger,
+			autonomt läge av och på. & 1
+			\\ \midrule
 
-			\nextReqNr{} & Original & Roboten ska kunna styras med dator 
-				via WiFi-länk. & 1
-				\\ \midrule
-		
-			\nextReqNr{} & Original & Robotens sensordata ska gå att läsa 
-				med dator via WiFi. & 1
-				\\ \midrule
+		\nextReqNr{} & Original & Roboten ska ha en display som visar information
+			om robotens nuvarande status. & 2
+			\\ \midrule
 
-			\nextReqNr{} & Original & Robotens styrbeslut ska gå att läsa 
-				med dator via WiFi. & 1
-                \\ \midrule
-      
-			\nextReqNr{} & Original & Via WiFi ska roboten kunna reagera på följande
-				kommandon: framåt, bakåt, stop, framåt vänster,
-				framåt höger, rotera vänster, rotera höger,
-				autonomt läge av och på. & 1
-				\\ \midrule
+		\nextReqNr{} & Original & Roboten ska ha en regleralgoritm för att hålla sig
+			nära mitten av banan. & 2
+			\\ \midrule
 
-			\nextReqNr{} & Original & Roboten ska ha en display som visar information
-				om robotens nuvarande status. & 2
-				\\ \midrule
+        \nextReqNr{} & Original & Gränssnitten
+        mellan delsystemen ska vara noggrannt specificerade i
+        designspecifikationen och den tekniska dokumentationen. & 1
+            \\ \midrule
 
-			\nextReqNr{} & Original & Roboten ska ha en regleralgoritm för att hålla sig
-				nära mitten av banan. & 2
-				\\ \midrule
-
-            \nextReqNr{} & Original & Gränssnitten
-            mellan delsystemen ska vara noggrannt specificerade i
-            designspecifikationen och den tekniska dokumentationen. & 1
-                \\ \midrule
-
-            \nextReqNr{} & Original & Varje delsystem
-            ska innehålla minst en processor. & 1
-				\\ 
-		\end{longtable}
-	%\end{table}
+        \nextReqNr{} & Original & Varje delsystem
+        ska innehålla minst en processor. & 1
+			\\ 
+	\end{longtable}
 
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%						Centralenhet
