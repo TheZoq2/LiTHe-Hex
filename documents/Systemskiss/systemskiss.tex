@@ -171,11 +171,27 @@
 	\subsection{Navigation och beslutsfattning}
 
 	\subsection{Hinderdetektion}
-	För hinderdetektering finns det olika alternativ att använda. Det är möjligt att detektera hinder medhjälp av en avståndsmätare som är vinklad nedåt, en IR sensor eller LIDAR laser kan användas som avståndsmätare. Använda en IR sensor är enklast eftersom IR sensorer antagligen kommer att användas för att undvika väggar. En LIDAR laser är en ny enhet och använder ett mer avancerat gränssnitt I2C än analog för IR. Ett annat alternativ för att upptäcka hinder är att läsa av det motstånd som benens servo kan returnera tillsammans med övriga sensorer för att upptäcka när roboten går in i ett hinder. 
+	För hinderdetektering finns det olika alternativ att använda. Det är möjligt att 
+	detektera hinder medhjälp av en avståndsmätare som är vinklad nedåt, en IR sensor 
+	eller LIDAR laser kan användas som avståndsmätare. Använda en IR sensor är enklast 
+	eftersom IR sensorer antagligen kommer att användas för att undvika väggar. En 
+	LIDAR laser är en ny enhet och använder ett mer avancerat gränssnitt I2C än 
+	analog för IR. Ett annat alternativ för att upptäcka hinder är att läsa av det 
+	motstånd som benens servo kan returnera tillsammans med övriga sensorer för 
+	att upptäcka när roboten går in i ett hinder. 
 
 	\subsection{Kommunikation}
-	Centralenheten ska kommunicera med en dator över WiFi. Det är datorns webbläsare som kommer att ansluta till centralenhetens webbserver, det blir då möjligt att styra samt logga roboten via webbgränssnittet. Det finns flera gränssnitt att använda för kommunikation mellan processorerna, intressanta gränssnitt är SPI, I2C och UART. UART är inte möjligt att använda till sensorenheten och motorikenheten på grund av att Raspberry Pi endast har en UART port. Både SPI och I2C är möjligt att använda sätt till portar på alla enheterna sålänge sensorenheten inte använder LIDAR laser, LIDAR laser använder I2C och endast en I2C port finns på sensorenheten. 
-% TODO motivera varför SPI är mest aktuellt, LIDAR laser borde inte påverka möjligheten till I2C eftersom den kan anslutas till samma buss. 
+	Centralenheten ska kommunicera med en dator över WiFi. Det är datorns webbläsare 
+	som kommer att ansluta till centralenhetens webbserver, det blir då möjligt att 
+	styra samt logga roboten via webbgränssnittet. Det finns flera gränssnitt att 
+	använda för kommunikation mellan processorerna, intressanta gränssnitt är SPI, 
+	I2C och UART. UART är inte möjligt att använda till sensorenheten och 
+	motorikenheten på grund av att Raspberry Pi endast har en UART port. Både 
+	SPI och I2C är möjligt att använda sätt till portar på alla enheterna sålänge 
+	sensorenheten inte använder LIDAR laser, LIDAR laser använder I2C och endast en 
+	I2C port finns på sensorenheten. 
+	% TODO motivera varför SPI är mest aktuellt, LIDAR laser borde inte påverka 
+	% möjligheten till I2C eftersom den kan anslutas till samma buss. 
 
 
 
