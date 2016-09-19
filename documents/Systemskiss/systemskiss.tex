@@ -136,6 +136,18 @@
 		\caption{Översikt av systemet\label{fig:overview}}
 	\end{figure}
 
+	\subsection{Kommunikation mellan enheterna}
+	Kommunikation kan ske med UART, SPI eller I2C. AVR-processorerna har
+	2 UART-, 3 SPI- och en I2C-ingång medan Raspberry PIen har 1 UART-, 2 SPI- och
+	en I2C-ingång. 
+
+	\subsubsection{Förslag 1}
+	Om vi vill ha en LIDAR-avståndsmätare kommer sensorenhetens I2C-port att gå åt
+	till kommunikation med avståndsmätaren. Sensorenheten måste alltså kommunicera med
+	centralenheten med UART eller SPI.
+
+	
+
 	\subsection{Grov beskrivning av systemet}
 	Här var det text här var det text här var det text
 	här var det text här var det text här var det text
@@ -152,11 +164,11 @@
 	Centralenheten har 4 huvudsyften: navigation/beslutsfattning, hinderdetektion samt
 	kommunikation med omvärlden.
 
-	\subsubsection{Navigation och beslutsfattning}
+	\subsection{Navigation och beslutsfattning}
 
-	\subsubsection{Hinderdetektion}
+	\subsection{Hinderdetektion}
 
-	\subsubsection{Kommunikation}
+	\subsection{Kommunikation}
 
 
 
