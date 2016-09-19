@@ -147,9 +147,9 @@
 	motorikenheten kommunicera med SPI eftersom att centralenheten endast har en
 	UART port.
 
-	\subsubsection{Förslsag 2}
-	Om både motorikenheten och sensorenheten har sin \itc{} buss tillgänglig kan 
-	kommunikationen mellan de tre enheterna ske via en gemensam \itc{} buss där
+	\subsubsection{Förslag 2}
+	Om både motorikenheten och sensorenheten har sin \itc{}-buss tillgänglig kan 
+	kommunikationen mellan de tre enheterna ske via en gemensam \itc{}-buss där
 	centralenheten är master och de andra enheterna är slavar. 
 	
 	
@@ -177,26 +177,28 @@
 	detektera hinder medhjälp av en avståndsmätare som är vinklad nedåt, en IR sensor 
 	eller LIDAR laser kan användas som avståndsmätare. Använda en IR sensor är enklast 
 	eftersom IR sensorer antagligen kommer att användas för att undvika väggar. En 
-	LIDAR laser är en ny enhet och använder ett mer avancerat gränssnitt I2C än 
+	LIDAR laser är en ny enhet och använder ett mer avancerat gränssnitt \itc{} än 
 	analog för IR. Ett annat alternativ för att upptäcka hinder är att läsa av det 
 	motstånd som benens servo kan returnera tillsammans med övriga sensorer för 
 	att upptäcka när roboten går in i ett hinder. 
 
 	\subsection{Kommunikation}
 	Centralenheten ska kommunicera med en dator över WiFi. Det är datorns webbläsare 
-	som kommer att ansluta till centralenhetens webbserver, det blir då möjligt att 
-	styra samt logga roboten via webbgränssnittet. Det finns flera gränssnitt att 
+	som kommer att ansluta till centralenhetens webbserver, det blir då möjligt
+    via webbgränssnittet att styra roboten samt läsa av robotens loggar. Det finns
+    flera gränssnitt att 
 	använda för kommunikation mellan processorerna, intressanta gränssnitt är SPI, 
-	I2C och UART. UART är inte möjligt att använda till sensorenheten och 
+	\itc{} och UART. UART är inte möjligt att använda till sensorenheten och 
 	motorikenheten på grund av att Raspberry Pi endast har en UART port. Både 
-	SPI och I2C är möjligt att använda sätt till portar på alla enheterna sålänge 
-	sensorenheten inte använder LIDAR laser, LIDAR laser använder I2C och endast en 
-	I2C port finns på sensorenheten. I2C måste konfigureras med ett master/slave 
-	förhållande. Centralenheten behöver vara master för att kunna kommunicera med 
+	SPI och \itc{} är möjligt att använda sätt till portar på alla enheterna sålänge 
+	sensorenheten inte använder LIDAR laser, LIDAR laser använder \itc{} och endast en 
+	\itc{} port finns på sensorenheten. \itc{} måste konfigureras med ett
+    master-/slave-förhållande. Centralenheten behöver vara master för att kunna
+    kommunicera med 
 	sensorenheten och motorikenheten som är slave. Med den konfigurationen blir 
 	det inte möjligt för sensorenhet och motorikenheten att kommunicera med
 	centralenheten utan att centralenheten har på startat kommunikationen. I och 
-	med att I2C behöver en master/slave konfiguration blir SPI enklare att använda 
+	med att \itc{} behöver en master/slave konfiguration blir SPI enklare att använda 
 	för tvåvägskommunikation. 
 
 
@@ -275,7 +277,7 @@
 
     Sensorn för hinderdetektion utgörs av en laser-sensor (LIDAR). Denna har
     fördelen av att vara mycket mer exakt än en IR-sensor, men nackdelen av att
-    ha ett \itc-gränssnitt som ingen annan sensor har, som ökar
+    ha ett \itc{}-gränssnitt som ingen annan sensor har, som ökar
     komplexiteten hos sensorenheten.
 
     \subsection{Avståndssensorer åt sidorna}
