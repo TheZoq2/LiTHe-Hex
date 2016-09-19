@@ -113,11 +113,9 @@
 	\newpage
 
 	\section{Inledning}
-	I detta dokument beskrivs funktionaliteten produkten ska ha vid leverans.
-    All funktionalitet har strukturerats i olika krav där det blir tydligt om
-    kravet är uppfyllt eller inte. Krav har olika nivåer där nivå 1 är ska-krav
-    som måste ha uppfyllts vid leverans. Nivå 2 ses som bör-krav och uppfylls i
-    mån av tid.
+	I detta dokument beskrivs delsystemen mer ingående samt förslag på hur de ska implementeras.
+	De delsystem som roboten ska använda sig av är:
+	Centralenhet, motorikenhet och sensorenhet.
 
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%						Översikt
@@ -128,7 +126,7 @@
 	Systemet ska innehålla tre enheter. En centralenhet för kommunikation med en
     dator, en motorikenhet som sköter hur benen rör sig samt en sensorenhet som
     tolkar sensordata. Centralenheten är även den enhet som tar beslut och
-    kommunicerar med de andra enheterna. Se Figur. 1 för en översiktsbild av
+    kommunicerar med de andra enheterna. Se Figur.~\ref{fig:overview} för en översiktsbild av
     systemet.
 	\begin{figure}[h]
 		\centering
@@ -137,17 +135,16 @@
 	\end{figure}
 
 	\subsection{Kommunikation mellan enheterna}
-	Kommunikation kan ske med UART, SPI eller I2C. AVR-processorerna har
-	2 UART-, 3 SPI- och en I2C-ingång medan Raspberry PIen har 1 UART-, 2 SPI- och
-	en I2C-ingång. 
+	Kommunikation kan ske med UART, SPI eller I\textsuperscript{2}C. AVR-processorerna har
+	2 UART-, 3 SPI- och en I\textsuperscript{2}C-ingång medan Raspberry PI:en har 1 UART-, 2 SPI- och
+	en I\textsuperscript{2}C-ingång. 
 
 	\subsubsection{Förslag 1}
-	Om vi vill ha en LIDAR-avståndsmätare kommer sensorenhetens I2C-port att gå åt
+	Om vi vill ha en LIDAR-avståndsmätare kommer sensorenhetens I\textsuperscript{2}C-port att gå åt
 	till kommunikation med avståndsmätaren. Sensorenheten måste alltså kommunicera med
 	centralenheten med UART eller SPI.
 
 	
-
 	\subsection{Grov beskrivning av systemet}
 	Här var det text här var det text här var det text
 	här var det text här var det text här var det text
