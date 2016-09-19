@@ -144,8 +144,16 @@
 	\subsubsection{Förslag 1}
 	Om vi vill ha en LIDAR-avståndsmätare kommer sensorenhetens I2C-port att gå åt
 	till kommunikation med avståndsmätaren. Sensorenheten måste alltså kommunicera med
-	centralenheten med UART eller SPI.
+	centralenheten via UART eller SPI. Om kommunikationen sker med UART måste 
+	motorikenheten kommunicera med SPI eftersom att centralenheten endast har en
+	UART port.
 
+	\subsubsection{Förslsag 2}
+	Om både motorikenheten och sensorenheten har sin I2C buss tillgänglig kan 
+	kommunikationen mellan de tre enheterna ske via en gemensam I2C buss där
+	centralenheten är master och de andra enheterna är slavar. 
+	
+	
 	
 
 	\subsection{Grov beskrivning av systemet}
