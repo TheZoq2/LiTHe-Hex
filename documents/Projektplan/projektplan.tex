@@ -163,12 +163,12 @@
 	här var det text här var det text här var det text
 	här var det text här var det text här var det text.
 	
-	\subsection{Före projektstart}
-    Före projektstarten har en grupp bildats med 7 medlemmar, där varje medlem
-    har tilldelats ett eller flera ansvarsområden inom projektet. En
-    kravspecifikation har skrivits enligt projektdirektivet och godkänts av
-    beställaren. En projektplan, tidsplan och systemskiss har skrivits och
-    godkänts av beställaren.
+	% \subsection{Före projektstart}
+    % Före projektstarten har en grupp bildats med 7 medlemmar, där varje medlem
+    % har tilldelats ett eller flera ansvarsområden inom projektet. En
+    % kravspecifikation har skrivits enligt projektdirektivet och godkänts av
+    % beställaren. En projektplan, tidsplan och systemskiss har skrivits och
+    % godkänts av beställaren.
 	
 	
 	\subsection{Under projektet}
@@ -184,18 +184,18 @@
 	\section{Organisationsplan för hela projektet}
     I detta avsnitt beskrivs hur projektet ska organiseras.
 
-	\subsection{Organisationsplan per fas}
-  \begin{center}
-  \includegraphics[width=0.8\linewidth]{images/projectroles.png}
-  \end{center}
-	Projektrollerna som ingår i detta projekt är: beställare/kund, handlerare,
-  projektledare och projektmedlemmar. I beställarens arbetsuppgifter ingår saker
-  som att fatta beslut om fortsättning av projektet vid beslutspunkter, godkänna
-  ändringar under projektets gång, läsa statusrapporter och godkännande av
-  projektets avslut. Arbetsuppgifterna för projektledaren är till stor del som
-  de övriga projektmedlemmarna men det ingår även saker som att fördela
-  arbetsuppgifter, planera och leda projektarbetet, se till att projektets mål
-  nås och motivera projektmedlemmarna.
+%	\subsection{Organisationsplan per fas}
+%  \begin{center}
+%  \includegraphics[width=0.8\linewidth]{images/projectroles.png}
+%  \end{center}
+%	Projektrollerna som ingår i detta projekt är: beställare/kund, handlerare,
+%  projektledare och projektmedlemmar. I beställarens arbetsuppgifter ingår saker
+%  som att fatta beslut om fortsättning av projektet vid beslutspunkter, godkänna
+%  ändringar under projektets gång, läsa statusrapporter och godkännande av
+%  projektets avslut. Arbetsuppgifterna för projektledaren är till stor del som
+%  de övriga projektmedlemmarna men det ingår även saker som att fördela
+%  arbetsuppgifter, planera och leda projektarbetet, se till att projektets mål
+%  nås och motivera projektmedlemmarna.
   % TODO: Finish this section
 	
 	% \subsection{Organisationsplan hos kunden}
@@ -210,9 +210,11 @@
 	här var det text här var det text här var det text.
 	
 	\subsection{Definition av arbetsinnehåll och ansvar}
-	Här var det text här var det text här var det text
-	här var det text här var det text här var det text
-	här var det text här var det text här var det text.
+	\begin{longtable}[c]{ c l>{\raggedright}p{0.6\textwidth} l }
+		\textbf{Nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
+			\\ \midrule
+
+	\end{longtable}
 	
 	
 	\section{Dokumentplan}
@@ -226,42 +228,38 @@
 	
     % FIXME kontrollera ansvarig och sånt
     % TODO lägg till eventuella fler interna dokument
-	\begin{table}[h]
-		\begin{center}
-			\begin{tabular}[pos]{ l l l l l }
-				\textbf{Dokument} & \textbf{Ansvarig/godkänns av} & \textbf{Syfte} & \textbf{Distribueras till} & \textbf{Färdigdatum} \\ \midrule
-                
-				Kravspecifikation & Beställare & Definierar alla krav på
-                systemet & Beställare & 2016--09--13 \\ \midrule
+    \begin{longtable}[c]{ l l l>{\raggedright}p{0.6\textwidth} l }
+        \textbf{Dokument} & \textbf{Ansvarig/godkänns av} & \textbf{Syfte} & \textbf{Distribueras till} & \textbf{Färdigdatum} \\ \midrule
+        
+        Kravspecifikation & Beställare & Definierar alla krav på
+        systemet & Beställare & 2016--09--13 \\ \midrule
 
-                Projektplan & Beställare & <SOMETHING> & Beställare &
-                2016--09--29 \\ \midrule
+        Projektplan & Beställare & <SOMETHING> & Beställare &
+        2016--09--29 \\ \midrule
 
-				Tidplan & Beställare & Planering för hur arbetstid ska
-                fördelas. & Beställare & 2016--09--29  \\ \midrule
-                
-				Systemskiss & Beställare & Grov skiss och idéer för 
-                implementation av systemet & Beställare & 2016--09--29 \\ \midrule
+        Tidplan & Beställare & Planering för hur arbetstid ska
+        fördelas. & Beställare & 2016--09--29  \\ \midrule
+        
+        Systemskiss & Beställare & Grov skiss och idéer för 
+        implementation av systemet & Beställare & 2016--09--29 \\ \midrule
 
-				Designspecifikation & Handledare & Detaljerad beskrivning av
-                implementationen av systemet. & Handledare & 2016--11--04 \\ \midrule
+        Designspecifikation & Handledare & Detaljerad beskrivning av
+        implementationen av systemet. & Handledare & 2016--11--04 \\ \midrule
 
-				Tidrapporter & Beställare & Rapportering av använd arbetstid &
-                Beställare & nån gång %TODO WHEN???
-                \\ \midrule
+        Tidrapporter & Beställare & Rapportering av använd arbetstid &
+        Beställare & nån gång %TODO WHEN???
+        \\ \midrule
 
-				Teknisk dokumentation & Beställare & Teknisk beskriving av
-                implementationen av den färdiga produkten. & Beställare &
-                2016--12--17 \\ \midrule
+        Teknisk dokumentation & Beställare & Teknisk beskriving av
+        implementationen av den färdiga produkten. & Beställare &
+        2016--12--17 \\ \midrule
 
-				Användarhandledning & Beställare & En manual för användning av
-                produkten & Beställare & 2016--12--17 \\ \midrule
+        Användarhandledning & Beställare & En manual för användning av
+        produkten & Beställare & 2016--12--17 \\ \midrule
 
-				Efterstudie & Beställare & Utvärdering av projektet &
-                Beställare & 2016--12--22  \\ \midrule
-			\end{tabular}
-		\end{center}
-	\end{table}
+        Efterstudie & Beställare & Utvärdering av projektet &
+        Beställare & 2016--12--22  \\ \midrule
+    \end{longtable}
 	
 	
 	\section{Utvecklingsmetodik}
@@ -282,10 +280,10 @@
 	här var det text här var det text här var det text.
 	
 	
-	\subsection{Kundens utbildning}
-	Här var det text här var det text här var det text
-	här var det text här var det text här var det text
-	här var det text här var det text här var det text.
+%	\subsection{Kundens utbildning}
+%	Här var det text här var det text här var det text
+%	här var det text här var det text här var det text
+%	här var det text här var det text här var det text.
 	
 	
 	\section{Rapporteringsplan}
@@ -375,10 +373,10 @@
 	här var det text här var det text här var det text.
 	
 	
-	\section{Förändringsplan}
-	Här var det text här var det text här var det text
-	här var det text här var det text här var det text
-	här var det text här var det text här var det text.
+%	\section{Förändringsplan}
+%	Här var det text här var det text här var det text
+%	här var det text här var det text här var det text
+%	här var det text här var det text här var det text.
 	
 	
 	\section{Kvalitetsplan}
@@ -399,10 +397,10 @@
 	här var det text här var det text här var det text.
 	
 	
-	\section{Riskanalys}
-	Här var det text här var det text här var det text
-	här var det text här var det text här var det text
-	här var det text här var det text här var det text.
+%	\section{Riskanalys}
+%	Här var det text här var det text här var det text
+%	här var det text här var det text här var det text
+%	här var det text här var det text här var det text.
 	
 	
 	\section{Prioriteringar}
