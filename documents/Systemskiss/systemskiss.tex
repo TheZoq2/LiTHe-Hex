@@ -143,7 +143,7 @@
 	\subsubsection{Förslag 1}
 	Om vi vill ha en LIDAR-avståndsmätare kommer sensorenhetens \itc{}-port att gå åt
 	till kommunikation med avståndsmätaren. Sensorenheten måste alltså kommunicera med
-	centralenheten via UART eller SPI. Om kommunikationen sker med UART måste 
+	centralenheten via UART eller SPI.\@ Om kommunikationen sker med UART måste 
 	motorikenheten kommunicera med SPI eftersom att centralenheten endast har en
 	UART port.
 
@@ -178,7 +178,7 @@
 	eller LIDAR laser kan användas som avståndsmätare. Använda en IR sensor är enklast 
 	eftersom IR sensorer antagligen kommer att användas för att undvika väggar. En 
 	LIDAR laser är en ny enhet och använder ett mer avancerat gränssnitt \itc{} än 
-	analog för IR. Ett annat alternativ för att upptäcka hinder är att läsa av det 
+	analog för IR.\@ Ett annat alternativ för att upptäcka hinder är att läsa av det 
 	motstånd som benens servo kan returnera tillsammans med övriga sensorer för 
 	att upptäcka när roboten går in i ett hinder. 
 
@@ -188,7 +188,7 @@
     via webbgränssnittet att styra roboten samt läsa av robotens loggar. Det finns
     flera gränssnitt att 
 	använda för kommunikation mellan processorerna, intressanta gränssnitt är SPI, 
-	\itc{} och UART. UART är inte möjligt att använda till sensorenheten och 
+	\itc{} och UART.\@ UART är inte möjligt att använda till sensorenheten och 
 	motorikenheten på grund av att Raspberry Pi endast har en UART port. Både 
 	SPI och \itc{} är möjligt att använda sätt till portar på alla enheterna sålänge 
 	sensorenheten inte använder LIDAR laser, LIDAR laser använder \itc{} och endast en 
@@ -311,7 +311,7 @@
 
     Styrenheten för sensorenheten ska bestå av en AVR-processor, som läser av och behandlar
     informationen från robotens sensorer. Styrenheten sköter även
-    kommunikationen med centralenheten - den tar emot förfrågningar om data och
+    kommunikationen med centralenheten --- den tar emot förfrågningar om data och
     skickar behandlad data på begäran.
 
     Styrenheten ska behandla den råa sensordatan till den grad att
