@@ -76,7 +76,7 @@
 					Frans Skarman & Dokumentansvarig & frask812@student.liu.se \\ \midrule
 					Hannes Tuhkala & & hantu447@student.liu.se \\ \midrule
 					Malcolm Vigren & Projektledare & malvi108@student.liu.se \\ \midrule
-					Noak Ringman &  &noari093@student.liu.se \\ \midrule
+					Noak Ringman &  & noari093@student.liu.se \\ \midrule
 					Olav Övrebö &  & olaov121@student.liu.se \\ \midrule
 					Robin Sliwa &  & robsl733@student.liu.se \\
 				\end{tabular}
@@ -114,8 +114,8 @@
 	\newpage
 
 	\section{Inledning}
-	I detta dokument beskrivs delsystemen mer ingående samt förslag på hur de ska implementeras.
-	De delsystem som roboten ska använda sig av är:
+	I detta dokument beskrivs delsystemen mer ingående samt förslag på hur de ska 
+    implementeras. De delsystem som roboten ska använda sig av är:
 	Centralenhet, motorikenhet och sensorenhet.
 
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -295,7 +295,15 @@
 
     \subsubsection{Väggsensorer - förslag 3}
 
-    
+    Två IR-sensorer används på vardera sida, båda pekande ut från samma sida och
+    placerade på vardera ända av plattformen. Detta möjliggör mätning av hur
+    roboten är vriden i en rak korridor, och kan användas som fel-kontroll av
+    gyrot.
+
+    \subsubsection{Väggsensorer - förslag 4}
+
+    Samma som förslag 3, fast två av sensorerna är ultraljudssensorer, ifall
+    IR-sensorerna stör ut varandra.
 
     \subsection{Styrenhet}
 
