@@ -152,26 +152,24 @@
 	kommunikationen mellan de tre enheterna ske via en gemensam \itc{} buss där
 	centralenheten är master och de andra enheterna är slavar. 
 	
-	
-	
-	\subsection{Grov beskrivning av systemet}
-	Här var det text här var det text här var det text
-	här var det text här var det text här var det text
-	här var det text här var det text här var det text.
-	
-	
-	\subsection{Ingående delsystem}
-	Här var det text här var det text här var det text
-	här var det text här var det text här var det text
-	här var det text här var det text här var det text.
-	
-	
 	\section{Centralenheten}
 	Centralenheten har 4 huvudsyften: navigation/beslutsfattning, hinderdetektion samt
 	kommunikation med omvärlden.
 
 	\subsection{Navigation och beslutsfattning}
-
+  
+  \subsubsection{Förslag 1}
+  Centralenheten frågar om data från sensorenheten varje gång det ska fattas ett
+  beslut. Detta gör att centralenheten själv bestämmer när den ska ha ny data
+  för att den inte ska bli avbruten eller missa data för att den är mitt i
+  utförandet av en annan funktion. Utifrån denna data fattar centralenheten
+  beslut om vilket håll hexapoden ska gå.
+  
+  \subsubsection{Förslag 2}
+  Sensorenheten står för hur ofta data skickas till centralenheten och gör
+  det kontinuerligt. Datan som tas emot av centralenheten används för att fatta
+  beslut hela tiden. 
+  
 	\subsection{Hinderdetektion}
 	För hinderdetektering finns det olika alternativ att använda. Det är möjligt att 
 	detektera hinder medhjälp av en avståndsmätare som är vinklad nedåt, en IR sensor 
