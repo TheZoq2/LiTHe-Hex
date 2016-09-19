@@ -191,9 +191,13 @@
 	motorikenheten på grund av att Raspberry Pi endast har en UART port. Både 
 	SPI och I2C är möjligt att använda sätt till portar på alla enheterna sålänge 
 	sensorenheten inte använder LIDAR laser, LIDAR laser använder I2C och endast en 
-	I2C port finns på sensorenheten. 
-	% TODO motivera varför SPI är mest aktuellt, LIDAR laser borde inte påverka 
-	% möjligheten till I2C eftersom den kan anslutas till samma buss. 
+	I2C port finns på sensorenheten. I2C måste konfigureras med ett master/slave 
+	förhållande. Centralenheten behöver vara master för att kunna kommunicera med 
+	sensorenheten och motorikenheten som är slave. Med den konfigurationen blir 
+	det inte möjligt för sensorenhet och motorikenheten att kommunicera med
+	centralenheten utan att centralenheten har på startat kommunikationen. I och 
+	med att I2C behöver en master/slave konfiguration blir SPI enklare att använda 
+	för tvåvägskommunikation. 
 
 
 
