@@ -87,21 +87,18 @@
 		Grupp 9, Ht 2016, LiTHe Hex
 
 		Linköpings Tekniska Högskola, ISY
-
-		\begin{table}[h]
-			\begin{center}
-				\begin{tabular}[pos]{ l l l }
-					\textbf{Namn} & \textbf{Ansvar} & \textbf{E-post} \\ \midrule
-					Emil Segerbäck & & emise935@student.liu.se \\ \midrule
-					Frans Skarman & Dokumentansvarig & frask812@student.liu.se \\ \midrule
-					Hannes Tuhkala & & hantu447@student.liu.se \\ \midrule
-					Malcolm Vigren & Projektledare & malvi108@student.liu.se \\ \midrule
-					Noak Ringman &  & noari093@student.liu.se \\ \midrule
-					Olav Övrebö &  & olaov121@student.liu.se \\ \midrule
-					Robin Sliwa &  & robsl733@student.liu.se \\
-				\end{tabular}
-			\end{center}
-		\end{table}
+	
+		\renewcommand*{\arraystretch}{1.4}
+		\begin{longtable}[c]{ l l l }
+			\textbf{Namn} & \textbf{Ansvar} & \textbf{E-post} \\ \midrule
+			Emil Segerbäck & Webbgränssnitt & emise935@student.liu.se \\ \midrule
+			Frans Skarman & Dokumentansvarig & frask812@student.liu.se \\ \midrule
+			Hannes Tuhkala & & hantu447@student.liu.se \\ \midrule
+			Malcolm Vigren & Projektledare & malvi108@student.liu.se \\ \midrule
+			Noak Ringman &  & noari093@student.liu.se \\ \midrule
+			Olav Övrebö &  & olaov121@student.liu.se \\ \midrule
+			Robin Sliwa &  & robsl733@student.liu.se \\
+		\end{longtable}
 
 		\centering
 		\textbf{Kursansvarig}: Tomas Svensson Rum 3B:528 013--28 13 68 tomas.svensson@liu.se
@@ -111,26 +108,21 @@
 		
 		\newpage
 
-		
-		\newpage
-
 
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 		%						Historik
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 		\section*{Dokumenthistorik}
-		\begin{table}[h]
-			\begin{tabular}[pos]{ l l l l l }
-				\textbf{Version} & \textbf{Datum} & \textbf{Utförda förändringar} 
-				& \textbf{Utförda av} & \textbf{Granskad} \\ \midrule
+		\renewcommand*{\arraystretch}{1.4}
+		\begin{longtable}[c]{ l l l l l }
+			\textbf{Version} & \textbf{Datum} & \textbf{Utförda förändringar} 
+			& \textbf{Utförda av} & \textbf{Granskad} \\ \midrule
 
-				0.1 & 2016--09--07 & Första utkastet & Projektgruppen & Tomas Svensson \\ \midrule
-				0.2  & 2016--09--09 & Andra utkastet & Projektgruppen & Tomas Svensson \\ \midrule
-				1.0  & 2016--09--12 & Ändra alla krav till "Original" & Projektgruppen & \\
-
-			\end{tabular}
-		\end{table}
+			0.1 & 2016--09--07 & Första utkastet & Projektgruppen & Tomas Svensson \\ \midrule
+			0.2  & 2016--09--09 & Andra utkastet & Projektgruppen & Tomas Svensson \\ \midrule
+			1.0  & 2016--09--12 & Ändra alla krav till "Original" & Projektgruppen & \\
+		\end{longtable}
 
 	\end{center}
 
@@ -483,12 +475,10 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \iffalse{}
-	\begin{table}[h]
-		\begin{tabularx}{\textwidth}{c l X l}
+	\begin{longtable}[c]{ c l X l }
 		\textbf{Nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
 		\\ \midrule
 	
 		1 & Original & Roboten ska autonomt kunna navigera sig igenom tvävlingsbanan & 1
-		\end{tabularx}
-	\end{table}
+	\end{longtable}
 \fi
