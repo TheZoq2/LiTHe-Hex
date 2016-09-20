@@ -159,22 +159,21 @@
   beslut. Detta gör att centralenheten själv bestämmer när den ska ha ny data
   för att den inte ska bli avbruten eller missa data för att den är mitt i
   utförandet av en annan funktion. Utifrån denna data fattar centralenheten
-  beslut om vilket håll hexapoden ska gå.
+  beslut om hexapodens färdriktning.
   
   \subsubsection{Förslag 2}
-  Sensorenheten står för hur ofta data skickas till centralenheten och gör
-  det kontinuerligt. Datan som tas emot av centralenheten används för att fatta
-  beslut hela tiden. 
+  Sensorenheten sänder kontinuerligt data som tas emot av centralenheten och används löpande 
+  för att fatta beslut. 
   
 	\subsection{Hinderdetektion}
 	För hinderdetektering finns det olika alternativ att använda. Det är möjligt att 
-	detektera hinder medhjälp av en avståndsmätare som är vinklad nedåt, en IR sensor 
-	eller LIDAR laser kan användas som avståndsmätare. Använda en IR sensor är enklast 
-	eftersom IR sensorer antagligen kommer att användas för att undvika väggar. En 
-	LIDAR laser är en ny enhet och använder ett mer avancerat gränssnitt \itc{} än 
-	analog för IR.\@ Ett annat alternativ för att upptäcka hinder är att läsa av det 
-	motstånd som benens servo kan returnera tillsammans med övriga sensorer för 
-	att upptäcka när roboten går in i ett hinder. 
+	detektera hinder med hjälp av en avståndsmätare som är vinklad nedåt, en IR-sensor 
+	eller LIDAR kan användas som avståndsmätare. Att använda en IR-sensor är fördelaktigt 
+	då IR-sensorer antagligen kommer att användas för att undvika väggar. En 
+	LIDAR är en ny enhet och medför ett ytterligare, mer avancerat gränssnitt. Ett annat 
+	alternativ för att upptäcka hinder är att läsa av det motstånd som benens servo kan 
+	returnera tillsammans med övriga sensorer för att upptäcka när roboten går in i ett 
+	hinder. 
 
 	\subsection{Kommunikation}
 	Centralenheten ska kommunicera med en dator över WiFi. Det är datorns webbläsare 

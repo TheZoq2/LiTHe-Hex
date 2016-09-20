@@ -3,6 +3,7 @@
 \usepackage{color}
 \usepackage{graphicx}
 \usepackage{titling}
+\usepackage[titletoc,title]{appendix}
 \usepackage{tabularx}
 \usepackage{longtable}
 \usepackage[yyyymmdd]{datetime}
@@ -17,6 +18,7 @@
 
 \renewcommand{\dateseparator}{-}
 \renewcommand{\contentsname}{Innehållsförteckning}
+\renewcommand{\appendixname}{Bilaga}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Header and footer
@@ -147,7 +149,7 @@
 	
 	\subsection{Begränsningar}
 	Roboten behöver inte klara mer avancerade former på labyrinten än de som
-    beskrivs i Bilaga A:\ Ban- och regelspecifikation.
+    beskrivs i Ban- och regelspecifikationen.
 	
 	
 	\section{Fasplan}
@@ -164,49 +166,60 @@
 	
 	
 	\subsection{Under projektet}
+    %TODO add simuleringar???
 	Under projektet ska en designspecifikation skrivas med detaljerad
-    information om hur roboten ska implementeras. I samband med slutskedet
+    information om hur roboten ska implementeras. Efter att
+    designspecifikationen är klar påbörjas implementationen av systemet.
+    Enhetstester ska konstrueras i takt med att testbara delar av systemet har
+    implementerats. Teknisk dokumentation för varje delsystemet ska skrivas
+    i takt med att implementationsbeslut utförs.
 
+    Hela gruppen ska ha möten minst en gång per vecka för att presentera
+    varandras arbete sedan förra mötet, och för att kontrollera att projektet
+    följer planen. Dessa möten blir också tillfällen att diskutera problem som
+    uppstår med hela gruppen.
+
+    Om ett visst krav i kravspecifikationen inte kan implementeras ska ett möte
+    med beställaren anordnas för omförhandling av kravet i fråga.
 	
 	\subsection{Efter projektet}
-    Projektet avslutas med slutleverans samt en efterstudie.
+    Projektet avslutas med slutleverans efter att alla krav i
+    kravspecifikationen är uppfyllda. Efter leveransen görs en efterstudie.
 	
 	
 	\section{Organisationsplan för hela projektet}
-    I detta avsnitt beskrivs hur projektet ska organiseras.
-
-	\subsection{Organisationsplan per fas}
-	\begin{center}
-		\includegraphics[width=0.8\linewidth]{images/projectroles.png}
-	\end{center}
+    %I detta avsnitt beskrivs hur projektet ska organiseras.
 	Projektrollerna som ingår i detta projekt är: beställare/kund, handlerare,
-	projektledare och projektmedlemmar. I beställarens arbetsuppgifter ingår saker
-	som att fatta beslut om fortsättning av projektet vid beslutspunkter, godkänna
-	ändringar under projektets gång, läsa statusrapporter och godkännande av
-	projektets avslut. Arbetsuppgifterna för projektledaren är till stor del som
-	de övriga projektmedlemmarna men det ingår även saker som att fördela
-	arbetsuppgifter, planera och leda projektarbetet, se till att projektets mål
-	nås och motivera projektmedlemmarna.
-	% TODO: Finish this section
-	
-	% \subsection{Organisationsplan hos kunden}
-	% Här var det text här var det text här var det text
-	% här var det text här var det text här var det text
-	% här var det text här var det text här var det text.
-	% 
+	projektledare och projektmedlemmar. Alla projektmedlemmar har kontakt med
+    handledaren, men det är projektledaren som sköter den huvudsakliga
+    kontakten med beställaren, se figur \ref{fig:organization}.
+
+    \begin{figure}[h!]
+        \begin{center}
+		\includegraphics[width=0.8\linewidth]{images/projectroles.png}
+        \caption{Projektets organisation \label{fig:organization}}
+        \end{center}
+	\end{figure}
 	 
 	\subsection{Villkor för samarbetet inom projektgruppen}
-	Här var det text här var det text här var det text
-	här var det text här var det text här var det text
-	här var det text här var det text här var det text.
+    % TODO create appendix
+    Se Bilaga \ref{app:gruppkontrakt} - Gruppkontrakt.
+
 	
 	\subsection{Definition av arbetsinnehåll och ansvar}
-	\begin{longtable}[c]{ c l>{\raggedright}p{0.6\textwidth} l l}
-		\textbf{Nr} & \textbf{Förändring} & \textbf{Kravtext} & \textbf{Prioritet} 
-			\\ \midrule
+    Beställarens huvudsakliga uppgifter är att fatta beslut
+    om fortsättning av projektet vid beslutspunkter, godkänna
+	ändringar under projektets gång, läsa statusrapporter samt godkännande av
+	projektets avslut. Arbetsuppgifterna för projektledaren är, utöver
+    arbetsuppgifterna för resten av projektmedlemmarna, att fördela
+	arbetsuppgifter, planera och leda projektarbetet, se till att projektets mål
+	nås samt motivera projektmedlemmarna.
 
-	\end{longtable}
+    Kommunikationen mellan projektmedlemmar kommer att ske genom möten, en
+    gemensam kalender samt en gruppchatt.
 	
+    För information om hur arbetet på delsystemen ska fördelas, se Bilaga
+    \ref{app:tidsplan} - Tidsplan.
 	
 	\section{Dokumentplan}
     Dokumenten lagras på GitHub och Git används för versionshantering av
@@ -442,4 +455,9 @@
 	Här var det text här var det text här var det text
 	här var det text här var det text här var det text
 	här var det text här var det text här var det text.
+
+\begin{appendices}
+    \section{Gruppkontrakt\label{app:gruppkontrakt}}
+    \section{Tidsplan\label{app:tidsplan}}
+\end{appendices}
 \end{document}
