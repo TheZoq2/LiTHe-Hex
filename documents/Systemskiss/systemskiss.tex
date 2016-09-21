@@ -136,14 +136,14 @@
 	2 UART-, 3 SPI- och en \itc{}-ingång medan Raspberry PI:en har 1 UART-, 2 SPI- och
 	en \itc{}-ingång. 
 
-	\subsubsection{Förslag 1}
+	\subsubsection{Alternativ 1: }
 	Om vi vill ha en LIDAR-avståndsmätare kommer sensorenhetens \itc{}-port att gå åt
 	till kommunikation med avståndsmätaren. Sensorenheten måste alltså kommunicera med
 	centralenheten via UART eller SPI.\@ Om kommunikationen sker med UART måste 
 	motorikenheten kommunicera med SPI eftersom att centralenheten endast har en
 	UART port.
 
-	\subsubsection{Förslag 2}
+	\subsubsection{Alternativ 2: }
 	Om både motorikenheten och sensorenheten har sin \itc{}-buss tillgänglig kan de
 	kommunicera med centralenheten via en gemensam \itc{}-buss där
 	centralenheten är master och de andra enheterna är slaves. 
@@ -154,14 +154,14 @@
 
 	\subsection{Navigation och beslutsfattning}
   
-  \subsubsection{Förslag 1}
+  \subsubsection{Alternativ 1: }
   Centralenheten frågar om data från sensorenheten varje gång det ska fattas ett
   beslut. Detta gör att centralenheten själv bestämmer när den ska ha ny data
   för att den inte ska bli avbruten eller missa data för att den är mitt i
   utförandet av en annan funktion. Utifrån denna data fattar centralenheten
   beslut om hexapodens färdriktning.
   
-  \subsubsection{Förslag 2}
+  \subsubsection{Alternativ 2: }
   Sensorenheten sänder kontinuerligt data som tas emot av centralenheten och används löpande 
   för att fatta beslut. 
   
@@ -260,13 +260,13 @@
     återvändsgränd eller inte, utan att först behöva gå in i den eventuella
     återvändsgränden.
 
-    \subsubsection{Sensor för hinderdetektion -- förslag 1}
+    \subsubsection{Alternativ 1: Sensor för hinderdetektion}
 
     Sensorn som ska upptäcka hinder ska utgöras av en IR-sensor. Detta
     har fördelen av att ha samma gränssnitt som de andra IR-sensorerna roboten
     ska använda.
 
-    \subsubsection{Sensor för hinderdetektion -- förslag 2}
+    \subsubsection{Alternativ 2: Sensor för hinderdetektion}
 
     Sensorn för hinderdetektion utgörs av en laser-sensor (LIDAR). Denna har
     fördelen av att vara mycket mer exakt än en IR-sensor, men nackdelen av att
@@ -277,27 +277,27 @@
     Roboten ska ha avståndssensorer på vardera långsida av roboten, för
     detektion av väggar och återvändsgränder.
 
-    \subsubsection{Väggsensorer -- förslag 1}
+    \subsubsection{Alternativ 1: Väggsensorer}
     
     En ultraljudssensor på vardera sida. Denna sensortyp har fördelen av att ha
     räckvidden 3 cm till 3 m, vilket borde ge god precision för både upptäckt
     av väggar samt återvändsgränder.
 
-    \subsubsection{Väggsensorer -- förslag 2}
+    \subsubsection{Alternativ 2: Väggsensorer}
 
     En IR-sensor på vardera sida. Denna typ har fördelen av att vara mer exakta
     än ultraljudssensorer, men har smalare räckviddsområde.
 
-    \subsubsection{Väggsensorer -- förslag 3}
+    \subsubsection{Alternativ 3: Väggsensorer}
 
     Två IR-sensorer används på vardera sida, båda pekande ut från samma sida och
     placerade på vardera ända av plattformen. Detta möjliggör mätning av hur
     roboten är vriden i en rak korridor, och kan användas som fel-kontroll av
     gyrot.
 
-    \subsubsection{Väggsensorer -- förslag 4}
+    \subsubsection{Alternativ 4: Väggsensorer}
 
-    Samma som förslag 3, fast två av sensorerna är ultraljudssensorer, ifall
+    Samma som alternativ 3, fast två av sensorerna är ultraljudssensorer, ifall
     IR-sensorerna stör ut varandra.
 
     \subsection{Styrenhet}

@@ -14,6 +14,7 @@
 \usepackage{pbox}
 \usepackage{booktabs}
 \usepackage[parfill]{parskip}
+\usepackage[compact]{titlesec}
 
 %Set page size
 \usepackage{geometry}
@@ -235,7 +236,7 @@
 	
     % FIXME kontrollera ansvarig och sånt
     % TODO lägg till eventuella fler interna dokument
-    \begin{longtable}[l]{ p{2.5cm} p{2.1cm} p{4cm} p{2.2cm} l }
+	\begin{longtable}[l]{ p{2.5cm} p{2.1cm} >{\raggedright}p{4cm} p{2.2cm} l }
         \textbf{Dokument} & \textbf{Ansvarig/ godkänns av} & \textbf{Syfte} & \textbf{Distribueras till} & \textbf{Färdigdatum} \\ \midrule
         
         Kravspeci-fikation & Beställare & Definierar alla krav på
@@ -272,10 +273,13 @@
 	
 	
 	\section{Utvecklingsmetodik}
-	Här var det text här var det text här var det text
-	här var det text här var det text här var det text
-	här var det text här var det text här var det text.
-	
+    Utvecklingsmetodiken är korrekt.
+
+    \subsection{Programmeringsspråk}
+    För programmering av AVR-processorerna i sensor- och motorikenheten ska C
+    användas. För programmering av centralenheten ska Python användas, då det
+    är ett högnivå-språk med bra stöd i Raspberry Pi. GUI-systemet ska
+    programmeras i det funktionella språket Elm.
 	
 	\section{Utbildningsplan}
 
@@ -367,46 +371,46 @@
 	\renewcommand*{\arraystretch}{1.4}
 	\begin{longtable}[c]{ c p{3cm} p{6cm} p{3cm} p{2cm}}
 		\textbf{Nr} & \textbf{Aktivitet} & \textbf{Beskrivning} & \textbf{Beroende av aktivitet nr} & \textbf{Beräknad tid tim} \\ \midrule
-		\nextAktNr{} & Inverse Kinematics & -- & -- & -- \\ \midrule
-		\nextAktNr{} & Servokontroll & -- & -- & -- \\ \midrule
-		\nextAktNr{} & Gångstil & -- & -- & -- \\ \midrule
-		\nextAktNr{} & Kommunikation & -- & -- & -- \\ \midrule
-		\nextAktNr{} & Golvhöjdsdetektion & -- & -- & -- \\ \midrule
-		\nextAktNr{} & Stötdetektion & -- & -- & -- \\ \midrule
-		\nextAktNr{} & Hindergång & -- & -- & -- \\ \midrule
-		\nextAktNr{} & Kommunikation med motorikenhet & -- & -- & -- \\ \midrule
-		\nextAktNr{} & Detektera återvändsgränser & -- & -- & -- \\ \midrule
-		\nextAktNr{} & Kommunikation med sensorenhet & -- & -- & -- \\ \midrule
-		\nextAktNr{} & Kommunikation med GUI & -- & -- & -- \\ \midrule
-		\nextAktNr{} & Följa korridor & -- & -- & -- \\ \midrule
-		\nextAktNr{} & Hinderdetektion & -- & -- & -- \\ \midrule
-		\nextAktNr{} & Hinderhantering & -- & -- & -- \\ \midrule
-		\nextAktNr{} & Beslutsfattning & -- & -- & -- \\ \midrule
-		\nextAktNr{} & GUI kommandotolkning & -- & -- & -- \\ \midrule
-		\nextAktNr{} & Telemetri & -- & -- & -- \\ \midrule
-		\nextAktNr{} & Styrning & -- & -- & -- \\ \midrule
-		\nextAktNr{} & Webbserver & -- & -- & -- \\ \midrule
-		\nextAktNr{} & Frontend & -- & -- & -- \\ \midrule
-		\nextAktNr{} & Joystick control & -- & -- & -- \\ \midrule
-		\nextAktNr{} & Debug log & -- & -- & -- \\ \midrule
-		\nextAktNr{} & Läsning av IR-sensor & -- & -- & -- \\ \midrule
-		\nextAktNr{} & Kommunikation med centralenhet & -- & -- & -- \\ \midrule
-		\nextAktNr{} & Läsning av gyro-sensor & -- & -- & -- \\ \midrule
-		\nextAktNr{} & Läsning av LIDAR & -- & -- & -- \\ \midrule
-		\nextAktNr{} & Brusdetektion av IR-sensor & -- & -- & -- \\ \midrule
-		\nextAktNr{} & Integral av gyro & -- & -- & -- \\ \midrule
-		\nextAktNr{} & Multiplexning A/D omvandlare & -- & -- & -- \\ \midrule
-		\nextAktNr{} & Enhetskonvertering & -- & -- & -- \\ \midrule
-		\nextAktNr{} & Buffertid & -- & -- & -- \\ \midrule
-		\nextAktNr{} & Projektmöten & -- & -- & -- \\ \midrule
-		\nextAktNr{} & Milstolpe 1 & -- & -- & -- \\ \midrule
-		\nextAktNr{} & Milstolpe 2 & -- & -- & -- \\ \midrule
-		\nextAktNr{} & Milstolpe 3 & -- & -- & -- \\ \midrule
-		\nextAktNr{} & Milstolpe 4 & -- & -- & -- \\ \midrule
-		\nextAktNr{} & Milstolpe 5 & -- & -- & -- \\ \midrule
-		\nextAktNr{} & Beslutspunkt 1 & -- & -- & -- \\ \midrule
-		\nextAktNr{} & Beslutspunkt 2 & -- & -- & -- \\ \midrule
-		\nextAktNr{} & Beslutspunkt 5 & -- & -- & -- \\ \midrule
+		\nextAktNr{} & Inverterad Kinematik & -- &  & -- \\ \midrule
+		\nextAktNr{} & Servokontroll & -- &  & -- \\ \midrule
+		\nextAktNr{} & Gångstil & -- & 1 & -- \\ \midrule
+		\nextAktNr{} & Kommunikation & -- &  & -- \\ \midrule
+		\nextAktNr{} & Golvhöjdsdetektion & -- & 2 & -- \\ \midrule
+		\nextAktNr{} & Stötdetektion & -- & 2 & -- \\ \midrule
+		\nextAktNr{} & Hindergång & -- & 1,3 & -- \\ \midrule
+		\nextAktNr{} & Kommunikation med motorikenhet & -- &  & -- \\ \midrule
+		\nextAktNr{} & Detektera återvändsgränser & -- &  & -- \\ \midrule
+		\nextAktNr{} & Kommunikation med sensorenhet & -- &  & -- \\ \midrule
+		\nextAktNr{} & Kommunikation med GUI & -- &  & -- \\ \midrule
+		\nextAktNr{} & Följa korridor & -- &  & -- \\ \midrule
+		\nextAktNr{} & Hinderdetektion & -- &  & -- \\ \midrule
+		\nextAktNr{} & Hinderhantering & -- &  & -- \\ \midrule
+		\nextAktNr{} & Beslutsfattning & -- & 9,12,13,14 & -- \\ \midrule
+		\nextAktNr{} & GUI kommandotolkning & -- & 11 & -- \\ \midrule
+		\nextAktNr{} & Telemetri & -- & 11 & -- \\ \midrule
+		\nextAktNr{} & Styrning & -- & 19,20 & -- \\ \midrule
+		\nextAktNr{} & Webbserver & -- &  & -- \\ \midrule
+		\nextAktNr{} & Frontend & -- & 19 & -- \\ \midrule
+		\nextAktNr{} & Joystick control & -- & 18,19,20 & -- \\ \midrule
+		\nextAktNr{} & Debug log & -- & 19,20 & -- \\ \midrule
+		\nextAktNr{} & Läsning av IR-sensor & -- & 27,29,30 & -- \\ \midrule
+		\nextAktNr{} & Kommunikation med centralenhet & -- & 27,30 & -- \\ \midrule
+		\nextAktNr{} & Läsning av gyro-sensor & -- & 27,30 & -- \\ \midrule
+		\nextAktNr{} & Läsning av LIDAR & -- & 27,30 & -- \\ \midrule
+		\nextAktNr{} & Brusdetektion av IR-sensor & -- &  & -- \\ \midrule
+		\nextAktNr{} & Integral av gyro & -- & 25,27,30 & -- \\ \midrule
+		\nextAktNr{} & Multiplexning A/D omvandlare & -- & 27,30 & -- \\ \midrule
+		\nextAktNr{} & Enhetskonvertering & -- &  & -- \\ \midrule
+		\nextAktNr{} & Buffertid & -- &  & -- \\ \midrule
+		\nextAktNr{} & Projektmöten & -- &  & -- \\ \midrule
+		\nextAktNr{} & Milstolpe 1 & -- &  & -- \\ \midrule
+		\nextAktNr{} & Milstolpe 2 & -- &  & -- \\ \midrule
+		\nextAktNr{} & Milstolpe 3 & -- &  & -- \\ \midrule
+		\nextAktNr{} & Milstolpe 4 & -- &  & -- \\ \midrule
+		\nextAktNr{} & Milstolpe 5 & -- &  & -- \\ \midrule
+		\nextAktNr{} & Beslutspunkt 1 & -- &  & -- \\ \midrule
+		\nextAktNr{} & Beslutspunkt 2 & -- &  & -- \\ \midrule
+		\nextAktNr{} & Beslutspunkt 5 & -- &  & -- \\ \midrule
 	\end{longtable}
 
 	
