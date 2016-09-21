@@ -1,7 +1,7 @@
-------------------
+﻿------------------
 MOTORIKENHET
 ------------------
-1.Inverse Kinematics
+1.Inverterad Kinematik
 2.Servokontroll
 3.Gångstil
 4.Kommunikation
@@ -16,52 +16,52 @@ MOTORIKENHET
 ------------------
 CENTRALENHET
 ------------------
-a.Kommunikation med motorikenhet
-b.Detektera återvändsgränder
-c.Kommunikation med sensorenhet
-d.Kommunikation med gui
-e.Följa korridor
-f.Hinderdetektion
-g.Hinderhantering
-h.Beslutsfattning
-i.GUI kommandotolkning
-j.Telemetri
+8.Kommunikation med motorikenhet
+9.Detektera återvändsgränder
+10.Kommunikation med sensorenhet
+11.Kommunikation med gui
+12.Följa korridor
+13.Hinderdetektion
+14.Hinderhantering
+15.Beslutsfattning
+16.GUI kommandotolkning
+17.Telemetri
 
-a
-c
-    b <-- \
-    f <--  \
-    g <--  / h
-    e <-- /
-d <- (i, j)
+8
+10
+    9 <-- \
+    12 <--  \
+    13 <--  / 15
+    14 <-- /
+11 <- (16, 17)
 
 ------------------
 GUI
 ------------------
-I.Styrning
-II.Webbserver
-III.Frontend
-IV.Joystick control
-V.Debug log
+18.Styrning
+19.Webbserver
+20.Frontend
+21.Joystick control
+22.Debug log
 (VI.(Kamera)) - Om vi har tid och har tråkigt
 
-II <- III <- (V, (VI), I <- IV)
+19 <- 20 <- (22, 18 <- 21)
 
 ------------------
 SENSORENHET
 ------------------
-α.Läsning av IR-sensor
-β.Kommunikation med centralenhet
-γ.Läsning av gyro-sensor
-δ.Läsning av LIDAR
-ε.Brusdetektion av IR-sensor
-ζ.∫Gyro
-η.Multiplexning A/D omvandlare
-θ.Enhetskonvertering
+23.Läsning av IR-sensor
+24.Kommunikation med centralenhet
+25.Läsning av gyro-sensor
+26.Läsning av LIDAR
+27.Brusdetektion av IR-sensor
+28.∫Gyro
+29.Multiplexning A/D omvandlare
+30.Enhetskonvertering
 
-γ <- ζ
-η <- α
-β
-δ
-∀x(ε(x))
-∀x(θ(x))
+25 <- 28
+29 <- 23
+24
+26
+∀x(27(x))
+∀x(30(x))
