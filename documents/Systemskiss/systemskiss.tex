@@ -163,30 +163,38 @@
   Sensorenheten sänder kontinuerligt data som tas emot av centralenheten och används löpande för att fatta beslut. Detta innebär att centralenheten antingen blir avbruten mitt i en funktion för att behandla ny data eller att sensordata ignoreras. 
   
 	\subsection{Hinderdetektion}
-	För hinderdetektering finns det olika alternativ att använda. Det är möjligt att 
-	detektera hinder med hjälp av en avståndsmätare som är vinklad nedåt, en IR-sensor 
-	eller LIDAR kan användas som avståndsmätare. Att använda en IR-sensor är fördelaktigt 
-	då IR-sensorer antagligen kommer att användas för att undvika väggar. En 
-	LIDAR är en ny enhet och medför ett ytterligare, mer avancerat gränssnitt. Ett annat 
-	alternativ för att upptäcka hinder är att läsa av det motstånd som benens servo kan 
-	returnera tillsammans med övriga sensorer för att upptäcka när roboten går in i ett 
-	hinder. 
+	%För hinderdetektering finns det olika alternativ att använda. Det är möjligt att 
+	%detektera hinder med hjälp av en avståndsmätare som är vinklad nedåt, en IR-sensor 
+	%eller LIDAR kan användas som avståndsmätare. Att använda en IR-sensor är fördelaktigt 
+	%då IR-sensorer antagligen kommer att användas för att undvika väggar. En 
+	%LIDAR är en ny enhet och medför ett ytterligare, mer avancerat gränssnitt. Ett annat 
+	%alternativ för att upptäcka hinder är att läsa av det motstånd som benens servo kan 
+	%returnera tillsammans med övriga sensorer för att upptäcka när roboten går in i ett 
+	%hinder. 
+	Sensorenheten har en avståndsmätare som är riktad snett neråt för att hitta kanten på hinder.
 
+	\subsubsection{Alternativ 1}
+	En LIDAR-sensor används som avståndssensor. Den skulle i så fall behöva kommunicera med
+	sensorenheten via \itc{} vilket kräver extra arbete. LIDAR sensorn har dock ett större 
+	avståndsspann än IR-sensorer. Den har även antagligen en mindre mätfält.
+
+	\subsubsection{Alternativ 2}
+	En IR-sensor används som avståndssensor. Vi kommer redan ha  kod för kommunikation med
+	den  eftersom att IR-sensorer kommer att användas på andra ställen i konstruktionen. 
+	
 	\subsection{Kommunikation}
 	Centralenheten ska kommunicera med en dator över WiFi. Det är datorns webbläsare 
-	som kommer att ansluta till centralenhetens webbserver, det blir då möjligt
+	som kommer att ansluta till centralenhetens webbserver, det blir då möjligt att
     via webbgränssnittet att styra roboten samt läsa av robotens loggar. Det finns
     flera gränssnitt att 
 	använda för kommunikation mellan processorerna. Intressanta gränssnitt är SPI, 
-	\itc{} och UART.\@ UART är inte möjligt att använda till sensorenheten och 
-	motorikenheten då Raspberry Pi endast har en UART port. Både 
-	SPI och \itc{} kan användas förutsett att LIDAR inte används. (Endast en 
-	\itc{} port finns på sensorenheten, vilken i så fall måste gå till LIDAR,vilken 
-	endast använder detta protokoll.) \itc{} måste konfigureras med ett
+	\itc{} och UART.\@ UART är inte möjligt att använda både till sensorenheten och 
+	motorikenheten då Raspberry Pi endast har en UART-port. Både 
+	SPI och \itc{} kan användas förutsett att LIDAR inte används. \itc{} måste konfigureras med ett
     master-/slave-förhållande. Centralenheten behöver vara master för att kunna
     kommunicera med 
 	sensorenheten och motorikenheten som är slave. Med den konfigurationen blir 
-	det inte möjligt för sensorenhet och motorikenheten att kommunicera med
+	det inte möjligt för sensorenheten och motorikenheten att kommunicera med
 	centralenheten utan att centralenheten har på startat kommunikationen. I och 
 	med att \itc{} behöver en master/slave konfiguration blir SPI enklare att använda 
 	för tvåvägskommunikation. 
@@ -198,37 +206,35 @@
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	
 	\section{Motorikenheten}
-    	Motorikenheten översätter signaler från centralenheten, angeende önskad förflyttning, 
-    	till instruktioner för benens förflyttning, och förser centralenheten med data om
-    	benens motstånd.
-    
-    	\subsection{Alternativ 1: Anpassad gångstil}
-    	Motorikenheten mottar instruktioner från centralenheten, angeende önskad hastighet, 
-    	rotation och riktning för förflyttnnig. Den behandlar detta och räknar ut en lämplig 
-	gångstil, och signalerar nödvändiga vinklar till de sex benen. Vissa delmoment i 
+	Motorikenheten översätter kommandon från centralen till servokommandon. 
+
+	\subsection{Alternativ 1}
+	Motorikenheten tar emot instruktioner från centralenheten som anger hastighet, 
+	rotation och riktning för förflyttnnig. Motorikenheten behandlar detta, räknar ut en 
+	lämplig 
+	gångstil och signalerar nödvändiga vinklar till de sex benen. Vissa delmoment i 
 	förflyttningen görs hårdkodade. 
     
     	\subsubsection{Planläggning}
 	Första steget i motorikenheten för en anpassad gångstil är att utifrån efterfrågad
-    	förflyttning avgöra en önskad slutposition för respektive ben, som för roboten närmre 
-    	ett läge angivet av centralenheten. Utifrån hastighet kan förflyttningsvektorerna 
-    	från nuvarande läge för nuvarande ben skalas ner eller upp, inom rimligheten för vad
-    	benen kan nå. För flyttning sker för vänster fram- och bak-ben och höger 
-    	mittben, eller för höger fram- och bak-ben och vänster mittben, alternerande för varje
-    	förflyttningscykel. När ett sett förflyttas, skiftas de markfästa benen vid behov för 
-    	att flytta själva kroppen. Inför ett steg med ett ben hårdkodas ett lyft av benet. 
+	förflyttning avgöra en önskad slutposition för respektive ben, som för roboten närmre 
+	ett läge angivet av centralenheten. Utifrån hastighet kan förflyttningsvektorerna 
+	från nuvarande läge för varje ben skalas ner eller upp, inom rimligheten för vad
+	benen kan nå. Benen flyttas i grupper av tre med ett pen på ena sidan och två på  andra.
+	När ett sett förflyttas, skiftas de markfästa benen vid behov för 
+	att flytta själva kroppen. Inför ett steg med ett ben hårdkodas ett lyft av benet. 
 	Även bestigning av hinder kan komma att hårdkodas.
     
-    	\subsubsection{Invers kinematik}
-    	Andra steget i motorikenheten för en anpassad gångstil är beräkning av benens vinklar;
-    	utifrån kända längder på benen  och önskad vågrät vinkel och längd till slutposition 
-    	används trigonometri för att avgöra slutgiltiga aktuatorvinklar.
-    
-    	\subsection{Alternativ 2: Hårdkodad}
-    	Motorikenheten förses med en uppsättning hårdkodade instruktioner för benrörelser, och
-    	väljer bland dessa utifrån försedda indata. Hårdkodade rörelser inkluderar rotation på 
-    	plats, rörelse framåt (två hastigheter), bakåt och i sidled, rörelse med svag rotation, 
-    	bestigning av hinder (i mån av uppfyllande av detta sekundära krav). 
+	\subsubsection{Inverterad kinematik}
+	Andra steget i motorikenheten för en anpassad gångstil är beräkning av benens vinklar.
+	Utifrån kända längder på benen, önskad vågrät vinkel och längd till slutposition 
+	används trigonometri för att avgöra slutgiltiga servovinklar.
+
+	\subsection{Alternativ 2}
+	Motorikenheten förses med en uppsättning hårdkodade instruktioner för benrörelser, och
+	väljer bland dessa utifrån försedda indata. Hårdkodade rörelser inkluderar rotation på 
+	plats, rörelse framåt (två hastigheter), bakåt och i sidled, rörelse med svag rotation, 
+	bestigning av hinder (i mån av uppfyllande av detta sekundära krav). 
 	
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%						Sensorenheten
@@ -243,59 +249,58 @@
 
     \subsection{Gyro}
     
-    Sensorenheten ska använda ett gyro för att mäta vridning i det horizontella
+    Sensorenheten ska använda ett gyro för att mäta vridning i det horisontella
     planet. Detta är användbart bland annat för att roboten ska veta hur mycket
     den ska rotera när den svänger.
     
     \subsection{Avståndssensorer fram}
     
     Sensorenheten ska använda avståndssensorer på framsidan, en sensor för att
-    upptäcka väggar, och en sensor, snett vinklat ner mot golvet, för hinderdetektion. 
+    upptäcka väggar och en sensor som är snett vinklat ner mot golvet för hinderdetektion. 
 
-    Avståndssensorn som mäter framåt ska utgöras av en IR-sensor, med
+    Avståndssensorn som mäter framåt ska utgöras av en IR-sensor med
     tillräckling räckvidd för att kunna avgöra om det den tittar på är en
-    återvändsgränd eller inte, utan att först behöva gå in i den eventuella
-    återvändsgränden.
+    återvändsgränd eller inte.
 
-    \subsubsection{Alternativ 1: Sensor för hinderdetektion}
+    \subsubsection{Alternativ 1}
 
     Sensorn som ska upptäcka hinder ska utgöras av en IR-sensor. Detta
-    har fördelen av att ha samma gränssnitt som de andra IR-sensorerna roboten
+    har fördelen att ha samma gränssnitt som de andra IR-sensorerna som roboten
     ska använda.
 
-    \subsubsection{Alternativ 2: Sensor för hinderdetektion}
+    \subsubsection{Alternativ 2}
 
-    Sensorn för hinderdetektion utgörs av en laser-sensor (LIDAR). Denna har
-    fördelen av att vara mycket mer exakt än en IR-sensor, men nackdelen av att
-    ha ett \itc{}-gränssnitt som ingen annan sensor har, som ökar
-    komplexiteten hos sensorenheten.
+    Sensorn för hinderdetektion utgörs av en LIDAR-sensor. Denna har
+    fördelen att vara mycket mer exakt än en IR-sensor, men nackdelen är att
+    den har ett \itc{}-gränssnitt som ingen annan sensor har.
 
     \subsection{Avståndssensorer åt sidorna}
     Roboten ska ha avståndssensorer på vardera långsida av roboten, för
     detektion av väggar och återvändsgränder.
 
-    \subsubsection{Alternativ 1: Väggsensorer}
+    \subsubsection{Alternativ 1}
     
-    En ultraljudssensor på vardera sida. Denna sensortyp har fördelen av att ha
+    En ultraljudssensor på varje sida. Denna sensortyp har fördelen att ha
     räckvidden 3 cm till 3 m, vilket borde ge god precision för både upptäckt
     av väggar samt återvändsgränder.
 
-    \subsubsection{Alternativ 2: Väggsensorer}
+    \subsubsection{Alternativ 2}
 
-    En IR-sensor på vardera sida. Denna typ har fördelen av att vara mer exakta
-    än ultraljudssensorer, men har smalare räckviddsområde.
+    En IR-sensor på varje sida. Denna typ har fördelen att vara mer exakt
+    än ultraljudssensorer och att dess mätkon är mindre.
+	Nackdelen är dock att den har smalare räckviddsområde.
 
-    \subsubsection{Alternativ 3: Väggsensorer}
+    \subsubsection{Alternativ 3}
 
-    Två IR-sensorer används på vardera sida, båda pekande ut från samma sida och
-    placerade på vardera ända av plattformen. Detta möjliggör mätning av hur
-    roboten är vriden i en rak korridor, och kan användas som fel-kontroll av
+	Två IR-sensorer används på varje sida där båda pekar ut från samma sida och
+    är placerade på varsin ända av plattformen. Detta möjliggör mätning av hur
+    roboten är vriden i en rak korridor och kan användas som felkontroll av
     gyrot.
 
-    \subsubsection{Alternativ 4: Väggsensorer}
+    \subsubsection{Alternativ 4}
 
-    Samma som alternativ 3, fast två av sensorerna är ultraljudssensorer, ifall
-    IR-sensorerna stör ut varandra.
+    Samma som alternativ 3, där två av sensorerna är ultraljudssensorer, vilket undviker
+	problem om IR-sensorerna stör ut varandra.
 
     \subsection{Styrenhet}
 
@@ -316,16 +321,15 @@
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%						Grafiskt användargränssnitt
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\newpage{}
 	\section{Grafiskt användargränssnitt}
     
     På centralenheten ska en webbserver köras som tillhandahåller ett gränssnitt
     för användaren där man kan läsa sensordata eller kontrollera roboten i
-    manuellt läge. Front-end ska skrivas i Elm och back-end i Elixir.
+    manuellt läge. Front-end-delen ska skrivas i Elm och back-end-delen i Elixir.
 
-    I det manuella läget styras med en joystick som är kopplad till användarens
-    dator.
-    
-    Eventuellt ska även video från en kamera på roboten streamas till gränssnittet.
+    I det manuella läget ska styras med en joystick som är kopplad till användarens
+    dator eller med knappar på gränssnittet.
     
 
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -333,8 +337,9 @@
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	\section{Simuleringar}
     För att underlätta utvecklingen av vissa delar av projektet kommer vi att skriva
-	kod för att simulera de delarna. Simuleringarna ska kunna köra samma kod som ska
+	kod för att simulera dessa delar. Simuleringarna ska kunna köra samma kod som ska
 	köras på roboten men visualisera resultatet utan resten av roboten. De två
-	delarna där simulering är mest aktuellt är inverse kinematics och gångstilskoden.
+	delarna där simulering är mest aktuellt är inverterad kinematik, korridorföljning 
+	och gångstil.
 
 \end{document}
