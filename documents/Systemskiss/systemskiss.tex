@@ -144,12 +144,12 @@
 	UART port.
 
 	\subsubsection{Alternativ 2: }
-	Om både motorikenheten och sensorenheten har sin \itc{}-buss tillgänglig kan 
-	kommunikationen mellan de tre enheterna ske via en gemensam \itc{}-buss där
-	centralenheten är master och de andra enheterna är slavar. 
+	Om både motorikenheten och sensorenheten har sin \itc{}-buss tillgänglig kan de
+	kommunicera med centralenheten via en gemensam \itc{}-buss där
+	centralenheten är master och de andra enheterna är slaves. 
 	
 	\section{Centralenheten}
-	Centralenheten har 4 huvudsyften: navigation/beslutsfattning, hinderdetektion samt
+	Centralenheten har tre ansvarsområden: navigation/beslutsfattning, hinderdetektion samt
 	kommunikation med omvärlden.
 
 	\subsection{Navigation och beslutsfattning}
@@ -181,12 +181,12 @@
 	som kommer att ansluta till centralenhetens webbserver, det blir då möjligt
     via webbgränssnittet att styra roboten samt läsa av robotens loggar. Det finns
     flera gränssnitt att 
-	använda för kommunikation mellan processorerna, intressanta gränssnitt är SPI, 
+	använda för kommunikation mellan processorerna. Intressanta gränssnitt är SPI, 
 	\itc{} och UART.\@ UART är inte möjligt att använda till sensorenheten och 
-	motorikenheten på grund av att Raspberry Pi endast har en UART port. Både 
-	SPI och \itc{} är möjligt att använda sätt till portar på alla enheterna sålänge 
-	sensorenheten inte använder LIDAR laser, LIDAR laser använder \itc{} och endast en 
-	\itc{} port finns på sensorenheten. \itc{} måste konfigureras med ett
+	motorikenheten då Raspberry Pi endast har en UART port. Både 
+	SPI och \itc{} kan användas förutsett att LIDAR inte används. (Endast en 
+	\itc{} port finns på sensorenheten, vilken i så fall måste gå till LIDAR,vilken 
+	endast använder detta protokoll.) \itc{} måste konfigureras med ett
     master-/slave-förhållande. Centralenheten behöver vara master för att kunna
     kommunicera med 
 	sensorenheten och motorikenheten som är slave. Med den konfigurationen blir 
