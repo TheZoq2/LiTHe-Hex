@@ -9,6 +9,7 @@
 \usepackage[figurename=Figur]{caption}
 \usepackage{booktabs}
 \usepackage[parfill]{parskip}
+\usepackage[compact]{titlesec}
 
 %Set page size
 \usepackage{geometry}
@@ -118,7 +119,6 @@
 	%						Översikt
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-  \newpage
 	\section{Systemöversikt}
 	Systemet ska innehålla tre enheter. En centralenhet för kommunikation med en
     dator, en motorikenhet som sköter hur benen rör sig samt en sensorenhet som
@@ -141,12 +141,10 @@
 	till kommunikation med avståndsmätaren. Sensorenheten måste alltså kommunicera med
 	centralenheten via UART eller SPI.\@ Om kommunikationen sker med UART måste 
 	motorikenheten kommunicera med SPI eftersom att centralenheten endast har en
-	UART port.
+	UART-port.
 
 	\subsubsection{Alternativ 2: }
-	Om både motorikenheten och sensorenheten har sin \itc{}-buss tillgänglig kan de
-	kommunicera med centralenheten via en gemensam \itc{}-buss där
-	centralenheten är master och de andra enheterna är slaves. 
+	Om både motorikenheten och sensorenheten har sin \itc{}-buss tillgänglig kan de kommunicera med centralenheten via en gemensam \itc{}-buss där centralenheten är master och de andra enheterna är slaves. 
 	
 	\section{Centralenheten}
 	Centralenheten har tre ansvarsområden: navigation/beslutsfattning, hinderdetektion samt
