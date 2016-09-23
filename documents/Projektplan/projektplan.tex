@@ -132,7 +132,8 @@
 
 	\newpage
 	\section{Översiktlig beskrivning av projektet}
-	Text
+	Projektet är en del av kursen \textit{Konstruktion med mikrodatorer} där en
+  projektgrupp ska konstruera en sexbent robot. 
 
 	\subsection{Syfte och mål}
 	Syftet och målet med projektet är att utveckla en sexbent robot som själv
@@ -167,7 +168,7 @@
     denna tidpunkt ska simuleringar konstrueras för att underlätta testning av
     delar av systemet innan hela systemet har implementerats.
 	Enhetstester ska konstrueras i takt med att testbara delar av systemet har
-	implementerats. Teknisk dokumentation för varje delsystemet ska skrivas
+	implementerats. Teknisk dokumentation för varje delsystem ska skrivas
 	i takt med att implementationsbeslut utförs.
 
 	Hela gruppen ska ha möten minst en gång per vecka för att presentera
@@ -208,14 +209,14 @@
 	ändringar under projektets gång, läsa statusrapporter samt godkännande av
 	projektets avslut. Arbetsuppgifterna för projektledaren är, utöver
 	arbetsuppgifterna för resten av projektmedlemmarna, att fördela
-	arbetsuppgifter, planera och leda projektarbetet, se till att projektets mål
-	nås samt motivera projektmedlemmarna.
+	arbets-uppgifter, planera och leda projektarbetet, se till att projektets mål
+	nås samt \\ motivera projektmedlemmarna.
 
 	Kommunikationen mellan projektmedlemmar kommer att ske genom möten, en
 	gemensam kalender samt en gruppchatt.
 	
 	För information om hur arbetet på delsystemen ska fördelas, se Bilaga
-	\ref{app:tidsplan} - Tidsplan.
+	\ref{app:tidsplan} - Tids-plan.
 	
 	\section{Dokumentplan}
 	Dokumenten lagras på GitHub och Git används för versionshantering av
@@ -229,58 +230,45 @@
 	% FIXME kontrollera ansvarig och sånt
 	% TODO lägg till eventuella fler interna dokument
 	\begin{longtable}[l]{ p{2.5cm} p{2.1cm} >{\raggedright}p{4cm} p{2.2cm} l }
-		\textbf{Dokument} & \textbf{Ansvarig/ godkänns av} & \textbf{Syfte} & \textbf{Distribueras till} & \textbf{Färdigdatum} \\ \midrule
+		\textbf{Dokument} & \textbf{Ansvarig/ godkänns av} & \textbf{Syfte} & \textbf{Färdigdatum} \\ \midrule
 		
-		Kravspeci-fikation & Beställare & Definierar alla krav på
-		systemet & Beställare & 2016--09--13 \\ \midrule
+		Kravspeci-fikation & Beställare & Definierar alla krav på systemet & 2016--09--13 \\ \midrule
 
-		Projektplan & Beställare & En beskrivning av hur projektet ska genomföras & Beställare &
-		2016--09--29 \\ \midrule
+		Projektplan & Beställare & Beskrivning av hur projektet ska genomföras & 2016--09--29 \\ \midrule
 
-		Tidplan & Beställare & Planering för hur arbetstid ska
-		fördelas. & Beställare & 2016--09--29  \\ \midrule
+		Tidplan & Beställare & Planering för hur arbetstid ska fördelas. & 2016--09--29  \\ \midrule
 		
-		Systemskiss & Beställare & Grov skiss och idéer för 
-		implementation av systemet & Beställare & 2016--09--29 \\ \midrule
+		Systemskiss & Beställare & Grov skiss och idéer för implementation av systemet & 2016--09--29 \\ \midrule
 
-		Designspeci-fikation & Handledare & Detaljerad beskrivning av
-		implementationen av systemet. & Handledare & 2016--11--04 \\ \midrule
+		Designspeci-fikation & Handledare & Detaljerad beskrivning av implementationen av systemet. & 2016--11--04 \\ \midrule
 
-		Tidrapporter & Beställare & Rapportering av använd arbetstid &
-		Beställare & Veckovis		\\ \midrule
+		Tidrapporter & Beställare & Rapportering av använd arbetstid & Veckovis		\\ \midrule
 
-		Statusrapporter & Beställare & Rapportering av nuvarande framteg &
-		Beställare & Veckovis \\ \midrule
+		Statusrapporter & Beställare & Rapportering av nuvarande framsteg & Veckovis \\ \midrule
 
 		Teknisk dokumentation & Beställare & Teknisk beskriving av
-		implementationen av den färdiga produkten. & Beställare &
-		2016--12--17 \\ \midrule
+		implementationen av den färdiga produkten. & 2016--12--17 \\ \midrule
 
-		Användar- handledning & Beställare & En manual för användning av
-		produkten & Beställare & 2016--12--17 \\ \midrule
+		Användar- handledning & Beställare & Manual för användning av produkten & 2016--12--17 \\ \midrule
 
-		Efterstudie & Beställare & Utvärdering av projektet &
-		Beställare & 2016--12--22  \\ \midrule
+		Efterstudie & Beställare & Utvärdering av projektet & 2016--12--22  \\ \midrule
 	\end{longtable}
 	
 	
 	\section{Utvecklingsmetodik}
-	Utvecklingsmetodiken är korrekt.
-
-	\subsection{Programmeringsspråk}
 	För programmering av AVR-processorerna i sensor- och motorikenheten ska C
 	användas. För programmering av centralenheten ska Python användas, då det
 	är ett högnivå-språk med bra stöd i Raspberry Pi. GUI-systemet ska
-	programmeras i det funktionella språket Elm.
+	programmeras i det \\ funktionella språket Elm.
 	
 	\section{Utbildningsplan}
 
 	De gruppmedlemmar som arbetar på ett visst delsystem bör vara fullt
 	utbildade i alla tekniska detaljer som ingår i implementationen av det
 	delsystemet. Gruppmedlemmar som arbetar på andra system behöver inte lika
-	stor insikt i de tekniska detaljerna, men bör
+	stor insikt i de tekniska \\ detaljerna, men bör
 	informera sig om gränssnitten mellan sin enhet och andra delsystem, samt väldigt 
-	grundläggande information om hur enheterna är uppbyggda och deras syften.
+	grundläggande information om hur enheterna är uppbyggda och om deras syften.
 
 	Varje delgrupp är ansvarig i att utbilda sig inom de kunskaper som krävs
 	för utveckling av sina respekive delsystem.
@@ -295,12 +283,12 @@
 	tänker fortsätta sitt arbete. Mötena ska även användas för diskussion av
 	problem gällande de olika delsystemen eller hela systemet. Dessa möten väntas 
 	ta ungefär 1 timme, och vid varje möte ska en sekreterare utses, som åläggs skriva 
-	en statusrapport utifrån från det som togs upp på mötet. Mötena ska ske i början av
+	en statusrapport utifrån det som tagits upp på mötet. Mötena ska ske i början av
 	varje vecka.
 	
 	
 	\section{Resursplan}
-	
+  
 	\subsection{Personer}
 	Alla 7 projektmedlemmar förväntas arbeta ungefär lika mycket under alla
 	projektfaser. Projektgruppen har tillgång till en handlerare.
@@ -333,7 +321,7 @@
 	\begin{longtable}[c]{ c l c}
 		\textbf{Nr} & \textbf{Beskrivning} & \textbf{Datum} \\ \midrule
 		\nextMilNr{} & Designspecifikation är klar & -- \\ \midrule
-		\nextMilNr{} & Roboten kan röra servona med inverterad kinematik & -- \\ \midrule
+		\nextMilNr{} & Roboten kan kontrollera servona med inverterad kinematik & -- \\ \midrule
 		\nextMilNr{} & Roboten kan fatta beslut med hjälp av sensordata & -- \\ \midrule
 		\nextMilNr{} & Det går att styra roboten från gränssnittet & -- \\ \midrule
 		\nextMilNr{} & Roboten kan navigera sig igenom en bana enligt specifikationen& -- \\ \midrule
@@ -358,12 +346,12 @@
 	\section{Aktiviteter}
 	\renewcommand*{\arraystretch}{1.4}
 	\begin{longtable}[c]{ c p{4cm} p{6cm} p{2cm} p{2cm}}
-		\textbf{Nr} & \textbf{Aktivitet} & \textbf{Beskrivning} & \textbf{Beroende av nr} & \textbf{Beräknad tid tim} \\ \midrule
+		\textbf{Nr} & \textbf{Aktivitet} & \textbf{Beskrivning} & \textbf{Beroende av nr} & \textbf{Beräknad tid (tim)} \\ \midrule
 		\nextAktNr{} & Inverterad Kinematik & Uträkning av vinklar för servon utifrån slutposition &  & 20 \\ \midrule
 		\nextAktNr{} & Servokontroll & Kunna kontrollera servon &  & 16 \\ \midrule
 		\nextAktNr{} & Gångstil & Hur roboten går åt olika håll & 1 & 50 \\ \midrule
 		\nextAktNr{} & Kommunikation centralenhet & Motorikenheten ska kommunicera med centralenheten &  & 10 \\ \midrule
-		\nextAktNr{} & Golvhöjdsdetektion & Kännedom av chassits höjd från marken & 2 & 14 \\ \midrule
+		\nextAktNr{} & Golvhöjdsdetektion & Detektering av höjdskillnader i banan & 2 & 14 \\ \midrule
 		\nextAktNr{} & Stötdetektion av hinder & Upptäcka stöt med hinder & 2 & 15 \\ \midrule
 		\nextAktNr{} & Hindergång & Ta sig över hinder på banan & 1,3 & 20 \\ \midrule
 		\nextAktNr{} & Kommunikation med motorikenhet & Centralenhetens kommunikation med motorikenheten &  & 10 \\ \midrule
@@ -412,7 +400,7 @@
     Se Bilaga \ref{app:tidsplan} - Tidsplan.
 	
 	\section{Kvalitetsplan}
-	Gruppmedlemmarna skall arbeta aktivt för att hålla uppe kvaliten på arbetet genom 
+	Gruppmedlemmarna ska arbeta aktivt för att hålla kvalitén uppe på arbetet genom 
 	granskningar och uppföljning efter en testplan.
 	
 	\subsection{Granskningar}
@@ -434,7 +422,7 @@
 	All hårdvara och kod överlämnas vid projektslut till kursansvariga vid ISY. All 
 	kod överlämnas, men behålles på GitHub, utan referenser till kurskoden eller 
 	kurstiteln. Där lagras även all dokumentation. En efterstudie görs med alla 
-	gruppmedlemmar inplandade, där sammarbetet så väl som de tekniska lösningarna 
+	gruppmedlemmar inblandade, där sammarbetet så väl som de tekniska lösningarna 
 	utvärderas. När detta är gjort upplöses gruppen.
 
 \begin{appendices}
