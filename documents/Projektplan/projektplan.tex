@@ -14,7 +14,7 @@
 \usepackage{pbox}
 \usepackage{booktabs}
 \usepackage[parfill]{parskip}
-\usepackage[compact]{titlesec}
+%\usepackage[compact]{titlesec}
 
 %Set page size
 \usepackage{geometry}
@@ -157,18 +157,6 @@
 	
 	
 	\section{Fasplan}
-	Här var det text här var det text här var det text
-	här var det text här var det text här var det text
-	här var det text här var det text här var det text.
-	
-	% \subsection{Före projektstart}
-	% Före projektstarten har en grupp bildats med 7 medlemmar, där varje medlem
-	% har tilldelats ett eller flera ansvarsområden inom projektet. En
-	% kravspecifikation har skrivits enligt projektdirektivet och godkänts av
-	% beställaren. En projektplan, tidsplan och systemskiss har skrivits och
-	% godkänts av beställaren.
-	
-	
 	\subsection{Under projektet}
 	%TODO add simuleringar???
 	Under projektet ska en designspecifikation skrivas med detaljerad
@@ -334,10 +322,8 @@
 	
 	
 	\section{Milstolpar och beslutspunkter}
-	Här var det text här var det text här var det text
-	här var det text här var det text här var det text
-	här var det text här var det text här var det text.
-	
+	Milstolparna består av viktiga delmoment och avslutade projektfaser som
+  spelar kritisk roll. 
 	
 	\subsection{Milstolpar}
 	\begin{longtable}[c]{ c l c}
@@ -360,7 +346,6 @@
 		\nextBPNr{} & Godkännande av projektplanering, beslut att starta utförandefasen & 2016--09--29 \\ \midrule
 		\nextBPNr{} & Godkännande av designspecifikation, beslut att fortsätta
 		utförandefasen & -- \\ \midrule
-		\nextBPNr{} & Används ej & -- \\ \midrule
 		\nextBPNr{} & Godkännande av produktens funktionalitet, beslut att leverera & -- \\ \midrule
 		\nextBPNr{} & Godkännande av leverans, beslut att upplösa projektgruppen & -- \\ \midrule
 	\end{longtable}
@@ -370,46 +355,52 @@
 	\renewcommand*{\arraystretch}{1.4}
 	\begin{longtable}[c]{ c p{3cm} p{6cm} p{3cm} p{2cm}}
 		\textbf{Nr} & \textbf{Aktivitet} & \textbf{Beskrivning} & \textbf{Beroende av aktivitet nr} & \textbf{Beräknad tid tim} \\ \midrule
-		\nextAktNr{} & Inverterad Kinematik & -- &  & -- \\ \midrule
-		\nextAktNr{} & Servokontroll & -- &  & -- \\ \midrule
-		\nextAktNr{} & Gångstil & -- & 1 & -- \\ \midrule
-		\nextAktNr{} & Kommunikation & -- &  & -- \\ \midrule
-		\nextAktNr{} & Golvhöjdsdetektion & -- & 2 & -- \\ \midrule
-		\nextAktNr{} & Stötdetektion & -- & 2 & -- \\ \midrule
-		\nextAktNr{} & Hindergång & -- & 1,3 & -- \\ \midrule
-		\nextAktNr{} & Kommunikation med motorikenhet & -- &  & -- \\ \midrule
-		\nextAktNr{} & Detektera återvändsgränser & -- &  & -- \\ \midrule
-		\nextAktNr{} & Kommunikation med sensorenhet & -- &  & -- \\ \midrule
-		\nextAktNr{} & Kommunikation med GUI & -- &  & -- \\ \midrule
-		\nextAktNr{} & Följa korridor & -- &  & -- \\ \midrule
-		\nextAktNr{} & Hinderdetektion & -- &  & -- \\ \midrule
-		\nextAktNr{} & Hinderhantering & -- &  & -- \\ \midrule
-		\nextAktNr{} & Beslutsfattning & -- & 9,12,13,14 & -- \\ \midrule
-		\nextAktNr{} & GUI kommandotolkning & -- & 11 & -- \\ \midrule
-		\nextAktNr{} & Telemetri & -- & 11 & -- \\ \midrule
-		\nextAktNr{} & Styrning & -- & 19,20 & -- \\ \midrule
-		\nextAktNr{} & Webbserver & -- &  & -- \\ \midrule
-		\nextAktNr{} & Frontend & -- & 19 & -- \\ \midrule
-		\nextAktNr{} & Joystick control & -- & 18,19,20 & -- \\ \midrule
-		\nextAktNr{} & Debug log & -- & 19,20 & -- \\ \midrule
-		\nextAktNr{} & Läsning av IR-sensor & -- & 27,29,30 & -- \\ \midrule
-		\nextAktNr{} & Kommunikation med centralenhet & -- & 27,30 & -- \\ \midrule
-		\nextAktNr{} & Läsning av gyro-sensor & -- & 27,30 & -- \\ \midrule
-		\nextAktNr{} & Läsning av LIDAR & -- & 27,30 & -- \\ \midrule
-		\nextAktNr{} & Brusdetektion av IR-sensor & -- &  & -- \\ \midrule
-		\nextAktNr{} & Integral av gyro & -- & 25,27,30 & -- \\ \midrule
-		\nextAktNr{} & Multiplexning A/D omvandlare & -- & 27,30 & -- \\ \midrule
-		\nextAktNr{} & Enhetskonvertering & -- &  & -- \\ \midrule
-		\nextAktNr{} & Buffertid & -- &  & -- \\ \midrule
-		\nextAktNr{} & Projektmöten & -- &  & -- \\ \midrule
-		\nextAktNr{} & Milstolpe 1 & -- &  & -- \\ \midrule
-		\nextAktNr{} & Milstolpe 2 & -- &  & -- \\ \midrule
-		\nextAktNr{} & Milstolpe 3 & -- &  & -- \\ \midrule
-		\nextAktNr{} & Milstolpe 4 & -- &  & -- \\ \midrule
-		\nextAktNr{} & Milstolpe 5 & -- &  & -- \\ \midrule
-		\nextAktNr{} & Beslutspunkt 1 & -- &  & -- \\ \midrule
-		\nextAktNr{} & Beslutspunkt 2 & -- &  & -- \\ \midrule
-		\nextAktNr{} & Beslutspunkt 5 & -- &  & -- \\ \midrule
+		\nextAktNr{} & Inverterad Kinematik & Uträkning av vinklar för servon utifrån slutposition &  & 20 \\ \midrule
+		\nextAktNr{} & Servokontroll & Kunna kontrollera servon &  & 16 \\ \midrule
+		\nextAktNr{} & Gångstil & Hur roboten går åt olika håll & 1 & 50 \\ \midrule
+		\nextAktNr{} & Kommunikation centralenhet & Motorikenheten ska kommunicera med centralenheten &  & 10 \\ \midrule
+		\nextAktNr{} & Golvhöjdsdetektion & Kännedom av chassits höjd från marken & 2 & 14 \\ \midrule
+		\nextAktNr{} & Stötdetektion av hinder & Upptäcka stöt med hinder & 2 & 15 \\ \midrule
+		\nextAktNr{} & Hindergång & Ta sig över hinder på banan & 1,3 & 20 \\ \midrule
+		\nextAktNr{} & Kommunikation med motorikenhet & Centralenhetens kommunikation med motorikenheten &  & 10 \\ \midrule
+		\nextAktNr{} & Detektera återvändsgränder & Detektera återvändsgränder
+                                                m.h.a. sensordata &  & 14 \\ \midrule
+		\nextAktNr{} & Kommunikation med sensorenhet & Centralenhetens kommunikation
+                                                   med sensorenheten &  & 10 \\ \midrule
+		\nextAktNr{} & Kommunikation med GUI & Centralenhetens kommunikation med GUI &  & 10 \\ \midrule
+		\nextAktNr{} & Följa korridor & Kunna följa en korridor m.h.a. sensordata &  & 20 \\ \midrule
+		\nextAktNr{} & Hinderdetektion & Detektera hinder m.h.a. sensordata &  & 22 \\ \midrule
+		\nextAktNr{} & Hinderhantering & Gå över hindret efter detektion &  & 22 \\ \midrule
+		\nextAktNr{} & Beslutsfattning & Fatta beslut m.h.a. sensordata & 9,12,13,14 & 24 \\ \midrule
+		\nextAktNr{} & GUI kommandotolkning & Tolka de kommandon som kommer in från GUI & 11 & 12 \\ \midrule
+		\nextAktNr{} & Telemetri & Skicka data till de olika enheterna och GUI & 11 & 12 \\ \midrule
+		\nextAktNr{} & GUI för manuell styrning & Styra roboten manuellt m.h.a. GUI & 19,20 & 12 \\ \midrule
+		\nextAktNr{} & Webbserver & Fungerande webbserver på centralenheten &  & 18 \\ \midrule
+		\nextAktNr{} & Kommunikation med webbserver & Frontend kommunikation med webbservern &  & 10 \\ \midrule
+		\nextAktNr{} & Joystick-kontroll & Kontroll av robot från GUI m.h.a. en joystick & 18,19,20 & 18 \\ \midrule
+		\nextAktNr{} & Visning av debuglog & Visning av data från centralenheten & 19,20 & 10 \\ \midrule
+		\nextAktNr{} & Läsning av avståndssensorer & Läsa av data från avståndssensorer & 27,29,30 & 10 \\ \midrule
+		\nextAktNr{} & Kommunikation med centralenhet & Sensorenhetens kommunikation
+                                                            med centralenheten& 27,30 & 10 \\ \midrule
+		\nextAktNr{} & Läsning av gyro & Läsa av data från gyro & 27,30 & 10 \\ \midrule
+		\nextAktNr{} & Läsning av LIDAR & Läsa av data från LIDAR & 27,30 & 10 \\ \midrule
+		\nextAktNr{} & Brusreduktion av gyro & Brusreduktion av den inlästa gyrodatan &  & 16 \\ \midrule
+		\nextAktNr{} & Brusreduktion av avståndssensor & Brusreduktion av den
+                                                     inlästa avståndsdatan &  & 16 \\ \midrule
+		\nextAktNr{} & Vinkeluträkning av gyro & Uträkning av vinkel från den
+                                             brusreducerade gyrodatan & 25,27,30 & 12 \\ \midrule
+		\nextAktNr{} & Multiplexning A/D-omvandlare & Multiplexning av A/D omvandlare & 27,30 & 14 \\ \midrule
+		\nextAktNr{} & Enhetskonvertering & Konvertera sensordata till vettiga enheter &  & 10 \\ \midrule
+		\nextAktNr{} & Kommunikationsprotokoll för AVR & Implementation av kommunikationsprotokoll för AVR  &  & 14 \\ \midrule
+		\nextAktNr{} & Simulator för iverterad kinematik & Simulering av inverterad kinematik &  & 20 \\ \midrule
+		\nextAktNr{} & Simulator för benkontroll & Simulering av benkontroll &  & 20 \\ \midrule
+		\nextAktNr{} & Simulator för korridornavigation & Simulering av korridornavigation &  & 20 \\ \midrule
+		\nextAktNr{} & Montering av hårdvara & Montering av roboten &  & 20 \\ \midrule
+		\nextAktNr{} & Teknisk dokumentation & Skriva den tekniska dokumentationen för hela
+                                                            systemet &  & 100 \\ \midrule
+		\nextAktNr{} & Designspecifikation & Skriva designspecifikationen för hela systemet &  & 180 \\ \midrule
+		\nextAktNr{} & Buffertid & Tiden som kan användas där den behövs &  & 150 \\ \midrule
+		\nextAktNr{} & Projektmöten & Veckomöten med hela projektgruppen &  & 100 \\ \midrule
 	\end{longtable}
 
 	
