@@ -130,7 +130,6 @@
 	%						Översikt
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-	\newpage
 	\section{Översiktlig beskrivning av projektet}
 	Projektet är en del av kursen \textit{Konstruktion med mikrodatorer} där en
   projektgrupp ska konstruera en sexbent robot. 
@@ -140,9 +139,6 @@
 	kan navigera sig ut ur en labyrint. I labyrinten bör roboten även kunna ta
 	sig över hinder för att komma vidare.
 
-	% TODO varför ska vi lägga till "specifika syften som berör projektet och
-	% dess medlemmar"???!!??!
-	
 	
 	\subsection{Leveranser}
 	De dokument som ska levereras till kunden är: projektplan, tidplan,
@@ -158,8 +154,10 @@
 	
 	
 	\section{Fasplan}
-    Projektet har två huvudfaser efter inledningsfasen -- "Under"-fasen samt
-    "Efter"-fasen.
+    Projektet har två huvudfaser efter inledningsfasen - "Under"-fasen samt
+    "Efter"-fasen. Under-fasen är den fas då själva konstruktionen designas, 
+    implementeras samt dokumenteras, och Efter-fasen innehåller det arbetet som
+    ska göra efter att konstruktionen är klar.
 	
 	\subsection{Under projektet}
 	Under projektet ska en designspecifikation skrivas med detaljerad
@@ -187,19 +185,18 @@
 	\section{Organisationsplan för hela projektet}
 	%I detta avsnitt beskrivs hur projektet ska organiseras.
 	Projektrollerna som ingår i detta projekt är: beställare/kund, handlerare,
-	projektledare och projektmedlemmar. Alla projektmedlemmar har kontakt med
-	handledaren, men det är projektledaren som sköter den huvudsakliga
-	kontakten med beställaren, se figur \ref{fig:organization}.
+	projekt-ledare och projektmedlemmar. Alla projektmedlemmar har kontakt med
+	hand-ledaren, men det är projektledaren som sköter den huvudsakliga
+	kontakten med beställaren, se figur~\ref{fig:organization}.
 
 	\begin{figure}[h!]
 		\begin{center}
 		\includegraphics[width=0.8\linewidth]{images/projectroles.png}
-		\caption{Projektets organisation \label{fig:organization}}
+		\caption{Projektets organisation\label{fig:organization}}
 		\end{center}
 	\end{figure}
 	 
 	\subsection{Villkor för samarbetet inom projektgruppen}
-	% TODO create appendix
     Gruppen har kommit överens om villkor för samarbetet, och formulerat det i
     ett internt gruppkontrakt för samarbete.
 	
@@ -216,10 +213,10 @@
 	gemensam kalender samt en gruppchatt.
 	
 	För information om hur arbetet på delsystemen ska fördelas, se Bilaga
-	\ref{app:tidsplan} - Tids-plan.
+	A - Tidplan.
 	
 	\section{Dokumentplan}
-	Dokumenten lagras på GitHub och Git används för versionshantering av
+	GitHub och Git används för versionshantering av
 	dokumenten, som skrivs i LaTeX. Alla projektmedlemmar har tillgång till
 	samtliga dokument. All dokumentation, förutom kommentarer och doc-strängar
 	i kod, är skriven på svenska.
@@ -227,9 +224,7 @@
 	Stora ändringar ger inkrementering av heltalssiffran i versionsnumrena,
 	medan små ändringar ger inkrementation av decimalsiffran.
 	
-	% FIXME kontrollera ansvarig och sånt
-	% TODO lägg till eventuella fler interna dokument
-	\begin{longtable}[l]{ p{2.5cm} p{2.1cm} >{\raggedright}p{4cm} p{2.2cm} l }
+	\begin{longtable}[l]{ p{3cm} p{3cm} >{\raggedright}p{5cm} p{2.2cm} l }
 		\textbf{Dokument} & \textbf{Ansvarig/ godkänns av} & \textbf{Syfte} & \textbf{Färdigdatum} \\ \midrule
 		
 		Kravspeci-fikation & Beställare & Definierar alla krav på systemet & 2016--09--13 \\ \midrule
@@ -240,16 +235,19 @@
 		
 		Systemskiss & Beställare & Grov skiss och idéer för implementation av systemet & 2016--09--29 \\ \midrule
 
+        Gruppkontrakt & Projektledare & Interna villkor för samarbete inom
+        gruppen & 2016--09--23 \\ \midrule
+
 		Designspeci-fikation & Handledare & Detaljerad beskrivning av implementationen av systemet. & 2016--11--04 \\ \midrule
 
-		Tidrapporter & Beställare & Rapportering av använd arbetstid & Veckovis		\\ \midrule
+		Tidrapporter & Handledare & Rapportering av använd arbetstid & Veckovis		\\ \midrule
 
 		Statusrapporter & Beställare & Rapportering av nuvarande framsteg & Veckovis \\ \midrule
 
 		Teknisk dokumentation & Beställare & Teknisk beskriving av
 		implementationen av den färdiga produkten. & 2016--12--17 \\ \midrule
 
-		Användar- handledning & Beställare & Manual för användning av produkten & 2016--12--17 \\ \midrule
+		Användar-handledning & Beställare & Manual för användning av produkten & 2016--12--17 \\ \midrule
 
 		Efterstudie & Beställare & Utvärdering av projektet & 2016--12--22  \\ \midrule
 	\end{longtable}
@@ -317,33 +315,38 @@
 	
 	\section{Milstolpar och beslutspunkter}
 	Milstolparna består av viktiga delmoment och avslutade projektfaser som
-  spelar kritisk roll. 
+	spelar kritisk roll. 
 	
 	\subsection{Milstolpar}
 	\begin{longtable}[c]{ c l c}
 		\textbf{Nr} & \textbf{Beskrivning} & \textbf{Datum} \\ \midrule
-		\nextMilNr{} & Designspecifikation är klar & -- \\ \midrule
-		\nextMilNr{} & Roboten kan kontrollera servona med inverterad kinematik & -- \\ \midrule
-		\nextMilNr{} & Roboten kan fatta beslut med hjälp av sensordata & -- \\ \midrule
-		\nextMilNr{} & Det går att styra roboten från gränssnittet & -- \\ \midrule
-		\nextMilNr{} & Roboten kan navigera sig igenom en bana enligt specifikationen& -- \\ \midrule
-		\nextMilNr{} & Teknisk dokumentation är klar & -- \\ \midrule
+		\nextMilNr{} & Designspecifikation är klar & 2016--11--04 \\ \midrule
+		\nextMilNr{} & Roboten kan kontrollera servona med inverterad kinematik
+        & 2016--11--26 \\ \midrule
+		\nextMilNr{} & Det går att styra roboten från gränssnittet &
+        2016--12--02 \\ \midrule
+		\nextMilNr{} & Roboten kan fatta beslut med hjälp av sensordata &
+        2016--12--09 \\ \midrule
+		\nextMilNr{} & Roboten kan navigera sig igenom en bana enligt
+        specifikationen & 2016--12--12 \\ \midrule
+		\nextMilNr{} & Teknisk dokumentation är klar & 2016--12--14 \\ \midrule
 	\end{longtable}
 	
 	
 	\subsection{Beslutspunkter}
 	\renewcommand*{\arraystretch}{1.4}
-	\begin{longtable}[c]{ c l c}
+    \begin{longtable}[c]{ c p{0.8\textwidth} c}
 		\textbf{Nr} & \textbf{Beskrivning} & \textbf{Datum} \\ \midrule
 		\nextBPNr{} & Godkännande av projektdirektiv, beslut att starta förstudie & 2016--09--02 \\ \midrule
 		\nextBPNr{} & Godkännande av kravspecifikation, beslut att starta förberedelsefasen & 2016--09--13 \\ \midrule
 		\nextBPNr{} & Godkännande av projektplanering, beslut att starta utförandefasen & 2016--09--29 \\ \midrule
 		\nextBPNr{} & Godkännande av designspecifikation, beslut att fortsätta
-		utförandefasen & -- \\ \midrule
+		utförandefasen & 2016--11--04 \\ \midrule
 		\nextBPNr{} & Godkännande av produktens funktionalitet, beslut att leverera & -- \\ \midrule
 		\nextBPNr{} & Godkännande av leverans, beslut att upplösa projektgruppen & -- \\ \midrule
 	\end{longtable}
 	
+    \newpage
 	
 	\section{Aktiviteter}
 	\renewcommand*{\arraystretch}{1.4}
@@ -399,7 +402,7 @@
 
 	
 	\section{Tidplan}
-    Se Bilaga \ref{app:tidsplan} - Tidsplan.
+    Se Bilaga A - Tidsplan.
 	
 	\section{Kvalitetsplan}
 	Gruppmedlemmarna ska arbeta aktivt för att hålla kvalitén uppe på arbetet genom 
@@ -421,14 +424,10 @@
 	
 	
 	\section{Projektavslut}
-	All hårdvara och kod överlämnas vid projektslut till kursansvariga vid ISY. All 
-	kod överlämnas, men behålles på GitHub, utan referenser till kurskoden eller 
-	kurstiteln. Där lagras även all dokumentation. En efterstudie görs med alla 
-	gruppmedlemmar inblandade, där sammarbetet så väl som de tekniska lösningarna 
-	utvärderas. När detta är gjort upplöses gruppen.
+	All hårdvara och kod överlämnas vid projektslut till kursansvariga vid
+    ISY.@\ All kod överlämnas, men behålles på GitHub, utan referenser till
+    kurskoden eller kurstiteln. Där lagras även all dokumentation. En
+    efterstudie görs med alla gruppmedlemmar inblandade, där sammarbetet så väl
+    som de tekniska lösningarna utvärderas. När detta är gjort upplöses gruppen.
 
-\begin{appendices}
-	\section{Gruppkontrakt\label{app:gruppkontrakt}}
-	\section{Tidsplan\label{app:tidsplan}}
-\end{appendices}
 \end{document}
