@@ -1,5 +1,5 @@
-%% TODO%% TODO%% TODO%% TODO%% TODO%% TODO%% TODO%% TODO%% TODO%% TODO%% TODO		   
-% Milstolpar, material, utveklingsmetodik, tidsplan, simuleringar
+%% TODO%% TODO%% TODO%% TODO%% TODO%% TODO%% TODO%% TODO%% TODO%% TODO%% TODO		   k
+% Milstolpar, material, utveklingsmetodik, tidsplan, simuleringark
 % 
 \documentclass[a4paper,titlepage,12pt]{article}
 \usepackage[utf8]{inputenc} %Make sure all UTF8 characters work in the document
@@ -293,7 +293,7 @@
 
 	Varje delgrupp är ansvarig i att utbilda sig inom de kunskaper som krävs
 	för utveckling av sina respekive delsystem. Den utsatta tiden för
-  aktiviteterna innefattar även tiden det tar att utbilda sig. 
+	aktiviteterna innefattar även tiden det tar att utbilda sig. 
 
 	\section{Rapporteringsplan}
 	Tids- och statusrapporter ska skrivas och skickas in följande datum innan kl 16:00: 31--10--2016, 7--11--2016, 14--11--2016, 21--11--2016, 28--11--2016, 5--12--2016, 12--12--2016 och 19--12--2016. Detta görs lämpligen
@@ -382,6 +382,7 @@
 		\nextAktNr{} & Golvhöjdsdetektion & Detektering av höjdskillnader i banan & 2 & 20 \\ \midrule
 		\nextAktNr{} & Stötdetektion av hinder & Upptäcka stöt med hinder & 2 & 15 \\ \midrule
 		\nextAktNr{} & Hindergång & Ta sig över hinder på banan & 1,3 & 20 \\ \midrule
+		\nextAktNr{} & Enhetstestning & Enhetstestning av motorikenhetens komponenter & & 5 \\ \midrule
 		\nextAktNr{} & Kommunikation med motorikenhet & Centralenhetens kommunikation med motorikenheten &  & 10 \\ \midrule
 		\nextAktNr{} & Detektera återvändsgränder & Detektera återvändsgränder
                                                 m.h.a. sensordata &  & 14 \\ \midrule
@@ -392,13 +393,16 @@
 		\nextAktNr{} & Hinderdetektion & Detektera hinder m.h.a. sensordata &  & 22 \\ \midrule
 		\nextAktNr{} & Hinderhantering & Gå över hindret efter detektion &  & 22 \\ \midrule
 		\nextAktNr{} & Beslutsfattning & Fatta beslut m.h.a. sensordata & 9,12,13,14 & 24 \\ \midrule
-		\nextAktNr{} & GUI kommandotolkning & Tolka de kommandon som kommer in från GUI & 11 & 12 \\ \midrule
+		\nextAktNr{} & GUI-kommandotolkning & Tolka de kommandon som kommer in från GUI & 11 & 12 \\ \midrule
 		\nextAktNr{} & Telemetri & Skicka data till de olika enheterna och GUI & 11 & 12 \\ \midrule
+		\nextAktNr{} & Enhetstestning & Enhetstestning av centralenhetens komponenter& & 5 \\ \midrule
 		\nextAktNr{} & GUI för manuell styrning & Styra roboten manuellt m.h.a. GUI & 19,20 & 12 \\ \midrule
 		\nextAktNr{} & Webbserver & Fungerande webbserver på centralenheten &  & 18 \\ \midrule
 		\nextAktNr{} & Kommunikation med webbserver & Frontend kommunikation med webbservern &  & 10 \\ \midrule
 		\nextAktNr{} & Joystick-kontroll & Kontroll av robot från GUI m.h.a. en joystick & 18,19,20 & 18 \\ \midrule
 		\nextAktNr{} & Visning av debuglog & Visning av data från centralenheten & 19,20 & 10 \\ \midrule
+		\nextAktNr{} & Enhetstestning & Enhetstestning av GUI & & 5 \\ \midrule
+
 		\nextAktNr{} & Läsning av avståndssensorer & Läsa av data från avståndssensorer & 27,29,30 & 10 \\ \midrule
 		\nextAktNr{} & Kommunikation med centralenhet & Sensorenhetens kommunikation
                                                             med centralenheten& 27,30 & 10 \\ \midrule
@@ -411,10 +415,12 @@
                                              brusreducerade gyrodatan & 25,27,30 & 12 \\ \midrule
 		\nextAktNr{} & Multiplexning A/D-omvandlare & Multiplexning av A/D omvandlare & 27,30 & 14 \\ \midrule
 		\nextAktNr{} & Enhetskonvertering & Konvertera sensordata till vettiga enheter &  & 10 \\ \midrule
+		\nextAktNr{} & Enhetskonvertering & Enhetstestning av sensorenheten &  & 5 \\ \midrule
 		\nextAktNr{} & Kommunikations-protokoll för AVR & Implementation av kommunikationsprotokoll för AVR  &  & 14 \\ \midrule
 		\nextAktNr{} & Simulator för inverterad kinematik & Simulering av inverterad kinematik &  & 15 \\ \midrule
 		\nextAktNr{} & Simulator för benkontroll & Simulering av benkontroll &  & 20 \\ \midrule
 		\nextAktNr{} & Simulator för korridornavigation & Simulering av korridornavigation &  & 20 \\ \midrule
+		\nextAktNr{} & Integrationstestning & Testning av hela systemet &  & 40 \\ \midrule
 		\nextAktNr{} & Montering av hårdvara & Montering av roboten &  & 20 \\ \midrule
 		\nextAktNr{} & Teknisk dokumentation & Skriva den tekniska dokumentationen för hela
                                                             systemet &  & 100 \\ \midrule
