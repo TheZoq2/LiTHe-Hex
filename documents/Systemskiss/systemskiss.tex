@@ -100,7 +100,8 @@
 			\textbf{Version} & \textbf{Datum} & \textbf{Utförda förändringar} 
 			& \textbf{Utförda av} & \textbf{Granskad} \\ \midrule
 			
-			0.1 & 2016--09--20 & Första utkastet & Projektgruppen & \\
+			0.1 & 2016--09--20 & Första utkastet & Projektgruppen & TS \\
+			1.0 & 2016--09--29 & Första versionen & RS & \\
 		\end{longtable}
 	\end{center}
 
@@ -111,7 +112,7 @@
 	\newpage
 
 	\section{Inledning}
-	I detta dokument beskrivs delsystemen mer ingående samt förslag på hur de ska 
+	I detta dokument beskrivs delsystemen för en sexbent robot mer ingående samt förslag på hur de ska 
 	implementeras. De delsystem som roboten ska använda sig av är:
 	Centralenhet, motorikenhet och sensorenhet.
 
@@ -308,7 +309,7 @@
 	Samma som alternativ 3, där två av sensorerna är ultraljudssensorer, vilket undviker
 	problem om IR-sensorerna stör ut varandra.
 
-	\subsection{Styrenhet}
+	\subsection{Styrenhet i sensorenheten}
 
 	Styrenheten för sensorenheten ska bestå av en AVR-processor, som läser av och behandlar
 	informationen från robotens sensorer. Styrenheten sköter även
@@ -334,7 +335,7 @@
 	för användaren där man kan läsa sensordata eller kontrollera roboten i
 	manuellt läge. Front-end-delen ska skrivas i Elm och back-end-delen i Elixir.
 
-	I det manuella läget ska styras med en joystick som är kopplad till användarens
+	I det manuella läget ska roboten styras med en joystick som är kopplad till användarens
 	dator eller med knappar på gränssnittet.
 	
 
