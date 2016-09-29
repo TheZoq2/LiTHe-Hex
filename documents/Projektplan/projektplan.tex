@@ -47,10 +47,6 @@
 \setcounter{milNr}{0}
 \newcommand{\nextMilNr}{\stepcounter{milNr}\arabic{milNr}}
 
-\newcounter{bpNr}
-\setcounter{bpNr}{0}
-\newcommand{\nextBPNr}{\stepcounter{bpNr}\arabic{bpNr}}
-
 \newcounter{aktNr}
 \setcounter{aktNr}{0}
 \newcommand{\nextAktNr}{\stepcounter{aktNr}\arabic{aktNr}}
@@ -361,14 +357,14 @@
 	\renewcommand*{\arraystretch}{1.4}
     \begin{longtable}[c]{ c p{0.8\textwidth} c}
 		\textbf{Nr} & \textbf{Beskrivning} & \textbf{Datum} \\ \midrule
-		\nextBPNr{} & Godkännande av projektdirektiv, beslut att starta förstudie & 2016--09--02 \\ \midrule
-		\nextBPNr{} & Godkännande av kravspecifikation, beslut att starta förberedelsefasen & 2016--09--13 \\ \midrule
-		\nextBPNr{} & Godkännande av projektplanering, beslut att starta utförandefasen & 2016--09--29 \\ \midrule
-		\nextBPNr{} & Godkännande av designspecifikation, beslut att fortsätta
+		0 & Godkännande av projektdirektiv, beslut att starta förstudie & 2016--09--02 \\ \midrule
+	    1 & Godkännande av kravspecifikation, beslut att starta förberedelsefasen & 2016--09--13 \\ \midrule
+		2 & Godkännande av projektplanering, beslut att starta utförandefasen & 2016--09--29 \\ \midrule
+		3 & Godkännande av designspecifikation, beslut att fortsätta
 		utförandefasen & 2016--11--04 \\ \midrule
-		\nextBPNr{} & Godkännande av produktens funktionalitet, beslut att
+		5 & Godkännande av produktens funktionalitet, beslut att
         leverera & Vecka 50, 2016 \\ \midrule
-		\nextBPNr{} & Godkännande av leverans, beslut att upplösa projektgruppen & -- \\ \midrule
+		6 & Godkännande av leverans, beslut att upplösa projektgruppen & -- \\ \midrule
 	\end{longtable}
 	
 	
