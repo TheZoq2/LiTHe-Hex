@@ -370,13 +370,13 @@
 	\renewcommand*{\arraystretch}{1.4}
 	\begin{longtable}[c]{ c p{4cm} p{6cm} p{2cm} p{2cm}}
 		\textbf{Nr} & \textbf{Aktivitet} & \textbf{Beskrivning} & \textbf{Beroende av nr} & \textbf{Beräknad tid (tim)} \\ \midrule
-		\nextAktNr{} & Inverterad Kinematik & Uträkning av vinklar för servon utifrån slutposition &  & 20 \\ \midrule
+		\nextAktNr{} & Inverterad Kinematik & Uträkning av vinklar för servon utifrån slutposition &  & 30 \\ \midrule
 		\nextAktNr{} & Servokontroll & Kunna kontrollera servon &  & 16 \\ \midrule
 		\nextAktNr{} & Gångstil & Hur roboten går åt olika håll & 1 & 50 \\ \midrule
 		\nextAktNr{} & Kommunikation centralenhet & Motorikenheten ska kommunicera med centralenheten &  & 10 \\ \midrule
 		\nextAktNr{} & Golvhöjdsdetektion & Detektering av höjdskillnader i banan & 2 & 20 \\ \midrule
 		\nextAktNr{} & Stötdetektion av hinder & Upptäcka stöt med hinder & 2 & 15 \\ \midrule
-		\nextAktNr{} & Hindergång & Ta sig över hinder på banan & 1,3 & 20 \\ \midrule
+		\nextAktNr{} & Hindergång & Ta sig över hinder på banan & 1,3 & 40 \\ \midrule
 		\nextAktNr{} & Enhetstestning & Enhetstestning av motorikenhetens komponenter & & 5 \\ \midrule
 		\nextAktNr{} & Kommunikation med motorikenhet & Centralenhetens kommunikation med motorikenheten &  & 10 \\ \midrule
 		\nextAktNr{} & Detektera återvändsgränder & Detektera återvändsgränder
@@ -410,7 +410,7 @@
                                              brusreducerade gyrodatan & 25,27,30 & 12 \\ \midrule
 		\nextAktNr{} & Multiplexning A/D-omvandlare & Multiplexning av A/D omvandlare & 27,30 & 14 \\ \midrule
 		\nextAktNr{} & Enhetskonvertering & Konvertera sensordata till vettiga enheter &  & 10 \\ \midrule
-		\nextAktNr{} & Enhetskonvertering & Enhetstestning av sensorenheten &  & 5 \\ \midrule
+		\nextAktNr{} & Enhetstestning & Enhetstestning av sensorenheten &  & 5 \\ \midrule
 		\nextAktNr{} & Kommunikations-protokoll för AVR & Implementation av kommunikationsprotokoll för AVR  &  & 14 \\ \midrule
 		\nextAktNr{} & Simulator för inverterad kinematik & Simulering av inverterad kinematik &  & 15 \\ \midrule
 		\nextAktNr{} & Simulator för benkontroll & Simulering av benkontroll &  & 20 \\ \midrule
@@ -418,9 +418,14 @@
 		\nextAktNr{} & Integrationstestning & Testning av hela systemet &  & 40 \\ \midrule
 		\nextAktNr{} & Montering av hårdvara & Montering av roboten &  & 20 \\ \midrule
 		\nextAktNr{} & Teknisk dokumentation & Skriva den tekniska dokumentationen för hela
-                                                            systemet &  & 100 \\ \midrule
-		\nextAktNr{} & Designspecifikation & Skriva designspecifikationen för hela systemet &  & 180 \\ \midrule
-		\nextAktNr{} & Buffertid & Tiden som kan användas där den behövs &  & 168 \\ \midrule
+                                                            systemet &  & 90 \\ \midrule
+		\nextAktNr{} & Användarmanual & Beskrivning av hur produkten används &
+        & 10 \\ \midrule
+		\nextAktNr{} & Designspecifikation & Skriva designspecifikationen för hela systemet &  & 160 \\ \midrule
+		\nextAktNr{} & Förbereda presentation & Förbereda presentation av
+        produkten &  & 20 \\ \midrule
+		\nextAktNr{} & Buffertid & Tiden som kan användas där den behövs &  &
+        78 \\ \midrule
 		\nextAktNr{} & Projektmöten & Veckomöten med hela projektgruppen &  & 100 \\ \midrule
 	\end{longtable}
 
