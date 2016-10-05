@@ -212,36 +212,40 @@
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	
 	\section{Motorikenheten}
-	Motorikenheten översätter kommandon från centralen till servokommandon. 
-
-	\subsection{Alternativ 1}
-	Motorikenheten tar emot instruktioner från centralenheten som anger hastighet, 
-	rotation och riktning för förflyttnnig. Motorikenheten behandlar detta, räknar ut en 
-	lämplig 
-	gångstil och signalerar nödvändiga vinklar till de sex benen. Vissa delmoment i 
-	förflyttningen görs hårdkodade. 
+	Motorikenheten översätter kommandon från centralen till servokommandon. Den tar emot 
+	instruktioner från centralenheten som anger hastighet, rotation och riktning för 
+	förflyttnnig. Motorikenheten behandlar detta, räknar ut en lämplig gångstil och 
+	signalerar nödvändiga vinklar till de sex benen. Vissa delmoment i förflyttningen 
+	görs hårdkodade. 
 	
-		\subsubsection{Planläggning}
+		\subsection{Planläggning}
 	Första steget i motorikenheten för en anpassad gångstil är att utifrån efterfrågad
 	förflyttning avgöra en önskad slutposition för respektive ben, som för roboten närmre 
-	ett läge angivet av centralenheten. Utifrån hastighet kan förflyttningsvektorerna 
-	från nuvarande läge för varje ben skalas ner eller upp, inom rimligheten för vad
-	benen kan nå. Benen flyttas i grupper av tre med ett pen på ena sidan och två på  andra.
-	När ett sett förflyttas, skiftas de markfästa benen vid behov för 
-	att flytta själva kroppen. Inför ett steg med ett ben hårdkodas ett lyft av benet. 
-	Även bestigning av hinder kan komma att hårdkodas.
-	
-	\subsubsection{Inverterad kinematik}
-	Andra steget i motorikenheten för en anpassad gångstil är beräkning av
-    benens vinklar. Utifrån kända längder på benen och positioner där man vill
-    att fötterna ska placeras används trigonometri för att avgöra slutgiltiga
-    servovinklar.
+	ett läge indikerat av centralenheten. Utifrån hastighet skalas förflyttningsvektorerna 
+	från nuvarande läge för varje ben ner. Benen flyttas i grupper av tre med ett pen på 
+	ena sidan och två på  andra (uppdelat på ett mittenben, respektive ett framben och ett 
+	bakben). När ett sett ben förflyttas, skiftas de markfästa benen vid behov för 
+	att flytta själva kroppen, även denna utifrån en förflyttningsvektor (som med benen). 
+	Lyft och nedsättning av ben hårdkodas, sådan att alla tre ben som skall flyttas i ett 
+	sett höjs, och sänks först när de satts i önskad position, sådan att benens position 
+	och förflyttning för vanlig gång kan beräknas i planet, snarare än i rummet, med 
+	avseende på beslutsfattning. endast vid den inversa kinematiken krävs då 
+	tredimensionell planering av benens rörelser. 
 
-	\subsection{Alternativ 2}
-	Motorikenheten förses med en uppsättning hårdkodade instruktioner för benrörelser, och
-	väljer bland dessa utifrån försedda indata. Hårdkodade rörelser inkluderar rotation på 
-	plats, rörelse framåt (två hastigheter), bakåt och i sidled, rörelse med svag rotation, 
-	bestigning av hinder (i mån av uppfyllande av detta sekundära krav). 
+	För hindergång ska roboten treva med benen, och anpassa sig efter höjdskilnaden genom
+	läsning av benens mötta motstånd. Benen sänks till det att de möter motstånd, dels
+	vid uppstegning på hindret, men också vid gång på hindret, för att upptäcka när hindret 
+	tar slut. Inför uppgång på hinder höjs även benen extra, för att tillåta kliven att nå 
+	upp till hindret. 
+	
+	\subsection{Inverterad kinematik}
+	Då planläggningsdelen av motorikenheten beslutat om var ett ben skall flyttas beräknas  
+	lmpliga vinklar för benets alla servon genom inverterad kinematik. Utifrån kända 
+	längder på benen och positioner där man vill att fötterna ska placeras används 
+	trigonometri för att avgöra slutgiltiga servovinklar. <Emiluren, se över detta så att det stämmer>
+
+	\subsection{Kommunikation med aktuatorer}
+	<Att skrivas>
 	
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%						Sensorenheten
