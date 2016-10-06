@@ -165,9 +165,6 @@
   utförandet av en annan funktion. Utifrån denna data fattar centralenheten
   beslut om hexapodens färdriktning.
   
-  \subsubsection{Alternativ 2}
-  Sensorenheten sänder kontinuerligt data som tas emot av centralenheten och används löpande för att fatta beslut. Detta innebär att centralenheten antingen blir avbruten mitt i en funktion för att behandla ny data eller att sensordata ignoreras. 
-  
 	\subsection{Hinderdetektion}
 	%För hinderdetektering finns det olika alternativ att använda. Det är möjligt att 
 	%detektera hinder med hjälp av en avståndsmätare som är vinklad nedåt, en IR-sensor 
@@ -178,11 +175,6 @@
 	%returnera tillsammans med övriga sensorer för att upptäcka när roboten går in i ett 
 	%hinder. 
 	Sensorenheten har en avståndsmätare som är riktad snett neråt för att hitta kanten på hinder.
-
-	\subsubsection{Alternativ 1}
-	En LIDAR-sensor används som avståndssensor. Den skulle i så fall behöva kommunicera med
-	sensorenheten via \itc{} vilket kräver extra arbete. LIDAR sensorn har dock ett större 
-	avståndsspann än IR-sensorer. Den har även antagligen en mindre mätfält.
 
 	\subsubsection{Alternativ 2}
 	En IR-sensor används som avståndssensor. Vi kommer redan ha  kod för kommunikation med
@@ -204,8 +196,6 @@
 	centralenheten utan att centralenheten har på startat kommunikationen. I och 
 	med att \itc{} behöver en master/slave konfiguration blir SPI enklare att använda 
 	för tvåvägskommunikation. 
-
-
 
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%						Motorikenheten
