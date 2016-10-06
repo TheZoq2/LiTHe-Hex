@@ -134,7 +134,7 @@
 	\subsection{Kommunikation mellan enheterna}
 	Kommunikation kan ske med UART, SPI eller \itc{}. AVR-processorerna har
 	2 st UART-, 3 st SPI- och en \itc{}-ingång medan Raspberry PI:en har 1 st
-    UART-, 2 st SPI- och
+	UART-, 2 st SPI- och
 	en \itc{}-ingång. 
 
 	\subsubsection{Alternativ 1}
@@ -145,7 +145,9 @@
 	UART-port.
 
 	\subsubsection{Alternativ 2}
-	Om både motorikenheten och sensorenheten har sin \itc{}-buss tillgänglig kan de kommunicera med centralenheten via en gemensam \itc{}-buss där centralenheten är master och de andra enheterna är slaves. 
+	Om både motorikenheten och sensorenheten har sin \itc{}-buss tillgänglig kan de 
+	kommunicera med centralenheten via en gemensam \itc{}-buss där centralenheten är 
+	master och de andra enheterna är slaves. 
 	
 	\section{Centralenheten}
 	Centralenheten har tre ansvarsområden: navigation/beslutsfattning, hinderdetektion samt
@@ -158,13 +160,13 @@
 	skickar kommandon till motorikenheten. Det finns två alternativ om hur
 	centralenheten ska kommunicera med sensorenheten.
   
-  \subsubsection{Alternativ 1}
-  Centralenheten frågar om data från sensorenheten varje gång det ska fattas ett
-  beslut. Detta gör att centralenheten själv bestämmer när den ska ha ny data
-  för att den inte ska bli avbruten eller missa data för att den är mitt i
-  utförandet av en annan funktion. Utifrån denna data fattar centralenheten
-  beslut om hexapodens färdriktning.
-  
+	\subsubsection{Alternativ 1}
+	Centralenheten frågar om data från sensorenheten varje gång det ska fattas ett
+	beslut. Detta gör att centralenheten själv bestämmer när den ska ha ny data
+	för att den inte ska bli avbruten eller missa data för att den är mitt i
+	utförandet av en annan funktion. Utifrån denna data fattar centralenheten
+	beslut om hexapodens färdriktning.
+
 	\subsection{Hinderdetektion}
 	%För hinderdetektering finns det olika alternativ att använda. Det är möjligt att 
 	%detektera hinder med hjälp av en avståndsmätare som är vinklad nedåt, en IR-sensor 
@@ -174,7 +176,8 @@
 	%alternativ för att upptäcka hinder är att läsa av det motstånd som benens servo kan 
 	%returnera tillsammans med övriga sensorer för att upptäcka när roboten går in i ett 
 	%hinder. 
-	Sensorenheten har en avståndsmätare som är riktad snett neråt för att hitta kanten på hinder.
+	Sensorenheten har en avståndsmätare som är riktad snett neråt för att hitta kanten 
+	på hinder.
 
 	\subsubsection{Alternativ 2}
 	En IR-sensor används som avståndssensor. Vi kommer redan ha  kod för kommunikation med
@@ -319,7 +322,10 @@
     att vrida sig åt ett håll och att stanna.
 
     \subsection{Debug}
-	Under debug ska robotens olika inställningars värden visas samt ska den visa all sensordata vid tillfället. Var tredje sekund ska sidan uppdateras och klienten hämtar den uppdaterade data:n med hjälp av JSON (Javascript Object Notation). Det ska också finnas en eller flera grafer som beskriver några av de olika data.
+	Under debug ska robotens olika inställningars värden visas samt ska den visa all 
+	sensordata vid tillfället. Var tredje sekund ska sidan uppdateras och klienten 
+	hämtar den uppdaterade data:n med hjälp av JSON (Javascript Object Notation). 
+	Det ska också finnas en eller flera grafer som beskriver några av de olika data.
 
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%						Simuleringar
