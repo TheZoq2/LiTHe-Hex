@@ -268,12 +268,25 @@
 	datan, samt beräkna integralen av informationen från gyrot för att få ut en
 	faktisk vinkel som roboten roterat. 
 
-	Flödesschemat för den kod som är tänkt att köras kan ses i figur X. Avbrott 
-	21(Rx complete) och 23(Tx complete) kommer att genereras av UART kommunikationen 
-	med centralenheten. Avbrott 25 genereras när en A/D-omvandling är klar vilket används för 
-	IR-sensorerna. Avbrott 20 genereras när någon bit i registret för SPI kommunikationen med gyrot
-	ändras. Avbrott 27 genereras när någon bit i registret för \itc kommunikationen med LIDAR
+	Flödesschemat för den kod som är tänkt att köras kan ses i figur X. 
+	Avbrott 21(Rx complete) och 23(Tx complete) kommer att genereras av UART kommunikationen 
+	med centralenheten. 
+	Avbrott 25 genereras när en A/D-omvandling är klar vilket används för IR-sensorerna. 
+	Avbrott 20 genereras när någon bit i registret för SPI kommunikationen med gyrot
 	ändras. 
+	Avbrott 27 genereras när någon bit i registret för \itc{} kommunikationen med LIDAR
+	ändras. 
+
+
+	IR analog blir digital(A/D), läggs i tabell, när tabell är 5 stor gör brusred., 
+	IR data klar att skickas till Centralenheten.
+	
+	Gyro digital integreras läggs i tabell, när tabell är X stor gör brusred., 
+	gyro data klar att skickas till Centralenheten. 
+
+	LIDAR digital läggs i tabell, när tabell är X stor gör brusred., 
+	LIDAR data klar att skickas till Centralenheten. 
+	
 
 	\subsection{Gyro}
 	
