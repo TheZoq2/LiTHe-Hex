@@ -269,21 +269,12 @@
 	Sensorenheten ska använda avståndssensorer på framsidan, en sensor för att
 	upptäcka väggar och en sensor som är snett vinklat ner mot golvet för hinderdetektion. 
 
-	Avståndssensorn som mäter framåt ska utgöras av en IR-sensor med
-	tillräckling räckvidd för att kunna avgöra om det den tittar på är en
-	återvändsgränd eller inte.
+	Avståndssensorn som mäter framåt ska utgöras av en LIDAR-sensor, som har
+    ett mycket bredd mätspann (0-40m) med 1 centimeters upplösning.
 
-	\subsubsection{Alternativ 1}
-
-	Sensorn som ska upptäcka hinder ska utgöras av en IR-sensor. Detta
+	Sensorn som ska upptäcka hinder ska utgöras av en IR-sensor. Det
 	har fördelen att ha samma gränssnitt som de andra IR-sensorerna som roboten
 	ska använda.
-
-	\subsubsection{Alternativ 2}
-
-	Sensorn för hinderdetektion utgörs av en LIDAR-sensor. Denna har
-	fördelen att vara mycket mer exakt än en IR-sensor, men nackdelen är att
-	den har ett \itc{}-gränssnitt som ingen annan sensor har.
 
 	\subsection{Avståndssensorer åt sidorna}
 	Roboten ska ha avståndssensorer på vardera långsida av roboten, för
