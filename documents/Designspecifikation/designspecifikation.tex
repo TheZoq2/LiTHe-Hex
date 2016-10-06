@@ -134,7 +134,7 @@
 	\subsection{Kommunikation mellan enheterna}
 	Kommunikation kan ske med UART, SPI eller \itc{}. AVR-processorerna har
 	2 st UART-, 3 st SPI- och en \itc{}-ingång medan Raspberry PI:en har 1 st
-    UART-, 2 st SPI- och
+	UART-, 2 st SPI- och
 	en \itc{}-ingång. 
 
 	\subsubsection{Alternativ 1}
@@ -145,7 +145,9 @@
 	UART-port.
 
 	\subsubsection{Alternativ 2}
-	Om både motorikenheten och sensorenheten har sin \itc{}-buss tillgänglig kan de kommunicera med centralenheten via en gemensam \itc{}-buss där centralenheten är master och de andra enheterna är slaves. 
+	Om både motorikenheten och sensorenheten har sin \itc{}-buss tillgänglig kan de 
+	kommunicera med centralenheten via en gemensam \itc{}-buss där centralenheten är 
+	master och de andra enheterna är slaves. 
 	
 	\section{Centralenheten}
 	Centralenheten har tre ansvarsområden: navigation/beslutsfattning, hinderdetektion samt
@@ -158,13 +160,13 @@
 	skickar kommandon till motorikenheten. Det finns två alternativ om hur
 	centralenheten ska kommunicera med sensorenheten.
   
-  \subsubsection{Alternativ 1}
-  Centralenheten frågar om data från sensorenheten varje gång det ska fattas ett
-  beslut. Detta gör att centralenheten själv bestämmer när den ska ha ny data
-  för att den inte ska bli avbruten eller missa data för att den är mitt i
-  utförandet av en annan funktion. Utifrån denna data fattar centralenheten
-  beslut om hexapodens färdriktning.
-  
+	\subsubsection{Alternativ 1}
+	Centralenheten frågar om data från sensorenheten varje gång det ska fattas ett
+	beslut. Detta gör att centralenheten själv bestämmer när den ska ha ny data
+	för att den inte ska bli avbruten eller missa data för att den är mitt i
+	utförandet av en annan funktion. Utifrån denna data fattar centralenheten
+	beslut om hexapodens färdriktning.
+
 	\subsection{Hinderdetektion}
 	%För hinderdetektering finns det olika alternativ att använda. Det är möjligt att 
 	%detektera hinder med hjälp av en avståndsmätare som är vinklad nedåt, en IR-sensor 
@@ -174,7 +176,8 @@
 	%alternativ för att upptäcka hinder är att läsa av det motstånd som benens servo kan 
 	%returnera tillsammans med övriga sensorer för att upptäcka när roboten går in i ett 
 	%hinder. 
-	Sensorenheten har en avståndsmätare som är riktad snett neråt för att hitta kanten på hinder.
+	Sensorenheten har en avståndsmätare som är riktad snett neråt för att hitta kanten 
+	på hinder.
 
 	\subsubsection{Alternativ 2}
 	En IR-sensor används som avståndssensor. Vi kommer redan ha  kod för kommunikation med
@@ -195,7 +198,11 @@
 	det inte möjligt för sensorenheten och motorikenheten att kommunicera med
 	centralenheten utan att centralenheten har på startat kommunikationen. I och 
 	med att \itc{} behöver en master/slave konfiguration blir SPI enklare att använda 
-	för tvåvägskommunikation. 
+	för tvåvägskommunikation.
+	
+	% TODO: write more
+	\subsubsection{Kommunikation med webbserver}
+	Centralenheten kommunicerar med webbservern genom att skicka strängar med data till den. Strukturen på strängarna med data ser ut som ....
 
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%						Motorikenheten
@@ -208,7 +215,7 @@
 	signalerar nödvändiga vinklar till de sex benen. Vissa delmoment i förflyttningen 
 	görs hårdkodade. 
 	
-		\subsection{Planläggning}
+	\subsection{Planläggning}
 	Första steget i motorikenheten för en anpassad gångstil är att utifrån efterfrågad
 	förflyttning avgöra en önskad slutposition för respektive ben, som för roboten närmre 
 	ett läge indikerat av centralenheten. Utifrån hastighet skalas förflyttningsvektorerna 
@@ -317,6 +324,12 @@
 
 	I det manuella läget ska roboten styras med en joystick som är kopplad till användarens
 	dator eller med knappar på gränssnittet.
+	
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.5\linewidth]{images/gui-index.png}
+		\caption{Figur av det grafiska gränssnittet\label{fig:gui-overview}}
+	\end{figure}
     
     \subsection{Styrning}
     Under styrning ska man kunna styra roboten med en joystick. Man ska även
@@ -326,7 +339,10 @@
     att vrida sig åt ett håll och att stanna.
 
     \subsection{Debug}
-	Under debug ska robotens olika inställningars värden visas samt ska den visa all sensordata vid tillfället. Var tredje sekund ska sidan uppdateras och klienten hämtar den uppdaterade data:n med hjälp av JSON (Javascript Object Notation). Det ska också finnas en eller flera grafer som beskriver några av de olika data.
+	Under debug ska robotens olika inställningars värden visas samt ska den visa all 
+	sensordata vid tillfället. Var tredje sekund ska sidan uppdateras och klienten 
+	hämtar den uppdaterade data:n med hjälp av JSON (Javascript Object Notation). 
+	Det ska också finnas en eller flera grafer som beskriver några av de olika data.
 
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%						Simuleringar
@@ -338,7 +354,11 @@
 	delarna där simulering är mest aktuellt är inverterad kinematik, korridorföljning 
 	och gångstil.
 
+	% TODO: write more and correct it
 	\subsection{Simulering för inverterad kinematik}
+	Simuleringen går till genom en algoritm som går ut på att först räkna ut Jacobis matrisen för servornas position och dess vinkelräta enhetsvektor.
+	
+	Simuleringen kommer sedan att ritas ut med hjälp av algoritmen som beskrevs ovan i webbläsaren.
 	
 	\subsection{Simulering för korridorföljning}
 	
