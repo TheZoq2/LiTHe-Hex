@@ -148,6 +148,26 @@
 	Om både motorikenheten och sensorenheten har sin \itc{}-buss tillgänglig kan de 
 	kommunicera med centralenheten via en gemensam \itc{}-buss där centralenheten är 
 	master och de andra enheterna är slaves. 
+
+	\subsubsection*{Kommunikationsprotokoll}
+	\label{ssub:Kommunikationsprotokoll}
+	Kommuikationen mellan centralenheten, motorikenheten och sensorenheten kommer att ske 
+	med protokollet som beskrivs i figur \ref{fig:kommunikation1}
+
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.5\linewidth]{images/communication_protocol1.png}
+		\caption{Översiktlig vy av kommunikationsprotokolllet}
+		\label{fig:kommunikation1}
+	\end{figure}
+
+	Den första biten i ett meddelande är en ID bit som beskriver vad meddelandet som
+	skickas betyder samt vilken typ av meddelande det är. Om första biten är 0 så 
+	består meddelandet av en enstaka byte och annars består meddelandet av en byte
+	som beskriver längden av meddelandet följt av det faktiska meddelandet. 
+	
+	<Något om fel i sändningen>
+	
 	
 	\section{Centralenheten}
 	Centralenheten har tre ansvarsområden: navigation/beslutsfattning, hinderdetektion samt
