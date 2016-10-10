@@ -24,35 +24,42 @@ import Html.App as App
 import Html.Attributes exposing (width, height)
 import WebGL
 import Rendering
+import Mouse
 
 
 type alias Model =
-    {}
+    { lastClick : Mouse.Position }
 
 
 type Msg
     = NoOp
+    | MouseDown Mouse.Position
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( {}, Cmd.none )
+    ( {lastClick = {x = 131, y = 32}}, Cmd.none )
 
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Sub.batch []
+    Sub.batch [Mouse.downs MouseDown]
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    ( model, Cmd.none )
+    case msg of
+        NoOp ->
+            ( model, Cmd.none )
+
+        MouseDown pos ->
+            ( {model | lastClick = pos}, Cmd.none )
 
 
 view : Model -> Html Msg
 view model =
     WebGL.toHtml [ width Rendering.canvasWidth, height Rendering.canvasHeight ]
-        Rendering.renderAll
+        (Rendering.renderAll model.lastClick)
 
 
 main : Program Never

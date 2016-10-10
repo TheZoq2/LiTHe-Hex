@@ -1,6 +1,4 @@
-<!DOCTYPE HTML>
-<html><head><meta charset="UTF-8"><title>Main</title><style>html,head,body { padding:0; margin:0; }
-body { font-family: calibri, helvetica, arial, sans-serif; }</style><script type="text/javascript">
+
 (function() {
 'use strict';
 
@@ -136,6 +134,7 @@ function A9(fun, a, b, c, d, e, f, g, h, i)
     ? fun.func(a, b, c, d, e, f, g, h, i)
     : fun(a)(b)(c)(d)(e)(f)(g)(h)(i);
 }
+
 //import Native.Utils //
 
 var _elm_lang$core$Native_Basics = function() {
@@ -276,7 +275,8 @@ return {
 	isInfinite: isInfinite
 };
 
-}();//import //
+}();
+//import //
 
 var _elm_lang$core$Native_Utils = function() {
 
@@ -758,7 +758,8 @@ return {
 	toString: toString
 };
 
-}();var _elm_lang$core$Basics$uncurry = F2(
+}();
+var _elm_lang$core$Basics$uncurry = F2(
 	function (f, _p0) {
 		var _p1 = _p0;
 		return A2(f, _p1._0, _p1._1);
@@ -882,6 +883,7 @@ var _elm_lang$core$Basics$LT = {ctor: 'LT'};
 var _elm_lang$core$Basics$Never = function (a) {
 	return {ctor: 'Never', _0: a};
 };
+
 //import Native.Utils //
 
 var _elm_lang$core$Native_Debug = function() {
@@ -911,8 +913,10 @@ return {
 	log: F2(log)
 };
 
-}();var _elm_lang$core$Debug$crash = _elm_lang$core$Native_Debug.crash;
+}();
+var _elm_lang$core$Debug$crash = _elm_lang$core$Native_Debug.crash;
 var _elm_lang$core$Debug$log = _elm_lang$core$Native_Debug.log;
+
 var _elm_lang$core$Maybe$withDefault = F2(
 	function ($default, maybe) {
 		var _p0 = maybe;
@@ -1004,6 +1008,7 @@ var _elm_lang$core$Maybe$map5 = F6(
 			return _elm_lang$core$Maybe$Nothing;
 		}
 	});
+
 //import Native.Utils //
 
 var _elm_lang$core$Native_List = function() {
@@ -1156,7 +1161,8 @@ return {
 	sortWith: F2(sortWith)
 };
 
-}();var _elm_lang$core$List$sortWith = _elm_lang$core$Native_List.sortWith;
+}();
+var _elm_lang$core$List$sortWith = _elm_lang$core$Native_List.sortWith;
 var _elm_lang$core$List$sortBy = _elm_lang$core$Native_List.sortBy;
 var _elm_lang$core$List$sort = function (xs) {
 	return A2(_elm_lang$core$List$sortBy, _elm_lang$core$Basics$identity, xs);
@@ -1657,6 +1663,7 @@ var _elm_lang$core$List$repeat = F2(
 			n,
 			value);
 	});
+
 var _elm_lang$core$Result$toMaybe = function (result) {
 	var _p0 = result;
 	if (_p0.ctor === 'Ok') {
@@ -1798,6 +1805,7 @@ var _elm_lang$core$Result$fromMaybe = F2(
 			return _elm_lang$core$Result$Err(err);
 		}
 	});
+
 //import //
 
 var _elm_lang$core$Native_Platform = function() {
@@ -2408,6 +2416,7 @@ return {
 };
 
 }();
+
 //import Native.Utils //
 
 var _elm_lang$core$Native_Scheduler = function() {
@@ -2688,13 +2697,15 @@ return {
 	rawSend: rawSend
 };
 
-}();var _elm_lang$core$Platform$hack = _elm_lang$core$Native_Scheduler.succeed;
+}();
+var _elm_lang$core$Platform$hack = _elm_lang$core$Native_Scheduler.succeed;
 var _elm_lang$core$Platform$sendToSelf = _elm_lang$core$Native_Platform.sendToSelf;
 var _elm_lang$core$Platform$sendToApp = _elm_lang$core$Native_Platform.sendToApp;
 var _elm_lang$core$Platform$Program = {ctor: 'Program'};
 var _elm_lang$core$Platform$Task = {ctor: 'Task'};
 var _elm_lang$core$Platform$ProcessId = {ctor: 'ProcessId'};
 var _elm_lang$core$Platform$Router = {ctor: 'Router'};
+
 var _elm_lang$core$Platform_Cmd$batch = _elm_lang$core$Native_Platform.batch;
 var _elm_lang$core$Platform_Cmd$none = _elm_lang$core$Platform_Cmd$batch(
 	_elm_lang$core$Native_List.fromArray(
@@ -2710,12 +2721,14 @@ _elm_lang$core$Platform_Cmd_ops['!'] = F2(
 	});
 var _elm_lang$core$Platform_Cmd$map = _elm_lang$core$Native_Platform.map;
 var _elm_lang$core$Platform_Cmd$Cmd = {ctor: 'Cmd'};
+
 var _elm_lang$core$Platform_Sub$batch = _elm_lang$core$Native_Platform.batch;
 var _elm_lang$core$Platform_Sub$none = _elm_lang$core$Platform_Sub$batch(
 	_elm_lang$core$Native_List.fromArray(
 		[]));
 var _elm_lang$core$Platform_Sub$map = _elm_lang$core$Native_Platform.map;
 var _elm_lang$core$Platform_Sub$Sub = {ctor: 'Sub'};
+
 
 /*
  * Copyright (c) 2010 Mozilla Corporation
@@ -4501,6 +4514,7 @@ var _elm_community$elm_linear_algebra$Native_MJS = function() {
     };
 
 }();
+
 var _elm_community$elm_linear_algebra$Math_Vector3$cross = _elm_community$elm_linear_algebra$Native_MJS.v3cross;
 var _elm_community$elm_linear_algebra$Math_Vector3$dot = _elm_community$elm_linear_algebra$Native_MJS.v3dot;
 var _elm_community$elm_linear_algebra$Math_Vector3$scale = _elm_community$elm_linear_algebra$Native_MJS.v3scale;
@@ -4528,6 +4542,7 @@ var _elm_community$elm_linear_algebra$Math_Vector3$j = A3(_elm_community$elm_lin
 var _elm_community$elm_linear_algebra$Math_Vector3$i = A3(_elm_community$elm_linear_algebra$Native_MJS.vec3, 1, 0, 0);
 var _elm_community$elm_linear_algebra$Math_Vector3$vec3 = _elm_community$elm_linear_algebra$Native_MJS.vec3;
 var _elm_community$elm_linear_algebra$Math_Vector3$Vec3 = {ctor: 'Vec3'};
+
 var _elm_community$elm_linear_algebra$Math_Matrix4$makeBasis = _elm_community$elm_linear_algebra$Native_MJS.m4x4makeBasis;
 var _elm_community$elm_linear_algebra$Math_Matrix4$transpose = _elm_community$elm_linear_algebra$Native_MJS.m4x4transpose;
 var _elm_community$elm_linear_algebra$Math_Matrix4$makeLookAt = _elm_community$elm_linear_algebra$Native_MJS.m4x4makeLookAt;
@@ -4551,6 +4566,7 @@ var _elm_community$elm_linear_algebra$Math_Matrix4$inverseOrthonormal = _elm_com
 var _elm_community$elm_linear_algebra$Math_Matrix4$identity = _elm_community$elm_linear_algebra$Native_MJS.m4x4identity;
 var _elm_community$elm_linear_algebra$Math_Matrix4$transform = _elm_community$elm_linear_algebra$Native_MJS.v3mul4x4;
 var _elm_community$elm_linear_algebra$Math_Matrix4$Mat4 = {ctor: 'Mat4'};
+
 
 /*
  * Copyright (c) 2010 Mozilla Corporation
@@ -4730,6 +4746,7 @@ var _elm_community$elm_linear_algebra$Native_Math_Vector2 = function() {
     };
 
 }();
+
 var _elm_community$elm_linear_algebra$Math_Vector2$dot = _elm_community$elm_linear_algebra$Native_Math_Vector2.dot;
 var _elm_community$elm_linear_algebra$Math_Vector2$scale = _elm_community$elm_linear_algebra$Native_Math_Vector2.scale;
 var _elm_community$elm_linear_algebra$Math_Vector2$normalize = _elm_community$elm_linear_algebra$Native_Math_Vector2.normalize;
@@ -4751,6 +4768,7 @@ var _elm_community$elm_linear_algebra$Math_Vector2$getY = _elm_community$elm_lin
 var _elm_community$elm_linear_algebra$Math_Vector2$getX = _elm_community$elm_linear_algebra$Native_Math_Vector2.getX;
 var _elm_community$elm_linear_algebra$Math_Vector2$vec2 = _elm_community$elm_linear_algebra$Native_Math_Vector2.vec2;
 var _elm_community$elm_linear_algebra$Math_Vector2$Vec2 = {ctor: 'Vec2'};
+
 // eslint-disable-next-line no-unused-vars
 var _elm_community$elm_webgl$Native_WebGL = function () {
 
@@ -5347,6 +5365,7 @@ var _elm_community$elm_webgl$Native_WebGL = function () {
   };
 
 }();
+
 //import Native.List //
 
 var _elm_lang$core$Native_Array = function() {
@@ -6313,7 +6332,8 @@ return {
 	fromJSArray: fromJSArray
 };
 
-}();var _elm_lang$core$Array$append = _elm_lang$core$Native_Array.append;
+}();
+var _elm_lang$core$Array$append = _elm_lang$core$Native_Array.append;
 var _elm_lang$core$Array$length = _elm_lang$core$Native_Array.length;
 var _elm_lang$core$Array$isEmpty = function (array) {
 	return _elm_lang$core$Native_Utils.eq(
@@ -6366,6 +6386,7 @@ var _elm_lang$core$Array$repeat = F2(
 			_elm_lang$core$Basics$always(e));
 	});
 var _elm_lang$core$Array$Array = {ctor: 'Array'};
+
 //import Maybe, Native.List, Native.Utils, Result //
 
 var _elm_lang$core$Native_String = function() {
@@ -6701,6 +6722,7 @@ return {
 };
 
 }();
+
 //import Native.Utils //
 
 var _elm_lang$core$Native_Char = function() {
@@ -6714,7 +6736,8 @@ return {
 	toLocaleLower: function(c) { return _elm_lang$core$Native_Utils.chr(c.toLocaleLowerCase()); }
 };
 
-}();var _elm_lang$core$Char$fromCode = _elm_lang$core$Native_Char.fromCode;
+}();
+var _elm_lang$core$Char$fromCode = _elm_lang$core$Native_Char.fromCode;
 var _elm_lang$core$Char$toCode = _elm_lang$core$Native_Char.toCode;
 var _elm_lang$core$Char$toLocaleLower = _elm_lang$core$Native_Char.toLocaleLower;
 var _elm_lang$core$Char$toLocaleUpper = _elm_lang$core$Native_Char.toLocaleUpper;
@@ -6756,6 +6779,7 @@ var _elm_lang$core$Char$isHexDigit = function ($char) {
 		_elm_lang$core$Native_Utils.chr('F'),
 		$char));
 };
+
 var _elm_lang$core$String$fromList = _elm_lang$core$Native_String.fromList;
 var _elm_lang$core$String$toList = _elm_lang$core$Native_String.toList;
 var _elm_lang$core$String$toFloat = _elm_lang$core$Native_String.toFloat;
@@ -6799,6 +6823,7 @@ var _elm_lang$core$String$fromChar = function ($char) {
 	return A2(_elm_lang$core$String$cons, $char, '');
 };
 var _elm_lang$core$String$isEmpty = _elm_lang$core$Native_String.isEmpty;
+
 var _elm_lang$core$Dict$foldr = F3(
 	function (f, acc, t) {
 		foldr:
@@ -7692,6 +7717,7 @@ var _elm_lang$core$Dict$diff = F2(
 			t1,
 			t2);
 	});
+
 //import Maybe, Native.Array, Native.List, Native.Utils, Result //
 
 var _elm_lang$core$Native_Json = function() {
@@ -8355,6 +8381,7 @@ return {
 };
 
 }();
+
 var _elm_lang$core$Json_Encode$list = _elm_lang$core$Native_Json.encodeList;
 var _elm_lang$core$Json_Encode$array = _elm_lang$core$Native_Json.encodeArray;
 var _elm_lang$core$Json_Encode$object = _elm_lang$core$Native_Json.encodeObject;
@@ -8365,6 +8392,7 @@ var _elm_lang$core$Json_Encode$int = _elm_lang$core$Native_Json.identity;
 var _elm_lang$core$Json_Encode$string = _elm_lang$core$Native_Json.identity;
 var _elm_lang$core$Json_Encode$encode = _elm_lang$core$Native_Json.encode;
 var _elm_lang$core$Json_Encode$Value = {ctor: 'Value'};
+
 var _elm_lang$core$Json_Decode$tuple8 = _elm_lang$core$Native_Json.decodeTuple8;
 var _elm_lang$core$Json_Decode$tuple7 = _elm_lang$core$Native_Json.decodeTuple7;
 var _elm_lang$core$Json_Decode$tuple6 = _elm_lang$core$Native_Json.decodeTuple6;
@@ -8425,6 +8453,7 @@ var _elm_lang$core$Json_Decode$dict = function (decoder) {
 		_elm_lang$core$Json_Decode$keyValuePairs(decoder));
 };
 var _elm_lang$core$Json_Decode$Decoder = {ctor: 'Decoder'};
+
 //import Native.Json //
 
 var _elm_lang$virtual_dom$Native_VirtualDom = function() {
@@ -9886,7 +9915,8 @@ return {
 	programWithFlags: programWithFlags
 };
 
-}();var _elm_lang$virtual_dom$VirtualDom$programWithFlags = _elm_lang$virtual_dom$Native_VirtualDom.programWithFlags;
+}();
+var _elm_lang$virtual_dom$VirtualDom$programWithFlags = _elm_lang$virtual_dom$Native_VirtualDom.programWithFlags;
 var _elm_lang$virtual_dom$VirtualDom$keyedNode = _elm_lang$virtual_dom$Native_VirtualDom.keyedNode;
 var _elm_lang$virtual_dom$VirtualDom$lazy3 = _elm_lang$virtual_dom$Native_VirtualDom.lazy3;
 var _elm_lang$virtual_dom$VirtualDom$lazy2 = _elm_lang$virtual_dom$Native_VirtualDom.lazy2;
@@ -9910,6 +9940,7 @@ var _elm_lang$virtual_dom$VirtualDom$Options = F2(
 	});
 var _elm_lang$virtual_dom$VirtualDom$Node = {ctor: 'Node'};
 var _elm_lang$virtual_dom$VirtualDom$Property = {ctor: 'Property'};
+
 var _elm_lang$html$Html$text = _elm_lang$virtual_dom$VirtualDom$text;
 var _elm_lang$html$Html$node = _elm_lang$virtual_dom$VirtualDom$node;
 var _elm_lang$html$Html$body = _elm_lang$html$Html$node('body');
@@ -10011,6 +10042,7 @@ var _elm_lang$html$Html$details = _elm_lang$html$Html$node('details');
 var _elm_lang$html$Html$summary = _elm_lang$html$Html$node('summary');
 var _elm_lang$html$Html$menuitem = _elm_lang$html$Html$node('menuitem');
 var _elm_lang$html$Html$menu = _elm_lang$html$Html$node('menu');
+
 var _elm_lang$core$Task$onError = _elm_lang$core$Native_Scheduler.onError;
 var _elm_lang$core$Task$andThen = _elm_lang$core$Native_Scheduler.andThen;
 var _elm_lang$core$Task$spawnCmd = F2(
@@ -10243,6 +10275,7 @@ var _elm_lang$core$Task$cmdMap = F2(
 			A2(_elm_lang$core$Task$map, tagger, _p11._0));
 	});
 _elm_lang$core$Native_Platform.effectManagers['Task'] = {pkg: 'elm-lang/core', init: _elm_lang$core$Task$init, onEffects: _elm_lang$core$Task$onEffects, onSelfMsg: _elm_lang$core$Task$onSelfMsg, tag: 'cmd', cmdMap: _elm_lang$core$Task$cmdMap};
+
 var _elm_community$elm_webgl$WebGL$computeZModeString = function (mode) {
 	var _p0 = mode;
 	switch (_p0.ctor) {
@@ -10553,6 +10586,7 @@ var _elm_community$elm_webgl$WebGL$Increment = {ctor: 'Increment'};
 var _elm_community$elm_webgl$WebGL$Replace = {ctor: 'Replace'};
 var _elm_community$elm_webgl$WebGL$None = {ctor: 'None'};
 var _elm_community$elm_webgl$WebGL$Keep = {ctor: 'Keep'};
+
 var _elm_lang$html$Html_App$programWithFlags = _elm_lang$virtual_dom$VirtualDom$programWithFlags;
 var _elm_lang$html$Html_App$program = function (app) {
 	return _elm_lang$html$Html_App$programWithFlags(
@@ -10590,6 +10624,7 @@ var _elm_lang$html$Html_App$beginnerProgram = function (_p1) {
 		});
 };
 var _elm_lang$html$Html_App$map = _elm_lang$virtual_dom$VirtualDom$map;
+
 var _elm_lang$html$Html_Attributes$attribute = _elm_lang$virtual_dom$VirtualDom$attribute;
 var _elm_lang$html$Html_Attributes$contextmenu = function (value) {
 	return A2(_elm_lang$html$Html_Attributes$attribute, 'contextmenu', value);
@@ -10941,11 +10976,28 @@ var _elm_lang$html$Html_Attributes$classList = function (list) {
 				A2(_elm_lang$core$List$filter, _elm_lang$core$Basics$snd, list))));
 };
 var _elm_lang$html$Html_Attributes$style = _elm_lang$virtual_dom$VirtualDom$style;
+
 var _user$project$Rendering$fragmentShader = {'src': '\n\nprecision mediump float;\nvarying vec3 vcolor;\n\nvoid main () {\n    gl_FragColor = vec4(vcolor, 1.0);\n}\n\n'};
 var _user$project$Rendering$vertexShader = {'src': '\n\nattribute vec2 position;\nattribute vec3 color;\nuniform mat4 ortho;\nvarying vec3 vcolor;\n\nvoid main () {\n    gl_Position = ortho * vec4(position, 0.0, 1.0);\n    vcolor = color;\n}\n\n'};
 var _user$project$Rendering$viewLegs = _elm_community$elm_webgl$WebGL$Triangle(
 	_elm_lang$core$Native_List.fromArray(
-		[]));
+		[
+			{
+			ctor: '_Tuple3',
+			_0: {
+				color: A3(_elm_community$elm_linear_algebra$Math_Vector3$vec3, 1, 0, 0),
+				position: A2(_elm_community$elm_linear_algebra$Math_Vector2$vec2, 50, 0)
+			},
+			_1: {
+				color: A3(_elm_community$elm_linear_algebra$Math_Vector3$vec3, 1, 0, 0),
+				position: A2(_elm_community$elm_linear_algebra$Math_Vector2$vec2, 0, 100)
+			},
+			_2: {
+				color: A3(_elm_community$elm_linear_algebra$Math_Vector3$vec3, 1, 0, 0),
+				position: A2(_elm_community$elm_linear_algebra$Math_Vector2$vec2, 100, 0)
+			}
+		}
+		]));
 var _user$project$Rendering$canvasHeight = 480;
 var _user$project$Rendering$canvasWidth = 640;
 var _user$project$Rendering$ortho = A4(
@@ -10967,6 +11019,7 @@ var _user$project$Rendering$Vertex = F2(
 	function (a, b) {
 		return {position: a, color: b};
 	});
+
 var _user$project$Main$view = function (model) {
 	return A2(
 		_elm_community$elm_webgl$WebGL$toHtml,
@@ -10997,6 +11050,7 @@ var _user$project$Main$main = {
 };
 var _user$project$Main$Model = {};
 var _user$project$Main$NoOp = {ctor: 'NoOp'};
+
 var Elm = {};
 Elm['Main'] = Elm['Main'] || {};
 _elm_lang$core$Native_Platform.addPublicModule(Elm['Main'], 'Main', typeof _user$project$Main$main === 'undefined' ? null : _user$project$Main$main);
@@ -11030,4 +11084,4 @@ for (var publicModule in Elm)
 }
 
 }).call(this);
-</script></head><body><script type="text/javascript">Elm.Main.fullscreen()</script></body></html>
+
