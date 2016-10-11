@@ -1,0 +1,115 @@
+from vec import Vec2
+
+import sys
+#from sdl2.ext import * 
+import sdl2.ext as sdl
+import sdl2
+import math
+
+
+
+class Robot:
+    def __init__(self, sensor_positions):
+        self.position = Vec2(0,0)
+        self.angle = 0
+        self.sensor_positions = sensor_positions
+
+
+def read_commands():
+    """
+    Returns a tule with speed forward, speed left/right and turn speed
+    """
+    return (0,0,0)
+
+
+def add_noise_function(command, function):
+    return command
+
+
+def update_robot(robot, command):
+    return robot
+
+
+WINDOW_SIZE = (640, 480)
+
+def init_window():
+    window = sdl.Window("Hello World!", size=WINDOW_SIZE)
+    window.show()
+
+    return window
+
+
+def meters_to_pixels(m):
+    return int(m * 200)
+
+
+def draw_robot(surface, robot):
+    pos_x = robot.position.x + WINDOW_SIZE[0] // 2
+    pos_y = robot.position.y % WINDOW_SIZE[1] // 2 + WINDOW_SIZE[1] // 2
+
+    line = (
+            pos_x, 
+            pos_y, 
+            pos_x + meters_to_pixels(0.10) * math.cos(robot.angle),
+            pos_y + meters_to_pixels(0.10) * math.sin(robot.angle)
+        )
+
+    sdl.line(surface, sdl.Color(255,255,100), line)
+    
+    
+def draw(window, robot):
+    events = sdl.get_events()
+    for event in events:
+        if event.type == sdl2.SDL_QUIT:
+            running = False
+            break
+
+    surface = window.get_surface()
+    sdl.fill(surface, sdl.Color(0,0,0))
+
+    #Drawing the walls
+    sdl.line(surface, sdl.Color(255,255,255), 
+            (
+                - meters_to_pixels(0.4) + WINDOW_SIZE[0] // 2, 0,
+                - meters_to_pixels(0.4) + WINDOW_SIZE[0] // 2, WINDOW_SIZE[1],
+                meters_to_pixels(0.4) + WINDOW_SIZE[0] // 2, 0,
+                meters_to_pixels(0.4) + WINDOW_SIZE[0] // 2, WINDOW_SIZE[1]
+            ))
+
+    draw_robot(surface, robot)
+
+    window.refresh()
+
+
+
+
+def write_sensor_data(robot):
+    pass
+
+
+def read_startvalues():
+    return (lambda cmd: cmd,
+            [Vec2(0,0), Vec2(0,0), Vec2(0,0), Vec2(0,0)])
+
+def main():
+    noise_func, sensor_positions = read_startvalues()
+
+    robot = Robot(sensor_positions)
+
+    window = init_window()
+
+    while True:
+        commands = read_commands()
+
+        add_noise_function(noise_func, commands)
+
+        update_robot(robot, commands)
+
+        draw(window, robot)
+
+        write_sensor_data(robot)
+
+
+
+if __name__ == "__main__":
+    main()
