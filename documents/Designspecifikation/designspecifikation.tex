@@ -177,15 +177,17 @@
 
 	Centralenheten sköter all beslutsfattning om hur roboten ska röra sig
 	genom labyrinten. Den tar emot data från sensorenheten och GUI:t och
-	skickar kommandon till motorikenheten. Det finns två alternativ om hur
-	centralenheten ska kommunicera med sensorenheten.
+	skickar kommandon till motorikenheten.
   
-	\subsubsection{Alternativ 1}
-	Centralenheten frågar om data från sensorenheten varje gång det ska fattas ett
-	beslut. Detta gör att centralenheten själv bestämmer när den ska ha ny data
-	för att den inte ska bli avbruten eller missa data för att den är mitt i
-	utförandet av en annan funktion. Utifrån denna data fattar centralenheten
-	beslut om hexapodens färdriktning.
+	\subsubsection{Autonomt läge}
+	I det autonoma läget kommer entralenheten fråga om data från sensorenheten
+  varje gång det ska fattas ett beslut. Detta gör att centralenheten själv
+  bestämmer när den ska ha ny data för att den inte ska bli avbruten eller missa
+  data för att den är mitt i utförandet av en annan funktion. Utifrån denna data
+  fattar centralenheten beslut om hexapodens färdriktning.
+
+  \subsubsection{Manuell styrning}
+  %TODO: Discuss how this will be done and write it here!
 
 	\subsection{Hinderdetektion}
 	%För hinderdetektering finns det olika alternativ att använda. Det är möjligt att 
