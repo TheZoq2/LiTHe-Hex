@@ -227,7 +227,6 @@
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%						Motorikenheten
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	
 	\section{Motorikenheten}
 	Motorikenheten översätter kommandon från centralen till servokommandon. Den tar emot 
 	instruktioner från centralenheten som anger hastighet, rotation och riktning för 
@@ -235,7 +234,7 @@
 	signalerar nödvändiga vinklar till de sex benen. Vissa delmoment i förflyttningen 
 	görs hårdkodade. 
 	
-	\subsection{Planläggning}
+		\subsection{Planläggning}
 	Första steget i motorikenheten för en anpassad gångstil är att utifrån efterfrågad
 	förflyttning avgöra en önskad slutposition för respektive ben, som för roboten närmre 
 	ett läge indikerat av centralenheten. Utifrån hastighet skalas förflyttningsvektorerna 
@@ -248,21 +247,27 @@
 	och förflyttning för vanlig gång kan beräknas i planet, snarare än i rummet, med 
 	avseende på beslutsfattning. endast vid den inversa kinematiken krävs då 
 	tredimensionell planering av benens rörelser. 
+	
+	För analog styrning ska hastighet även kunna anpassas genom justering av servonas
+	hastighetsinställning.
 
 	För hindergång ska roboten treva med benen, och anpassa sig efter höjdskilnaden genom
 	läsning av benens mötta motstånd. Benen sänks till det att de möter motstånd, dels
 	vid uppstegning på hindret, men också vid gång på hindret, för att upptäcka när hindret 
 	tar slut. Inför uppgång på hinder höjs även benen extra, för att tillåta kliven att nå 
-	upp till hindret. 
+	upp till hindret.
 	
 	\subsection{Inverterad kinematik}
-	Då planläggningsdelen av motorikenheten beslutat om var ett ben skall flyttas beräknas  
+	Då planläggningsdelen av motorikenheten beslutat om var ett ben skall flyttas beräknas 
 	lmpliga vinklar för benets alla servon genom inverterad kinematik. Utifrån kända 
 	längder på benen och positioner där man vill att fötterna ska placeras används 
 	trigonometri för att avgöra slutgiltiga servovinklar. <Emiluren, se över detta så att det stämmer>
 
-	\subsection{Kommunikation med aktuatorer}
-	<Att skrivas>
+	\subsection{Kommunikation med servon}
+	Aktuatorerna styrs via en uart-länk, med hjälp av addresserade datapaket. Vid behov, 
+	som vid justering av hastighet, ändras inställningarna i servona själva, allt 
+	utifrån metoden beskriven i databladet för AX-12 servon.
+	
 	
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%						Sensorenheten
