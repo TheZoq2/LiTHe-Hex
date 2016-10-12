@@ -177,15 +177,17 @@
 
 	Centralenheten sköter all beslutsfattning om hur roboten ska röra sig
 	genom labyrinten. Den tar emot data från sensorenheten och GUI:t och
-	skickar kommandon till motorikenheten. Det finns två alternativ om hur
-	centralenheten ska kommunicera med sensorenheten.
+	skickar kommandon till motorikenheten.
   
-	\subsubsection{Alternativ 1}
-	Centralenheten frågar om data från sensorenheten varje gång det ska fattas ett
-	beslut. Detta gör att centralenheten själv bestämmer när den ska ha ny data
-	för att den inte ska bli avbruten eller missa data för att den är mitt i
-	utförandet av en annan funktion. Utifrån denna data fattar centralenheten
-	beslut om hexapodens färdriktning.
+	\subsubsection{Autonomt läge}
+	I det autonoma läget kommer entralenheten fråga om data från sensorenheten
+    varje gång det ska fattas ett beslut. Detta gör att centralenheten själv
+    bestämmer när den ska ha ny data för att den inte ska bli avbruten eller missa
+    data för att den är mitt i utförandet av en annan funktion. Utifrån denna data
+    fattar centralenheten beslut om hexapodens färdriktning.
+
+    \subsubsection{Manuell styrning}
+    %TODO: Discuss how this will be done and write it here!
 
 	\subsection{Hinderdetektion}
 	%För hinderdetektering finns det olika alternativ att använda. Det är möjligt att 
@@ -227,7 +229,6 @@
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%						Motorikenheten
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	
 	\section{Motorikenheten}
 	Motorikenheten översätter kommandon från centralen till servokommandon. Den tar emot 
 	instruktioner från centralenheten som anger hastighet, rotation och riktning för 
@@ -235,7 +236,7 @@
 	signalerar nödvändiga vinklar till de sex benen. Vissa delmoment i förflyttningen 
 	görs hårdkodade. 
 	
-	\subsection{Planläggning}
+		\subsection{Planläggning}
 	Första steget i motorikenheten för en anpassad gångstil är att utifrån efterfrågad
 	förflyttning avgöra en önskad slutposition för respektive ben, som för roboten närmre 
 	ett läge indikerat av centralenheten. Utifrån hastighet skalas förflyttningsvektorerna 
@@ -248,21 +249,27 @@
 	och förflyttning för vanlig gång kan beräknas i planet, snarare än i rummet, med 
 	avseende på beslutsfattning. endast vid den inversa kinematiken krävs då 
 	tredimensionell planering av benens rörelser. 
+	
+	För analog styrning ska hastighet även kunna anpassas genom justering av servonas
+	hastighetsinställning.
 
 	För hindergång ska roboten treva med benen, och anpassa sig efter höjdskilnaden genom
 	läsning av benens mötta motstånd. Benen sänks till det att de möter motstånd, dels
 	vid uppstegning på hindret, men också vid gång på hindret, för att upptäcka när hindret 
 	tar slut. Inför uppgång på hinder höjs även benen extra, för att tillåta kliven att nå 
-	upp till hindret. 
+	upp till hindret.
 	
 	\subsection{Inverterad kinematik}
-	Då planläggningsdelen av motorikenheten beslutat om var ett ben skall flyttas beräknas  
+	Då planläggningsdelen av motorikenheten beslutat om var ett ben skall flyttas beräknas 
 	lmpliga vinklar för benets alla servon genom inverterad kinematik. Utifrån kända 
 	längder på benen och positioner där man vill att fötterna ska placeras används 
 	trigonometri för att avgöra slutgiltiga servovinklar. <Emiluren, se över detta så att det stämmer>
 
-	\subsection{Kommunikation med aktuatorer}
-	<Att skrivas>
+	\subsection{Kommunikation med servon}
+	Aktuatorerna styrs via en uart-länk, med hjälp av addresserade datapaket. Vid behov, 
+	som vid justering av hastighet, ändras inställningarna i servona själva, allt 
+	utifrån metoden beskriven i databladet för AX-12 servon.
+	
 	
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%						Sensorenheten
@@ -286,7 +293,13 @@
 	centralenheten inte behöver allt för mycket egna beräkningar på
 	sensorinformationen. Den ska därför bland annat sköta brusreducering av
 	datan, samt beräkna integralen av informationen från gyrot för att få ut en
-	faktisk vinkel som roboten roterat. 
+	faktisk vinkel som roboten roterat. ATmega1284 kommer att ha tillräckligt med 
+	beräkningskraft för att ta hand om den datan som sensorerna genererar. Den kritiska 
+	delen är istället A/D-omvandling. Eftersom vi har många IR-sensorer tar det tid att 
+	mäta och omvandla de analoga signalerna till digitala värden, en A/D omvandling kan ta 
+	upp till 260 mikrosekunder. Om vi får problem med att IR-sensorerna interfererar med 
+	varandra kan endast en IR-sensor mäta åtgången. Vid dessa omständigheter kan 
+	centralenheten inte få nya värden 4 ggr/sec ens.  
 
 	Flödesschemat för den kod som är tänkt att köras kan ses i figur X. 
 	Avbrott 21(Rx complete) och 23(Tx complete) kommer att genereras av UART kommunikationen 
@@ -297,24 +310,35 @@
 	Avbrott 27 genereras när någon bit i registret för \itc{} kommunikationen med LIDAR
 	ändras. 
 
+	%Program flöde:
 
-	IR analog blir digital(A/D), läggs i tabell, när tabell är 5 stor gör brusred., 
-	IR data klar att skickas till Centralenheten.
+	%Vänta 30 hundradelar för att allt ska starta och första mätvärdet från IR-sensorer blir 
+	%klart. 
+
 	
-	Gyro digital integreras läggs i tabell, när tabell är X stor gör brusred., 
-	gyro data klar att skickas till Centralenheten. 
 
-	LIDAR digital läggs i tabell, när tabell är X stor gör brusred., 
-	LIDAR data klar att skickas till Centralenheten. 
+	%IR analog blir digital(A/D), läggs i tabell, när tabell är 5 stor gör brusred., 
+	%IR data klar att skickas till Centralenheten.
+	
+	%Gyro digital integreras läggs i tabell, när tabell är X stor gör brusred., 
+	%gyro data klar att skickas till Centralenheten. 
+
+	%LIDAR digital läggs i tabell, när tabell är X stor gör brusred., 
+	%LIDAR data klar att skickas till Centralenheten. 
 	
 
 	\subsection{Gyro}
-	
+
 	Sensorenheten ska använda ett gyro för att mäta vridning i det horisontella
 	planet. Detta är användbart bland annat för att roboten ska veta hur mycket
-	den ska rotera när den svänger. MLX90609 kommer att användas som gyro. Den kopplas till SPI 
-	pinnar(PB4, PB5, PB6, PB7) på Atmega1284 och kommer att agera slav till Atmega1284. 
-	MLX90609 pin 8(MISO) blir utsignal och kopplas till pin PB6(MISO). 
+	den ska rotera när den svänger. MLX90609 kommer att användas som gyro. Signalen från 
+	MLX90609 läses analogt in till A/D-omvandlaren AD7820 som konverterar den analoga signalen 
+	till ett digitalt värde. AD7820 behöver styras med en write-signal samt att AD7820 utöver 
+	de 8 bitar för data skickas också en avbrottssignal. 
+
+	%Den kopplas till SPI 
+	%pinnar(PB4, PB5, PB6, PB7) på Atmega1284 och kommer att agera slav till Atmega1284. 
+	%MLX90609 pin 8(MISO) blir utsignal och kopplas till pin PB6(MISO). 
 	
 	\subsection{Avståndssensorer fram}
 	
@@ -385,6 +409,14 @@
 	Simuleringen kommer sedan att ritas ut med hjälp av algoritmen som beskrevs ovan i webbläsaren.
 	
 	\subsection{Simulering för korridorföljning}
+	Simulering för korridorföljning kan testa olika regleralgoritmer utan att behöva testa 
+	de på en gående robot. Simuleringen ritar ut en korridor och en robot som går framåt. 
+	Simulatorn skickar ut sensorvärden till en fil, det är tänkta att regleralgoritmen ska 
+	läsa in sensorvärden sedan ta beslut. Roboten i simulatorn använder 2 IR-sensorer på varje 
+	sida som pekar rakt ut från roboten, det går att välja var på roboten som sensorerna ska 
+	sitta. Beslutet av regleralgoritmen skrivs till en fil som simulatorn läser in och 
+	styr roboten efter det. Det finns möjlighet att lägga till en störningsfunktion som till 
+	exempel kan vara att roboten alltid går med en liten rotation. 
 	
 	\subsection{Simulering för gångstil}
 
