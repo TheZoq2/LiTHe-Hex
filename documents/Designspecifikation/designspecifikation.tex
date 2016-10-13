@@ -186,8 +186,12 @@
     data för att den är mitt i utförandet av en annan funktion. Utifrån denna data
     fattar centralenheten beslut om hexapodens färdriktning.
 
-    \subsubsection{Manuell styrning}
-    %TODO: Discuss how this will be done and write it here!
+    \subsubsection{Manuell navigation}
+    För den manuella navigationen kommer sockets att användas mellan webbservern
+    och centralenheten. Det kommer att komma in ett nytt meddelande med data för varje
+    knapptryck/händelse som sker på GUIt som centralenheten tolkar och överför
+    till motorikenheten. 
+    % sockets används mellan centralenhet - server, server - client.
 
 	\subsection{Hinderdetektion}
 	%För hinderdetektering finns det olika alternativ att använda. Det är möjligt att 
@@ -253,11 +257,17 @@
 	För analog styrning ska hastighet även kunna anpassas genom justering av servonas
 	hastighetsinställning.
 
+	\subsection{Hindergång}
 	För hindergång ska roboten treva med benen, och anpassa sig efter höjdskilnaden genom
 	läsning av benens mötta motstånd. Benen sänks till det att de möter motstånd, dels
 	vid uppstegning på hindret, men också vid gång på hindret, för att upptäcka när hindret 
 	tar slut. Inför uppgång på hinder höjs även benen extra, för att tillåta kliven att nå 
 	upp till hindret.
+
+	Därtill gäller att benen flyttas marginellt (någon centimeter) vid uppkliv på eller 
+	nedkliv från hinder. Detta för att undvika att fötterna hamnar instabilt på kanten till 
+	hindret, men roboten tycker sig ha stå stabilt, men även för att vid nedstig få en benen 
+	länre fram, för att undvika att falla frammåt.
 	
 	\subsection{Inverterad kinematik}
 	Då planläggningsdelen av motorikenheten beslutat om var ett ben skall flyttas beräknas 
