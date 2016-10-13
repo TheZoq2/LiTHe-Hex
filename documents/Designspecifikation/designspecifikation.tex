@@ -280,6 +280,9 @@
 	som vid justering av hastighet, ändras inställningarna i servona själva, allt 
 	utifrån metoden beskriven i databladet för AX-12 servon.
 	
+	Då standardiserad baud rate för AX-12 är förhållandevis hög kan assembly-kod (via C) 
+	användas för att justera denna till en mer lätthanterlig hastighet (med en instruktion
+	om mass-skrivning till address 04 i servona, igen, enligt databladet.)
 	
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%						Sensorenheten
