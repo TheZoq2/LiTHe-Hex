@@ -186,8 +186,12 @@
     data för att den är mitt i utförandet av en annan funktion. Utifrån denna data
     fattar centralenheten beslut om hexapodens färdriktning.
 
-    \subsubsection{Manuell styrning}
-    %TODO: Discuss how this will be done and write it here!
+    \subsubsection{Manuell navigation}
+    För den manuella navigationen kommer sockets att användas mellan webbservern
+    och centralenheten. Det kommer att komma in ett nytt meddelande med data för varje
+    knapptryck/händelse som sker på GUIt som centralenheten tolkar och överför
+    till motorikenheten. 
+    % sockets används mellan centralenhet - server, server - client.
 
 	\subsection{Hinderdetektion}
 	%För hinderdetektering finns det olika alternativ att använda. Det är möjligt att 
