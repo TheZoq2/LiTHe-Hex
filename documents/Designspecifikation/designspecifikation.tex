@@ -302,13 +302,15 @@
 	centralenheten inte få nya värden 4 ggr/sec ens.  
 
 	Flödesschemat för den kod som är tänkt att köras kan ses i figur X. 
-	Avbrott 21(Rx complete) och 23(Tx complete) kommer att genereras av UART kommunikationen 
-	med centralenheten. 
-	Avbrott 25 genereras när en A/D-omvandling är klar vilket används för IR-sensorerna. 
-	Avbrott 20 genereras när någon bit i registret för SPI kommunikationen med gyrot
-	ändras. 
-	Avbrott 27 genereras när någon bit i registret för \itc{} kommunikationen med LIDAR
-	ändras. 
+	Avbrott 25 genereras när den interna A/D-omvandlaren är klar vilket används för IR-sensorerna. 
+	När A/D-omvandlingen är klar sparas värdet i en lista som behanlas vid ett senare tillfälle. 
+	Avbrott 20 genereras när någon bit i registret för SPI kommunikationen ändras. Det kommer 
+	att användas för kommunikationen över SPI där skicka och ta emot data mellan sensorenheten 
+	och centralenheten. Avbrotts koden för SPI kommer att vara ganska stor för att den ska kunna 
+	behandla flera olika fall. 
+	Avbrott 27 genereras när någon bit i registret för \itc{} kommunikationen ändras. Bitarna 
+	kommer att ändras när data skickas och tas emot med LIDAR. Värdet från LIDAR sparas för att 
+	behandla senare. 
 
 	%Program flöde:
 
@@ -332,13 +334,8 @@
 	Sensorenheten ska använda ett gyro för att mäta vridning i det horisontella
 	planet. Detta är användbart bland annat för att roboten ska veta hur mycket
 	den ska rotera när den svänger. MLX90609 kommer att användas som gyro. Signalen från 
-	MLX90609 läses analogt in till A/D-omvandlaren AD7820 som konverterar den analoga signalen 
-	till ett digitalt värde. AD7820 behöver styras med en write-signal samt att AD7820 utöver 
-	de 8 bitar för data skickas också en avbrottssignal. 
-
-	%Den kopplas till SPI 
-	%pinnar(PB4, PB5, PB6, PB7) på Atmega1284 och kommer att agera slav till Atmega1284. 
-	%MLX90609 pin 8(MISO) blir utsignal och kopplas till pin PB6(MISO). 
+	MLX90609 läses analogt in till den interna A/D-omvandlaren på Atmega1284 som konverterar 
+	den analoga signalen till ett digitalt värde med 10-bitars upplösning. 
 	
 	\subsection{Avståndssensorer fram}
 	
