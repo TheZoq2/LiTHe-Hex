@@ -161,12 +161,22 @@
 		\label{fig:kommunikation1}
 	\end{figure}
 
-	Den första biten i ett meddelande är en ID bit som beskriver vad meddelandet som
-	skickas betyder samt vilken typ av meddelande det är. Om första biten är 0 så 
-	består meddelandet av en enstaka byte och annars består meddelandet av en byte
-	som beskriver längden av meddelandet följt av det faktiska meddelandet. 
+	De första 6 bitarna av varje meddelande säger vilken typ av meddelande det är som
+	skickas, de olika typer av meddelanden som kan skickas beskrivs i tabell 
+	\ref{table:messages}. Den första biten i type parametern är 0 om meddelandets
+	innehåll är en enstaka byte och 1 om meddelandet har dynamisk längd. Om längden
+	är dynamisk är första biten i meddelanndet längden av resten.
+
+	De två sista bitarna i första byten är paritetsbitar. Bit 7 är en  paritetsbit
+	för meddelandets innehåll medan bit 8 är paritetsbit för de 7 tidigare bitarna.
+
+	%Den första biten i ett meddelande är en ID byte som beskriver vad meddelandet som
+	%skickas betyder samt vilken typ av meddelande det är. Om första biten i ID är 0 så 
+	%består meddelandet av en enstaka byte och annars består meddelandet av en första 
+	%btye med längden på meddelandet följt av så många bytes meddelande. 
 	
-	<Något om fel i sändningen>
+	Om någon av paritetsbitarna är fel så kommer enheten som tog emot meddelandet att svara
+	med ett speciellt meddelande för att indikera sändningsfel. 
 	
 	
 	\section{Centralenheten}
@@ -280,6 +290,9 @@
 	som vid justering av hastighet, ändras inställningarna i servona själva, allt 
 	utifrån metoden beskriven i databladet för AX-12 servon.
 	
+	Då standardiserad baud rate för AX-12 är förhållandevis hög kan assembly-kod (via C) 
+	användas för att justera denna till en mer lätthanterlig hastighet (med en instruktion
+	om mass-skrivning till address 04 i servona, igen, enligt databladet.)
 	
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%						Sensorenheten
