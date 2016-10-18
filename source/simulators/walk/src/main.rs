@@ -1,65 +1,90 @@
 extern crate kiss3d;
 extern crate nalgebra as na;
+extern crate time;
 
-use na::Vector3;
 use kiss3d::window::Window;
 use kiss3d::light::Light;
-use kiss3d::scene::SceneNode;
+
+mod leg;
+use leg::Leg;
+
+use std::fs::File;
+use std::io::prelude::{Read};
+use std::path::Path;
+
+use std::vec::Vec;
 
 use std::f32::consts::PI;
 
-use std::path::Path;
-
-struct Leg
-{
-    nodes: (SceneNode, SceneNode, SceneNode),
-    angles: (f32, f32, f32)
-}
-
-impl Leg
-{
-    pub fn new(window: &mut Window) -> Leg
+macro_rules! try_with_yolo{
+    ($expr:expr) =>
     {
-        //let mut limb1 = window.add_cube(0.2, 1.0, 0.2);
-        //let mut limb2 = limb1.add_cube(0.2, 1.0, 0.2);
-        //let mut limb3 = limb2.add_cube(0.2, 1.0, 0.2);
-        let mut limb1 = window.add_obj(
-                    &Path::new("media/cube.obj"),
-                    &Path::new("media/cube.mtl"),
-                    Vector3::new(1., 1.,1.)
-                );
-        let mut limb2 = limb1.add_obj(
-                    &Path::new("media/cube.obj"),
-                    &Path::new("media/cube.mtl"),
-                    Vector3::new(1., 1.,1.)
-                );
-        let mut limb3 = limb2.add_obj(
-                    &Path::new("media/cube.obj"),
-                    &Path::new("media/cube.mtl"),
-                    Vector3::new(1., 2.,1.)
-                );
-
-        limb1.set_color(1., 0., 0.);
-        limb2.set_color(0., 1., 0.);
-        limb3.set_color(0., 0., 1.);
-
-        limb2.set_local_translation(Vector3::new(0.0, 1.0, 0.0));
-        limb3.set_local_translation(Vector3::new(0.0, 1.0, 0.0));
-
-        limb1.set_local_rotation(Vector3::new(PI/2., 0., 0.));
-        limb2.set_local_rotation(Vector3::new(-PI/3., 0., 0.));
-        limb3.set_local_rotation(Vector3::new(2. * PI/3., 0., 0.));
-
-        Leg {
-            nodes: (limb1, limb2, limb3),
-            angles: (PI/2., 0., 0.)
+        match $expr
+        {
+            _ => {}
         }
     }
+}
 
-    pub fn update(&mut self)
+struct Robot
+{
+    legs: Vec<Leg>
+}
+
+impl Robot
+{
+    pub fn new(window: &mut Window) -> Robot 
     {
-        self.nodes.0.prepend_to_local_rotation(&Vector3::new(0., 0., 0.014));
+        let mut legs = vec!();
+
+        for i in 0..5
+        {
+            legs.push(Leg::new(window));
+        }
+
+        Robot {
+            legs: legs
+        }
     }
+}
+
+//Panics if file is wrong, maybe change?
+fn read_target_angles() -> Vec<Vec<f32>>
+{
+    let file_dir = String::from("/tmp/hexsim");
+    let filepath = file_dir.clone() + "/leg_input";
+
+    try_with_yolo!(std::fs::create_dir(&file_dir));
+
+    //Opening the file
+    let mut file = File::open(filepath).unwrap();
+
+    //Reading the file into a string
+    let mut s = String::new();
+    file.read_to_string(&mut s).unwrap();
+    println!("{:?}", file);
+    println!("{:?}", s);
+
+    //Parsing the data
+    let mut result = vec!();
+
+    let lines = s.split('\n');
+
+    for line in lines
+    {
+        if line == ""
+        {
+            continue
+        }
+        let angles = line.split(',');
+
+        result.push(angles.map(|elem|{
+                elem.parse::<f32>().unwrap() / 180.0 * PI
+            }).collect())
+    }
+
+
+    return result
 }
 
 fn main() {
@@ -68,10 +93,24 @@ fn main() {
     window.set_light(Light::StickToCamera);
 
     let mut test_leg = Leg::new(&mut window);
+    test_leg.set_target_angles(vec!(0.,0.2,-0.2));
 
-    while window.render() {
-        //c.prepend_to_local_rotation(&Vector3::new(0.0, 0., 0.014));
-        //c2.prepend_to_local_rotation(&Vector3::new(0.0, 0.014, 0.0));
-        test_leg.update();
+    let mut old_time = time::precise_time_s() as f32;
+    while window.render() 
+    {
+        let new_time = time::precise_time_s() as f32;
+        let delta_time = new_time - old_time;
+        old_time = new_time;
+
+        let target_angles = read_target_angles();
+
+        for angle in &target_angles
+        {
+            println!("{:?}", angle);
+        }
+
+        test_leg.set_target_angles(target_angles[0].clone());
+
+        test_leg.update(delta_time);
     }
 }
