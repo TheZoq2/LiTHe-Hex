@@ -258,6 +258,12 @@
 	För analog styrning ska hastighet även kunna anpassas genom justering av servonas
 	hastighetsinställning.
 
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.5\linewidth]{images/gangstil_flowchart.png}
+		\caption{Flödesschema för normal gångstil hos roboten \label{fig:walkflow0}}
+	\end{figure}
+
 	\subsection{Hindergång}
 	För hindergång ska roboten treva med benen, och anpassa sig efter höjdskilnaden genom
 	läsning av benens mötta motstånd. Benen sänks till det att de möter motstånd, dels
@@ -269,7 +275,7 @@
 	nedkliv från hinder. Detta för att undvika att fötterna hamnar instabilt på kanten till 
 	hindret, men roboten tycker sig ha stå stabilt, men även för att vid nedstig få en benen 
 	länre fram, för att undvika att falla frammåt.
-	
+
 	\subsection{Inverterad kinematik}
 	Då planläggningsdelen av motorikenheten beslutat om var ett ben skall flyttas beräknas 
 	lmpliga vinklar för benets alla servon genom inverterad kinematik. Utifrån kända 
@@ -283,8 +289,14 @@
 	
 	Då standardiserad baud rate för AX-12 är förhållandevis hög kan assembly-kod (via C) 
 	användas för att justera denna till en mer lätthanterlig hastighet (med en instruktion
-	om mass-skrivning till address 04 i servona, igen, enligt databladet.)
+	om mass-skrivning till address 04 i servona, igen, enligt databladet).
 	
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.5\linewidth]{images/hindergang_flowchart.png}
+		\caption{Flödesschema för hindergångsprocedur hos roboten \label{fig:walkflow1}}
+	\end{figure}
+
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%						Sensorenheten
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
