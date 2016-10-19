@@ -131,6 +131,19 @@
 		\caption{Översikt av systemet\label{fig:overview}}
 	\end{figure}
 
+	\section{Komponentbudget} 
+	Centralenhet 
+	Raspberry Pi 3 
+	Sensorenheten
+	Atmega1284 
+	GP2D120
+	GP2Y0A02YK 5 stycken
+	Lidar laser
+	Resistorer 
+	Kondensatorer 
+	Motorikenheten 
+	Atmega1284
+
 	\subsection{Kommunikation mellan enheterna}
 	Kommunikation kan ske med UART, SPI eller \itc{}. AVR-processorerna har
 	2 st UART-, 3 st SPI- och en \itc{}-ingång medan Raspberry PI:en har 1 st
@@ -325,6 +338,10 @@
 	centralenheten inte få nya värden 4 ggr/sec ens.  
 
 	Flödesschemat för den kod som är tänkt att köras kan ses i figur X. 
+	Datastrukturer:
+	Kö -- En struktur för kö behövs för schema läggning av IR-sersorer. 
+	IR -- En struktur som hanterar varje IR-sensor. 
+
 	Avbrott 25 genereras när den interna A/D-omvandlaren är klar vilket används för IR-sensorerna. 
 	När A/D-omvandlingen är klar sparas värdet i en lista som behanlas vid ett senare tillfälle. 
 	Avbrott 20 genereras när någon bit i registret för SPI kommunikationen ändras. Det kommer 
