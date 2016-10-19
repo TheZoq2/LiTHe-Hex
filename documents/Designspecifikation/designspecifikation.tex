@@ -334,21 +334,31 @@
 	Avbrott 27 genereras när någon bit i registret för \itc{} kommunikationen ändras. Bitarna 
 	kommer att ändras när data skickas och tas emot med LIDAR. Värdet från LIDAR sparas för att 
 	behandla senare. 
+	Avbrott 14 genereras när Counter1 blir lika med ett specikt värde. Kommer att användas när 
+	för att veta när IR-sensorer kan mäta. 
+	Avbrott 33 genereras när Counter3 blir lika med ett specikt värde. Kommer att användas när 
+	för att veta när Gyro kan mäta. 
 
 	%Program flöde:
 
 	%Vänta 30 hundradelar för att allt ska starta och första mätvärdet från IR-sensorer blir 
 	%klart. 
 
+	%IR tabellen 5 stor --> gör brusred. 
+
+	%Gyro tabellen 5 stor --> gör brusred.
+	
+	%LIDAR tabellen 5 stor --> gör brusred.
+
 	
 
-	%IR analog blir digital(A/D), läggs i tabell, när tabell är 5 stor gör brusred., 
+	%IR - IR analog blir digital(A/D), läggs i tabell, när tabell är 5 stor gör brusred., 
 	%IR data klar att skickas till Centralenheten.
 	
-	%Gyro digital integreras läggs i tabell, när tabell är X stor gör brusred., 
+	%Gyro - Gyro digital integreras läggs i tabell, när tabell är X stor gör brusred., 
 	%gyro data klar att skickas till Centralenheten. 
 
-	%LIDAR digital läggs i tabell, när tabell är X stor gör brusred., 
+	%LIDAR - Digital läggs i tabell, när tabell är X stor gör brusred., 
 	%LIDAR data klar att skickas till Centralenheten. 
 	
 
