@@ -10,7 +10,6 @@ use leg::Leg;
 
 use std::fs::File;
 use std::io::prelude::{Read};
-use std::path::Path;
 
 use std::vec::Vec;
 
@@ -37,7 +36,7 @@ impl Robot
     {
         let mut legs = vec!();
 
-        for i in 0..5
+        for _ in 0..5
         {
             legs.push(Leg::new(window));
         }

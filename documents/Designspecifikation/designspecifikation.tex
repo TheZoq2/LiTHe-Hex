@@ -170,13 +170,36 @@
 	De två sista bitarna i första byten är paritetsbitar. Bit 7 är en  paritetsbit
 	för meddelandets innehåll medan bit 8 är paritetsbit för de 7 tidigare bitarna.
 
-	%Den första biten i ett meddelande är en ID byte som beskriver vad meddelandet som
-	%skickas betyder samt vilken typ av meddelande det är. Om första biten i ID är 0 så 
-	%består meddelandet av en enstaka byte och annars består meddelandet av en första 
-	%btye med längden på meddelandet följt av så många bytes meddelande. 
-	
 	Om någon av paritetsbitarna är fel så kommer enheten som tog emot meddelandet att svara
 	med ett speciellt meddelande för att indikera sändningsfel. 
+
+	\begin{longtable}[c]{ l l l }
+		\textbf{Syfte} & \textbf{ID} & \textbf{Data} \\ \midrule
+		\textbf{Generella} \\ \midrule
+		Send fail & 00 & -- \\ \midrule
+		Acknowldege & 01 & -- \\ \midrule
+		Datarequest & 02 & data \\ \midrule
+		\\
+		\textbf{Centralenhet $ \to $ motorikenhet}\\ \midrule
+		Toggle hindergång & 03 & på/av \\ \midrule
+		Sätt servohastighet & 04 & $ hastighet $ \\ \midrule
+		Gåkommando &  20 & len, x-hastighet, y-hastighet, svänghastighet \\ \midrule
+		Return to neutral & 05 & -- \\ \midrule
+		\\
+		\textbf{Centralenhet $ \gets $ motorikenhet}\\ \midrule
+		Servostatus & 20 & len, ... data ... \\ \midrule
+		Debugsträng & 21 & len, "debugsträng i utf-8" \\ \midrule
+		Hinder här? & 03 & ja/nej \\ \midrule
+		\\
+		\textbf{Centralenhet $\to$ sensorenhet} \\ \midrule
+		Återställ orientering & 03 & -- \\ \midrule
+		\\
+		\textbf{Centralenhet $ \gets $ sensorenhet}\\ \midrule
+		Behandlad sensordata & 20 & len, ... avståndsmätardata ..., gyrodata \\ \midrule
+		Korridordata		 & 21 & len, ... avstånd till väggar ..., vinkel \\ \midrule
+
+
+	\end{longtable}
 	
 	
 	\section{Centralenheten}
