@@ -17,6 +17,7 @@
 
 \renewcommand{\dateseparator}{-}
 \renewcommand{\contentsname}{Innehållsförteckning}
+\renewcommand{\tablename}{Tabell}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Header and footer
@@ -277,7 +278,7 @@
 	trigonometri för att avgöra slutgiltiga servovinklar. <Emiluren, se över detta så att det stämmer>
 
 	\subsection{Kommunikation med servon}
-	Aktuatorerna styrs via en uart-länk, med hjälp av addresserade datapaket. Vid behov, 
+	Servona styrs via en uart-länk, med hjälp av addresserade datapaket. Vid behov, 
 	som vid justering av hastighet, ändras inställningarna i servona själva, allt 
 	utifrån metoden beskriven i databladet för AX-12 servon.
 	
@@ -315,7 +316,8 @@
 	varandra kan endast en IR-sensor mäta åtgången. Vid dessa omständigheter kan 
 	centralenheten inte få nya värden 4 ggr/sec ens.  
 
-	Flödesschemat för den kod som är tänkt att köras kan ses i figur X. 
+    Flödesschemat för den kod som är tänkt att köras kan ses i figur
+    \ref{fig:sensor_flow}. 
 	Avbrott 25 genereras när den interna A/D-omvandlaren är klar vilket används för IR-sensorerna. 
 	När A/D-omvandlingen är klar sparas värdet i en lista som behanlas vid ett senare tillfälle. 
 	Avbrott 20 genereras när någon bit i registret för SPI kommunikationen ändras. Det kommer 
@@ -329,6 +331,28 @@
 	för att veta när IR-sensorer kan mäta. 
 	Avbrott 33 genereras när Counter3 blir lika med ett specikt värde. Kommer att användas när 
 	för att veta när Gyro kan mäta. 
+
+    \begin{table}[h!]
+        \begin{center}
+        \begin{tabular}{l l}
+            \textbf{Avbrott} & \textbf{Funktion} \\ \hline 
+            A/D-omvandling klar & Lägg färdig data i huvudtabellen \\ \hline
+            SPI-meddelande mottagen & Tolka förfrågan och skicka SPI-meddelande
+            som svar \\ \hline
+            \itc{} & Läs LIDAR-sensorvärde, brusreducera och lägg
+            i tabellen \\ 
+
+        \end{tabular}
+        \end{center}
+        \caption{De avbrott som ska användas}
+    \end{table}
+
+    \begin{figure}[h!]
+        \centering{\includegraphics[width=15cm]{images/flowchart_sensor.pdf}}
+        \caption{Flödeschema för huvudloopen\label{fig:sensor_flow}}
+    \end{figure}
+
+    \newpage
 
 	%Program flöde:
 
