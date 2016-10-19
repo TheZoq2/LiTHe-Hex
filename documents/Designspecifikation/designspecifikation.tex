@@ -17,6 +17,7 @@
 
 \renewcommand{\dateseparator}{-}
 \renewcommand{\contentsname}{Innehållsförteckning}
+\renewcommand{\tablename}{Tabell}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Header and footer
@@ -145,16 +146,11 @@
 	Atmega1284
 
 	\subsection{Kommunikation mellan enheterna}
-	Kommunikation kan ske med UART, SPI eller \itc{}. AVR-processorerna har
-	2 st UART-, 3 st SPI- och en \itc{}-ingång medan Raspberry PI:en har 1 st
-	UART-, 2 st SPI- och
-	en \itc{}-ingång. 
-
-	Då vi vill ha en LIDAR-avståndsmätare kommer sensorenhetens \itc{}-port att gå åt
-	till kommunikation med avståndsmätaren. Sensorenheten måste alltså kommunicera med
-	centralenheten via UART eller SPI.\@ Om kommunikationen sker med UART måste 
-	motorikenheten kommunicera med SPI eftersom att centralenheten endast har en
-	UART-port.
+	Kommunikation mellan centralenheten och de två AVR-processorerna kommer att ske
+	med SPI. Sensor- och motorikenhetens SPI portar kommer att kopplas till var sin
+	SPI port på raspberry PI:en. Kommunikationen kommer huvudsakligen ske genom  att
+	centralenheten begär data eller skickar kommandon till sub-enheterna som
+	sedan svarar på begäran.  
 
 	\subsubsection*{Kommunikationsprotokoll}
 	\label{ssub:Kommunikationsprotokoll}
@@ -177,13 +173,41 @@
 	De två sista bitarna i första byten är paritetsbitar. Bit 7 är en  paritetsbit
 	för meddelandets innehåll medan bit 8 är paritetsbit för de 7 tidigare bitarna.
 
-	%Den första biten i ett meddelande är en ID byte som beskriver vad meddelandet som
-	%skickas betyder samt vilken typ av meddelande det är. Om första biten i ID är 0 så 
-	%består meddelandet av en enstaka byte och annars består meddelandet av en första 
-	%btye med längden på meddelandet följt av så många bytes meddelande. 
-	
 	Om någon av paritetsbitarna är fel så kommer enheten som tog emot meddelandet att svara
-	med ett speciellt meddelande för att indikera sändningsfel. 
+	med ett speciellt meddelande för att indikera sändningsfel. Annars kommer den 
+	att svara med ett 'acknowledge' meddelande.
+
+	\begin{table}
+		\begin{longtable}[c]{ l l l }
+			\textbf{Syfte} & \textbf{ID} & \textbf{Data} \\ \midrule
+			\textbf{Generella} \\ \midrule
+			Send fail & 00 & -- \\ \midrule
+			Acknowledge & 01 & -- \\ \midrule
+			Datarequest & 02 & data \\ \midrule
+			\\
+			\textbf{Centralenhet $ \to $ motorikenhet}\\ \midrule
+			Toggle hindergång & 03 & på/av \\ \midrule
+			Sätt servohastighet & 04 & $ hastighet $ \\ \midrule
+			Gåkommando &  20 & len, x-hastighet, y-hastighet, svänghastighet \\ \midrule
+			Return to neutral & 05 & -- \\ \midrule
+			\\
+			\textbf{Centralenhet $ \gets $ motorikenhet}\\ \midrule
+			Servostatus & 20 & len, ... data ... \\ \midrule
+			Debugsträng & 21 & len, "debugsträng i utf-8" \\ \midrule
+			Hinder här? & 03 & ja/nej \\ \midrule
+			\\
+			\textbf{Centralenhet $\to$ sensorenhet} \\ \midrule
+			Återställ orientering & 03 & -- \\ \midrule
+			\\
+			\textbf{Centralenhet $ \gets $ sensorenhet}\\ \midrule
+			Behandlad sensordata & 20 & len, ... avståndsmätardata ..., gyrodata \\ \midrule
+			Korridordata		 & 21 & len, ... avstånd till väggar ..., vinkel \\
+		\end{longtable}
+
+		\vspace{0.5cm}
+		\label{table:messages}
+		\caption{Lista av meddelanden som kan skickas mellan enheter}
+	\end{table}
 	
 	
 	\section{Centralenheten}
@@ -266,7 +290,8 @@
 	sett höjs, och sänks först när de satts i önskad position, sådan att benens position 
 	och förflyttning för vanlig gång kan beräknas i planet, snarare än i rummet, med 
 	avseende på beslutsfattning. endast vid den inversa kinematiken krävs då 
-	tredimensionell planering av benens rörelser. 
+	tredimensionell planering av benens rörelser. Detta beteende finns även illustrerat i 
+	figur \ref{fig:walkflow0}. 
 	
 	För analog styrning ska hastighet även kunna anpassas genom justering av servonas
 	hastighetsinställning.
@@ -287,16 +312,16 @@
 	Därtill gäller att benen flyttas marginellt (någon centimeter) vid uppkliv på eller 
 	nedkliv från hinder. Detta för att undvika att fötterna hamnar instabilt på kanten till 
 	hindret, men roboten tycker sig ha stå stabilt, men även för att vid nedstig få en benen 
-	länre fram, för att undvika att falla frammåt.
+	länre fram, för att undvika att falla frammåt. En översikt över detta kan fås i figur \ref{fig:walkflow1}.
 
 	\subsection{Inverterad kinematik}
 	Då planläggningsdelen av motorikenheten beslutat om var ett ben skall flyttas beräknas 
-	lmpliga vinklar för benets alla servon genom inverterad kinematik. Utifrån kända 
+	lämpliga vinklar för benets alla servon genom inverterad kinematik. Utifrån kända 
 	längder på benen och positioner där man vill att fötterna ska placeras används 
-	trigonometri för att avgöra slutgiltiga servovinklar. <Emiluren, se över detta så att det stämmer>
+	trigonometri och linjär algebra för att avgöra slutgiltiga servovinklar.
 
 	\subsection{Kommunikation med servon}
-	Aktuatorerna styrs via en uart-länk, med hjälp av addresserade datapaket. Vid behov, 
+	Servona styrs via en uart-länk, med hjälp av addresserade datapaket. Vid behov, 
 	som vid justering av hastighet, ändras inställningarna i servona själva, allt 
 	utifrån metoden beskriven i databladet för AX-12 servon.
 	
@@ -340,7 +365,8 @@
 	varandra kan endast en IR-sensor mäta åtgången. Vid dessa omständigheter kan 
 	centralenheten inte få nya värden 4 ggr/sec ens.  
 
-	Flödesschemat för den kod som är tänkt att köras kan ses i figur X. 
+    Flödesschemat för den kod som är tänkt att köras kan ses i figur
+    \ref{fig:sensor_flow}. 
 	Datastrukturer:
 	Kö -- En struktur för kö behövs för schema läggning av IR-sersorer. 
 	IR -- En struktur som hanterar varje IR-sensor. 
@@ -360,6 +386,28 @@
 	%för att veta när IR-sensorer kan mäta. 
 	%\\Avbrott 33 genereras när Counter3 blir lika med ett specikt värde. Kommer att användas när 
 	%för att veta när Gyro kan mäta. 
+
+    \begin{table}[h!]
+        \begin{center}
+        \begin{tabular}{l l}
+            \textbf{Avbrott} & \textbf{Funktion} \\ \hline 
+            A/D-omvandling klar & Lägg färdig data i huvudtabellen \\ \hline
+            SPI-meddelande mottagen & Tolka förfrågan och skicka SPI-meddelande
+            som svar \\ \hline
+            \itc{} & Läs LIDAR-sensorvärde, brusreducera och lägg
+            i tabellen \\ 
+
+        \end{tabular}
+        \end{center}
+        \caption{De avbrott som ska användas}
+    \end{table}
+
+    \begin{figure}[h!]
+        \centering{\includegraphics[width=15cm]{images/flowchart_sensor.pdf}}
+        \caption{Flödeschema för huvudloopen\label{fig:sensor_flow}}
+    \end{figure}
+
+    \newpage
 
 	%Program flöde:
 
