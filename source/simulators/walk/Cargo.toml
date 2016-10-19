@@ -6,3 +6,4 @@ authors = ["TheZoq2 <frans.skarman@gmail.com>"]
 [dependencies]
 kiss3d = "*"
 nalgebra = "0.9.*"
+time = "*"
