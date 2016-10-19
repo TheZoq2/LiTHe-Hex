@@ -1,4 +1,7 @@
-module Rendering exposing (renderAll, canvasWidth, canvasHeight, chainTogether)
+--module Rendering exposing (renderAll, canvasWidth, canvasHeight, chainTogether)
+
+
+module Rendering exposing (..)
 
 {-
    Copyright 2016 Noak Ringman, Emil Segerbäck, Robin Sliwa, Frans Skarman, Hannes Tuhkala, Malcolm Wigren, Olav Övrebö
@@ -25,7 +28,6 @@ import Math.Vector3 as Vector3 exposing (..)
 import Math.Matrix4 exposing (..)
 import Matrix exposing (..)
 import List
-import List.Extra exposing (transpose)
 
 
 type alias Vertex =
@@ -67,10 +69,10 @@ legTriangle ( angle, length, pos ) =
             angle - pi / 2
 
         posA =
-            vec3 (20 * cos angleB) (20 * sin angleB) 0
+            vec3 (10 * cos angleB) (10 * sin angleB) 0
 
         posB =
-            vec3 (20 * cos angleA) (20 * sin angleA) 0
+            vec3 (10 * cos angleA) (10 * sin angleA) 0
 
         posC =
             vec3 (length * cos angle) (length * sin angle) 0
@@ -126,67 +128,79 @@ calculateJacobian endPos =
     List.map (third >> calculateJacobianCol endPos)
 
 
-addAngleLength : (Float, Float) -> (Vec3, Float) -> (Vec3, Float)
-addAngleLength (angle, length) (pos, oldAngle) =
+addAngleLength : ( Float, Float ) -> ( Vec3, Float ) -> ( Vec3, Float )
+addAngleLength ( angle, length ) ( pos, oldAngle ) =
     let
-        newAngle = angle + oldAngle
+        newAngle =
+            angle + oldAngle
     in
-        (add pos <| vec3 (length * cos newAngle) (length * sin newAngle) 0, newAngle)
+        ( add pos <| vec3 (length * cos newAngle) (length * sin newAngle) 0, newAngle )
 
 
-calcEndPos : List (Float, Float) -> Vec3
+calcEndPos : List ( Float, Float ) -> Vec3
 calcEndPos anglesAndLengths =
     let
-        (vec, _) = List.foldl addAngleLength (vec3 0 0 0, 0) anglesAndLengths
+        ( vec, _ ) =
+            List.foldl addAngleLength ( vec3 0 0 0, 0 ) anglesAndLengths
     in
         vec
 
 
-addAngle : Float -> (Float, Float) -> (Float, Float)
-addAngle delta (old, length) =
-    (delta + old, length)
+addAngle : Float -> ( Float, Float ) -> ( Float, Float )
+addAngle delta ( old, length ) =
+    ( delta + old, length )
 
 
-addAngles : Vec3 -> List (Float, Float) -> List ( Float, Float )
+addAngles : Vec3 -> List ( Float, Float ) -> List ( Float, Float )
 addAngles vec list =
     let
-        (x, y, z) = toTuple vec
+        ( x, y, z ) =
+            toTuple vec
     in
-        List.map2 addAngle [x, y, z] list
+        List.map2 addAngle [ x, y, z ] list
 
 
-calculateIK : Vec3 -> Float -> List ( Float, Float ) -> List ( Float, Float )
-calculateIK endPos maxIter current =
+calculateIK : Vec3 -> List ( Float, Float ) -> List ( Float, Float )
+calculateIK endPos current =
     let
-        currentEnd = calcEndPos current
-        toEnd = sub endPos currentEnd
+        currentEnd =
+            calcEndPos current
+
+        toEnd =
+            sub endPos currentEnd
     in
-        if (length toEnd) < 1 || maxIter <= 0 then
-            current
-        else
-            let
-                j = calculateJacobian endPos <| chainTogether current
-                jPlus = Maybe.withDefault [[1,0,0], [0,1,0], [0,0,1]] <| calcPsuedoInverse j
-                deltaTheta = Maybe.withDefault (vec3 0 0 0) <| multMatVec jPlus (Vector3.scale 0.1 toEnd)
-            in
-                calculateIK endPos (maxIter - 1) (addAngles deltaTheta current)
+        let
+            j =
+                calculateJacobian endPos <| chainTogether current
+
+            jPlus =
+                Maybe.withDefault [ [ 1, 0, 0 ], [ 0, 1, 0 ], [ 0, 0, 1 ] ] <| calcPsuedoInverse j
+
+            deltaTheta =
+                Maybe.withDefault (vec3 0 0 0) <| multMatVec jPlus (Vector3.scale 0.1 toEnd)
+        in
+            addAngles deltaTheta current
 
 
-limbs : List ( Float, Float )
-limbs =
-    [ ( 0, 50 ), ( pi / 4, 100 ), ( -2 * pi / 3, 40 ) ]
+viewLegs : List ( Float, Float ) -> Drawable Vertex
+viewLegs limbs =
+    let
+        -- _ =
+        --     Debug.log "endPos is " pos
+        mat =
+            [ [ 1, 2, 3 ], [ 4, 5, 6 ], [ 7, 8, 9 ] ]
 
-
-viewLegs : {x: Int, y: Int} -> Drawable Vertex
-viewLegs pos =
-    let _ = Debug.log "endPos is " pos
+        -- _ =
+        --     Debug.log "mat is " mat
+        -- _ =
+        --     Debug.log "inverse is " <| invertMatrix mat
     in
-        Triangle <| List.concatMap legTriangle <| chainTogether <| calculateIK (vec3 (toFloat pos.x) (toFloat pos.y) 0) 1000 limbs
+        Triangle <| List.concatMap legTriangle <| chainTogether <| limbs
 
 
-renderAll : {x : Int, y : Int } -> List Renderable
-renderAll lastClick =
-    [ render vertexShader fragmentShader (viewLegs lastClick) { ortho = ortho }
+renderAll : List ( Float, Float ) -> List Renderable
+renderAll limbs =
+    [ render vertexShader fragmentShader (viewLegs limbs) { ortho = ortho }
     ]
 
 
