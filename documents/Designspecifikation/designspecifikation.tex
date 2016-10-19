@@ -150,17 +150,11 @@
 	UART-, 2 st SPI- och
 	en \itc{}-ingång. 
 
-	\subsubsection{Alternativ 1}
-	Om vi vill ha en LIDAR-avståndsmätare kommer sensorenhetens \itc{}-port att gå åt
+	Då vi vill ha en LIDAR-avståndsmätare kommer sensorenhetens \itc{}-port att gå åt
 	till kommunikation med avståndsmätaren. Sensorenheten måste alltså kommunicera med
 	centralenheten via UART eller SPI.\@ Om kommunikationen sker med UART måste 
 	motorikenheten kommunicera med SPI eftersom att centralenheten endast har en
 	UART-port.
-
-	\subsubsection{Alternativ 2}
-	Om både motorikenheten och sensorenheten har sin \itc{}-buss tillgänglig kan de 
-	kommunicera med centralenheten via en gemensam \itc{}-buss där centralenheten är 
-	master och de andra enheterna är slaves. 
 
 	\subsubsection*{Kommunikationsprotokoll}
 	\label{ssub:Kommunikationsprotokoll}
@@ -226,10 +220,7 @@
 	%returnera tillsammans med övriga sensorer för att upptäcka när roboten går in i ett 
 	%hinder. 
 	Sensorenheten har en avståndsmätare som är riktad snett neråt för att hitta kanten 
-	på hinder.
-
-	\subsubsection{Alternativ 2}
-	En IR-sensor används som avståndssensor. Vi kommer redan ha  kod för kommunikation med
+	på hinder. En IR-sensor används som avståndssensor. Vi kommer redan ha  kod för kommunikation med
 	den  eftersom att IR-sensorer kommer att användas på andra ställen i konstruktionen. 
 	
 	\subsection{Kommunikation}
@@ -280,6 +271,12 @@
 	För analog styrning ska hastighet även kunna anpassas genom justering av servonas
 	hastighetsinställning.
 
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.5\linewidth]{images/gangstil_flowchart.png}
+		\caption{Flödesschema för normal gångstil hos roboten \label{fig:walkflow0}}
+	\end{figure}
+
 	\subsection{Hindergång}
 	För hindergång ska roboten treva med benen, och anpassa sig efter höjdskilnaden genom
 	läsning av benens mötta motstånd. Benen sänks till det att de möter motstånd, dels
@@ -291,7 +288,7 @@
 	nedkliv från hinder. Detta för att undvika att fötterna hamnar instabilt på kanten till 
 	hindret, men roboten tycker sig ha stå stabilt, men även för att vid nedstig få en benen 
 	länre fram, för att undvika att falla frammåt.
-	
+
 	\subsection{Inverterad kinematik}
 	Då planläggningsdelen av motorikenheten beslutat om var ett ben skall flyttas beräknas 
 	lmpliga vinklar för benets alla servon genom inverterad kinematik. Utifrån kända 
@@ -305,8 +302,14 @@
 	
 	Då standardiserad baud rate för AX-12 är förhållandevis hög kan assembly-kod (via C) 
 	användas för att justera denna till en mer lätthanterlig hastighet (med en instruktion
-	om mass-skrivning till address 04 i servona, igen, enligt databladet.)
+	om mass-skrivning till address 04 i servona, igen, enligt databladet).
 	
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.5\linewidth]{images/hindergang_flowchart.png}
+		\caption{Flödesschema för hindergångsprocedur hos roboten \label{fig:walkflow1}}
+	\end{figure}
+
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%						Sensorenheten
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
