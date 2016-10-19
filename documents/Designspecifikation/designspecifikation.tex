@@ -137,17 +137,11 @@
 	UART-, 2 st SPI- och
 	en \itc{}-ingång. 
 
-	\subsubsection{Alternativ 1}
-	Om vi vill ha en LIDAR-avståndsmätare kommer sensorenhetens \itc{}-port att gå åt
+	Då vi vill ha en LIDAR-avståndsmätare kommer sensorenhetens \itc{}-port att gå åt
 	till kommunikation med avståndsmätaren. Sensorenheten måste alltså kommunicera med
 	centralenheten via UART eller SPI.\@ Om kommunikationen sker med UART måste 
 	motorikenheten kommunicera med SPI eftersom att centralenheten endast har en
 	UART-port.
-
-	\subsubsection{Alternativ 2}
-	Om både motorikenheten och sensorenheten har sin \itc{}-buss tillgänglig kan de 
-	kommunicera med centralenheten via en gemensam \itc{}-buss där centralenheten är 
-	master och de andra enheterna är slaves. 
 
 	\subsubsection*{Kommunikationsprotokoll}
 	\label{ssub:Kommunikationsprotokoll}
@@ -213,10 +207,7 @@
 	%returnera tillsammans med övriga sensorer för att upptäcka när roboten går in i ett 
 	%hinder. 
 	Sensorenheten har en avståndsmätare som är riktad snett neråt för att hitta kanten 
-	på hinder.
-
-	\subsubsection{Alternativ 2}
-	En IR-sensor används som avståndssensor. Vi kommer redan ha  kod för kommunikation med
+	på hinder. En IR-sensor används som avståndssensor. Vi kommer redan ha  kod för kommunikation med
 	den  eftersom att IR-sensorer kommer att användas på andra ställen i konstruktionen. 
 	
 	\subsection{Kommunikation}
