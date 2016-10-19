@@ -345,19 +345,21 @@
 	Kö -- En struktur för kö behövs för schema läggning av IR-sersorer. 
 	IR -- En struktur som hanterar varje IR-sensor. 
 
-	Avbrott 25 genereras när den interna A/D-omvandlaren är klar vilket används för IR-sensorerna. 
+	Följade avbortt kommer att vara akrtiva:
+	\\Avbrott 25 genereras när den interna A/D-omvandlaren är klar vilket används för IR-sensorerna. 
 	När A/D-omvandlingen är klar sparas värdet i en lista som behanlas vid ett senare tillfälle. 
-	Avbrott 20 genereras när någon bit i registret för SPI kommunikationen ändras. Det kommer 
+	\\Avbrott 20 genereras när någon bit i registret för SPI kommunikationen ändras. Det kommer 
 	att användas för kommunikationen över SPI där skicka och ta emot data mellan sensorenheten 
 	och centralenheten. Avbrotts koden för SPI kommer att vara ganska stor för att den ska kunna 
 	behandla flera olika fall. 
-	Avbrott 27 genereras när någon bit i registret för \itc{} kommunikationen ändras. Bitarna 
+	\\Avbrott 27 genereras när någon bit i registret för \itc{} kommunikationen ändras. Bitarna 
 	kommer att ändras när data skickas och tas emot med LIDAR. Värdet från LIDAR sparas för att 
 	behandla senare. 
-	Avbrott 14 genereras när Counter1 blir lika med ett specikt värde. Kommer att användas när 
-	för att veta när IR-sensorer kan mäta. 
-	Avbrott 33 genereras när Counter3 blir lika med ett specikt värde. Kommer att användas när 
-	för att veta när Gyro kan mäta. 
+	
+	%\\Avbrott 14 genereras när Counter1 blir lika med ett specikt värde. Kommer att användas när 
+	%för att veta när IR-sensorer kan mäta. 
+	%\\Avbrott 33 genereras när Counter3 blir lika med ett specikt värde. Kommer att användas när 
+	%för att veta när Gyro kan mäta. 
 
 	%Program flöde:
 
