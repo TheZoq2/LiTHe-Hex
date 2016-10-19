@@ -329,11 +329,13 @@
 	användas för att justera denna till en mer lätthanterlig hastighet (med en instruktion
 	om mass-skrivning till address 04 i servona, igen, enligt databladet).
 	
-	\begin{figure}[h]
+	\begin{figure}[h!]
 		\centering
 		\includegraphics[width=0.5\linewidth]{images/hindergang_flowchart.png}
 		\caption{Flödesschema för hindergångsprocedur hos roboten \label{fig:walkflow1}}
 	\end{figure}
+    
+    \newpage
 
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%						Sensorenheten
@@ -363,51 +365,60 @@
 	mäta och omvandla de analoga signalerna till digitala värden, en A/D omvandling kan ta 
 	upp till 260 mikrosekunder. Om vi får problem med att IR-sensorerna interfererar med 
 	varandra kan endast en IR-sensor mäta åtgången. Vid dessa omständigheter kan 
-	centralenheten inte få nya värden 4 ggr/sec ens.  
+	centralenheten inte få nya värden 4 ggr/sec ens.
+
+    \subsubsection{Huvudloop}
+    Huvudloopen 
 
     Flödesschemat för den kod som är tänkt att köras kan ses i figur
     \ref{fig:sensor_flow}. 
 	Datastrukturer:
 	Kö -- En struktur för kö behövs för schema läggning av IR-sersorer. 
 	IR -- En struktur som hanterar varje IR-sensor. 
+    \newpage
 
-	Följade avbortt kommer att vara akrtiva:
-	\\Avbrott 25 genereras när den interna A/D-omvandlaren är klar vilket används för IR-sensorerna. 
-	När A/D-omvandlingen är klar sparas värdet i en lista som behanlas vid ett senare tillfälle. 
-	\\Avbrott 20 genereras när någon bit i registret för SPI kommunikationen ändras. Det kommer 
-	att användas för kommunikationen över SPI där skicka och ta emot data mellan sensorenheten 
-	och centralenheten. Avbrotts koden för SPI kommer att vara ganska stor för att den ska kunna 
-	behandla flera olika fall. 
-	\\Avbrott 27 genereras när någon bit i registret för \itc{} kommunikationen ändras. Bitarna 
-	kommer att ändras när data skickas och tas emot med LIDAR. Värdet från LIDAR sparas för att 
-	behandla senare. 
-	
+    \begin{figure}[h!]
+        \centering{\includegraphics[width=17cm]{images/flowchart_sensor.pdf}}
+        \caption{Flödeschema för huvudloopen\label{fig:sensor_flow}}
+    \end{figure}
+
+    \newpage
+
+    \subsubsection{Avbrott}
+	Följade avbrott kommer att vara aktiva:
+    \begin{itemize}
+        \item Avbrott 25 genereras när den interna A/D-omvandlaren är klar 
+            vilket används för IR-sensorerna. När A/D-omvandlingen är klar 
+            sparas värdet i en lista som behanlas vid ett senare tillfälle.
+        \item Avbrott 20 genereras när någon bit i registret för SPI kommunikationen
+            ändras. Det kommer att användas för kommunikationen över SPI där skicka och 
+            ta emot data mellan sensorenheten och centralenheten. Avbrotts koden för 
+            SPI kommer att vara ganska stor för att den ska kunna behandla flera olika fall.
+        \item Avbrott 27 genereras när någon bit i registret för \itc{} kommunikationen 
+            ändras. Bitarna kommer att ändras när data skickas och tas emot med LIDAR.
+            Värdet från LIDAR sparas för att behandla senare.
+    \end{itemize}
+
 	%\\Avbrott 14 genereras när Counter1 blir lika med ett specikt värde. Kommer att användas när 
 	%för att veta när IR-sensorer kan mäta. 
 	%\\Avbrott 33 genereras när Counter3 blir lika med ett specikt värde. Kommer att användas när 
 	%för att veta när Gyro kan mäta. 
 
-    \begin{table}[h!]
-        \begin{center}
-        \begin{tabular}{l l}
-            \textbf{Avbrott} & \textbf{Funktion} \\ \hline 
-            A/D-omvandling klar & Lägg färdig data i huvudtabellen \\ \hline
-            SPI-meddelande mottagen & Tolka förfrågan och skicka SPI-meddelande
-            som svar \\ \hline
-            \itc{} & Läs LIDAR-sensorvärde, brusreducera och lägg
-            i tabellen \\ 
+    % \begin{table}[h!]
+    %     \begin{center}
+    %     \begin{tabular}{l l}
+    %         \textbf{Avbrott} & \textbf{Funktion} \\ \hline 
+    %         A/D-omvandling klar & Lägg färdig data i huvudtabellen \\ \hline
+    %         SPI-meddelande mottagen & Tolka förfrågan och skicka SPI-meddelande
+    %         som svar \\ \hline
+    %         \itc{} & Läs LIDAR-sensorvärde, brusreducera och lägg
+    %         i tabellen \\ 
 
-        \end{tabular}
-        \end{center}
-        \caption{De avbrott som ska användas}
-    \end{table}
+    %     \end{tabular}
+    %     \end{center}
+    %     \caption{De avbrott som ska användas}
+    % \end{table}
 
-    \begin{figure}[h!]
-        \centering{\includegraphics[width=15cm]{images/flowchart_sensor.pdf}}
-        \caption{Flödeschema för huvudloopen\label{fig:sensor_flow}}
-    \end{figure}
-
-    \newpage
 
 	%Program flöde:
 
@@ -463,7 +474,7 @@
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%						Grafiskt användargränssnitt
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	\newpage{}
+	%\newpage{}
 	\section{Grafiskt användargränssnitt}
 	På centralenheten ska en webbserver köras som tillhandahåller ett gränssnitt
 	för användaren där man kan läsa sensordata eller kontrollera roboten i
