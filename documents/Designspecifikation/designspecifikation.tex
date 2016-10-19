@@ -365,16 +365,12 @@
 	varandra kan endast en IR-sensor mäta åtgången. Vid dessa omständigheter kan 
 	centralenheten inte få nya värden 4 ggr/sec ens.  
 
-<<<<<<< HEAD
     Flödesschemat för den kod som är tänkt att köras kan ses i figur
     \ref{fig:sensor_flow}. 
-=======
-	Flödesschemat för den kod som är tänkt att köras kan ses i figur X. 
 	Datastrukturer:
 	Kö -- En struktur för kö behövs för schema läggning av IR-sersorer. 
 	IR -- En struktur som hanterar varje IR-sensor. 
 
->>>>>>> 30b97099a1a03b6b53b2b04460a7dec7e601c07f
 	Avbrott 25 genereras när den interna A/D-omvandlaren är klar vilket används för IR-sensorerna. 
 	När A/D-omvandlingen är klar sparas värdet i en lista som behanlas vid ett senare tillfälle. 
 	Avbrott 20 genereras när någon bit i registret för SPI kommunikationen ändras. Det kommer 
