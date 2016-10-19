@@ -131,23 +131,30 @@
 		\caption{Översikt av systemet\label{fig:overview}}
 	\end{figure}
 
+	\section{Komponentbudget} 
+	Centralenhet 
+	Raspberry Pi 3 
+	Sensorenheten
+	Atmega1284 
+	GP2D120
+	GP2Y0A02YK 5 stycken
+	Lidar laser
+	Resistorer 
+	Kondensatorer 
+	Motorikenheten 
+	Atmega1284
+
 	\subsection{Kommunikation mellan enheterna}
 	Kommunikation kan ske med UART, SPI eller \itc{}. AVR-processorerna har
 	2 st UART-, 3 st SPI- och en \itc{}-ingång medan Raspberry PI:en har 1 st
 	UART-, 2 st SPI- och
 	en \itc{}-ingång. 
 
-	\subsubsection{Alternativ 1}
-	Om vi vill ha en LIDAR-avståndsmätare kommer sensorenhetens \itc{}-port att gå åt
+	Då vi vill ha en LIDAR-avståndsmätare kommer sensorenhetens \itc{}-port att gå åt
 	till kommunikation med avståndsmätaren. Sensorenheten måste alltså kommunicera med
 	centralenheten via UART eller SPI.\@ Om kommunikationen sker med UART måste 
 	motorikenheten kommunicera med SPI eftersom att centralenheten endast har en
 	UART-port.
-
-	\subsubsection{Alternativ 2}
-	Om både motorikenheten och sensorenheten har sin \itc{}-buss tillgänglig kan de 
-	kommunicera med centralenheten via en gemensam \itc{}-buss där centralenheten är 
-	master och de andra enheterna är slaves. 
 
 	\subsubsection*{Kommunikationsprotokoll}
 	\label{ssub:Kommunikationsprotokoll}
@@ -161,12 +168,22 @@
 		\label{fig:kommunikation1}
 	\end{figure}
 
-	Den första biten i ett meddelande är en ID bit som beskriver vad meddelandet som
-	skickas betyder samt vilken typ av meddelande det är. Om första biten är 0 så 
-	består meddelandet av en enstaka byte och annars består meddelandet av en byte
-	som beskriver längden av meddelandet följt av det faktiska meddelandet. 
+	De första 6 bitarna av varje meddelande säger vilken typ av meddelande det är som
+	skickas, de olika typer av meddelanden som kan skickas beskrivs i tabell 
+	\ref{table:messages}. Den första biten i type parametern är 0 om meddelandets
+	innehåll är en enstaka byte och 1 om meddelandet har dynamisk längd. Om längden
+	är dynamisk är första biten i meddelanndet längden av resten.
+
+	De två sista bitarna i första byten är paritetsbitar. Bit 7 är en  paritetsbit
+	för meddelandets innehåll medan bit 8 är paritetsbit för de 7 tidigare bitarna.
+
+	%Den första biten i ett meddelande är en ID byte som beskriver vad meddelandet som
+	%skickas betyder samt vilken typ av meddelande det är. Om första biten i ID är 0 så 
+	%består meddelandet av en enstaka byte och annars består meddelandet av en första 
+	%btye med längden på meddelandet följt av så många bytes meddelande. 
 	
-	<Något om fel i sändningen>
+	Om någon av paritetsbitarna är fel så kommer enheten som tog emot meddelandet att svara
+	med ett speciellt meddelande för att indikera sändningsfel. 
 	
 	
 	\section{Centralenheten}
@@ -186,8 +203,12 @@
     data för att den är mitt i utförandet av en annan funktion. Utifrån denna data
     fattar centralenheten beslut om hexapodens färdriktning.
 
-    \subsubsection{Manuell styrning}
-    %TODO: Discuss how this will be done and write it here!
+    \subsubsection{Manuell navigation}
+    För den manuella navigationen kommer sockets att användas mellan webbservern
+    och centralenheten. Det kommer att komma in ett nytt meddelande med data för varje
+    knapptryck/händelse som sker på GUIt som centralenheten tolkar och överför
+    till motorikenheten. 
+    % sockets används mellan centralenhet - server, server - client.
 
 	\subsection{Hinderdetektion}
 	%För hinderdetektering finns det olika alternativ att använda. Det är möjligt att 
@@ -199,10 +220,7 @@
 	%returnera tillsammans med övriga sensorer för att upptäcka när roboten går in i ett 
 	%hinder. 
 	Sensorenheten har en avståndsmätare som är riktad snett neråt för att hitta kanten 
-	på hinder.
-
-	\subsubsection{Alternativ 2}
-	En IR-sensor används som avståndssensor. Vi kommer redan ha  kod för kommunikation med
+	på hinder. En IR-sensor används som avståndssensor. Vi kommer redan ha  kod för kommunikation med
 	den  eftersom att IR-sensorer kommer att användas på andra ställen i konstruktionen. 
 	
 	\subsection{Kommunikation}
@@ -253,12 +271,24 @@
 	För analog styrning ska hastighet även kunna anpassas genom justering av servonas
 	hastighetsinställning.
 
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.5\linewidth]{images/gangstil_flowchart.png}
+		\caption{Flödesschema för normal gångstil hos roboten \label{fig:walkflow0}}
+	\end{figure}
+
+	\subsection{Hindergång}
 	För hindergång ska roboten treva med benen, och anpassa sig efter höjdskilnaden genom
 	läsning av benens mötta motstånd. Benen sänks till det att de möter motstånd, dels
 	vid uppstegning på hindret, men också vid gång på hindret, för att upptäcka när hindret 
 	tar slut. Inför uppgång på hinder höjs även benen extra, för att tillåta kliven att nå 
 	upp till hindret.
-	
+
+	Därtill gäller att benen flyttas marginellt (någon centimeter) vid uppkliv på eller 
+	nedkliv från hinder. Detta för att undvika att fötterna hamnar instabilt på kanten till 
+	hindret, men roboten tycker sig ha stå stabilt, men även för att vid nedstig få en benen 
+	länre fram, för att undvika att falla frammåt.
+
 	\subsection{Inverterad kinematik}
 	Då planläggningsdelen av motorikenheten beslutat om var ett ben skall flyttas beräknas 
 	lämpliga vinklar för benets alla servon genom inverterad kinematik. Utifrån kända 
@@ -270,7 +300,16 @@
 	som vid justering av hastighet, ändras inställningarna i servona själva, allt 
 	utifrån metoden beskriven i databladet för AX-12 servon.
 	
+	Då standardiserad baud rate för AX-12 är förhållandevis hög kan assembly-kod (via C) 
+	användas för att justera denna till en mer lätthanterlig hastighet (med en instruktion
+	om mass-skrivning till address 04 i servona, igen, enligt databladet).
 	
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.5\linewidth]{images/hindergang_flowchart.png}
+		\caption{Flödesschema för hindergångsprocedur hos roboten \label{fig:walkflow1}}
+	\end{figure}
+
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%						Sensorenheten
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -302,28 +341,44 @@
 	centralenheten inte få nya värden 4 ggr/sec ens.  
 
 	Flödesschemat för den kod som är tänkt att köras kan ses i figur X. 
-	Avbrott 21(Rx complete) och 23(Tx complete) kommer att genereras av UART kommunikationen 
-	med centralenheten. 
-	Avbrott 25 genereras när en A/D-omvandling är klar vilket används för IR-sensorerna. 
-	Avbrott 20 genereras när någon bit i registret för SPI kommunikationen med gyrot
-	ändras. 
-	Avbrott 27 genereras när någon bit i registret för \itc{} kommunikationen med LIDAR
-	ändras. 
+	Datastrukturer:
+	Kö -- En struktur för kö behövs för schema läggning av IR-sersorer. 
+	IR -- En struktur som hanterar varje IR-sensor. 
+
+	Avbrott 25 genereras när den interna A/D-omvandlaren är klar vilket används för IR-sensorerna. 
+	När A/D-omvandlingen är klar sparas värdet i en lista som behanlas vid ett senare tillfälle. 
+	Avbrott 20 genereras när någon bit i registret för SPI kommunikationen ändras. Det kommer 
+	att användas för kommunikationen över SPI där skicka och ta emot data mellan sensorenheten 
+	och centralenheten. Avbrotts koden för SPI kommer att vara ganska stor för att den ska kunna 
+	behandla flera olika fall. 
+	Avbrott 27 genereras när någon bit i registret för \itc{} kommunikationen ändras. Bitarna 
+	kommer att ändras när data skickas och tas emot med LIDAR. Värdet från LIDAR sparas för att 
+	behandla senare. 
+	Avbrott 14 genereras när Counter1 blir lika med ett specikt värde. Kommer att användas när 
+	för att veta när IR-sensorer kan mäta. 
+	Avbrott 33 genereras när Counter3 blir lika med ett specikt värde. Kommer att användas när 
+	för att veta när Gyro kan mäta. 
 
 	%Program flöde:
 
 	%Vänta 30 hundradelar för att allt ska starta och första mätvärdet från IR-sensorer blir 
 	%klart. 
 
+	%IR tabellen 5 stor --> gör brusred. 
+
+	%Gyro tabellen 5 stor --> gör brusred.
+	
+	%LIDAR tabellen 5 stor --> gör brusred.
+
 	
 
-	%IR analog blir digital(A/D), läggs i tabell, när tabell är 5 stor gör brusred., 
+	%IR - IR analog blir digital(A/D), läggs i tabell, när tabell är 5 stor gör brusred., 
 	%IR data klar att skickas till Centralenheten.
 	
-	%Gyro digital integreras läggs i tabell, när tabell är X stor gör brusred., 
+	%Gyro - Gyro digital integreras läggs i tabell, när tabell är X stor gör brusred., 
 	%gyro data klar att skickas till Centralenheten. 
 
-	%LIDAR digital läggs i tabell, när tabell är X stor gör brusred., 
+	%LIDAR - Digital läggs i tabell, när tabell är X stor gör brusred., 
 	%LIDAR data klar att skickas till Centralenheten. 
 	
 
@@ -332,13 +387,8 @@
 	Sensorenheten ska använda ett gyro för att mäta vridning i det horisontella
 	planet. Detta är användbart bland annat för att roboten ska veta hur mycket
 	den ska rotera när den svänger. MLX90609 kommer att användas som gyro. Signalen från 
-	MLX90609 läses analogt in till A/D-omvandlaren AD7820 som konverterar den analoga signalen 
-	till ett digitalt värde. AD7820 behöver styras med en write-signal samt att AD7820 utöver 
-	de 8 bitar för data skickas också en avbrottssignal. 
-
-	%Den kopplas till SPI 
-	%pinnar(PB4, PB5, PB6, PB7) på Atmega1284 och kommer att agera slav till Atmega1284. 
-	%MLX90609 pin 8(MISO) blir utsignal och kopplas till pin PB6(MISO). 
+	MLX90609 läses analogt in till den interna A/D-omvandlaren på Atmega1284 som konverterar 
+	den analoga signalen till ett digitalt värde med 10-bitars upplösning. 
 	
 	\subsection{Avståndssensorer fram}
 	
