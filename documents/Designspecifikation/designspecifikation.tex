@@ -137,19 +137,33 @@
 	\raggedright
 
 	\section{Inledning}
-	I detta dokument beskrivs delsystemen för en sexbent robot mer ingående samt förslag på hur de ska 
-	implementeras. De delsystem som roboten ska använda sig av är:
-	Centralenhet, motorikenhet och sensorenhet.
+	Detta dokument går i detalj in på den tänkta konstruktionen och mjukvaran för en 
+	sexbent robot, med möjlighet för autonom och manuell styrning. Först presenteras en 
+	översiktlig beskrivning av robotens styrande processorer ("enheter", vilka kopplas till ett färdigt 
+	PhantomX AX Metal Hexapod Mark III chassi från TrossenRobotics). Dessa (central-, 
+	motorik- och sensorenhet), kommunikation mellan dessa, samt användargränssnitt specificeras 
+	sedan i större nogranhet under egna avdelningar.
 
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%						Översikt
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 	\section{Systemöversikt}
-	Systemet ska innehålla tre enheter. En centralenhet för kommunikation med en
-	dator, en motorikenhet som sköter hur benen rör sig samt en sensorenhet som
-	tolkar sensordata. Centralenheten är även den enhet som tar beslut och
-	kommunicerar med de andra enheterna. Se figur \ref{fig:overview} för en översiktsbild av
+	Systemet ska innehålla tre enheter. En centralenhet implementerad på en Raspberry Pi 3 
+	agerar som master för de andra två (slav)processorserna. Denna står för all kommunikation 
+	med omgivning genom en webserver som datorer kan koppla upp sig mot för att styra roboten 
+	eller få tillgång till debugdata. I autonomt läge är det även denna enhet som utifrån 
+	insamlad data fattar alla styrande beslut utifrån vilka de andra enheterna verkar (vid 
+	manuell styrning vidarebefodras endast data från styrdatorn).
+
+	De två andra enheterna (slavarna till centralenheten) utgörs av AVR-processorer och styr 
+	mer generella uppgifter. Den ena, motorikenheten, översätter generella indikationer om 
+	förflyttning från centralenheten till faktiska kommandon för robotens servon, och skickar 
+	vidare dessa. Den kan även förse centralenheten med bland annat debugdata om så efterfrågas.
+	
+	Den andra AVR-processorn utgör en sensorenhet, vilken styr och läser robotens sensorsvit. 
+	Den svarar även för att översätta råa sensordata i mer konkreta former (som vinklar och 
+	avstånd), samt att brusreducera dessa efter behov. Figur \ref{fig:overview} ger en översiktsbild av
 	systemet.
 	\begin{figure}[h]
 		\centering
@@ -434,20 +448,28 @@
 	faktisk vinkel som roboten roterat. ATmega1284 kommer att ha tillräckligt med 
 	beräkningskraft för att ta hand om den data som sensorerna genererar. Den kritiska 
 	delen är istället A/D-omvandling. Eftersom vi har många IR-sensorer tar det tid att 
-	mäta och omvandla de analoga signalerna till digitala värden, en A/D omvandling kan ta 
-	upp till 260 mikrosekunder. Om vi får problem med att IR-sensorerna interfererar med 
-	varandra kan endast ett begränsat antal IR-sensorer mäta åt gången. Vid
-    dessa omständigheter kan 
-	centralenheten inte ens få nya värden 4 ggr/s. % TODO wrong
+	mäta och omvandla de analoga signalerna till digitala värden. Att starta en IR-sensor 
+	tar 52900 mikrosekunder och en A/D omvandling kan ta upp till 260 mikrosekunder. 
+	Om vi får problem med att IR-sensorerna interfererar med varandra kan endast ett 
+	begränsat antal IR-sensorer mäta åt gången. 
 
     \subsubsection{Huvudloop}
-    Huvudloopen 
+    Sensorenheten ska köra en huvudloop som sköter det mesta av beräkningarna
+    av sensordatan, medan bland annat mätning med IR-sensorer samt A/D-omvandlarna samt
+    kommunikation med sensorenheten styrs via avbrott.
 
-    Flödesschemat för den kod som är tänkt att köras kan ses i figur
+    Huvudloopen startar mätning av lediga IR-sensorer och sätter timrar för när
+    dessa har mätt klart. Dessa timrar triggar avbrott för när IR-sensorerna
+    har producerat ett analogt mätvärde, redo att omvandlas till ett digitalt
+    värde. Dessa avbrott lägger representationer av IR-sensorerna i en kö,
+    "IR-kö". Så länge denna kö är tom, använder den A/D-omvandlaren för att
+    omvandla mätvärden från gyrot, brusreducera dem samt lägga dessa i
+    huvudtabellen, där alla färdiga sensorvärden lagras. Den beräknar också
+    relevant data från omvandlade IR-sensorvärden, som lagrades i en annan kö,
+    "data-kö". I denna kö läggs omvandlade IR-sensorvärden av avbrott när
+    A/D-omvandlingar är klara. Om IR-kön inte är tom, startas en A/D-omvandling
+    för den IR-sensor som är först i kön. Denna algoritm illustreras i Figur 
     \ref{fig:sensor_flow}. 
-	Datastrukturer:
-	Kö -- En struktur för kö behövs för schema läggning av IR-sersorer. 
-	IR -- En struktur som hanterar varje IR-sensor. 
     \newpage
 
     \begin{figure}[h!]
@@ -461,21 +483,17 @@
 	Följade avbrott kommer att vara aktiva:
     \begin{itemize}
         \item Avbrott 25 genereras när den interna A/D-omvandlaren är klar 
-            vilket används för IR-sensorerna. När A/D-omvandlingen är klar 
+            vilket används för IR-sensorerna och gyro. När A/D-omvandlingen är klar 
             sparas värdet i en lista som behandlas vid ett senare tillfälle.
         \item Avbrott 20 genereras när någon bit i registret för SPI-kommunikationen
-            ändras. Det kommer att användas för kommunikationen över SPI där skicka och 
-            ta emot data mellan sensorenheten och centralenheten. Avbrotts koden för 
-            SPI kommer att vara ganska stor för att den ska kunna behandla flera olika fall.
+            ändras. Det kommer att användas för kommunikationen över SPI. Avbrottskoden för 
+            SPI kommer att vara ganska stor eftersom den ska kunna skicka och ta emot data 
+			mellan sensorenheten och centralenheten. 
         \item Avbrott 27 genereras när någon bit i registret för \itc{} kommunikationen 
-            ändras. Bitarna kommer att ändras när data skickas och tas emot med LIDAR.
-            Värdet från LIDAR sparas för att behandla senare.
+            ändras. Data skickas och tas emot med LIDAR. 
+		\item Avbrott 14 genereras när Counter1 blir lika med ett specifikt värde. 
+			Kommer att användas när för att veta när IR-sensorer kan mäta. 
     \end{itemize}
-
-	%\\Avbrott 14 genereras när Counter1 blir lika med ett specikt värde. Kommer att användas när 
-	%för att veta när IR-sensorer kan mäta. 
-	%\\Avbrott 33 genereras när Counter3 blir lika med ett specikt värde. Kommer att användas när 
-	%för att veta när Gyro kan mäta. 
 
     % \begin{table}[h!]
     %     \begin{center}
@@ -530,19 +548,22 @@
 	upptäcka väggar och en sensor som är snett vinklat ner mot golvet för hinderdetektion. 
 
 	Avståndssensorn som mäter framåt ska utgöras av en LIDAR-sensor, som har
-    ett mycket brett mätspann (0-40m) med 1 centimeters upplösning.
+    ett mycket brett mätspann (0-40 m) med 1 centimeters upplösning.
 
-	Sensorn som ska upptäcka hinder ska utgöras av en IR-sensor. Det
-	har fördelen att ha samma gränssnitt som de andra IR-sensorerna som roboten
-	ska använda.
+	Sensorn som ska upptäcka hinder ska utgöras av IR-sensorn GP2D120 som man mäta mellan 
+	4-30 cm. Denna IR-sensor ska vara riktad ned och avståndet till marken kommer 
+	att vara mellan 4-30 cm. IR-sensor har fördelen att använda samma analoga gränssnitt 
+	som de andra IR-sensorerna som roboten ska använda. 
 
 	\subsection{Avståndssensorer åt sidorna}
 	Roboten ska ha avståndssensorer på vardera långsida av roboten, för
 	detektion av väggar och återvändsgränder. Dessa sensorer utgörs av två 
     IR-sensorer på varje sida där båda pekar ut från samma sida och
-	är placerade på varsin ända av plattformen. Detta möjliggör mätning av hur
-	roboten är vriden i en rak korridor och kan användas som felkontroll av
-	gyrot.
+	är placerade på varsin ända av plattformen. IR-sensorerna som ska vara placerade 
+	på sidan ska vara av typen GP2Y0A02YK som kan mästa avtånd mellan 20-150 cm. 
+	Detta spann gör det möjligt att navigera i korridorer och upptäcka 
+	återvändsgränder. Med två IR-sensorer på varje sida möjliggör mätning av hur 
+	roboten är vriden i en rak korridor och kan användas som felkontroll av gyrot.
 	
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%						Grafiskt användargränssnitt
@@ -586,9 +607,9 @@
 	\section{Simuleringar}
 	För att underlätta utvecklingen av vissa delar av projektet kommer vi att skriva
 	kod för att simulera dessa delar. Simuleringarna ska kunna köra samma kod som ska
-	köras på roboten men visualisera resultatet utan resten av roboten. De två
-	delarna där simulering är mest aktuellt är inverterad kinematik, korridorföljning 
-	och gångstil.
+	köras på roboten men visualisera resultatet utan resten av roboten. De delar där 
+	simulering är mest aktuellt är inverterad kinematik, korridorföljning och 
+	gångstil.
 
 	\subsection{Simulering för inverterad kinematik}
 	Simuleringen går till genom att implementera algoritmen för 2D som beskrivs i avsnittet \ref{sub:inverterad-kinematik} Inverterad Kinematik. Simuleringen ritas sedan ut i webbläsaren för att visualisera den inverterade kinematiken.
@@ -597,7 +618,7 @@
 	Simulering för korridorföljning kan testa olika regleralgoritmer utan att behöva testa 
 	de på en gående robot. Simuleringen ritar ut en korridor och en robot som går framåt. 
 	Simulatorn skickar ut sensorvärden till en fil, det är tänkta att regleralgoritmen ska 
-	läsa in sensorvärden sedan ta beslut. Roboten i simulatorn använder 2 IR-sensorer på varje 
+	läsa in sensorvärden och sedan ta beslut. Roboten i simulatorn använder 2 IR-sensorer på varje 
 	sida som pekar rakt ut från roboten, det går att välja var på roboten som sensorerna ska 
 	sitta. Beslutet av regleralgoritmen skrivs till en fil som simulatorn läser in och 
 	styr roboten efter det. Det finns möjlighet att lägga till en störningsfunktion som till 
