@@ -133,17 +133,19 @@
 	\end{figure}
 
 	\section{Komponentbudget} 
-	Centralenhet 
-	Raspberry Pi 3 
-	Sensorenheten
-	Atmega1284 
-	GP2D120
-	GP2Y0A02YK 5 stycken
-	Lidar laser
-	Resistorer 
-	Kondensatorer 
-	Motorikenheten 
-	Atmega1284
+    \begin{itemize}
+	    \item Centralenhet 
+	    \item Raspberry Pi 3 
+	    \item Sensorenheten
+	    \item Atmega1284 
+	    \item GP2D120
+	    \item GP2Y0A02YK 5 stycken
+	    \item Lidar laser
+	    \item Resistorer 
+	    \item Kondensatorer 
+	    \item Motorikenheten 
+	    \item Atmega1284
+    \end{itemize}
 
 	\subsection{Kommunikation mellan enheterna}
 	Kommunikation mellan centralenheten och de två AVR-processorerna kommer att ske
@@ -230,7 +232,7 @@
     \subsubsection{Manuell navigation}
     För den manuella navigationen kommer sockets att användas mellan webbservern
     och centralenheten. Det kommer att komma in ett nytt meddelande med data för varje
-    knapptryck/händelse som sker på GUIt som centralenheten tolkar och överför
+    knapptryck/händelse som sker på GUI:t som centralenheten tolkar och överför
     till motorikenheten. 
     % sockets används mellan centralenhet - server, server - client.
 
@@ -243,7 +245,7 @@
 	%alternativ för att upptäcka hinder är att läsa av det motstånd som benens servo kan 
 	%returnera tillsammans med övriga sensorer för att upptäcka när roboten går in i ett 
 	%hinder. 
-	Sensorenheten har en avståndsmätare som är riktad snett neråt för att hitta kanten 
+	Sensorenheten har en avståndsmätare som är riktad snett nedåt för att hitta kanten 
 	på hinder. En IR-sensor används som avståndssensor. Vi kommer redan ha  kod för kommunikation med
 	den  eftersom att IR-sensorer kommer att användas på andra ställen i konstruktionen. 
 	
@@ -272,7 +274,7 @@
 	%						Motorikenheten
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	\section{Motorikenheten}
-	Motorikenheten översätter kommandon från centralen till servokommandon. Den tar emot 
+	Motorikenheten översätter kommandon från centralenheten till servokommandon. Den tar emot 
 	instruktioner från centralenheten som anger hastighet, rotation och riktning för 
 	förflyttnnig. Motorikenheten behandlar detta, räknar ut en lämplig gångstil och 
 	signalerar nödvändiga vinklar till de sex benen. Vissa delmoment i förflyttningen 
@@ -282,18 +284,18 @@
 	Första steget i motorikenheten för en anpassad gångstil är att utifrån efterfrågad
 	förflyttning avgöra en önskad slutposition för respektive ben, som för roboten närmre 
 	ett läge indikerat av centralenheten. Utifrån hastighet skalas förflyttningsvektorerna 
-	från nuvarande läge för varje ben ner. Benen flyttas i grupper av tre med ett pen på 
+	från nuvarande läge för varje ben ner. Benen flyttas i grupper av tre med ett ben på 
 	ena sidan och två på  andra (uppdelat på ett mittenben, respektive ett framben och ett 
 	bakben). När ett sett ben förflyttas, skiftas de markfästa benen vid behov för 
 	att flytta själva kroppen, även denna utifrån en förflyttningsvektor (som med benen). 
 	Lyft och nedsättning av ben hårdkodas, sådan att alla tre ben som skall flyttas i ett 
 	sett höjs, och sänks först när de satts i önskad position, sådan att benens position 
 	och förflyttning för vanlig gång kan beräknas i planet, snarare än i rummet, med 
-	avseende på beslutsfattning. endast vid den inversa kinematiken krävs då 
+	avseende på beslutsfattning. Endast vid den inversa kinematiken krävs då 
 	tredimensionell planering av benens rörelser. Detta beteende finns även illustrerat i 
 	figur \ref{fig:walkflow0}. 
 	
-	För analog styrning ska hastighet även kunna anpassas genom justering av servonas
+	För manuell styrning ska hastighet även kunna anpassas genom justering av servonas
 	hastighetsinställning.
 
 	\begin{figure}[h]
@@ -303,7 +305,7 @@
 	\end{figure}
 
 	\subsection{Hindergång}
-	För hindergång ska roboten treva med benen, och anpassa sig efter höjdskilnaden genom
+	För hindergång ska roboten treva med benen, och anpassa sig efter höjdskillnaden genom
 	läsning av benens mötta motstånd. Benen sänks till det att de möter motstånd, dels
 	vid uppstegning på hindret, men också vid gång på hindret, för att upptäcka när hindret 
 	tar slut. Inför uppgång på hinder höjs även benen extra, för att tillåta kliven att nå 
@@ -360,12 +362,13 @@
 	sensorinformationen. Den ska därför bland annat sköta brusreducering av
 	datan, samt beräkna integralen av informationen från gyrot för att få ut en
 	faktisk vinkel som roboten roterat. ATmega1284 kommer att ha tillräckligt med 
-	beräkningskraft för att ta hand om den datan som sensorerna genererar. Den kritiska 
+	beräkningskraft för att ta hand om den data som sensorerna genererar. Den kritiska 
 	delen är istället A/D-omvandling. Eftersom vi har många IR-sensorer tar det tid att 
 	mäta och omvandla de analoga signalerna till digitala värden, en A/D omvandling kan ta 
 	upp till 260 mikrosekunder. Om vi får problem med att IR-sensorerna interfererar med 
-	varandra kan endast en IR-sensor mäta åtgången. Vid dessa omständigheter kan 
-	centralenheten inte få nya värden 4 ggr/sec ens.
+	varandra kan endast ett begränsat antal IR-sensorer mäta åt gången. Vid
+    dessa omständigheter kan 
+	centralenheten inte ens få nya värden 4 ggr/s. % TODO wrong
 
     \subsubsection{Huvudloop}
     Huvudloopen 
@@ -389,8 +392,8 @@
     \begin{itemize}
         \item Avbrott 25 genereras när den interna A/D-omvandlaren är klar 
             vilket används för IR-sensorerna. När A/D-omvandlingen är klar 
-            sparas värdet i en lista som behanlas vid ett senare tillfälle.
-        \item Avbrott 20 genereras när någon bit i registret för SPI kommunikationen
+            sparas värdet i en lista som behandlas vid ett senare tillfälle.
+        \item Avbrott 20 genereras när någon bit i registret för SPI-kommunikationen
             ändras. Det kommer att användas för kommunikationen över SPI där skicka och 
             ta emot data mellan sensorenheten och centralenheten. Avbrotts koden för 
             SPI kommer att vara ganska stor för att den ska kunna behandla flera olika fall.
@@ -446,7 +449,7 @@
 	\subsection{Gyro}
 
 	Sensorenheten ska använda ett gyro för att mäta vridning i det horisontella
-	planet. Detta är användbart bland annat för att roboten ska veta hur mycket
+	planet. Detta är användbart för att roboten ska veta hur mycket
 	den ska rotera när den svänger. MLX90609 kommer att användas som gyro. Signalen från 
 	MLX90609 läses analogt in till den interna A/D-omvandlaren på Atmega1284 som konverterar 
 	den analoga signalen till ett digitalt värde med 10-bitars upplösning. 
@@ -457,7 +460,7 @@
 	upptäcka väggar och en sensor som är snett vinklat ner mot golvet för hinderdetektion. 
 
 	Avståndssensorn som mäter framåt ska utgöras av en LIDAR-sensor, som har
-    ett mycket bredd mätspann (0-40m) med 1 centimeters upplösning.
+    ett mycket brett mätspann (0-40m) med 1 centimeters upplösning.
 
 	Sensorn som ska upptäcka hinder ska utgöras av en IR-sensor. Det
 	har fördelen att ha samma gränssnitt som de andra IR-sensorerna som roboten
@@ -465,7 +468,7 @@
 
 	\subsection{Avståndssensorer åt sidorna}
 	Roboten ska ha avståndssensorer på vardera långsida av roboten, för
-	detektion av väggar och återvändsgränder. Dessa sensorer utgörs av 2
+	detektion av väggar och återvändsgränder. Dessa sensorer utgörs av två 
     IR-sensorer på varje sida där båda pekar ut från samma sida och
 	är placerade på varsin ända av plattformen. Detta möjliggör mätning av hur
 	roboten är vriden i en rak korridor och kan användas som felkontroll av
@@ -487,7 +490,7 @@
 	\begin{figure}[h]
 		\centering
 		\includegraphics[width=0.5\linewidth]{images/gui-index.png}
-		\caption{Figur av det grafiska gränssnittet\label{fig:gui-overview}}
+		\caption{Det grafiska gränssnittet\label{fig:gui-overview}}
 	\end{figure}
     
     \subsection{Styrning}
