@@ -369,13 +369,22 @@
 	centralenheten inte ens få nya värden 4 ggr/s. % TODO wrong
 
     \subsubsection{Huvudloop}
-    Huvudloopen 
+    Sensorenheten ska köra en huvudloop som sköter det mesta av beräkningarna
+    av sensordatan, medan bland annat mätning med IR-sensorer samt A/D-omvandlarna samt
+    kommunikation med sensorenheten styrs via avbrott.
 
-    Flödesschemat för den kod som är tänkt att köras kan ses i figur
+    Huvudloopen startar mätning av lediga IR-sensorer och sätter timrar för när
+    dessa har mätt klart. Dessa timrar triggar avbrott för när IR-sensorerna
+    har producerat ett analogt mätvärde, redo att omvandlas till ett digitalt
+    värde. Dessa avbrott lägger representationer av IR-sensorerna i en kö,
+    "IR-kö". Så länge denna kö är tom, använder den A/D-omvandlaren för att
+    omvandla mätvärden från gyrot, brusreducera dem samt lägga dessa i
+    huvudtabellen, där alla färdiga sensorvärden lagras. Den beräknar också
+    relevant data från omvandlade IR-sensorvärden, som lagrades i en annan kö,
+    "data-kö". I denna kö läggs omvandlade IR-sensorvärden av avbrott när
+    A/D-omvandlingar är klara. Om IR-kön inte är tom, startas en A/D-omvandling
+    för den IR-sensor som är först i kön. Denna algoritm illustreras i Figur 
     \ref{fig:sensor_flow}. 
-	Datastrukturer:
-	Kö -- En struktur för kö behövs för schema läggning av IR-sersorer. 
-	IR -- En struktur som hanterar varje IR-sensor. 
     \newpage
 
     \begin{figure}[h!]
