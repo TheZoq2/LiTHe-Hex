@@ -315,6 +315,7 @@
 	länre fram, för att undvika att falla frammåt. En översikt över detta kan fås i figur \ref{fig:walkflow1}.
 
 	\subsection{Inverterad kinematik}
+	\label{inverterad-kinematik}
 	Då planläggningsdelen av motorikenheten beslutat om var ett ben skall flyttas beräknas 
 	lämpliga vinklar för benets alla servon genom inverterad kinematik. Utifrån kända 
 	längder på benen och positioner där man vill att fötterna ska placeras används 
@@ -514,11 +515,8 @@
 	delarna där simulering är mest aktuellt är inverterad kinematik, korridorföljning 
 	och gångstil.
 
-	% TODO: write more and correct it
 	\subsection{Simulering för inverterad kinematik}
-	Simuleringen går till genom en algoritm som går ut på att först räkna ut Jacobis matrisen för servornas position och dess vinkelräta enhetsvektor.
-	
-	Simuleringen kommer sedan att ritas ut med hjälp av algoritmen som beskrevs ovan i webbläsaren.
+	Simuleringen går till genom att implementera algoritmen för 2D som beskrivs i avsnittet \ref{inverterad-kinematik} Inverterad Kinematik. Simuleringen ritas sedan ut i webbläsaren för att visualisera den inverterade kinematiken.
 	
 	\subsection{Simulering för korridorföljning}
 	Simulering för korridorföljning kan testa olika regleralgoritmer utan att behöva testa 
