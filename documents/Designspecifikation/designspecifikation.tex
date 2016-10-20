@@ -99,7 +99,7 @@
 			\textbf{Version} & \textbf{Datum} & \textbf{Utförda förändringar} 
 			& \textbf{Utförda av} & \textbf{Granskad} \\ \midrule
 			
-			0.1 & 2016--??--?? & Första utkastet & Projektgruppen & \\
+			0.1 & 2016--10--20 & Första utkastet & Projektgruppen & \\
 		\end{longtable}
 	\end{center}
 
@@ -129,21 +129,19 @@
 		\includegraphics[width=0.5\linewidth]{../images/overview.png}
 		\caption{Översikt av systemet\label{fig:overview}}
 	\end{figure}
-
-	\section{Komponentbudget} 
-    \begin{itemize}
-	    \item Centralenhet 
-	    \item Raspberry Pi 3 
-	    \item Sensorenheten
-	    \item ATmega1284 
-	    \item GP2D120
-	    \item GP2Y0A02YK 5 stycken
-	    \item Lidar laser
-	    \item Resistorer 
-	    \item Kondensatorer 
-	    \item Motorikenheten 
-	    \item ATmega1284
-    \end{itemize}
+	
+	\section{Komponentbudget}
+	\begin{longtable}[c]{l l}
+		\textbf{Komponent} & \textbf{Antal} \\ \midrule
+		Raspberry Pi 3 & 1 \\
+		ATmega1284 & 2 \\
+		GP2D120 & 1 \\
+		GP2Y0A02YK & 4 \\
+		Lidar laser & 1 \\
+		Resistorer & Ej bestämt \\
+		Kondensatorer & Ej bestämt \\
+		
+	\end{longtable}
 
 	\subsection{Kommunikation mellan enheterna}
 	Kommunikation mellan centralenheten och de två AVR-processorerna kommer att ske
