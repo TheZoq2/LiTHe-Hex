@@ -99,7 +99,7 @@
 			\textbf{Version} & \textbf{Datum} & \textbf{Utförda förändringar} 
 			& \textbf{Utförda av} & \textbf{Granskad} \\ \midrule
 			
-			0.1 & 2016--??--?? & Första utkastet & Projektgruppen & \\
+			0.1 & 2016--10--20 & Första utkastet & Projektgruppen & \\
 		\end{longtable}
 	\end{center}
 
@@ -129,21 +129,19 @@
 		\includegraphics[width=0.5\linewidth]{../images/overview.png}
 		\caption{Översikt av systemet\label{fig:overview}}
 	\end{figure}
-
-	\section{Komponentbudget} 
-    \begin{itemize}
-	    \item Centralenhet 
-	    \item Raspberry Pi 3 
-	    \item Sensorenheten
-	    \item Atmega1284 
-	    \item GP2D120
-	    \item GP2Y0A02YK 5 stycken
-	    \item Lidar laser
-	    \item Resistorer 
-	    \item Kondensatorer 
-	    \item Motorikenheten 
-	    \item Atmega1284
-    \end{itemize}
+	
+	\section{Komponentbudget}
+	\begin{longtable}[c]{l l}
+		\textbf{Komponent} & \textbf{Antal} \\ \midrule
+		Raspberry Pi 3 & 1 \\
+		ATmega1284 & 2 \\
+		GP2D120 & 1 \\
+		GP2Y0A02YK & 4 \\
+		Lidar laser & 1 \\
+		Resistorer & Ej bestämt \\
+		Kondensatorer & Ej bestämt \\
+		
+	\end{longtable}
 
 	\subsection{Kommunikation mellan enheterna}
 	Kommunikation mellan centralenheten och de två AVR-processorerna kommer att ske
@@ -315,6 +313,7 @@
 	längre fram, för att undvika att falla framåt. En översikt över detta kan fås i figur \ref{fig:walkflow1}.
 
 	\subsection{Inverterad kinematik}
+	\label{sub:inverterad-kinematik}
 	Då planläggningsdelen av motorikenheten beslutat om var ett ben skall flyttas beräknas 
 	lämpliga vinklar för benets alla servon genom inverterad kinematik. Utifrån kända 
 	längder på benen och positioner där man vill att fötterna ska placeras används 
@@ -350,7 +349,7 @@
 
 	\subsection{Styrenhet i sensorenheten}
 
-	Styrenheten för sensorenheten ska bestå av AVR-processorn Atmega1284, som läser av och 
+	Styrenheten för sensorenheten ska bestå av AVR-processorn ATmega1284, som läser av och 
 	behandlar informationen från robotens sensorer. Styrenheten sköter även
 	kommunikationen med centralenheten -- den tar emot förfrågningar om data och
 	skickar behandlad data på begäran.
@@ -449,7 +448,7 @@
 	Sensorenheten ska använda ett gyro för att mäta vridning i det horisontella
 	planet. Detta är användbart för att roboten ska veta hur mycket
 	den ska rotera när den svänger. MLX90609 kommer att användas som gyro. Signalen från 
-	MLX90609 läses analogt in till den interna A/D-omvandlaren på Atmega1284 som konverterar 
+	MLX90609 läses analogt in till den interna A/D-omvandlaren på ATmega1284 som konverterar 
 	den analoga signalen till ett digitalt värde med 10-bitars upplösning. 
 	
 	\subsection{Avståndssensorer fram}
@@ -491,7 +490,7 @@
 		\caption{Det grafiska gränssnittet\label{fig:gui-overview}}
 	\end{figure}
     
-    \subsection{Styrning}
+    \subsection{Manuell styrning}
     Under styrning ska man kunna styra roboten med en joystick. Man ska även
     kunna styra roboten med tangentbord eller knappar på skärmen. Det ska finnas
     en kryssruta som växlar mellan manuell och autonom styrning. För att styra
@@ -499,10 +498,11 @@
     att vrida sig åt ett håll och att stanna.
 
     \subsection{Debug}
-	Under debug ska robotens olika inställningars värden visas samt ska den visa all 
-	sensordata vid tillfället. Var tredje sekund ska sidan uppdateras och klienten 
-	hämtar den uppdaterade data:n med hjälp av JSON (Javascript Object Notation). 
-	Det ska också finnas en eller flera grafer som beskriver några av de olika data.
+	Under debug ska robotens olika inställningar samt sensordata vid tillfället
+    visas. Var tredje sekund ska sidan uppdateras och klienten hämtar den
+    uppdaterade data:n med hjälp av JSON (Javascript Object Notation). Det ska
+    också finnas en eller flera grafer som beskriver några av de olika
+    sensorernas data.
 
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%						Simuleringar
@@ -514,11 +514,8 @@
 	delarna där simulering är mest aktuellt är inverterad kinematik, korridorföljning 
 	och gångstil.
 
-	% TODO: write more and correct it
 	\subsection{Simulering för inverterad kinematik}
-	Simuleringen går till genom en algoritm som går ut på att först räkna ut Jacobis matrisen för servornas position och dess vinkelräta enhetsvektor.
-	
-	Simuleringen kommer sedan att ritas ut med hjälp av algoritmen som beskrevs ovan i webbläsaren.
+	Simuleringen går till genom att implementera algoritmen för 2D som beskrivs i avsnittet \ref{sub:inverterad-kinematik} Inverterad Kinematik. Simuleringen ritas sedan ut i webbläsaren för att visualisera den inverterade kinematiken.
 	
 	\subsection{Simulering för korridorföljning}
 	Simulering för korridorföljning kan testa olika regleralgoritmer utan att behöva testa 
