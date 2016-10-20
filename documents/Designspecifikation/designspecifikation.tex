@@ -124,7 +124,7 @@
 	Systemet ska innehålla tre enheter. En centralenhet för kommunikation med en
 	dator, en motorikenhet som sköter hur benen rör sig samt en sensorenhet som
 	tolkar sensordata. Centralenheten är även den enhet som tar beslut och
-	kommunicerar med de andra enheterna. Se Figur.~\ref{fig:overview} för en översiktsbild av
+	kommunicerar med de andra enheterna. Se figur \ref{fig:overview} för en översiktsbild av
 	systemet.
 	\begin{figure}[h]
 		\centering
@@ -152,7 +152,7 @@
 	centralenheten begär data eller skickar kommandon till sub-enheterna som
 	sedan svarar på begäran.  
 
-	\subsubsection*{Kommunikationsprotokoll}
+	\subsubsection{Kommunikationsprotokoll}
 	\label{ssub:Kommunikationsprotokoll}
 	Kommuikationen mellan centralenheten, motorikenheten och sensorenheten kommer att ske 
 	med protokollet som beskrivs i figur \ref{fig:kommunikation1}
@@ -166,23 +166,23 @@
 
 	De första 6 bitarna av varje meddelande säger vilken typ av meddelande det är som
 	skickas, de olika typer av meddelanden som kan skickas beskrivs i tabell 
-	\ref{table:messages}. Den första biten i type parametern är 0 om meddelandets
+	\ref{table:messages}. Den första biten i typparametern är 0 om meddelandets
 	innehåll är en enstaka byte och 1 om meddelandet har dynamisk längd. Om längden
-	är dynamisk är första biten i meddelanndet längden av resten.
+	är dynamisk är första byten i meddelandet längden av resten av meddelandet.
 
 	De två sista bitarna i första byten är paritetsbitar. Bit 7 är en  paritetsbit
 	för meddelandets innehåll medan bit 8 är paritetsbit för de 7 tidigare bitarna.
 
 	Om någon av paritetsbitarna är fel så kommer enheten som tog emot meddelandet att svara
 	med ett speciellt meddelande för att indikera sändningsfel. Annars kommer den 
-	att svara med ett 'acknowledge' meddelande.
+	att svara med ett 'acknowledgemeddelande'.
 
 	\begin{table}
 		\begin{longtable}[c]{ l l l }
 			\textbf{Syfte} & \textbf{ID} & \textbf{Data} \\ \midrule
 			\textbf{Generella} \\ \midrule
-			Send fail & 00 & -- \\ \midrule
-			Acknowledge & 01 & -- \\ \midrule
+			Send fail & 1F & -- \\ \midrule
+			Acknowledge & 0F & -- \\ \midrule
 			Datarequest & 02 & data \\ \midrule
 			\\
 			\textbf{Centralenhet $ \to $ motorikenhet}\\ \midrule
@@ -311,7 +311,7 @@
 
 	Därtill gäller att benen flyttas marginellt (någon centimeter) vid uppkliv på eller 
 	nedkliv från hinder. Detta för att undvika att fötterna hamnar instabilt på kanten till 
-	hindret, men roboten tycker sig ha stå stabilt, men även för att vid nedstig få en benen 
+	hindret, men roboten tycker sig stå stabilt, men även för att vid nedstig få en benen 
 	länre fram, för att undvika att falla frammåt. En översikt över detta kan fås i figur \ref{fig:walkflow1}.
 
 	\subsection{Inverterad kinematik}
