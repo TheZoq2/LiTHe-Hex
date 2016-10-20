@@ -17,6 +17,31 @@
 \renewcommand{\contentsname}{Innehållsförteckning}
 \renewcommand{\tablename}{Tabell}
 
+
+\usepackage{listings}
+\usepackage{color}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+  language=Python,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Header and footer
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -145,10 +170,13 @@
 
 	\subsection{Kommunikation mellan enheterna}
 	Kommunikation mellan centralenheten och de två AVR-processorerna kommer att ske
-	med SPI. Sensor- och motorikenhetens SPI portar kommer att kopplas till var sin
-	SPI port på raspberry PI:en. Kommunikationen kommer huvudsakligen ske genom  att
-	centralenheten begär data eller skickar kommandon till sub-enheterna som
-	sedan svarar på begäran.  
+	med SPI. Sensor- och motorikenhetens SPI portar kommer att kopplas till centralenhetens
+	spi port med var sin chip select. All kommunikation kommer att inledas med att 
+	centralenheten skickar ett kommando eller en databegäran till underenheterna.
+	Underenheten kommer sedan att utföra kommandot eller svara med den begärda datan.
+
+
+
 
 	\subsubsection{Kommunikationsprotokoll}
 	\label{ssub:Kommunikationsprotokoll}
@@ -175,37 +203,99 @@
 	med ett speciellt meddelande för att indikera sändningsfel. Annars kommer den 
 	att svara med ett 'acknowledgemeddelande'.
 
-	\begin{table}
-		\begin{longtable}[c]{ l l l }
-			\textbf{Syfte} & \textbf{ID} & \textbf{Data} \\ \midrule
-			\textbf{Generella} \\ \midrule
-			Send fail & 1F & -- \\ \midrule
-			Acknowledge & 0F & -- \\ \midrule
-			Datarequest & 02 & data \\ \midrule
-			\\
-			\textbf{Centralenhet $ \to $ motorikenhet}\\ \midrule
-			Toggle hindergång & 03 & på/av \\ \midrule
-			Sätt servohastighet & 04 & $ hastighet $ \\ \midrule
-			Gåkommando &  20 & len, x-hastighet, y-hastighet, svänghastighet \\ \midrule
-			Return to neutral & 05 & -- \\ \midrule
-			\\
-			\textbf{Centralenhet $ \gets $ motorikenhet}\\ \midrule
-			Servostatus & 20 & len, ... data ... \\ \midrule
-			Debugsträng & 21 & len, "debugsträng i utf-8" \\ \midrule
-			Hinder här? & 03 & ja/nej \\ \midrule
-			\\
-			\textbf{Centralenhet $\to$ sensorenhet} \\ \midrule
-			Återställ orientering & 03 & -- \\ \midrule
-			\\
-			\textbf{Centralenhet $ \gets $ sensorenhet}\\ \midrule
-			Behandlad sensordata & 20 & len, ... avståndsmätardata ..., gyrodata \\ \midrule
-			Korridordata		 & 21 & len, ... avstånd till väggar ..., vinkel \\
-		\end{longtable}
+	\begin{longtable}[c]{ l l l }
+		\textbf{Syfte} & \textbf{ID} & \textbf{Data} \\ \midrule
+		\textbf{Generella} \\ \midrule
+		Send fail & 1F & -- \\ \midrule
+		Acknowledge & 0F & -- \\ \midrule
+		Datarequest & 02 & data \\ \midrule
+		\\
+		\textbf{Centralenhet $ \to $ motorikenhet}\\ \midrule
+		Toggle hindergång & 03 & på/av \\ \midrule
+		Sätt servohastighet & 04 & $ hastighet $ \\ \midrule
+		Gåkommando &  20 & len, x-hastighet, y-hastighet, svänghastighet \\ \midrule
+		Return to neutral & 05 & -- \\ \midrule
+		\\
+		\textbf{Centralenhet $ \gets $ motorikenhet}\\ \midrule
+		Servostatus & 20 & len, ... data ... \\ \midrule
+		Debugsträng & 21 & len, "debugsträng i utf-8" \\ \midrule
+		Hinder här? & 03 & ja/nej \\ \midrule
+		\\
+		\textbf{Centralenhet $\to$ sensorenhet} \\ \midrule
+		Återställ orientering & 03 & -- \\ \midrule
+		\\
+		\textbf{Centralenhet $ \gets $ sensorenhet}\\ \midrule
+		Behandlad sensordata & 20 & len, ... avståndsmätardata ..., gyrodata \\ \midrule
+		Korridordata		 & 21 & len, ... avstånd till väggar ..., vinkel \\
+	\end{longtable}
+	
+	Algoritmen för läsning av data i centralenheten beskrivs av följande pseudokod.
 
-		\vspace{0.5cm}
-		\label{table:messages}
-		\caption{Lista av meddelanden som kan skickas mellan enheter}
-	\end{table}
+	%Pseudocode for reading replies
+	\begin{lstlisting}
+	def read_reply():
+		set_chip_select()
+
+		set byte = read_byte_when_available()
+
+		set type = byte[0..5]
+		if(byte[0] == 0)
+			set length = 1
+		else
+			set length = read_byte_when_available()
+		
+		result = []
+		for i = 0..length:
+			result.append(read_byte_when_available())
+
+		if check_parity_bits() == good
+			return (Ok, type, result)
+		else
+			return (Fail, 0, [])
+	\end{lstlisting}
+
+	Algoritmen för att skicka data till andra enheter beskrivs i följande pseudokod.
+
+	\begin{lstlisting}
+	def write_to_module(msg):
+		set_chip_select()
+
+		write_to_spi(msg)
+
+		set reply = read_reply()
+
+		if reply.status == OK and reply.type == ACK:
+			return
+		else:
+			write_to_module(msg)
+	\end{lstlisting}
+
+
+	Algoritmen för att skicka och ta emot data på motorik- och sensorenheten beskrivs
+	i följande pseudokod
+
+	\begin{lstlisting}
+		#Init
+		set activate_interrupts_for_spi()
+		set received_msgs = new Queue()
+
+		set current_msg = []
+
+		#Event handler for spi messages
+		def on_spi_recv(byte):
+			current_msg += byte
+
+			if msg_is_complete:
+				set success = check_parity()
+				if success == OK:
+					send_ack()
+				
+				if message requires reply:
+					send_reply()
+				else:
+					received_msgs.push(current_msg)
+	\end{lstlisting}
+
 	
 	
 	\section{Centralenheten}
