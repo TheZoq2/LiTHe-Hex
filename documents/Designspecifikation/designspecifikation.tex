@@ -135,14 +135,14 @@
 	    \item Centralenhet 
 	    \item Raspberry Pi 3 
 	    \item Sensorenheten
-	    \item Atmega1284 
+	    \item ATmega1284 
 	    \item GP2D120
 	    \item GP2Y0A02YK 5 stycken
 	    \item Lidar laser
 	    \item Resistorer 
 	    \item Kondensatorer 
 	    \item Motorikenheten 
-	    \item Atmega1284
+	    \item ATmega1284
     \end{itemize}
 
 	\subsection{Kommunikation mellan enheterna}
@@ -351,7 +351,7 @@
 
 	\subsection{Styrenhet i sensorenheten}
 
-	Styrenheten för sensorenheten ska bestå av AVR-processorn Atmega1284, som läser av och 
+	Styrenheten för sensorenheten ska bestå av AVR-processorn ATmega1284, som läser av och 
 	behandlar informationen från robotens sensorer. Styrenheten sköter även
 	kommunikationen med centralenheten -- den tar emot förfrågningar om data och
 	skickar behandlad data på begäran.
@@ -450,7 +450,7 @@
 	Sensorenheten ska använda ett gyro för att mäta vridning i det horisontella
 	planet. Detta är användbart för att roboten ska veta hur mycket
 	den ska rotera när den svänger. MLX90609 kommer att användas som gyro. Signalen från 
-	MLX90609 läses analogt in till den interna A/D-omvandlaren på Atmega1284 som konverterar 
+	MLX90609 läses analogt in till den interna A/D-omvandlaren på ATmega1284 som konverterar 
 	den analoga signalen till ett digitalt värde med 10-bitars upplösning. 
 	
 	\subsection{Avståndssensorer fram}
