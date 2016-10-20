@@ -234,19 +234,6 @@
     till motorikenheten. 
     % sockets används mellan centralenhet - server, server - client.
 
-	\subsection{Hinderdetektion}
-	%För hinderdetektering finns det olika alternativ att använda. Det är möjligt att 
-	%detektera hinder med hjälp av en avståndsmätare som är vinklad nedåt, en IR-sensor 
-	%eller LIDAR kan användas som avståndsmätare. Att använda en IR-sensor är fördelaktigt 
-	%då IR-sensorer antagligen kommer att användas för att undvika väggar. En 
-	%LIDAR är en ny enhet och medför ett ytterligare, mer avancerat gränssnitt. Ett annat 
-	%alternativ för att upptäcka hinder är att läsa av det motstånd som benens servo kan 
-	%returnera tillsammans med övriga sensorer för att upptäcka när roboten går in i ett 
-	%hinder. 
-	Sensorenheten har en avståndsmätare som är riktad snett nedåt för att hitta kanten 
-	på hinder. En IR-sensor används som avståndssensor. Vi kommer redan ha  kod för kommunikation med
-	den  eftersom att IR-sensorer kommer att användas på andra ställen i konstruktionen. 
-	
 	\subsection{Kommunikation}
 	Centralenheten ska kommunicera med en dator över WiFi. Det är datorns webbläsare 
 	som kommer att ansluta till centralenhetens webbserver, det blir då möjligt att
