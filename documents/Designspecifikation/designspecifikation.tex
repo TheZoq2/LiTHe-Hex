@@ -401,10 +401,6 @@
 	som vid justering av hastighet, ändras inställningarna i servona själva, allt 
 	utifrån metoden beskriven i databladet för AX-12 servon.
 	
-	Då standardiserad baud rate för AX-12 är förhållandevis hög kan assembly-kod (via C) 
-	användas för att justera denna till en mer lätthanterlig hastighet (med en instruktion
-	om mass-skrivning till address 04 i servona, igen, enligt databladet).
-	
 	\begin{figure}[h!]
 		\centering
 		\includegraphics[width=0.5\linewidth]{images/hindergang_flowchart.png}
@@ -608,5 +604,10 @@
 	exempel kan vara att roboten alltid går med en liten rotation. 
 	
 	\subsection{Simulering för gångstil}
+	Sumulatorn för gångstil kommer att fungera på samma sätt som 
+	korridorföljningssimulatorn. Motorikenhetens kod kommer att skriva informationen som,
+	på roboten skulle skickas till servona, till en fil som simulatorn läser. Simulatorn
+	visualiserar resultatet av kommandona och skriver data som servona skulle svara
+	med till en annan fil som motorikkoden kan läsa.
 
 \end{document}
