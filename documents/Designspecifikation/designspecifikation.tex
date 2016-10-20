@@ -110,19 +110,33 @@
 	\newpage
 
 	\section{Inledning}
-	I detta dokument beskrivs delsystemen för en sexbent robot mer ingående samt förslag på hur de ska 
-	implementeras. De delsystem som roboten ska använda sig av är:
-	Centralenhet, motorikenhet och sensorenhet.
+	Detta dokument går i detalj in på den tänkta konstruktionen och mjukvaran för en 
+	sexbent robot, med möjlighet för autonom och manuell styrning. Först presenteras en 
+	översiktlig beskrivning av robotens styrande processorer ("enheter", vilka kopplas till ett färdigt 
+	PhantomX AX Metal Hexapod Mark III chassi från TrossenRobotics). Dessa (central-, 
+	motorik- och sensorenhet), kommunikation mellan dessa, samt användargränssnitt specificeras 
+	sedan i större nogranhet under egna avdelningar.
 
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%						Översikt
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 	\section{Systemöversikt}
-	Systemet ska innehålla tre enheter. En centralenhet för kommunikation med en
-	dator, en motorikenhet som sköter hur benen rör sig samt en sensorenhet som
-	tolkar sensordata. Centralenheten är även den enhet som tar beslut och
-	kommunicerar med de andra enheterna. Se figur \ref{fig:overview} för en översiktsbild av
+	Systemet ska innehålla tre enheter. En centralenhet implementerad på en Raspberry Pi 3 
+	agerar som master för de andra två (slav)processorserna. Denna står för all kommunikation 
+	med omgivning genom en webserver som datorer kan koppla upp sig mot för att styra roboten 
+	eller få tillgång till debugdata. I autonomt läge är det även denna enhet som utifrån 
+	insamlad data fattar alla styrande beslut utifrån vilka de andra enheterna verkar (vid 
+	manuell styrning vidarebefodras endast data från styrdatorn).
+
+	De två andra enheterna (slavarna till centralenheten) utgörs av AVR-processorer och styr 
+	mer generella uppgifter. Den ena, motorikenheten, översätter generella indikationer om 
+	förflyttning från centralenheten till faktiska kommandon för robotens servon, och skickar 
+	vidare dessa. Den kan även förse centralenheten med bland annat debugdata om så efterfrågas.
+	
+	Den andra AVR-processorn utgör en sensorenhet, vilken styr och läser robotens sensorsvit. 
+	Den svarar även för att översätta råa sensordata i mer konkreta former (som vinklar och 
+	avstånd), samt att brusreducera dessa efter behov. Figur \ref{fig:overview} ger en översiktsbild av
 	systemet.
 	\begin{figure}[h]
 		\centering
