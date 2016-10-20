@@ -140,7 +140,7 @@
 	översiktlig beskrivning av robotens styrande processorer ("enheter", vilka kopplas till ett färdigt 
 	PhantomX AX Metal Hexapod Mark III chassi från TrossenRobotics). Dessa (central-, 
 	motorik- och sensorenhet), kommunikation mellan dessa, samt användargränssnitt specificeras 
-	sedan i större nogranhet under egna avdelningar.
+	sedan i större noggrannhet under egna avdelningar.
 
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%						Översikt
@@ -148,11 +148,11 @@
 
 	\section{Systemöversikt}
 	Systemet ska innehålla tre enheter. En centralenhet implementerad på en Raspberry Pi 3 
-	agerar som master för de andra två (slav)processorserna. Denna står för all kommunikation 
+	agerar som master för de andra två (slav)processorerna. Denna står för all kommunikation 
 	med omgivning genom en webserver som datorer kan koppla upp sig mot för att styra roboten 
 	eller få tillgång till debugdata. I autonomt läge är det även denna enhet som utifrån 
-	insamlad data fattar alla styrande beslut utifrån vilka de andra enheterna verkar (vid 
-	manuell styrning vidarebefodras endast data från styrdatorn).
+	insamlad data fattar alla styrande beslut utifrån vilka de andra enheterna
+  verkar. Vid manuell styrning vidarebefordras endast data från styrdatorn.
 
 	De två andra enheterna (slavarna till centralenheten) utgörs av AVR-processorer och styr 
 	mer generella uppgifter. Den ena, motorikenheten, översätter generella indikationer om 
