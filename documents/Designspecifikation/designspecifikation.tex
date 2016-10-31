@@ -150,8 +150,8 @@
 
 	\section{Systemöversikt}
 	Systemet ska innehålla tre enheter. En centralenhet implementerad på en Raspberry Pi 3 
-	agerar som master för de andra två (slav)processorerna. Denna står för all kommunikation 
-	med omgivning genom en webserver som datorer kan koppla upp sig mot för att styra roboten 
+	agerar som master för de andra två (slav-)processorerna. Denna står för all kommunikation 
+	med omgivningen genom en webserver som datorer kan koppla upp sig mot för att styra roboten 
 	eller få tillgång till debugdata. I autonomt läge är det även denna enhet som utifrån 
 	insamlad data fattar alla styrande beslut utifrån vilka de andra enheterna
   verkar. Vid manuell styrning vidarebefordras endast data från styrdatorn.
@@ -162,31 +162,34 @@
 	vidare dessa. Den kan även förse centralenheten med bland annat debugdata om så efterfrågas.
 	
 	Den andra AVR-processorn utgör en sensorenhet, vilken styr och läser robotens sensorsvit. 
-	Den svarar även för att översätta råa sensordata i mer konkreta former (som vinklar och 
+	Den svarar även för att översätta råa sensordata till mer konkreta former (som vinklar och 
 	avstånd), samt att brusreducera dessa efter behov. Figur \ref{fig:overview} ger en översiktsbild av
 	systemet.
-	\begin{figure}[h]
+	\begin{figure}[h!]
 		\centering
 		\includegraphics[width=0.5\linewidth]{../images/overview.png}
 		\caption{Översikt av systemet\label{fig:overview}}
 	\end{figure}
 
+	\newpage
+
 	\subsection{Kommunikation mellan enheterna}
 	Kommunikation mellan centralenheten och de två AVR-processorerna kommer att ske
-	med SPI. Sensor- och motorikenhetens SPI portar kommer att kopplas till centralenhetens
-	spi port med var sin chip select. All kommunikation kommer att inledas med att 
-	centralenheten skickar ett kommando eller en databegäran till underenheterna.
-	Underenheten kommer sedan att utföra kommandot eller svara med den begärda datan.
+	med SPI. Sensor- och motorikenhetens SPI-portar kommer att kopplas till centralenhetens
+	SPI-port med varsin chip select. All kommunikation kommer att inledas med att 
+	centralenheten skickar ett kommando eller en databegäran till slavenheterna.
+	Slavenheterna kommer sedan att utföra kommandot eller svara med den begärda datan.
 
 
 
 
 	\subsubsection{Kommunikationsprotokoll}
 	\label{ssub:Kommunikationsprotokoll}
-	Kommuikationen mellan centralenheten, motorikenheten och sensorenheten kommer att ske 
-	med protokollet som beskrivs i figur \ref{fig:kommunikation1}
+	Kommunikationen mellan centralenheten, motorikenheten och sensorenheten kommer att ske 
+	med protokollet som beskrivs i figur \ref{fig:kommunikation1}.
 
-	\begin{figure}[h]
+	\newpage
+	\begin{figure}[h!]
 		\centering
 		\includegraphics[width=0.5\linewidth]{images/communication_protocol1.png}
 		\caption{Översiktlig vy av kommunikationsprotokolllet}
@@ -194,7 +197,7 @@
 	\end{figure}
 
 	De första 6 bitarna av varje meddelande säger vilken typ av meddelande det är som
-	skickas, de olika typer av meddelanden som kan skickas beskrivs i tabell 
+	skickas, dessa beskrivs i tabell 
 	\ref{table:messages}. Den första biten i typparametern är 0 om meddelandets
 	innehåll är en enstaka byte och 1 om meddelandet har dynamisk längd. Om längden
 	är dynamisk är första byten i meddelandet längden av resten av meddelandet.
@@ -204,7 +207,7 @@
 
 	Om någon av paritetsbitarna är fel så kommer enheten som tog emot meddelandet att svara
 	med ett speciellt meddelande för att indikera sändningsfel. Annars kommer den 
-	att svara med ett 'acknowledgemeddelande'.
+	att svara med ett "acknowledgemeddelande".
 
 	\begin{longtable}[c]{ l l l }
 		\textbf{Syfte} & \textbf{ID} & \textbf{Data} \\ \midrule
@@ -216,7 +219,7 @@
 		\textbf{Centralenhet $ \to $ motorikenhet}\\ \midrule
 		Toggle hindergång & 03 & på/av \\ \midrule
 		Sätt servohastighet & 04 & $ hastighet $ \\ \midrule
-		Gåkommando &  20 & len, x-hastighet, y-hastighet, svänghastighet \\ \midrule
+		Gåkommando &  20 & len, x- och y-hastighet, svänghastighet \\ \midrule
 		Return to neutral & 05 & -- \\ \midrule
 		\\
 		\textbf{Centralenhet $ \gets $ motorikenhet}\\ \midrule
@@ -230,9 +233,13 @@
 		\textbf{Centralenhet $ \gets $ sensorenhet}\\ \midrule
 		Behandlad sensordata & 20 & len, ... avståndsmätardata ..., gyrodata \\ \midrule
 		Korridordata		 & 21 & len, ... avstånd till väggar ..., vinkel \\
+
+		\caption{Meddelandespecifikation \label{table:messages}}
 	\end{longtable}
+
 	
 	Algoritmen för läsning av data i centralenheten beskrivs av följande pseudokod.
+
 
 	%Pseudocode for reading replies
 	\begin{lstlisting}
@@ -274,6 +281,7 @@
 	\end{lstlisting}
 
 
+	\newpage
 	Algoritmen för att skicka och ta emot data på motorik- och sensorenheten beskrivs
 	i följande pseudokod
 
@@ -307,7 +315,8 @@
 		ATmega1284 & 2 \\
 		GP2D120 & 1 \\
 		GP2Y0A02YK & 4 \\
-		Lidar laser & 1 \\
+		MLX90609 & 1 \\
+		LIDAR-laser & 1 \\
 		Resistorer & Ej bestämt \\
 		Kondensatorer & Ej bestämt \\
 	\end{longtable}
@@ -323,7 +332,7 @@
 	skickar kommandon till motorikenheten.
   
 	\subsubsection{Autonomt läge}
-	I det autonoma läget kommer entralenheten fråga om data från sensorenheten
+	I det autonoma läget kommer centralenheten fråga om data från sensorenheten
     varje gång det ska fattas ett beslut. Detta gör att centralenheten själv
     bestämmer när den ska ha ny data för att den inte ska bli avbruten eller missa
     data för att den är mitt i utförandet av en annan funktion. Utifrån denna data
@@ -339,23 +348,10 @@
 	\subsection{Kommunikation}
 	Centralenheten ska kommunicera med en dator över WiFi. Det är datorns webbläsare 
 	som kommer att ansluta till centralenhetens webbserver, det blir då möjligt att
-	via webbgränssnittet att styra roboten samt läsa av robotens loggar. Det finns
-	flera gränssnitt att 
-	använda för kommunikation mellan processorerna. Intressanta gränssnitt är SPI, 
-	\itc{} och UART.\@ UART är inte möjligt att använda både till sensorenheten och 
-	motorikenheten då Raspberry Pi endast har en UART-port. Både 
-	SPI och \itc{} kan användas förutsett att LIDAR inte används. \itc{} måste konfigureras med ett
-	master-/slave-förhållande. Centralenheten behöver vara master för att kunna
-	kommunicera med 
-	sensorenheten och motorikenheten som är slave. Med den konfigurationen blir 
-	det inte möjligt för sensorenheten och motorikenheten att kommunicera med
-	centralenheten utan att centralenheten har på startat kommunikationen. I och 
-	med att \itc{} behöver en master/slave konfiguration blir SPI enklare att använda 
-	för tvåvägskommunikation.
-	
+	via webbgränssnittet att styra roboten samt läsa av robotens loggar. 	
 	% TODO: write more
 	\subsubsection{Kommunikation med webbserver}
-	Datan som skickas mellan centralenheten och webservern är i JSON format.
+	Datan som skickas mellan centralenheten och webservern är i JSON-format.
 
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%						Motorikenheten
@@ -373,10 +369,10 @@
 	ett läge indikerat av centralenheten. Utifrån hastighet skalas förflyttningsvektorerna 
 	från nuvarande läge för varje ben ner. Benen flyttas i grupper av tre med ett ben på 
 	ena sidan och två på  andra (uppdelat på ett mittenben, respektive ett framben och ett 
-	bakben). När ett sett ben förflyttas, skiftas de markfästa benen vid behov för 
+	bakben). När en uppsättning ben förflyttas, skiftas de markfästa benen vid behov för 
 	att flytta själva kroppen, även denna utifrån en förflyttningsvektor (som med benen). 
 	Lyft och nedsättning av ben hårdkodas, sådan att alla tre ben som skall flyttas i ett 
-	sett höjs, och sänks först när de satts i önskad position, sådan att benens position 
+	set höjs och sänks först när de satts i önskad position, sådan att benens position 
 	och förflyttning för vanlig gång kan beräknas i planet, snarare än i rummet, med 
 	avseende på beslutsfattning. Endast vid den inverterade kinematiken krävs då 
 	tredimensionell planering av benens rörelser. Detta beteende finns även illustrerat i 
@@ -394,7 +390,7 @@
 	\subsection{Hindergång}
 	För hindergång ska roboten treva med benen, och anpassa sig efter höjdskillnaden genom
 	läsning av benens mötta motstånd. Benen sänks till det att de möter motstånd, dels
-	vid uppstegning på hindret, men också vid gång på hindret (för att upptäcka när hindret 
+	vid uppstigning på hindret, men också vid gång på hindret (för att upptäcka när hindret 
 	tar slut). Inför uppgång på hinder höjs även benen extra, för att tillåta kliven att nå 
 	upp på hindret.
 
@@ -402,6 +398,12 @@
 	nedkliv från hinder. Detta för att undvika att fötterna hamnar instabilt på kanten till 
 	hindret, samtidigt som roboten tycker sig stå stabilt. Detta underlättar även för att vid nedstig stödja benen 
 	längre fram, för att undvika att falla framåt. En översikt över detta kan fås i figur \ref{fig:walkflow1}.
+
+	\begin{figure}[h!]
+		\centering
+		\includegraphics[width=0.5\linewidth]{images/hindergang_flowchart.png}
+		\caption{Flödesschema för hindergångsprocedur hos roboten \label{fig:walkflow1}}
+	\end{figure}
 
 	\subsection{Inverterad kinematik}
 	\label{sub:inverterad-kinematik}
@@ -415,13 +417,7 @@
 	som vid justering av hastighet, ändras inställningarna i servona själva, allt 
 	utifrån metoden beskriven i databladet för AX-12 servon.
 	
-	\begin{figure}[h!]
-		\centering
-		\includegraphics[width=0.5\linewidth]{images/hindergang_flowchart.png}
-		\caption{Flödesschema för hindergångsprocedur hos roboten \label{fig:walkflow1}}
-	\end{figure}
     
-    \newpage
 
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%						Sensorenheten
@@ -449,20 +445,21 @@
 	beräkningskraft för att ta hand om den data som sensorerna genererar. Den kritiska 
 	delen är istället A/D-omvandling. Eftersom vi har många IR-sensorer tar det tid att 
 	mäta och omvandla de analoga signalerna till digitala värden. Att starta en IR-sensor 
-	tar 52900 mikrosekunder och en A/D omvandling kan ta upp till 260 mikrosekunder. 
+	tar 52 900 mikrosekunder och en A/D omvandling kan ta upp till 260 mikrosekunder. 
 	Om vi får problem med att IR-sensorerna interfererar med varandra kan endast ett 
 	begränsat antal IR-sensorer mäta åt gången. 
 
     \subsubsection{Huvudloop}
     Sensorenheten ska köra en huvudloop som sköter det mesta av beräkningarna
-    av sensordatan, medan bland annat mätning med IR-sensorer samt A/D-omvandlarna samt
+    av sensordatan, medan bland annat mätning med IR-sensorer, A/D-omvandlarna samt
     kommunikation med sensorenheten styrs via avbrott.
 
     Huvudloopen startar mätning av lediga IR-sensorer och sätter timrar för när
     dessa har mätt klart. Dessa timrar triggar avbrott för när IR-sensorerna
-    har producerat ett analogt mätvärde, redo att omvandlas till ett digitalt
+    har producerat ett analogt mätvärde som är redo att omvandlas till ett 
+	digitalt
     värde. Dessa avbrott lägger representationer av IR-sensorerna i en kö,
-    "IR-kö". Så länge denna kö är tom, använder den A/D-omvandlaren för att
+    "IR-kö". Så länge denna kö är tom, användanväanvändslaren för att
     omvandla mätvärden från gyrot, brusreducera dem samt lägga dessa i
     huvudtabellen, där alla färdiga sensorvärden lagras. Den beräknar också
     relevant data från omvandlade IR-sensorvärden, som lagrades i en annan kö,
@@ -470,14 +467,14 @@
     A/D-omvandlingar är klara. Om IR-kön inte är tom, startas en A/D-omvandling
     för den IR-sensor som är först i kön. Denna algoritm illustreras i Figur 
     \ref{fig:sensor_flow}. 
-    \newpage
+
+
 
     \begin{figure}[h!]
-        \centering{\includegraphics[width=17cm]{images/flowchart_sensor.pdf}}
+        \centering{\includegraphics[width=15cm, trim=0cm 0cm 0cm 5cm]{images/flowchart_sensor.pdf}}
         \caption{Flödeschema för huvudloopen\label{fig:sensor_flow}}
     \end{figure}
 
-    \newpage
 
     \subsubsection{Avbrott}
 	Följade avbrott kommer att vara aktiva:
@@ -489,57 +486,18 @@
             ändras. Det kommer att användas för kommunikationen över SPI. Avbrottskoden för 
             SPI kommer att vara ganska stor eftersom den ska kunna skicka och ta emot data 
 			mellan sensorenheten och centralenheten. 
-        \item Avbrott 27 genereras när någon bit i registret för \itc{} kommunikationen 
+        \item Avbrott 27 genereras när någon bit i registret för \itc{}-kommunikationen 
             ändras. Data skickas och tas emot med LIDAR. 
 		\item Avbrott 14 genereras när Counter1 blir lika med ett specifikt värde. 
 			Kommer att användas när för att veta när IR-sensorer kan mäta. 
     \end{itemize}
 
-    % \begin{table}[h!]
-    %     \begin{center}
-    %     \begin{tabular}{l l}
-    %         \textbf{Avbrott} & \textbf{Funktion} \\ \hline 
-    %         A/D-omvandling klar & Lägg färdig data i huvudtabellen \\ \hline
-    %         SPI-meddelande mottagen & Tolka förfrågan och skicka SPI-meddelande
-    %         som svar \\ \hline
-    %         \itc{} & Läs LIDAR-sensorvärde, brusreducera och lägg
-    %         i tabellen \\ 
-
-    %     \end{tabular}
-    %     \end{center}
-    %     \caption{De avbrott som ska användas}
-    % \end{table}
-
-
-	%Program flöde:
-
-	%Vänta 30 hundradelar för att allt ska starta och första mätvärdet från IR-sensorer blir 
-	%klart. 
-
-	%IR tabellen 5 stor --> gör brusred. 
-
-	%Gyro tabellen 5 stor --> gör brusred.
-	
-	%LIDAR tabellen 5 stor --> gör brusred.
-
-	
-
-	%IR - IR analog blir digital(A/D), läggs i tabell, när tabell är 5 stor gör brusred., 
-	%IR data klar att skickas till Centralenheten.
-	
-	%Gyro - Gyro digital integreras läggs i tabell, när tabell är X stor gör brusred., 
-	%gyro data klar att skickas till Centralenheten. 
-
-	%LIDAR - Digital läggs i tabell, när tabell är X stor gör brusred., 
-	%LIDAR data klar att skickas till Centralenheten. 
-	
-
 	\subsection{Gyro}
 
 	Sensorenheten ska använda ett gyro för att mäta vridning i det horisontella
 	planet. Detta är användbart för att roboten ska veta hur mycket
-	den ska rotera när den svänger. MLX90609 kommer att användas som gyro. Signalen från 
-	MLX90609 läses analogt in till den interna A/D-omvandlaren på ATmega1284 som konverterar 
+	den ska rotera när den svänger. En MLX90609 kommer att användas som gyro. Signalen från 
+	gyrot läses analogt in till den interna A/D-omvandlaren på ATmega1284 som konverterar 
 	den analoga signalen till ett digitalt värde med 10-bitars upplösning. 
 	
 	\subsection{Avståndssensorer fram}
@@ -550,9 +508,9 @@
 	Avståndssensorn som mäter framåt ska utgöras av en LIDAR-sensor, som har
     ett mycket brett mätspann (0-40 m) med 1 centimeters upplösning.
 
-	Sensorn som ska upptäcka hinder ska utgöras av IR-sensorn GP2D120 som man mäta mellan 
-	4-30 cm. Denna IR-sensor ska vara riktad ned och avståndet till marken kommer 
-	att vara mellan 4-30 cm. IR-sensor har fördelen att använda samma analoga gränssnitt 
+	Sensorn som ska upptäcka hinder ska utgöras av IR-sensorn GP2D120 som kan mäta mellan 
+	4 och 30 cm. Denna IR-sensor ska vara riktad ned och avståndet till marken kommer 
+	att vara mellan 4 och 30 cm. IR-sensorer har fördelen att använda samma analoga gränssnitt 
 	som de andra IR-sensorerna som roboten ska använda. 
 
     Monteringen av dessa sensorer illustreras i Figur \ref{fig:sensor_mount}.
@@ -562,10 +520,10 @@
 	detektion av väggar och återvändsgränder. Dessa sensorer utgörs av två 
     IR-sensorer på varje sida där båda pekar ut från samma sida och
 	är placerade på varsin ända av plattformen. IR-sensorerna som ska vara placerade 
-	på sidan ska vara av typen GP2Y0A02YK som kan mästa avtånd mellan 20-150 cm. 
+	på sidan ska vara av typen GP2Y0A02YK som kan mästa avtånd mellan 20 och 150 cm. 
 	Detta spann gör det möjligt att navigera i korridorer och upptäcka 
-	återvändsgränder. Med två IR-sensorer på varje sida möjliggör mätning av hur 
-	roboten är vriden i en rak korridor och kan användas som felkontroll av gyrot.
+	återvändsgränder. Med två IR-sensorer på varje sida möjliggörs mätning av hur 
+	roboten är vriden i en rak korridor och detta kan användas som felkontroll av gyrot.
 
     Monteringen av dessa sensorer illustreras i Figur \ref{fig:sensor_mount}.
 
@@ -595,7 +553,7 @@
 
     \subsection{Styrning}
     Under styrning ska man kunna välja om roboten ska köras autonomt eller i manuellt läge.
-    För att ändra vilket läge roboten ska köras i finns en checkbox som växlar dess läge.
+    För att ändra vilket läge roboten ska köras i finns en knapp som växlar dess läge.
     
     \subsubsection{Manuell Styrning}
     Under styrning ska man kunna styra roboten med en joystick. Man ska även
@@ -621,12 +579,12 @@
 	gångstil.
 
 	\subsection{Simulering för inverterad kinematik}
-	Simuleringen går till genom att implementera algoritmen för 2D som beskrivs i avsnittet \ref{sub:inverterad-kinematik} Inverterad Kinematik. Simuleringen ritas sedan ut i webbläsaren för att visualisera den inverterade kinematiken.
+	Simuleringen går till genom att implementera algoritmen för 2D som beskrivs i avsnitt \ref{sub:inverterad-kinematik}. Simuleringen ritas sedan ut i webbläsaren för att visualisera den inverterade kinematiken.
 	
 	\subsection{Simulering för korridorföljning}
 	Simulering för korridorföljning kan testa olika regleralgoritmer utan att behöva testa 
-	de på en gående robot. Simuleringen ritar ut en korridor och en robot som går framåt. 
-	Simulatorn skickar ut sensorvärden till en fil, det är tänkta att regleralgoritmen ska 
+	dem på en gående robot. Simuleringen ritar ut en korridor och en robot som går framåt. 
+	Simulatorn skickar ut sensorvärden till en fil, det är tänkt att regleralgoritmen ska 
 	läsa in sensorvärden och sedan ta beslut. Roboten i simulatorn använder 2 IR-sensorer på varje 
 	sida som pekar rakt ut från roboten, det går att välja var på roboten som sensorerna ska 
 	sitta. Beslutet av regleralgoritmen skrivs till en fil som simulatorn läser in och 
@@ -634,8 +592,8 @@
 	exempel kan vara att roboten alltid går med en liten rotation. 
 	
 	\subsection{Simulering för gångstil}
-	Sumulatorn för gångstil kommer att fungera på samma sätt som 
-	korridorföljningssimulatorn. Motorikenhetens kod kommer att skriva informationen som,
+	Simulatorn för gångstil kommer att fungera på samma sätt som 
+	korridorföljningssimulatorn. Motorikenhetens kod kommer att skriva informationen som
 	på roboten skulle skickas till servona, till en fil som simulatorn läser. Simulatorn
 	visualiserar resultatet av kommandona och skriver data som servona skulle svara
 	med till en annan fil som motorikkoden kan läsa.
