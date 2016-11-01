@@ -36,13 +36,31 @@ impl Robot
     {
         let mut legs = vec!();
 
-        for _ in 0..5
+        for i in 0..5
         {
-            legs.push(Leg::new(window));
+            legs.push(Leg::new(window, i as f32 * PI / 6.));
         }
 
         Robot {
             legs: legs
+        }
+    }
+
+    pub fn update(&mut self, delta_time: f32) 
+    {
+        for leg in &mut self.legs
+        {
+            leg.update(delta_time);
+        }
+    }
+
+    pub fn set_target_angles(&mut self, angles: Vec<Vec<f32>>)
+    {
+        assert_eq!(angles.len(), self.legs.len());
+
+        for i in 0..self.legs.len()
+        {
+            self.legs[i].set_target_angles(&angles[i])
         }
     }
 }
@@ -91,8 +109,7 @@ fn main() {
 
     window.set_light(Light::StickToCamera);
 
-    let mut test_leg = Leg::new(&mut window);
-    test_leg.set_target_angles(vec!(0.,0.2,-0.2));
+    let mut robot = Robot::new(&mut window);
 
     let mut old_time = time::precise_time_s() as f32;
     while window.render() 
@@ -108,8 +125,6 @@ fn main() {
             println!("{:?}", angle);
         }
 
-        test_leg.set_target_angles(target_angles[0].clone());
-
-        test_leg.update(delta_time);
+        robot.update(delta_time);
     }
 }
