@@ -309,6 +309,11 @@
 
 	
 	\section{Komponentbudget}
+
+    Tabell \ref{table:components} visar komponenter som kommer gå åt i
+    konstruktionen av roboten, utöver chassiet, lödplattor och andra diverse
+    mindre komponenter.
+
 	\begin{longtable}[c]{l l}
 		\textbf{Komponent} & \textbf{Antal} \\ \midrule
 		Raspberry Pi 3 & 1 \\
@@ -317,8 +322,7 @@
 		GP2Y0A02YK & 4 \\
 		MLX90609 & 1 \\
 		LIDAR-laser & 1 \\
-		Resistorer & Ej bestämt \\
-		Kondensatorer & Ej bestämt \\
+        \caption{De komponenter som beräknas att gå åt \label{table:components}}
 	\end{longtable}
 	
 	\section{Centralenheten}
@@ -429,6 +433,13 @@
 	centralenheten vara ett abstrakt gränssnitt till sensorerna. Centralenheten
 	behöver alltså inte veta exakt vilka sensorer som används, utan istället
 	läser av data som "avstånd till vägg", eller "vridning relativt väggarna".
+
+    Figur \ref{fig:schem_sensor} visar kretschema över sensorenheten.
+
+    \begin{figure}[h]
+        \includegraphics[width=15cm]{images/schematic_sensor.png}
+        \caption{Kretschema över sensorenheten\label{fig:schem_sensor}}
+    \end{figure}
 
 	\subsection{Styrenhet i sensorenheten}
 
