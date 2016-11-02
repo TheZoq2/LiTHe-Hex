@@ -124,8 +124,11 @@
 			\textbf{Version} & \textbf{Datum} & \textbf{Utförda förändringar} 
 			& \textbf{Utförda av} & \textbf{Granskad} \\ \midrule
 			
-			0.1 & 2016--10--20 & Första utkastet & Projektgruppen & \\
-            1.0 & 2016--11--02 & %TODO add things here
+			0.1 & 2016--10--20 & Första utkastet & Projektgruppen &
+            Projektgruppen \\
+            1.0 & 2016--11--02 & Lade till översiktligt kretsschema, kretschema
+            över motorikenheten. Förtydligade kretsen för sensorenheten.
+            Uppdaterade komponentbudget. & MV, FS & MV, FS
             
 		\end{longtable}
 	\end{center}
@@ -219,6 +222,7 @@
 	med ett speciellt meddelande för att indikera sändningsfel. Annars kommer den 
 	att svara med ett "acknowledgemeddelande".
 
+    \newpage
 	\begin{longtable}[c]{ l l l }
 		\textbf{Syfte} & \textbf{ID} & \textbf{Data} \\ \midrule
 		\textbf{Generella} \\ \midrule
@@ -247,7 +251,7 @@
 		\caption{Meddelandespecifikation \label{table:messages}}
 	\end{longtable}
 
-	
+	\newpage
 	Algoritmen för läsning av data i centralenheten beskrivs av följande pseudokod.
 
 
@@ -336,6 +340,7 @@
         \caption{De komponenter som beräknas att gå åt \label{table:components}}
 	\end{longtable}
 	
+    \newpage
 	\section{Centralenheten}
 	Centralenheten har tre ansvarsområden: navigation/beslutsfattning, hinderdetektion samt
 	kommunikation med omvärlden.
@@ -371,6 +376,7 @@
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%						Motorikenheten
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    \newpage
 	\section{Motorikenheten}
 	Motorikenheten översätter kommandon från centralenheten till servokommandon. Den tar emot 
 	instruktioner från centralenheten som anger steglängd, fart, rotation och riktning för 
@@ -554,10 +560,8 @@
     \newpage
     \subsection{Krets}
 
-    Figur \ref{fig:schem_sensor} visar kretschema över sensorenheten.
-
     \begin{figure}[h]
-        \includegraphics[width=15cm]{charts/sensor/sensor.pdf}
+        \includegraphics[width=15cm]{images/schematic_sensor.png}
         \caption{Kretschema över sensorenheten\label{fig:schem_sensor}}
     \end{figure}
     
@@ -575,11 +579,15 @@
 
     PC2 upp till PC5 används som anslutning till JTAG, för programmering av
     processorn, och PB4 upp till PB7 är anslutna via SPI till centralenheten.
+
+    Figur \ref{fig:schem_sensor} visar ett kretschema över sensorenheten.
+
 	
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%						Grafiskt användargränssnitt
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+    \newpage
 	\section{Grafiskt användargränssnitt}
 	På centralenheten ska en webbserver köras som tillhandahåller ett gränssnitt
 	för användaren där man kan läsa sensordata eller kontrollera roboten i
@@ -587,7 +595,8 @@
     och webbramverket Phoenix.
 
 	I det manuella läget ska roboten styras med en joystick som är kopplad till användarens
-	dator eller med knappar på gränssnittet.
+    dator eller med knappar på gränssnittet. Figur \ref{fig:gui-overview} visar en illustration av
+    det grafiska gränssnittet.
 	
 	\begin{figure}[h]
 		\centering
