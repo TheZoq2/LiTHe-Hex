@@ -176,9 +176,17 @@
 	\subsection{Kommunikation mellan enheterna}
 	Kommunikation mellan centralenheten och de två AVR-processorerna kommer att ske
 	med SPI. Sensor- och motorikenhetens SPI-portar kommer att kopplas till centralenhetens
-	SPI-port med varsin chip select. All kommunikation kommer att inledas med att 
+	SPI-port med varsin chip select. Detta illustreras i figur \ref{fig:central_circuit}.
+	All kommunikation kommer att inledas med att 
 	centralenheten skickar ett kommando eller en databegäran till slavenheterna.
 	Slavenheterna kommer sedan att utföra kommandot eller svara med den begärda datan.
+
+	\begin{figure}[htpb]
+		\centering
+		\includegraphics[width=1.0\linewidth]{charts/motor/centralenhet.pdf}
+		\caption{Kopplingsschema för centralenheten}
+		\label{fig:central_circuit}
+	\end{figure}
 
 
 
@@ -322,6 +330,7 @@
 		GP2Y0A02YK & 4 \\
 		MLX90609 & 1 \\
 		LIDAR-laser & 1 \\
+		BOB-12009 & 2 \\
         \caption{De komponenter som beräknas att gå åt \label{table:components}}
 	\end{longtable}
 	
@@ -365,7 +374,14 @@
 	instruktioner från centralenheten som anger steglängd, fart, rotation och riktning för 
 	förflyttnnig. Motorikenheten behandlar detta, räknar ut en lämplig gångstil och 
 	signalerar nödvändiga vinklar till de sex benen. Vissa delmoment i förflyttningen 
-	görs hårdkodade. 
+	görs hårdkodade. Ett kretschema för motorikenheten finns i figur \ref{fig:motorik}
+
+	\begin{figure}[htpb]
+		\centering
+		\includegraphics[width=0.6\linewidth]{charts/motor/motorik.pdf}
+		\caption{Kretsschema för motorikenheten}
+		\label{fig:motorik}
+	\end{figure}
 	
 		\subsection{Planläggning}
 	Första steget i motorikenheten för en anpassad gångstil är att utifrån efterfrågad
