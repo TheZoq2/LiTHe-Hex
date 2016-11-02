@@ -75,7 +75,7 @@
 		Grupp 9 \\
 		\small
 		\vspace*{0.5\baselineskip}
-		Version 0.1}
+		Version 1.0}
 
 	\date{\today}
 
@@ -120,11 +120,13 @@
 
 		\section*{Dokumenthistorik}
 		\renewcommand*{\arraystretch}{1.4}
-		\begin{longtable}[c]{ l l l l l }
+        \begin{longtable}[c]{ l l >{\raggedright}p{5cm} >{\raggedright}p{3cm} l }
 			\textbf{Version} & \textbf{Datum} & \textbf{Utförda förändringar} 
 			& \textbf{Utförda av} & \textbf{Granskad} \\ \midrule
 			
 			0.1 & 2016--10--20 & Första utkastet & Projektgruppen & \\
+            1.0 & 2016--11--02 & %TODO add things here
+            
 		\end{longtable}
 	\end{center}
 
@@ -450,13 +452,6 @@
 	behöver alltså inte veta exakt vilka sensorer som används, utan istället
 	läser av data som "avstånd till vägg", eller "vridning relativt väggarna".
 
-    Figur \ref{fig:schem_sensor} visar kretschema över sensorenheten.
-
-    \begin{figure}[h]
-        \includegraphics[width=15cm]{images/schematic_sensor.png}
-        \caption{Kretschema över sensorenheten\label{fig:schem_sensor}}
-    \end{figure}
-
 	\subsection{Styrenhet i sensorenheten}
 
 	Styrenheten för sensorenheten ska bestå av AVR-processorn ATmega1284, som läser av och 
@@ -486,7 +481,7 @@
     har producerat ett analogt mätvärde som är redo att omvandlas till ett 
 	digitalt
     värde. Dessa avbrott lägger representationer av IR-sensorerna i en kö,
-    "IR-kö". Så länge denna kö är tom, användanväanvändslaren för att
+    "IR-kö". Så länge denna kö är tom, används A/D-omvandlaren för att
     omvandla mätvärden från gyrot, brusreducera dem samt lägga dessa i
     huvudtabellen, där alla färdiga sensorvärden lagras. Den beräknar också
     relevant data från omvandlade IR-sensorvärden, som lagrades i en annan kö,
@@ -495,13 +490,10 @@
     för den IR-sensor som är först i kön. Denna algoritm illustreras i Figur 
     \ref{fig:sensor_flow}. 
 
-
-
     \begin{figure}[h!]
         \centering{\includegraphics[width=15cm, trim=0cm 0cm 0cm 5cm]{images/flowchart_sensor.pdf}}
         \caption{Flödeschema för huvudloopen\label{fig:sensor_flow}}
     \end{figure}
-
 
     \subsubsection{Avbrott}
 	Följade avbrott kommer att vara aktiva:
@@ -558,11 +550,36 @@
         \includegraphics[width=17cm, trim=2cm 18cm 0cm 0cm]{images/sensor_mount.pdf}
         \caption{Montering av avståndssensorer\label{fig:sensor_mount}}
     \end{figure}
+
+    \newpage
+    \subsection{Krets}
+
+    Figur \ref{fig:schem_sensor} visar kretschema över sensorenheten.
+
+    \begin{figure}[h]
+        \includegraphics[width=15cm]{images/schematic_sensor.png}
+        \caption{Kretschema över sensorenheten\label{fig:schem_sensor}}
+    \end{figure}
+    
+    Ett antal lågpass-filter används för filtrering av brus från IR-sensorerna,
+    och utgörs av en kondenstator på 10nF och en 18kOhm-resistor för varje
+    sensor, kopplad mellan sensorerna och de analoga PA-ingångarna på
+    processorn. Till strömingångarna (Vcc) för varje IR-sensor är en av
+    PD-ingångarna kopplade (PD0 upp till PD4), för att möjliggöra avstängning
+    av enskilda sensorer, ifall de stör ut varandra.
+
+    LIDAR-sensorn är ansluten via I2C med SDA- och SCL-portarna till PC0 och
+    PC1 på processorn. PC0 och PC1 har inbyggda pull-up-resistorer, därför
+    behövs inga externa resistorer. Mellan GND- och Vcc-portarna för sensorn
+    finns en elektrolytkondensator på 680$\mu$F.
+
+    PC2 upp till PC5 används som anslutning till JTAG, för programmering av
+    processorn, och PB4 upp till PB7 är anslutna via SPI till centralenheten.
 	
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%						Grafiskt användargränssnitt
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	%\newpage{}
+
 	\section{Grafiskt användargränssnitt}
 	På centralenheten ska en webbserver köras som tillhandahåller ett gränssnitt
 	för användaren där man kan läsa sensordata eller kontrollera roboten i
