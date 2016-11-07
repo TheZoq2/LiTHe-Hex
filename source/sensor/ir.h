@@ -19,7 +19,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-const uint8_t NUM_SENSORS = 5;
+#define NUM_SENSORS  5
 
 typedef uint8_t irport_t;
 
