@@ -18,13 +18,8 @@
 #include <avr/io.h>
 #include <stdbool.h>
 
-typedef struct ADCONVERTER {
-
-    bool available;
-
-} ADCONVERTER;
-
-void adc_init(ADCONVERTER* adc);
-
-void adc_start_conversion(ADCONVERTER* adc);
+void adc_init();
+void adc_start_conversion(uint8_t channel);
+uint16_t adc_read_result();
+bool adc_conversion_done();
 
