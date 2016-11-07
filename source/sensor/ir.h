@@ -21,7 +21,7 @@
 
 const uint8_t NUM_SENSORS = 5;
 
-typedef irport_t uint8_t;
+typedef uint8_t irport_t;
 
 enum Range {LONG_RANGE, SHORT_RANGE};
 

@@ -26,4 +26,5 @@ typedef struct ADCONVERTER {
 
 void adc_init(ADCONVERTER* adc);
 
+void adc_start_conversion(ADCONVERTER* adc);
 
