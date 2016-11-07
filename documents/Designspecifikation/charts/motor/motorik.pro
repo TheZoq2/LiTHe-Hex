@@ -1,10 +1,6 @@
-update=Wed 02 Nov 2016 08:06:17 PM CET
+update=Wed 02 Nov 2016 19:46:25 CET
 version=1
 last_client=kicad
-[general]
-version=1
-RootSch=
-BoardNm=
 [pcbnew]
 version=1
 LastNetListRead=
@@ -27,6 +23,8 @@ ModuleOutlineThickness=0.150000000000
 [cvpcb]
 version=1
 NetIExt=net
+[general]
+version=1
 [eeschema]
 version=1
 LibDir=
@@ -60,6 +58,7 @@ LibName26=opto
 LibName27=atmel
 LibName28=contrib
 LibName29=valves
+LibName30=/home/frans/Documents/LiTHe-Hex/documents/Designspecifikation/charts/hex
 [schematic_editor]
 version=1
 PageLayoutDescrFile=
@@ -69,4 +68,4 @@ SubpartFirstId=65
 NetFmtName=
 SpiceForceRefPrefix=0
 SpiceUseNetNumbers=0
-LabSize=60
+LabSize=197

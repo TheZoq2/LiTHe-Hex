@@ -1,0 +1,166 @@
+EESchema Schematic File Version 2
+LIBS:power
+LIBS:device
+LIBS:transistors
+LIBS:conn
+LIBS:linear
+LIBS:regul
+LIBS:74xx
+LIBS:cmos4000
+LIBS:adc-dac
+LIBS:memory
+LIBS:xilinx
+LIBS:microcontrollers
+LIBS:dsp
+LIBS:microchip
+LIBS:analog_switches
+LIBS:motorola
+LIBS:texas
+LIBS:intel
+LIBS:audio
+LIBS:interface
+LIBS:digital-audio
+LIBS:philips
+LIBS:display
+LIBS:cypress
+LIBS:siliconi
+LIBS:opto
+LIBS:atmel
+LIBS:contrib
+LIBS:valves
+LIBS:hex
+EELAYER 25 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 1 1
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L ATMEGA1284-P IC?
+U 1 1 581A3238
+P 5600 3700
+F 0 "IC?" H 4750 5580 50  0000 L BNN
+F 1 "ATMEGA1284-P" H 6000 1750 50  0000 L BNN
+F 2 "DIL40" H 5600 3700 50  0000 C CIN
+F 3 "" H 5600 3700 50  0000 C CNN
+	1    5600 3700
+	1    0    0    -1  
+$EndComp
+$Comp
+L AX12 U?
+U 1 1 581A32FE
+P 7750 2650
+F 0 "U?" H 7750 2550 60  0000 C CNN
+F 1 "AX12" H 7750 2650 60  0000 C CNN
+F 2 "" H 7750 2650 60  0001 C CNN
+F 3 "" H 7750 2650 60  0001 C CNN
+	1    7750 2650
+	1    0    0    -1  
+$EndComp
+$Comp
+L AX12 U?
+U 1 1 581A3457
+P 7750 3400
+F 0 "U?" H 7750 3300 60  0000 C CNN
+F 1 "AX12" H 7750 3400 60  0000 C CNN
+F 2 "" H 7750 3400 60  0001 C CNN
+F 3 "" H 7750 3400 60  0001 C CNN
+	1    7750 3400
+	1    0    0    -1  
+$EndComp
+$Comp
+L AX12 U?
+U 1 1 581A34AD
+P 7750 5000
+F 0 "U?" H 7750 4900 60  0000 C CNN
+F 1 "AX12" H 7750 5000 60  0000 C CNN
+F 2 "" H 7750 5000 60  0001 C CNN
+F 3 "" H 7750 5000 60  0001 C CNN
+	1    7750 5000
+	1    0    0    -1  
+$EndComp
+Text Notes 7800 3650 3    394  ~ 0
+...
+Text Notes 7300 4050 0    197  ~ 0
+18\n
+Wire Wire Line
+	7100 2650 7100 5000
+Connection ~ 7100 3400
+Wire Wire Line
+	5600 5700 5600 5900
+Wire Wire Line
+	8350 2200 8350 5900
+Wire Wire Line
+	8350 2200 7800 2200
+Wire Wire Line
+	7800 2950 8350 2950
+Connection ~ 8350 2950
+Wire Wire Line
+	7800 4550 8350 4550
+Connection ~ 8350 4550
+Wire Wire Line
+	7700 4550 7700 4350
+Wire Wire Line
+	7700 4350 8450 4350
+Wire Wire Line
+	8450 4350 8450 1950
+Wire Wire Line
+	8450 1950 7700 1950
+Wire Wire Line
+	7700 1950 7700 2200
+Wire Wire Line
+	7700 2950 7700 2900
+Wire Wire Line
+	7700 2900 8450 2900
+Connection ~ 8450 2900
+$Comp
+L +BATT #PWR?
+U 1 1 581A3A30
+P 8200 1950
+F 0 "#PWR?" H 8200 1800 50  0001 C CNN
+F 1 "+BATT" H 8200 2090 50  0000 C CNN
+F 2 "" H 8200 1950 50  0000 C CNN
+F 3 "" H 8200 1950 50  0000 C CNN
+	1    8200 1950
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR?
+U 1 1 581A3A4C
+P 7250 5950
+F 0 "#PWR?" H 7250 5700 50  0001 C CNN
+F 1 "GND" H 7250 5800 50  0000 C CNN
+F 2 "" H 7250 5950 50  0000 C CNN
+F 3 "" H 7250 5950 50  0000 C CNN
+	1    7250 5950
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	8350 5900 5600 5900
+Wire Wire Line
+	7250 5900 7250 5950
+Connection ~ 7250 5900
+Wire Wire Line
+	7100 5000 6600 5000
+$Comp
+L +5V #PWR?
+U 1 1 581A3DF0
+P 5400 1500
+F 0 "#PWR?" H 5400 1350 50  0001 C CNN
+F 1 "+5V" H 5400 1640 50  0000 C CNN
+F 2 "" H 5400 1500 50  0000 C CNN
+F 3 "" H 5400 1500 50  0000 C CNN
+	1    5400 1500
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5400 1700 5400 1500
+$EndSCHEMATC
