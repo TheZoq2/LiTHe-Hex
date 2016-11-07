@@ -22,26 +22,25 @@ module Rendering exposing (..)
    along with LiTHe Hex.  If not, see <http://www.gnu.org/licenses/>.
 -}
 
-import Debug
 import WebGL exposing (..)
 import Math.Vector3 as Vector3 exposing (..)
 import Math.Matrix4 exposing (..)
-import Matrix exposing (..)
 import List
+import Limbs
 
 
 type alias Vertex =
     { position : Vec3 }
 
 
-canvasWidth : Int
+canvasWidth : number
 canvasWidth =
-    640
+    320
 
 
-canvasHeight : Int
+canvasHeight : number
 canvasHeight =
-    480
+    240
 
 
 halfCanvasWidth : Float
@@ -54,13 +53,17 @@ halfCanvasHeight =
     (toFloat canvasHeight / 2)
 
 
+{-| The projection matrix to use when rendering.
+-}
 ortho : Mat4
 ortho =
     makeOrtho2D -halfCanvasWidth halfCanvasWidth -halfCanvasHeight halfCanvasHeight
 
 
-legTriangle : ( Float, Float, Vec3 ) -> List ( Vertex, Vertex, Vertex )
-legTriangle ( angle, length, pos ) =
+{-| Convert a Joint into a triangle of vertices to display.
+-}
+legTriangle : Limbs.Joint -> ( Vertex, Vertex, Vertex )
+legTriangle { angle, length, pos } =
     let
         angleA =
             angle + pi / 2
@@ -68,139 +71,32 @@ legTriangle ( angle, length, pos ) =
         angleB =
             angle - pi / 2
 
+        legW =
+            7
+
         posA =
-            vec3 (10 * cos angleB) (10 * sin angleB) 0
+            vec3 (legW * cos angleB) (legW * sin angleB) 0
 
         posB =
-            vec3 (10 * cos angleA) (10 * sin angleA) 0
+            vec3 (legW * cos angleA) (legW * sin angleA) 0
 
         posC =
             vec3 (length * cos angle) (length * sin angle) 0
     in
-        [ ( { position = add posA pos }
-          , { position = add posB pos }
-          , { position = add posC pos }
-          )
-        ]
+        ( { position = add posA pos }
+        , { position = add posB pos }
+        , { position = add posC pos }
+        )
 
 
-appendNewToChain :
-    ( Float, Float )
-    -> List ( Float, Float, Vec3 )
-    -> List ( Float, Float, Vec3 )
-appendNewToChain ( angle, length ) oldList =
-    let
-        ( prevAngle, prevLength, prevPos ) =
-            case oldList of
-                [] ->
-                    ( 0, 0, vec3 0 0 0 )
-
-                prev :: _ ->
-                    prev
-
-        pos =
-            vec3 (prevLength * cos prevAngle) (prevLength * sin prevAngle) 0
-    in
-        ( angle + prevAngle, length, add pos prevPos ) :: oldList
-
-
-chainTogether : List ( Float, Float ) -> List ( Float, Float, Vec3 )
-chainTogether =
-    List.foldl appendNewToChain []
-
-
-calculateJacobianCol : Vec3 -> Vec3 -> List Float
-calculateJacobianCol endPos position =
-    let
-        crossProd =
-            cross (vec3 0 0 1) (sub endPos position)
-    in
-        [ getX crossProd, getY crossProd, getZ crossProd ]
-
-
-third : ( a, b, c ) -> c
-third ( _, _, x ) =
-    x
-
-
-calculateJacobian : Vec3 -> List ( Float, Float, Vec3 ) -> Matrix
-calculateJacobian endPos =
-    List.map (third >> calculateJacobianCol endPos)
-
-
-addAngleLength : ( Float, Float ) -> ( Vec3, Float ) -> ( Vec3, Float )
-addAngleLength ( angle, length ) ( pos, oldAngle ) =
-    let
-        newAngle =
-            angle + oldAngle
-    in
-        ( add pos <| vec3 (length * cos newAngle) (length * sin newAngle) 0, newAngle )
-
-
-calcEndPos : List ( Float, Float ) -> Vec3
-calcEndPos anglesAndLengths =
-    let
-        ( vec, _ ) =
-            List.foldl addAngleLength ( vec3 0 0 0, 0 ) anglesAndLengths
-    in
-        vec
-
-
-addAngle : Float -> ( Float, Float ) -> ( Float, Float )
-addAngle delta ( old, length ) =
-    ( delta + old, length )
-
-
-addAngles : Vec3 -> List ( Float, Float ) -> List ( Float, Float )
-addAngles vec list =
-    let
-        ( x, y, z ) =
-            toTuple vec
-    in
-        List.map2 addAngle [ x, y, z ] list
-
-
-calculateIK : Vec3 -> List ( Float, Float ) -> List ( Float, Float )
-calculateIK endPos current =
-    let
-        currentEnd =
-            calcEndPos current
-
-        toEnd =
-            sub endPos currentEnd
-    in
-        let
-            j =
-                calculateJacobian endPos <| chainTogether current
-
-            jPlus =
-                Maybe.withDefault [ [ 1, 0, 0 ], [ 0, 1, 0 ], [ 0, 0, 1 ] ] <| calcPsuedoInverse j
-
-            deltaTheta =
-                Maybe.withDefault (vec3 0 0 0) <| multMatVec jPlus (Vector3.scale 0.1 toEnd)
-        in
-            addAngles deltaTheta current
-
-
-viewLegs : List ( Float, Float ) -> Drawable Vertex
-viewLegs limbs =
-    let
-        -- _ =
-        --     Debug.log "endPos is " pos
-        mat =
-            [ [ 1, 2, 3 ], [ 4, 5, 6 ], [ 7, 8, 9 ] ]
-
-        -- _ =
-        --     Debug.log "mat is " mat
-        -- _ =
-        --     Debug.log "inverse is " <| invertMatrix mat
-    in
-        Triangle <| List.concatMap legTriangle <| chainTogether <| limbs
-
-
-renderAll : List ( Float, Float ) -> List Renderable
-renderAll limbs =
-    [ render vertexShader fragmentShader (viewLegs limbs) { ortho = ortho }
+{-| Render some joints.
+-}
+renderLegs : List Limbs.Joint -> List Renderable
+renderLegs limbs =
+    [ render vertexShader
+        fragmentShader
+        (Triangle <| List.map legTriangle limbs)
+        { ortho = ortho }
     ]
 
 
