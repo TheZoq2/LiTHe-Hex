@@ -19,11 +19,12 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-const uint8_t NUM_SENSORS = 5;
+#define NUM_SENSORS  5
 
-typedef irport_t uint8_t;
+typedef uint8_t irport_t;
 
 enum Range {LONG_RANGE, SHORT_RANGE};
+
 
 typedef struct IR {
 
@@ -39,6 +40,7 @@ typedef struct IR {
 
 } IR;
 
+
 typedef struct IRCONTROL {
     
     IR sensors[NUM_SENSORS];
@@ -47,4 +49,6 @@ typedef struct IRCONTROL {
 
 void ir_init(IRCONTROL* control);
 
+// for testing purposes
+double read(IRCONTROL* control, irport_t port);
 

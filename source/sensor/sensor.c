@@ -16,11 +16,21 @@
 // along with LiTHe Hex.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "ir.h"
+#include "adc.h"
 
 int main(void)
 {
-    while(1)
-    {
-        //TODO:: Please write your application code 
+    IRCONTROL control;
+    
+    ir_init(&control);
+
+    adc_init();
+
+    uint16_t res = 0;
+
+    while(1) {
+        adc_start_conversion(5);
+        while (!adc_conversion_done());
+        res = adc_read_result();
     }
 }

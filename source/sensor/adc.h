@@ -15,32 +15,11 @@
 // You should have received a copy of the GNU General Public License
 // along with LiTHe Hex.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "ir.h"
+#include <avr/io.h>
+#include <stdbool.h>
 
-void ir_init(IRCONTROL* control) {
+void adc_init();
+void adc_start_conversion(uint8_t channel);
+uint16_t adc_read_result();
+bool adc_conversion_done();
 
-    for (uint8_t i = 0; i < NUM_SENSORS; ++i) {
-
-        IR ir;
-
-        if (i == 0) {
-            ir.range = SHORT_RANGE;
-            ir.enabled = true;
-        } else {
-            ir.range = LONG_RANGE;
-            ir.enabled = false;
-        }
-
-        ir.id = i;
-
-        ir.port = i;
-        
-        ir.value = 0.0;
-
-        control->sensors[i] = ir;
-    }
-}
-
-double read(IRCONTROL* control, irport_t port) {
-    
-}
