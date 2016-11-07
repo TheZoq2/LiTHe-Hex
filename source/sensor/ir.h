@@ -25,6 +25,7 @@ typedef irport_t uint8_t;
 
 enum Range {LONG_RANGE, SHORT_RANGE};
 
+
 typedef struct IR {
 
     enum Range range;
@@ -39,6 +40,7 @@ typedef struct IR {
 
 } IR;
 
+
 typedef struct IRCONTROL {
     
     IR sensors[NUM_SENSORS];
@@ -47,4 +49,6 @@ typedef struct IRCONTROL {
 
 void ir_init(IRCONTROL* control);
 
+// for testing purposes
+double read(IRCONTROL* control, irport_t port);
 

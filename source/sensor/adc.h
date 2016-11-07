@@ -15,32 +15,15 @@
 // You should have received a copy of the GNU General Public License
 // along with LiTHe Hex.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "ir.h"
+#include <avr/io.h>
+#include <stdbool.h>
 
-void ir_init(IRCONTROL* control) {
+typedef struct ADCONVERTER {
 
-    for (uint8_t i = 0; i < NUM_SENSORS; ++i) {
+    bool available;
 
-        IR ir;
+} ADCONVERTER;
 
-        if (i == 0) {
-            ir.range = SHORT_RANGE;
-            ir.enabled = true;
-        } else {
-            ir.range = LONG_RANGE;
-            ir.enabled = false;
-        }
+void adc_init(ADCONVERTER* adc);
 
-        ir.id = i;
 
-        ir.port = i;
-        
-        ir.value = 0.0;
-
-        control->sensors[i] = ir;
-    }
-}
-
-double read(IRCONTROL* control, irport_t port) {
-    
-}

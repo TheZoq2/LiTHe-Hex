@@ -19,6 +19,10 @@
 
 int main(void)
 {
+    IRCONTROL control;
+    
+    ir_init(&control);
+
     while(1)
     {
         //TODO:: Please write your application code 
