@@ -1,31 +1,41 @@
 from vec import Vec2, vec2_from_direction
 
 import sys
-#from sdl2.ext import * 
+#from sdl2.ext import *
 import sdl2.ext as sdl
 import sdl2
 import math
 import time
+import os
 import pdb
 
 
+command_filename = "/tmp/hexsim/command"
+START_X_POS = 0.3
+START_Y_POS = 1
+START_ANGLE = -0.2 * math.pi
 
 class Robot:
     def __init__(self, sensor_positions):
-        self.position = Vec2(0,0)
-        self.angle = 0
+        self.position = Vec2(START_X_POS,START_Y_POS)
+        self.angle = START_ANGLE
         self.sensor_positions = sensor_positions
 
 
+def set_command_file():
+    with open(command_filename, 'w') as cmd_file:
+        cmd_file.write("0.0,0.0,0.0")
+    cmd_file.close()
+
 def read_commands():
     """
-    Returns a tule with speed forward, speed left/right and turn speed
+    Returns a tuple with speed forward, speed left/right and turn speed
     """
-    command_filename = "/tmp/hexsim/command"
 
     with open(command_filename) as txt:
         file_content = txt.read()
-        
+        while len(file_content) == 0:
+            file_content = txt.read()
         split_content = file_content.split(",")
 
         return (
@@ -68,20 +78,20 @@ def draw_robot(surface, robot):
     pos_y = meters_to_pixels(robot.position.y) % WINDOW_SIZE[1]
 
     line = (
-            pos_x, 
-            pos_y, 
+            pos_x,
+            pos_y,
             pos_x + int(meters_to_pixels(0.10) * math.cos(robot.angle - math.pi / 2)),
             pos_y + int(meters_to_pixels(0.10) * math.sin(robot.angle - math.pi / 2)),
-            pos_x, 
-            pos_y, 
+            pos_x,
+            pos_y,
             pos_x + int(meters_to_pixels(0.05) * math.cos(robot.angle + math.pi / 2)),
             pos_y + int(meters_to_pixels(0.05) * math.sin(robot.angle + math.pi / 2)),
-            pos_x, 
-            pos_y, 
+            pos_x,
+            pos_y,
             pos_x + int(meters_to_pixels(0.05) * math.cos(robot.angle + 0)),
             pos_y + int(meters_to_pixels(0.05) * math.sin(robot.angle + 0)),
-            pos_x, 
-            pos_y, 
+            pos_x,
+            pos_y,
             pos_x + int(meters_to_pixels(0.05) * math.cos(robot.angle - math.pi)),
             pos_y + int(meters_to_pixels(0.05) * math.sin(robot.angle - math.pi))
         )
@@ -100,7 +110,7 @@ def draw(window, robot):
     sdl.fill(surface, sdl.Color(0,0,0))
 
     #Drawing the walls
-    sdl.line(surface, sdl.Color(255,255,255), 
+    sdl.line(surface, sdl.Color(255,255,255),
             (
                 - meters_to_pixels(0.4) + WINDOW_SIZE[0] // 2, 0,
                 - meters_to_pixels(0.4) + WINDOW_SIZE[0] // 2, WINDOW_SIZE[1],
@@ -150,7 +160,7 @@ def write_sensor_data(robot):
 
             sensor_value = x_distance / math.cos(sensor_angle)
 
-        result += "," + str(sensor_value)
+        result += "," + str(sensor_value) #+ math.sin(time.time() * 7)/20)
 
     file_path = "/tmp/hexsim/sensors"
 
@@ -162,20 +172,22 @@ def write_sensor_data(robot):
 
 def set_start_values():
     noise_function = lambda cmd: (
-            cmd[0], 
-            cmd[1],
-            cmd[2]
+            cmd[0],
+            cmd[1], #+ math.sin(time.time())/15,
+            cmd[2]  #+ math.sin(time.time() * 3)/15
         )
-    return (noise_function, [Vec2(0.2,0), Vec2(0.2,0), Vec2(-0.2,0), Vec2(-0.2,0)])
+    return (noise_function, [Vec2(0.1,0), Vec2(0.1,0), Vec2(-0.1,0), Vec2(-0.1,0)])
 
 def main():
+    set_command_file()
+
     noise_func, sensor_positions = set_start_values()
 
     robot = Robot(sensor_positions)
 
     window = init_window()
 
-    old_time = time.time();
+    old_time = time.time()
 
     while True:
         new_time = time.time()
@@ -191,7 +203,6 @@ def main():
         draw(window, robot)
 
         write_sensor_data(robot)
-
 
 
 if __name__ == "__main__":
