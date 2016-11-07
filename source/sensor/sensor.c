@@ -18,19 +18,31 @@
 #include "ir.h"
 #include "adc.h"
 
+
+
 int main(void)
 {
+	DDRB = 0xFF;
     IRCONTROL control;
     
     ir_init(&control);
 
     adc_init();
 
-    uint16_t res = 0;
-
-    while(1) {
-        adc_start_conversion(5);
-        while (!adc_conversion_done());
-        res = adc_read_result();
-    }
+	uint32_t count = 0;
+	
+	uint16_t res;    
+    
+	while(1) {
+		count++;
+		
+		if (count % 10000 == 0) {
+			adc_start_conversion(5);
+			while (ADCSRA & (1<<ADSC)) {}
+			res = adc_read_result();
+			
+			PORTB = (uint8_t)((unsigned int)res >> 2);
+		}
+		
+	}
 }
