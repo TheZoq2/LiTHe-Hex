@@ -152,12 +152,35 @@ calcLegIK : LegPosition -> Hexapod -> Vec3 -> Hexapod
 calcLegIK leg bot pos =
     let
         clickAngle =
-            atan2 (getY pos) (getX pos)
+            atan2 -(getZ pos) (getX pos)
 
-        boundedAngle =
+        horizontalAngle =
             clickAngle |> max minAngle |> min maxAngle
+
+        kneePos =
+            vec3 (thighLength * cos horizontalAngle)
+                0
+                -(thighLength * sin horizontalAngle)
+
+        kneeToeDistance =
+            min (distance kneePos pos) (ankleLength + footlength)
+
+        alpha =
+            acos -((getY pos) / kneeToeDistance)
+                + acos
+                    ((footlength ^ 2 - ankleLength ^ 2 - kneeToeDistance ^ 2)
+                        / (-2 * ankleLength * kneeToeDistance)
+                    )
+                - pi / 2
+
+        beta =
+            acos ((kneeToeDistance^2 - footlength^2 - ankleLength^2) /
+                      (-2 * footlength * ankleLength)) - pi
     in
-        setJointAngle boundedAngle leg Hip bot
+        bot
+            |> setJointAngle horizontalAngle leg Hip
+            |> setJointAngle alpha leg Knee
+            |> setJointAngle beta leg Foot
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -172,9 +195,11 @@ update msg model =
                     if pos.x < Rendering.canvasWidth then
                         model.lastClick
                             |> setX (toFloat pos.x - Rendering.halfCanvasWidth)
-                            |> setY -(toFloat pos.y - Rendering.halfCanvasHeight)
+                            |> setZ (toFloat pos.y - Rendering.halfCanvasHeight)
                     else
                         model.lastClick
+                            |> setX (toFloat pos.x - 3 * Rendering.halfCanvasWidth)
+                            |> setY -(toFloat pos.y - Rendering.halfCanvasHeight)
             in
                 ( { model
                     | lastClick = offsetPos
@@ -239,8 +264,8 @@ projectSide bot =
     in
         Limbs.chainTogether
             [ { angle = 0, length = thighLength * cos leg.a1 }
-            , { angle = leg.a2, length = ankleLength }
-            , { angle = leg.a3, length = footlength }
+            , { angle = leg.a2, length = ankleLength * cos leg.a1 }
+            , { angle = leg.a3, length = footlength * cos leg.a1}
             ]
 
 
@@ -249,6 +274,11 @@ view model =
     div []
         [ limbView (projectTop model.legs)
         , limbView (projectSide model.legs)
+        , div [ style [ ("float", "left") ] ]
+            [ Html.text
+                <| "Den vänsta vyn är uppifrån och den högra är "
+                ++ "bakifrån roboten. Klicka för att flytta benet"
+            ]
         ]
 
 

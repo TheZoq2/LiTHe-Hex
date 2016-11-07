@@ -33,12 +33,12 @@ type alias Vertex =
     { position : Vec3 }
 
 
-canvasWidth : Int
+canvasWidth : number
 canvasWidth =
     320
 
 
-canvasHeight : Int
+canvasHeight : number
 canvasHeight =
     240
 
