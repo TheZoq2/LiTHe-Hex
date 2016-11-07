@@ -165,8 +165,11 @@ calcLegIK leg bot pos =
         kneeToeDistance =
             min (distance kneePos pos) (ankleLength + footlength)
 
+        kneeToeVec =
+            scale kneeToeDistance (direction kneePos pos)
+
         alpha =
-            acos -((getY pos) / kneeToeDistance)
+            acos ((getY kneeToeVec) / kneeToeDistance)
                 + acos
                     ((footlength ^ 2 - ankleLength ^ 2 - kneeToeDistance ^ 2)
                         / (-2 * ankleLength * kneeToeDistance)
@@ -198,7 +201,12 @@ update msg model =
                             |> setZ (toFloat pos.y - Rendering.halfCanvasHeight)
                     else
                         model.lastClick
-                            |> setX (toFloat pos.x - 3 * Rendering.halfCanvasWidth)
+                            |> setX (cos model.legs.frontRight.a1 *
+                                         (toFloat pos.x -
+                                              3 * Rendering.halfCanvasWidth))
+                            |> setZ -(sin model.legs.frontRight.a1 *
+                                         (toFloat pos.x -
+                                              3 * Rendering.halfCanvasWidth))
                             |> setY -(toFloat pos.y - Rendering.halfCanvasHeight)
             in
                 ( { model
@@ -263,9 +271,9 @@ projectSide bot =
             bot.frontRight
     in
         Limbs.chainTogether
-            [ { angle = 0, length = thighLength * cos leg.a1 }
-            , { angle = leg.a2, length = ankleLength * cos leg.a1 }
-            , { angle = leg.a3, length = footlength * cos leg.a1}
+            [ { angle = 0, length = thighLength }
+            , { angle = leg.a2, length = ankleLength }
+            , { angle = leg.a3, length = footlength }
             ]
 
 
@@ -276,8 +284,8 @@ view model =
         , limbView (projectSide model.legs)
         , div [ style [ ("float", "left") ] ]
             [ Html.text
-                <| "Den vänsta vyn är uppifrån och den högra är "
-                ++ "bakifrån roboten. Klicka för att flytta benet"
+                <| "Den vänsta vyn är uppifrån roboten och den högra är "
+                ++ "från sidan av benet. Klicka för att flytta benet"
             ]
         ]
 
