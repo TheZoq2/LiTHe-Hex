@@ -19,36 +19,33 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#define NUM_SENSORS  5
+#define NUM_SENSORS			5
+#define NUM_SENSOR_VALUES	5
+#define DUMMY_PORT			255
 
 typedef uint8_t irport_t;
 
 enum Range {LONG_RANGE, SHORT_RANGE};
 
+const enum Range RANGES[NUM_SENSORS] = {
+    SHORT_RANGE, LONG_RANGE, LONG_RANGE, LONG_RANGE, LONG_RANGE
+};
 
 typedef struct IR {
 
     enum Range range;
 
-    uint8_t id;
-
     irport_t port;
 
     double value;
+	
+	uint16_t raw_data_list[NUM_SENSOR_VALUES-1];
 
     bool enabled;
 
 } IR;
 
+void ir_init();
 
-typedef struct IRCONTROL {
-    
-    IR sensors[NUM_SENSORS];
-
-} IRCONTROL;
-
-void ir_init(IRCONTROL* control);
-
-// for testing purposes
-double read(IRCONTROL* control, irport_t port);
+void ir_add_data(IR* ir, uint16_t data);
 

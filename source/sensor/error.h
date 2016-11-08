@@ -15,30 +15,19 @@
 // You should have received a copy of the GNU General Public License
 // along with LiTHe Hex.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "ir.h"
+#ifndef ERROR_H
+#define ERROR_H
 
-void ir_init() {
+#include <avr/io.h>
 
-    for (uint8_t i = 0; i < NUM_SENSORS; ++i) {
-
-        IR ir;
-
-        ir.range = RANGES[i];
-
-        ir.port = i;
-        
-        ir.value = 0.0;
-
-        control->sensors[i] = ir;
-    }
+/*
+ * Signals an error by setting PB0 to 1
+ * and loops forever.
+ */
+void error() {
+    DDRB |= 0x01;
+    PORTB |= 0x01;
+    while (1);
 }
 
-/* Move all element one step forward (remove first) and add a new data value last in raw_data_list */
-void ir_add_data(IR* ir, uint16_t data) {
-	
-	for(uint8_t i = 0; i < NUM_SENSOR_VALUES-1; i++) {
-		ir->raw_data_list[i] = ir->raw_data_list[i+1]
-	}
-	ir->raw_data_list[NUM_SENSOR_VALUES] = data;
-}
-
+#endif

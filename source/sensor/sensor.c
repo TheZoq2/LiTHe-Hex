@@ -17,32 +17,44 @@
 
 #include "ir.h"
 #include "adc.h"
-
+#include "ir_queue.h"
 
 
 int main(void)
 {
 	DDRB = 0xFF;
-    IRCONTROL control;
+	DDRD = 0xFF;
     
-    ir_init(&control);
+    ir_init();
+	
+	IR ir_list[NUM_SENSORS-1];
 
     adc_init();
+	
+	IRQueue ir_queue;
+	
+	ir_queue_init(ir_queue);
 
 	uint32_t count = 0;
 	
-	uint16_t res;    
+	uint16_t res1;
+	uint16_t res2;    
     
 	while(1) {
-		count++;
 		
-		if (count % 10000 == 0) {
-			adc_start_conversion(5);
+		if(has_new_value(&ir_queue)) {
+			irport_t port = dequeue(&ir_queue);
+			adc_start_conversion(port);
 			while (ADCSRA & (1<<ADSC)) {}
-			res = adc_read_result();
-			
-			PORTB = (uint8_t)((unsigned int)res >> 2);
+			ir_add_data(&ir_list[port], adc_read_result());
+			schedule(&ir_queue, port);
 		}
+				
 		
+			
+
+		//PORTB = (uint8_t)((unsigned int)res1 >> 2);
+		//PORTD = (uint8_t)((unsigned int)res2 >> 2);
+		}
 	}
 }
