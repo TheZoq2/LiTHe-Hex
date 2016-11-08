@@ -23,6 +23,7 @@
 int main(void)
 {
 	DDRB = 0xFF;
+	DDRD = 0xFF;
     IRCONTROL control;
     
     ir_init(&control);
@@ -31,17 +32,24 @@ int main(void)
 
 	uint32_t count = 0;
 	
-	uint16_t res;    
+	uint16_t res1;
+	uint16_t res2;    
     
 	while(1) {
 		count++;
 		
 		if (count % 10000 == 0) {
-			adc_start_conversion(5);
-			while (ADCSRA & (1<<ADSC)) {}
-			res = adc_read_result();
 			
-			PORTB = (uint8_t)((unsigned int)res >> 2);
+			adc_start_conversion(3);
+			while (ADCSRA & (1<<ADSC)) {}
+			res2 = adc_read_result();
+			adc_start_conversion(4);
+			while (ADCSRA & (1<<ADSC)) {}
+			res1 = adc_read_result();
+			
+
+			PORTB = (uint8_t)((unsigned int)res1 >> 2);
+			PORTD = (uint8_t)((unsigned int)res2 >> 2);
 		}
 		
 	}
