@@ -17,21 +17,13 @@
 
 #include "ir.h"
 
-void ir_init(IRCONTROL* control) {
+void ir_init() {
 
     for (uint8_t i = 0; i < NUM_SENSORS; ++i) {
 
         IR ir;
 
-        if (i == 0) {
-            ir.range = SHORT_RANGE;
-            ir.enabled = true;
-        } else {
-            ir.range = LONG_RANGE;
-            ir.enabled = false;
-        }
-
-        ir.id = i;
+        ir.range = RANGES[i];
 
         ir.port = i;
         
@@ -41,6 +33,3 @@ void ir_init(IRCONTROL* control) {
     }
 }
 
-double read(IRCONTROL* control, irport_t port) {
-    
-}

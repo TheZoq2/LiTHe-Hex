@@ -19,7 +19,5 @@
 #include <stdbool.h>
 
 void adc_init();
-void adc_start_conversion(uint8_t channel);
-uint16_t adc_read_result();
-bool adc_conversion_done();
+uint16_t adc_read(uint8_t channel);
 
