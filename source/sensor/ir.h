@@ -19,7 +19,8 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#define NUM_SENSORS  5
+#define NUM_SENSORS     5
+#define DUMMY_PORT      255
 
 typedef uint8_t irport_t;
 
