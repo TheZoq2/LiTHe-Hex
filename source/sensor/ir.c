@@ -33,3 +33,12 @@ void ir_init() {
     }
 }
 
+/* Move all element one step forward (remove first) and add a new data value last in raw_data_list */
+void ir_add_data(IR* ir, uint16_t data) {
+	
+	for(uint8_t i = 0; i < NUM_SENSOR_VALUES-1; i++) {
+		ir->raw_data_list[i] = ir->raw_data_list[i+1]
+	}
+	ir->raw_data_list[NUM_SENSOR_VALUES] = data;
+}
+

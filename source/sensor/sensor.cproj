@@ -123,6 +123,12 @@
     <Compile Include="ir.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="ir_queue.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="ir_queue.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="sensor.c">
       <SubType>compile</SubType>
     </Compile>
