@@ -17,7 +17,7 @@
 // You should have received a copy of the GNU General Public License
 // along with LiTHe Hex.  If not, see <http://www.gnu.org/licenses/>.
 
-float distance(x1, y1, z1, x2, y2, z2) {
+float distance(float x1, float y1, float z1, float x2, float y2, float z2) {
     float x = x1 - x2;
     float y = y1 - y2;
     float z = z1 - z2;
