@@ -19,8 +19,9 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#define NUM_SENSORS     5
-#define DUMMY_PORT      255
+#define NUM_SENSORS			5
+#define NUM_SENSOR_VALUES	5
+#define DUMMY_PORT			255
 
 typedef uint8_t irport_t;
 
@@ -37,10 +38,14 @@ typedef struct IR {
     irport_t port;
 
     double value;
+	
+	uint16_t raw_data_list[NUM_SENSOR_VALUES-1];
 
     bool enabled;
 
 } IR;
 
 void ir_init();
+
+void ir_add_data(IR* ir, uint16_t data);
 
