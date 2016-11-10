@@ -40,7 +40,7 @@ void ir_add_data(IR* ir, uint16_t data) {
 	for(uint8_t i = 0; i < NUM_SENSOR_DATA-1; i++) {
 		ir->raw_data_list[i] = ir->raw_data_list[i+1];
 	}
-	ir->raw_data_list[NUM_SENSOR_DATA-1] = ir_value_to_meters(data);
+	ir->raw_data_list[NUM_SENSOR_DATA-1] = ir_value_to_meters(data, ir->range);
 
 }
 
