@@ -2,7 +2,7 @@ import sys
 import math
 
 input_file = "/tmp/hexsim/sensors"
-utput_file = "/tmp/hexsim/command"
+output_file = "/tmp/hexsim/command"
 
 ANGLE = 0
 FRONT_RIGHT_SENSOR = 1
@@ -16,7 +16,6 @@ def get_sensor_data():
     """
     Returns the fetched sensor data from the input file
     """
-    #TODO: There are 5 values in the input file. Make them 3 and fix the indexes here.
     with open(input_file, 'r') as txt:
         file_content = txt.read()
         while len(file_content) == 0:
@@ -31,11 +30,11 @@ def get_sensor_data():
             float(split_content[BACK_LEFT_SENSOR])
         )
 
-def write_utput_command(command):
+def write_output_command(command):
     """
-    Writes the command to the utput file
+    Writes the command to the output file
     """
-    with open(utput_file, 'w') as txt:
+    with open(output_file, 'w') as txt:
         txt.write(command)
 
 def main():
@@ -53,6 +52,6 @@ def main():
             goal_angle = -sensor_data[ANGLE]
 
         command = "0.1," + str(command_y) + "," + str(goal_angle)
-        write_utput_command(command)
+        write_output_command(command)
 
 main()
