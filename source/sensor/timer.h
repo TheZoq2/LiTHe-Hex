@@ -18,7 +18,22 @@
 #ifndef TIMER_H
 #define TIMER_H
 
-enum Resolution = {8BIT, 16BIT};
+enum Resolution {BIT8, BIT16};
+
+// prescaler 1024
+const uint8_t TIMER8_PRESCALER = 0x05;
+
+// no prescaling
+const uint8_t TIMER16_PRESCALER = 0x01;
+
+const uint16_t TIMER8_PRESCALER_VALUE = 1024;
+const uint16_t TIMER16_PRESCALER_VALUE = 1;
+
+const uint8_t MAX_8BIT_VALUE = 255;
+const uint16_t MAX_16BIT_VALUE = 65535;
+
+// 8 MHz
+const uint32_t CLOCK_FREQUENCY = 8000000;
 
 typedef struct Timer {
 

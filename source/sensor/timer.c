@@ -20,5 +20,50 @@
 void timer_init(Timer* timer, enum Resolution res) {
     timer->resolution = res;
     timer->num_overflows = 0;
+
+    if (res == BIT8) {
+
+        // set prescaler
+        TCCR0 |= TIMER8_PRESCALER;
+
+        // reset the timer
+        TCNT0 = 0;
+        
+        // enable overflow interrupt
+        TIMSK |= (1 << TOIE0);
+
+    } else {
+
+        // set prescaler
+        TCCR1B |= TIMER16_PRESCALER;
+
+        // reset timer
+        TCNT1 = 0;
+
+        TIMSK |= (1 << TOIE1);
+    }
+}
+
+uint32_t timer_value_millis(Timer* timer) {
+
+    if (timer->resolution == BIT8) {
+        
+        uint8_t value = TCNT0;
+
+        return ((value + (timer->num_overflows * MAX_8BIT_VALUE)) 
+                / (CLOCK_FREQUENCY / TIMER8_PRESCALER_VALUE)) / 1000;
+
+    } else {
+
+        uint16_t value = TCNT1;
+        
+        return ((value + (timer->num_overflows * MAX_16BIT_VALUE)) 
+                / (CLOCK_FREQUENCY / TIMER16_PRESCALER_VALUE)) / 1000;
+
+    }
+}
+
+uint32_t timer_value_micros(Timer* timer) {
+    return timer_value_millis(timer) / 1000;
 }
 
