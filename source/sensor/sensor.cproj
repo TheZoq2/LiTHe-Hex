@@ -117,6 +117,9 @@
     <Compile Include="adc.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="error.c">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="error.h">
       <SubType>compile</SubType>
     </Compile>

@@ -57,26 +57,23 @@ int main(void) {
 	
 	IRQueue ir_queue;
 	
-	ir_queue_init(&ir_queue);
+	ir_queue_init(&ir_queue, timer8);
 
 	uint32_t count = 0;
 	
 	uint16_t res1;
 	uint16_t res2;    
-
-	uint8_t dir = 0;
 	
-	uint32_t time = timer_value_millis(timer16);
-	PORTD = 0x00;
-		
-	while (timer_value_millis(timer16) < 5000) {}
-	PORTD = 0x0F;
-	
-	while (timer_value_millis(timer16) < 65000) {}
-	PORTD = 0xFF;
+	// TEST timers
+	//uint32_t time = timer_value_millis(timer16);
+	//PORTD = 0x00;		
+	//while (timer_value_millis(timer16) < 5000) {}
+	//PORTD = 0x0F;
+	//while (timer_value_millis(timer16) < 65000) {}
+	//PORTD = 0xFF;
 	    
 	while(1) {
-		/*
+		
 		// if first irport in queue has new value then start A/D conv. and save data 
 		if(has_new_value(&ir_queue)) {
 			irport_t port = dequeue(&ir_queue);
@@ -86,10 +83,8 @@ int main(void) {
 		}
 			
 		
-		PORTB = (uint8_t)((unsigned int)res1 >> 2);
+		//PORTB = (uint8_t)((unsigned int)res1 >> 2);
 		//PORTD = (uint8_t)((unsigned int)res2 >> 2);
-		*/
 		
-
 	}
 }
