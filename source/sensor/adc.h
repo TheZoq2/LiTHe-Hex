@@ -15,9 +15,13 @@
 // You should have received a copy of the GNU General Public License
 // along with LiTHe Hex.  If not, see <http://www.gnu.org/licenses/>.
 
+#ifndef ADC_H
+#define ADC_H
+
 #include <avr/io.h>
 #include <stdbool.h>
 
 void adc_init();
 uint16_t adc_read(uint8_t channel);
 
+#endif 

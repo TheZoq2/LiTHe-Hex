@@ -19,9 +19,7 @@
 #define IR_QUEUE_H
 
 #include <avr/io.h>
-
 #include "ir.h"
-#include "error.h"
 #include <stdbool.h>
 
 typedef struct IRElem {

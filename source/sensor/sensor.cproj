@@ -117,6 +117,9 @@
     <Compile Include="adc.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="error.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="ir.c">
       <SubType>compile</SubType>
     </Compile>
@@ -130,6 +133,12 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="sensor.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="timer.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="timer.h">
       <SubType>compile</SubType>
     </Compile>
   </ItemGroup>

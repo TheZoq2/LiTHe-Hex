@@ -18,7 +18,9 @@
 #ifndef TIMER_H
 #define TIMER_H
 
-enum Resolution = {8BIT, 16BIT};
+#include <stdint.h>
+
+enum Resolution {BIT8, BIT16};
 
 typedef struct Timer {
 

@@ -16,6 +16,7 @@
 // along with LiTHe Hex.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "ir_queue.h"
+#include "error.h"
 
 ///////////////////////////////////////////////////////////////////
 // "Private"
