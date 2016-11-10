@@ -37,7 +37,10 @@ bool is_dummy(IRElem* elem) {
 }
 
 bool contains(IRQueue* queue, irport_t port) {
-    // TODO implement
+    for (uint8_t i = 0; i < queue->curr_size; ++i) {
+        if (elements[i].port == port) return true;
+    }
+    return false;
 }
 
 ///////////////////////////////////////////////////////////////////
@@ -55,6 +58,14 @@ void ir_queue_init(IRQueue* queue) {
 }
 
 void schedule(IRQueue* queue, irport_t port) {
-    
+    // TODO implement
+}
+
+bool has_new_value(IRQueue* queue) {
+    // TODO implement
+}
+
+irport_t dequeue(IRQueue* queue) {
+    // TODO implement
 }
 
