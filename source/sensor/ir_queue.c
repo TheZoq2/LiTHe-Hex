@@ -74,7 +74,7 @@ void schedule(IRQueue* queue, irport_t port) {
 }
 
 bool has_new_value(IRQueue* queue) {
-    if (curr_size == 0) return false;
+    if (queue->curr_size == 0) return false;
     return timer_value_millis(queue->timer) - 
         queue->elements[0].last_time_measured >= IR_UPDATE_TIME;
 }
@@ -83,11 +83,11 @@ irport_t dequeue(IRQueue* queue) {
     irport_t port = queue->elements[0].port;
     
     // shift all values down
-    for (int i = 0; i < curr_size - 1; ++i) {
+    for (int i = 0; i < queue->curr_size - 1; ++i) {
         queue->elements[i] = queue->elements[i + 1]; 
     }
 
-    curr_size--;
+    queue->curr_size--;
 
     return port;
 }
