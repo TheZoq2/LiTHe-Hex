@@ -39,7 +39,7 @@ bool is_dummy(IRElem* elem) {
 
 bool contains(IRQueue* queue, irport_t port) {
     for (uint8_t i = 0; i < queue->curr_size; ++i) {
-        if (elements[i].port == port) return true;
+        if (queue->elements[i].port == port) return true;
     }
     return false;
 }

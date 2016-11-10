@@ -22,6 +22,23 @@
 
 enum Resolution {BIT8, BIT16};
 
+// prescaler 1024
+const static uint8_t TIMER8_PRESCALER = 0x05;
+
+// no prescaling
+const static uint8_t TIMER16_PRESCALER = 0x01;
+
+const static uint16_t TIMER8_PRESCALER_VALUE = 1024;
+const static uint16_t TIMER16_PRESCALER_VALUE = 1;
+
+const static uint8_t MAX_8BIT_VALUE = 255;
+const static uint16_t MAX_16BIT_VALUE = 65535;
+
+const static double TIMER_SCALER = 0.95;
+
+// 8 MHz
+const static uint32_t CLOCK_FREQUENCY = 8000000;
+
 typedef struct Timer {
 
     enum Resolution resolution;

@@ -24,10 +24,6 @@
  * Signals an error by setting PB0 to 1
  * and loops forever.
  */
-void error() {
-    DDRB |= 0x01;
-    PORTB |= 0x01;
-    while (1);
-}
+void error();
 
 #endif
