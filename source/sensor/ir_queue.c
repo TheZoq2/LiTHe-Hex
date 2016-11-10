@@ -16,6 +16,7 @@
 // along with LiTHe Hex.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "ir_queue.h"
+#include "error.h"
 
 ///////////////////////////////////////////////////////////////////
 // "Private"
@@ -26,7 +27,7 @@
  */
 void dummy_init(IRElem* dummy) {
     dummy->port = DUMMY_PORT;
-    dummy->time_since_measured = 0;
+    dummy->last_time_measured = 0;
 }
 
 /*
@@ -37,12 +38,15 @@ bool is_dummy(IRElem* elem) {
 }
 
 bool contains(IRQueue* queue, irport_t port) {
-    // TODO implement
+    for (uint8_t i = 0; i < queue->curr_size; ++i) {
+        if (queue->elements[i].port == port) return true;
+    }
+    return false;
 }
 
 ///////////////////////////////////////////////////////////////////
 
-void ir_queue_init(IRQueue* queue) {
+void ir_queue_init(IRQueue* queue, Timer* timer) {
 
     // set all elements to dummies
     for (uint8_t i = 0; i < NUM_SENSORS; ++i) {
@@ -52,9 +56,39 @@ void ir_queue_init(IRQueue* queue) {
     }
 
     queue->curr_size = 0;
+    queue->timer = timer;
 }
 
 void schedule(IRQueue* queue, irport_t port) {
+
+    if (queue->curr_size == NUM_SENSORS) error();
+
+
+    IRElem e;
+    e.port = port;
+    e.last_time_measured = timer_value_millis(queue->timer);
+
+    queue->elements[queue->curr_size] = e;
+    queue->curr_size++;
+
+}
+
+bool has_new_value(IRQueue* queue) {
+    if (queue->curr_size == 0) return false;
+    return timer_value_millis(queue->timer) - 
+        queue->elements[0].last_time_measured >= IR_UPDATE_TIME;
+}
+
+irport_t dequeue(IRQueue* queue) {
+    irport_t port = queue->elements[0].port;
     
+    // shift all values down
+    for (int i = 0; i < queue->curr_size - 1; ++i) {
+        queue->elements[i] = queue->elements[i + 1]; 
+    }
+
+    queue->curr_size--;
+
+    return port;
 }
 

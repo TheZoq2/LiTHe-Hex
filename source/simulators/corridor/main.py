@@ -11,7 +11,7 @@ import pdb
 
 
 command_filename = "/tmp/hexsim/command"
-START_X_POS = 0.3
+START_X_POS = -0.3
 START_Y_POS = 1
 START_ANGLE = -0.2 * math.pi
 

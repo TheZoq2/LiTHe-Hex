@@ -17,7 +17,7 @@
 
 #include "ir.h"
 
-void ir_init() {
+void ir_init(IR ir_list[NUM_SENSORS]) {
 
     for (uint8_t i = 0; i < NUM_SENSORS; ++i) {
 
@@ -28,17 +28,24 @@ void ir_init() {
         ir.port = i;
         
         ir.value = 0.0;
+		
+		ir.raw_data_list[NUM_SENSOR_DATA];
 
-        control->sensors[i] = ir;
+        ir_list[i] = ir;
     }
 }
 
 /* Move all element one step forward (remove first) and add a new data value last in raw_data_list */
 void ir_add_data(IR* ir, uint16_t data) {
 	
-	for(uint8_t i = 0; i < NUM_SENSOR_VALUES-1; i++) {
-		ir->raw_data_list[i] = ir->raw_data_list[i+1]
+	for(uint8_t i = 0; i < NUM_SENSOR_DATA-1; i++) {
+		ir->raw_data_list[i] = ir->raw_data_list[i+1];
 	}
-	ir->raw_data_list[NUM_SENSOR_VALUES] = data;
+	ir->raw_data_list[NUM_SENSOR_DATA] = data;
 }
 
+/* For now just take first value from raw_data_list put as value */
+void ir_reduce_noise(IR* ir) {
+	
+	ir->value = ir->raw_data_list[0];
+}
