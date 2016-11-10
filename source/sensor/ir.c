@@ -35,11 +35,12 @@ void ir_init(IR ir_list[NUM_SENSORS]) {
 
 /* Move all element one step forward (remove first) and add a new data value last in raw_data_list */
 void ir_add_data(IR* ir, uint16_t data) {
-	
+
 	for(uint8_t i = 0; i < NUM_SENSOR_DATA-1; i++) {
 		ir->raw_data_list[i] = ir->raw_data_list[i+1];
 	}
-	ir->raw_data_list[NUM_SENSOR_DATA-1] = data;
+	ir->raw_data_list[NUM_SENSOR_DATA-1] = ir_value_to_meters(data);
+
 }
 
 /* For now just take first value from raw_data_list put as value */
@@ -47,3 +48,31 @@ void ir_reduce_noise(IR* ir) {
 	
 	ir->value = ir->raw_data_list[0];
 }
+
+double ir_value_to_meters(uint16_t val, enum Range range) {
+
+    if (range == LONG_RANGE) {
+        
+        return 
+            (X4_LONG * (val * val * val * val) +
+             X3_LONG * (val * val * val) +
+             X2_LONG * (val * val) +
+             X1_LONG * val +
+             X0_LONG) / 100;
+
+    } else {
+
+        return 
+            (X4_SHORT * (val * val * val * val) +
+             X3_SHORT * (val * val * val) +
+             X2_SHORT * (val * val) +
+             X1_SHORT * val +
+             X0_SHORT) / 100;
+    
+    }
+}
+
+double latest_ir_value(IR* ir) {
+    return ir->raw_data_list[NUM_SENSOR_DATA - 1];
+}
+

@@ -30,6 +30,18 @@ typedef uint8_t irport_t;
 
 enum Range {LONG_RANGE, SHORT_RANGE};
 
+const static double X4_LONG = 4e-6;
+const static double X3_LONG = -0.0018;
+const static double X2_LONG = 0.2961;
+const static double X1_LONG = -23.417;
+const static double X0_LONG = 870.26;
+
+const static double X4_SHORT = 0.0036;
+const static double X3_SHORT = -0.3094;
+const static double X2_SHORT = 9.8205;
+const static double X1_SHORT = -144.8;
+const static double X0_SHORT = 987.88;
+
 const static enum Range RANGES[NUM_SENSORS] = {
     SHORT_RANGE, LONG_RANGE, LONG_RANGE, LONG_RANGE, LONG_RANGE
 };
@@ -42,7 +54,7 @@ typedef struct IR {
 
     double value;
 	
-	uint16_t raw_data_list[NUM_SENSOR_DATA];
+	double raw_data_list[NUM_SENSOR_DATA];
 
     bool enabled;
 
@@ -53,5 +65,9 @@ void ir_init(IR ir_list[NUM_SENSORS]);
 void ir_add_data(IR* ir, uint16_t data);
 
 void ir_reduce_noise(IR* ir);
+
+double latest_ir_value(IR* ir);
+
+double ir_value_to_meters(uint16_t val, enum Range range);
 
 #endif
