@@ -16,6 +16,7 @@
 // along with LiTHe Hex.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "ir.h"
+#include "math.h"
 
 void ir_init(IR ir_list[NUM_SENSORS]) {
 
@@ -53,21 +54,11 @@ double ir_value_to_meters(uint16_t val, enum Range range) {
 
     if (range == LONG_RANGE) {
         
-        return 
-            (X4_LONG * (val * val * val * val) +
-             X3_LONG * (val * val * val) +
-             X2_LONG * (val * val) +
-             X1_LONG * val +
-             X0_LONG) / 100;
+        return (LONG_BASE * pow(val, LONG_EXP)) / 100;
 
     } else {
 
-        return 
-            (X4_SHORT * (val * val * val * val) +
-             X3_SHORT * (val * val * val) +
-             X2_SHORT * (val * val) +
-             X1_SHORT * val +
-             X0_SHORT) / 100;
+        return (SHORT_BASE * pow(val, SHORT_EXP)) / 100;
     
     }
 }

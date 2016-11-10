@@ -30,17 +30,11 @@ typedef uint8_t irport_t;
 
 enum Range {LONG_RANGE, SHORT_RANGE};
 
-const static double X4_LONG = 4e-6;
-const static double X3_LONG = -0.0018;
-const static double X2_LONG = 0.2961;
-const static double X1_LONG = -23.417;
-const static double X0_LONG = 870.26;
+const static double LONG_BASE = 17391.0;
+const static double LONG_EXP = -1.071;
 
-const static double X4_SHORT = 0.0036;
-const static double X3_SHORT = -0.3094;
-const static double X2_SHORT = 9.8205;
-const static double X1_SHORT = -144.8;
-const static double X0_SHORT = 987.88;
+const static double SHORT_BASE = 2680.8;
+const static double SHORT_EXP = -1.018;
 
 const static enum Range RANGES[NUM_SENSORS] = {
     SHORT_RANGE, LONG_RANGE, LONG_RANGE, LONG_RANGE, LONG_RANGE
