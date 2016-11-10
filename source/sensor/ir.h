@@ -42,7 +42,7 @@ typedef struct IR {
 
     double value;
 	
-	uint16_t raw_data_list[NUM_SENSOR_DATA-1];
+	uint16_t raw_data_list[NUM_SENSOR_DATA];
 
     bool enabled;
 

@@ -58,6 +58,11 @@ int main(void) {
 	IRQueue ir_queue;
 	
 	ir_queue_init(&ir_queue, timer8);
+	
+	// Add all ir_sensor to ir_queue
+	for(uint8_t i = 0; i < NUM_SENSORS; i++) {
+		schedule(&ir_queue, ir_list[2].port);
+	}
 
 	uint32_t count = 0;
 	
@@ -75,13 +80,21 @@ int main(void) {
 	while(1) {
 		
 		// if first irport in queue has new value then start A/D conv. and save data 
+		/*if(has_new_value(&ir_queue)) {
+			irport_t port = dequeue(&ir_queue);
+			ir_add_data(&ir_list[port], adc_read(port));
+			res1 = ir_list[port].raw_data_list[NUM_SENSORS-1];
+			schedule(&ir_queue, port);
+		}*/
+			
+	
+		
 		if(has_new_value(&ir_queue)) {
 			irport_t port = dequeue(&ir_queue);
 			ir_add_data(&ir_list[port], adc_read(port));
 			res1 = ir_list[port].raw_data_list[NUM_SENSORS-1];
 			schedule(&ir_queue, port);
 		}
-			
 		
 		//PORTB = (uint8_t)((unsigned int)res1 >> 2);
 		//PORTD = (uint8_t)((unsigned int)res2 >> 2);

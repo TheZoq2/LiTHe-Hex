@@ -28,8 +28,6 @@ void ir_init(IR ir_list[NUM_SENSORS]) {
         ir.port = i;
         
         ir.value = 0.0;
-		
-		ir.raw_data_list[NUM_SENSOR_DATA];
 
         ir_list[i] = ir;
     }
@@ -41,7 +39,7 @@ void ir_add_data(IR* ir, uint16_t data) {
 	for(uint8_t i = 0; i < NUM_SENSOR_DATA-1; i++) {
 		ir->raw_data_list[i] = ir->raw_data_list[i+1];
 	}
-	ir->raw_data_list[NUM_SENSOR_DATA] = data;
+	ir->raw_data_list[NUM_SENSOR_DATA-1] = data;
 }
 
 /* For now just take first value from raw_data_list put as value */
