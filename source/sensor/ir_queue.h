@@ -21,12 +21,15 @@
 #include <avr/io.h>
 #include "ir.h"
 #include <stdbool.h>
+#include "timer.h"
+
+const static uint32_t IR_UPDATE_TIME = 50;
 
 typedef struct IRElem {
 
     irport_t port;
 
-    uint16_t time_since_measured;
+    uint16_t last_time_measured;
 
 } IRElem;
 
@@ -36,12 +39,14 @@ typedef struct IRQueue {
 
     uint8_t curr_size;
 
+    Timer* timer;
+
 } IRQueue;
 
 /*
  * Initializes an IRQueue.
  */
-void ir_queue_init(IRQueue* queue);
+void ir_queue_init(IRQueue* queue, Timer* timer);
 
 /*
  * Adds an IR-sensor with port "port" to the queue.
