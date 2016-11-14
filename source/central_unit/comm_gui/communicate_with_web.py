@@ -1,6 +1,6 @@
 from chunnel import Socket
 
-socket = Socket('ws://example.com/socket', params={'token': 'blah'})
+socket = Socket('ws://localhost/socket', params={'token': 'blah'})
 async with socket:
 	channel = socket.channel('room:lobby, {})
 	await channel.join()
