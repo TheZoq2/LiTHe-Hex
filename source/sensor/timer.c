@@ -61,6 +61,17 @@ uint32_t timer_value_millis(Timer* timer) {
 }
 
 uint32_t timer_value_micros(Timer* timer) {
-    return timer_value_millis(timer) * 1000;
+
+    if (timer->resolution == BIT8) {
+        
+        return ((TCNT0 + (timer->num_overflows * MAX_8BIT_VALUE)) 
+                / (CLOCK_FREQUENCY / TIMER8_PRESCALER_VALUE)) * TIMER_SCALER;
+
+    } else {
+
+        return ((TCNT1 + (timer->num_overflows * MAX_16BIT_VALUE)) 
+                / (CLOCK_FREQUENCY / TIMER16_PRESCALER_VALUE)) * TIMER_SCALER;
+
+    }
 }
 
