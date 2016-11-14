@@ -123,6 +123,12 @@
     <Compile Include="error.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="gyro.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="gyro.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="ir.c">
       <SubType>compile</SubType>
     </Compile>

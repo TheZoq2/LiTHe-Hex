@@ -20,6 +20,7 @@
 #include "ir_queue.h"
 #include "avr/interrupt.h"
 #include "timer.h"
+#include "gyro.h"
 
 Timer* timer8;
 Timer* timer16;
@@ -66,7 +67,7 @@ int main(void) {
 
 	GYRO gyro;
 
-	gyro_init(gyro, timer16);
+	gyro_init(&gyro, timer16);
 
 	uint32_t count = 0;  
 	
@@ -98,7 +99,7 @@ int main(void) {
 
 		if(gyro_has_new_value(&gyro)) {
 			gyro_add_data(&gyro, adc_read(GYRO_PORT));
-			schedule(&gyro);
+			gyro_schedule(&gyro);
 		}
 		
 		//PORTB = (uint8_t)((unsigned int)res1 >> 2);

@@ -21,6 +21,7 @@
 #include <avr/io.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include "timer.h"
 
 #define NUM_GYRO_DATA		5
 #define GYRO_PORT			5
@@ -41,7 +42,7 @@ typedef struct GYRO {
 
 } GYRO;
 
-void gyro_init(GYRO gyro);
+void gyro_init(GYRO* gyro, Timer* timer);
 
 void gyro_add_data(GYRO* gyro, uint16_t data);
 
