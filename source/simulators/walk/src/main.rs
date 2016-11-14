@@ -8,8 +8,9 @@ use kiss3d::light::Light;
 mod leg;
 use leg::Leg;
 
-use std::fs::File;
+use std::fs::{File};
 use std::io::prelude::{Read};
+use std::io::Write;
 
 use std::vec::Vec;
 
@@ -36,9 +37,9 @@ impl Robot
     {
         let mut legs = vec!();
 
-        for i in 0..5
+        for i in 0..6
         {
-            legs.push(Leg::new(window, i as f32 * PI / 6.));
+            legs.push(Leg::new(window, i as f32 * PI / 3.));
         }
 
         Robot {
@@ -63,6 +64,23 @@ impl Robot
             self.legs[i].set_target_angles(&angles[i])
         }
     }
+
+    pub fn write_angles(&self) 
+    {
+        let mut file = File::create("/tmp/hexsim/leg_output").unwrap();
+
+        let mut result = String::from("");
+        for leg in &self.legs
+        {
+            for angle in leg.get_angles()
+            {
+                result += format!("{},", angle).as_str();
+            }
+            result += "\n";
+        }
+
+        file.write_all(result.into_bytes().as_slice());
+    }
 }
 
 //Panics if file is wrong, maybe change?
@@ -79,8 +97,6 @@ fn read_target_angles() -> Vec<Vec<f32>>
     //Reading the file into a string
     let mut s = String::new();
     file.read_to_string(&mut s).unwrap();
-    println!("{:?}", file);
-    println!("{:?}", s);
 
     //Parsing the data
     let mut result = vec!();
@@ -101,7 +117,7 @@ fn read_target_angles() -> Vec<Vec<f32>>
     }
 
 
-    return result
+    result
 }
 
 fn main() {
@@ -120,11 +136,8 @@ fn main() {
 
         let target_angles = read_target_angles();
 
-        for angle in &target_angles
-        {
-            println!("{:?}", angle);
-        }
-
+        robot.set_target_angles(target_angles);
         robot.update(delta_time);
+        robot.write_angles();
     }
 }
