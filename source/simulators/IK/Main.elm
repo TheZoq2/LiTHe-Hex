@@ -27,7 +27,8 @@ import Math.Vector3 as Vector3 exposing (..)
 import Mouse
 import Rendering
 import Limbs
-import Debug
+import Constants exposing (..)
+import IK
 
 
 type alias Model =
@@ -68,16 +69,6 @@ type JointPosition
     = Hip
     | Knee
     | Foot
-
-
-maxAngle : Float
-maxAngle =
-    pi / 2
-
-
-minAngle : Float
-minAngle =
-    -pi / 2
 
 
 type Msg
@@ -148,37 +139,11 @@ setJointAngle angle leg joint bot =
             { bot | backRight = setLegJoint angle joint bot.backRight }
 
 
-calcLegIK : LegPosition -> Hexapod -> Vec3 -> Hexapod
-calcLegIK leg bot pos =
+setLegIK : LegPosition -> Hexapod -> Vec3 -> Hexapod
+setLegIK leg bot pos =
     let
-        clickAngle =
-            atan2 -(getZ pos) (getX pos)
-
-        horizontalAngle =
-            clickAngle |> max minAngle |> min maxAngle
-
-        kneePos =
-            vec3 (thighLength * cos horizontalAngle)
-                0
-                -(thighLength * sin horizontalAngle)
-
-        kneeToeDistance =
-            min (distance kneePos pos) (ankleLength + footlength)
-
-        kneeToeVec =
-            scale kneeToeDistance (direction kneePos pos)
-
-        alpha =
-            acos ((getY kneeToeVec) / kneeToeDistance)
-                + acos
-                    ((footlength ^ 2 - ankleLength ^ 2 - kneeToeDistance ^ 2)
-                        / (-2 * ankleLength * kneeToeDistance)
-                    )
-                - pi / 2
-
-        beta =
-            acos ((kneeToeDistance^2 - footlength^2 - ankleLength^2) /
-                      (-2 * footlength * ankleLength)) - pi
+        ( horizontalAngle, alpha, beta ) =
+            IK.calcLegIK pos
     in
         bot
             |> setJointAngle horizontalAngle leg Hip
@@ -201,17 +166,25 @@ update msg model =
                             |> setZ (toFloat pos.y - Rendering.halfCanvasHeight)
                     else
                         model.lastClick
-                            |> setX (cos model.legs.frontRight.a1 *
-                                         (toFloat pos.x -
-                                              3 * Rendering.halfCanvasWidth))
-                            |> setZ -(sin model.legs.frontRight.a1 *
-                                         (toFloat pos.x -
-                                              3 * Rendering.halfCanvasWidth))
+                            |> setX
+                                (cos model.legs.frontRight.a1
+                                    * (toFloat pos.x
+                                        - 3
+                                        * Rendering.halfCanvasWidth
+                                      )
+                                )
+                            |> setZ
+                                -(sin model.legs.frontRight.a1
+                                    * (toFloat pos.x
+                                        - 3
+                                        * Rendering.halfCanvasWidth
+                                      )
+                                 )
                             |> setY -(toFloat pos.y - Rendering.halfCanvasHeight)
             in
                 ( { model
                     | lastClick = offsetPos
-                    , legs = calcLegIK model.selectedLeg model.legs offsetPos
+                    , legs = setLegIK model.selectedLeg model.legs offsetPos
                   }
                 , Cmd.none
                 )
@@ -234,21 +207,6 @@ limbView limbs =
             ]
             (Rendering.renderLegs limbs)
         ]
-
-
-thighLength : number
-thighLength =
-    50
-
-
-ankleLength : number
-ankleLength =
-    30
-
-
-footlength : number
-footlength =
-    40
 
 
 projectTop : Hexapod -> List Limbs.Joint
@@ -282,7 +240,7 @@ view model =
     div []
         [ limbView (projectTop model.legs)
         , limbView (projectSide model.legs)
-        , div [ style [ ("float", "left") ] ]
+        , div [ style [ ( "float", "left" ) ] ]
             [ Html.text
                 <| "Den vänsta vyn är uppifrån roboten och den högra är "
                 ++ "från sidan av benet. Klicka för att flytta benet"
