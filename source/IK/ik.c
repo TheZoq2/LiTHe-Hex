@@ -25,29 +25,32 @@ float distance(float x1, float y1, float z1, float x2, float y2, float z2) {
     return sqrt(x*x + y*y + z*z);
 }
 
-void leg_ik(float x, float y, float z, float* a1, float* a2, float* a3) {
+struct Leg leg_ik(float x, float y, float z) {
+    struct Leg leg;
     float gamma = atan2(-z, x);
-    *a1 = fmin(fmax(gamma, JOINT_1_MIN), JOINT_1_MAX);
+    leg.angle1 = fmin(fmax(gamma, JOINT_1_MIN), JOINT_1_MAX);
 
-    float knee_pos_x = JOINT_1_LENGTH * cos(*a1);
-    float knee_pos_z = -JOINT_1_LENGTH * sin(*a1);
+    float knee_pos_x = JOINT_1_LENGTH * cos(leg.angle1);
+    float knee_pos_z = -JOINT_1_LENGTH * sin(leg.angle1);
 
     float dist_to_desired = distance(knee_pos_x, 0, knee_pos_z, x, y, z);
     float knee_toe_distance = fmin(dist_to_desired,
                                    JOINT_2_LENGTH + JOINT_3_LENGTH);
 
-    float alpha = acos(y / dist_to_desired) +
+    float alpha = acos(-y / dist_to_desired) +
         acos((JOINT_3_LENGTH*JOINT_3_LENGTH -
              JOINT_2_LENGTH*JOINT_2_LENGTH -
              knee_toe_distance*knee_toe_distance) /
              (-2 * JOINT_2_LENGTH * knee_toe_distance)) -
         M_PI / 2;
 
-    float beta = acos((knee_toe_distance*knee_toe_distance -
+    float beta = acos((knee_toe_distance * knee_toe_distance -
                        JOINT_3_LENGTH * JOINT_3_LENGTH -
-                       JOINT_2_LENGTH*JOINT_2_LENGTH) /
-                      (-2 * JOINT_3_LENGTH * JOINT_2_LENGTH));
+                       JOINT_2_LENGTH * JOINT_2_LENGTH) /
+                      (-2 * JOINT_3_LENGTH * JOINT_2_LENGTH))
+        - M_PI;
 
-    *a2 = fmin(fmax(alpha, JOINT_2_MIN), JOINT_2_MAX);
-    *a3 = fmin(fmax(beta, JOINT_3_MIN), JOINT_3_MAX);
+    leg.angle2 = fmin(fmax(alpha, JOINT_2_MIN), JOINT_2_MAX);
+    leg.angle3 = fmin(fmax(beta, JOINT_3_MIN), JOINT_3_MAX);
+    return leg;
 }
