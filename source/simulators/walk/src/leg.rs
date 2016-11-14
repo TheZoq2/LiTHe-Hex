@@ -11,6 +11,9 @@ use std::f32::consts::PI;
 use std::path::Path;
 use std::vec::Vec;
 
+const LIMB1_LENGTH: f32 = 5.5 / 4.;
+const LIMB2_LENGTH: f32 = 6.5 / 4.;
+const LIMB3_LENGTH: f32 = 13.5 / 4.;
 
 pub struct Limb
 {
@@ -79,33 +82,34 @@ pub struct Leg
 
 impl Leg
 {
-    pub fn new(window: &mut Window, angle: f32) -> Leg
+    pub fn new(window: &mut Window, angle: f32, position: Vector3<f32>) -> Leg
     {
         let mut leg_group = window.add_group();
         leg_group.set_local_rotation(Vector3::new(0., angle, 0.));
+        leg_group.set_local_translation(position);
 
         let mut node1 = leg_group.add_obj(
                     &Path::new("media/cube.obj"),
                     &Path::new("media/cube.mtl"),
-                    Vector3::new(1., 1.,1.)
+                    Vector3::new(1., LIMB1_LENGTH,1.)
                 );
         let mut node2 = node1.add_obj(
                     &Path::new("media/cube.obj"),
                     &Path::new("media/cube.mtl"),
-                    Vector3::new(1., 1.,1.)
+                    Vector3::new(1., LIMB2_LENGTH,1.)
                 );
         let mut node3 = node2.add_obj(
                     &Path::new("media/cube.obj"),
                     &Path::new("media/cube.mtl"),
-                    Vector3::new(1., 2.,1.)
+                    Vector3::new(1., LIMB3_LENGTH,1.)
                 );
 
         node1.set_color(1., 0., 0.);
         node2.set_color(0., 1., 0.);
         node3.set_color(0., 0., 1.);
 
-        node2.set_local_translation(Vector3::new(0.0, 1.0, 0.0));
-        node3.set_local_translation(Vector3::new(0.0, 1.0, 0.0));
+        node2.set_local_translation(Vector3::new(0.0, LIMB1_LENGTH, 0.0));
+        node3.set_local_translation(Vector3::new(0.0, LIMB2_LENGTH, 0.0));
 
         let turn_speed = 0.5;
         let limb1 = Limb::new(
