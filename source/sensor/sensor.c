@@ -65,7 +65,7 @@ int main(void) {
 		schedule(&ir_queue, ir_list[2].port);
 	}
 
-	GYRO gyro;
+	Gyro gyro;
 
 	gyro_init(&gyro, timer16);
 

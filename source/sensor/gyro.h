@@ -28,7 +28,7 @@
 
 const static uint32_t GYRO_UPDATE_TIME = 50;
 
-typedef struct GYRO {
+typedef struct Gyro {
 
     double value;
 	
@@ -40,20 +40,20 @@ typedef struct GYRO {
 
     Timer* timer;
 
-} GYRO;
+} Gyro;
 
-void gyro_init(GYRO* gyro, Timer* timer);
+void gyro_init(Gyro* gyro, Timer* timer);
 
-void gyro_add_data(GYRO* gyro, uint16_t data);
+void gyro_add_data(Gyro* gyro, uint16_t data);
 
-void gyro_reduce_noise(GYRO* gyro);
+void gyro_reduce_noise(Gyro* gyro);
 
-double latest_gyro_value(GYRO* gyro);
+double latest_gyro_value(Gyro* gyro);
 
 double gyro_value_to_rad(uint16_t val);
 
-bool gyro_has_new_value(GYRO* gyro);
+bool gyro_has_new_value(Gyro* gyro);
 
-void gyro_schedule(GYRO* gyro);
+void gyro_schedule(Gyro* gyro);
 
 #endif

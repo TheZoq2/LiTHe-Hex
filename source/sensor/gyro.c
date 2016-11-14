@@ -18,7 +18,7 @@
 #include "gyro.h"
 #include "math.h"
 
-void gyro_init(GYRO* gyro, Timer* timer) {
+void gyro_init(Gyro* gyro, Timer* timer) {
 
         gyro->enabled = true;
 
@@ -30,7 +30,7 @@ void gyro_init(GYRO* gyro, Timer* timer) {
 }
 
 /* Move all element one step forward (remove first) and add a new data value last in raw_data_list */
-void gyro_add_data(GYRO* gyro, uint16_t data) {
+void gyro_add_data(Gyro* gyro, uint16_t data) {
 
 	for(uint8_t i = 0; i < NUM_GYRO_DATA-1; i++) {
 		gyro->raw_data_list[i] = gyro->raw_data_list[i+1];
@@ -40,7 +40,7 @@ void gyro_add_data(GYRO* gyro, uint16_t data) {
 }
 
 /* For now just take first value from raw_data_list put as value */
-void gyro_reduce_noise(GYRO* gyro) {
+void gyro_reduce_noise(Gyro* gyro) {
 	
 	gyro->value = gyro->raw_data_list[0];
 }
@@ -50,18 +50,18 @@ double gyro_value_to_rad(uint16_t val) {
     return (double)val;
 }
 
-double latest_gyro_value(GYRO* gyro) {
+double latest_gyro_value(Gyro* gyro) {
 
     return gyro->raw_data_list[NUM_GYRO_DATA - 1];
 }
 
-bool gyro_has_new_value(GYRO* gyro) {
+bool gyro_has_new_value(Gyro* gyro) {
 
     return timer_value_millis(gyro->timer) - 
         gyro->last_time_measured >= GYRO_UPDATE_TIME;
 }
 
-void gyro_schedule(GYRO* gyro) {
+void gyro_schedule(Gyro* gyro) {
 
     gyro->last_time_measured = timer_value_millis(gyro->timer);
 }
