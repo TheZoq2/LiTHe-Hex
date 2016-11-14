@@ -64,10 +64,11 @@ int main(void) {
 		schedule(&ir_queue, ir_list[2].port);
 	}
 
-	uint32_t count = 0;
-	
-	uint16_t res1;
-	uint16_t res2;    
+	GYRO gyro;
+
+	gyro_init(gyro, timer16);
+
+	uint32_t count = 0;  
 	
 	// TEST timers
 	//uint32_t time = timer_value_millis(timer16);
@@ -92,8 +93,12 @@ int main(void) {
 		if(has_new_value(&ir_queue)) {
 			irport_t port = dequeue(&ir_queue);
 			ir_add_data(&ir_list[port], adc_read(port));
-			res1 = ir_list[port].raw_data_list[NUM_SENSORS-1];
 			schedule(&ir_queue, port);
+		}
+
+		if(gyro_has_new_value(&gyro)) {
+			gyro_add_data(&gyro, adc_read(GYRO_PORT));
+			schedule(&gyro);
 		}
 		
 		//PORTB = (uint8_t)((unsigned int)res1 >> 2);
