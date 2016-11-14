@@ -11,7 +11,7 @@ import pdb
 
 
 command_filename = "/tmp/hexsim/command"
-START_X_POS = 0.3
+START_X_POS = -0.3
 START_Y_POS = 1
 START_ANGLE = -0.2 * math.pi
 
@@ -176,7 +176,7 @@ def set_start_values():
             cmd[1], #+ math.sin(time.time())/15,
             cmd[2]  #+ math.sin(time.time() * 3)/15
         )
-    return (noise_function, [Vec2(0.1,0), Vec2(0.1,0), Vec2(-0.1,0), Vec2(-0.1,0)])
+    return (noise_function, [Vec2(0.1,0.1), Vec2(0.1,-0.1), Vec2(-0.1,0.1), Vec2(-0.1,-0.1)])
 
 def main():
     set_command_file()

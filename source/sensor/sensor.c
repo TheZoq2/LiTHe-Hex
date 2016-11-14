@@ -17,32 +17,93 @@
 
 #include "ir.h"
 #include "adc.h"
+#include "ir_queue.h"
+#include "avr/interrupt.h"
+#include "timer.h"
+#include "gyro.h"
 
+Timer* timer8;
+Timer* timer16;
 
+// When TIMER0 overflow increase timer8 overflow counter;
+ISR(TIMER0_OVF_vect) {
+	timer8->num_overflows++;
+}
 
-int main(void)
-{
-	DDRB = 0xFF;
-    IRCONTROL control;
-    
-    ir_init(&control);
+// When TIMER1 overflow increase timer16 overflow counter;
+ISR(TIMER1_OVF_vect) {
+	timer16->num_overflows++;
+}
+
+int main(void) {
+	
+	DDRD = 0xFF;
+	
+	Timer timer8bit;
+	timer8 = &timer8bit;
+	timer_init(timer8, BIT8);
+	
+	Timer timer16bit;
+	timer16 = &timer16bit;
+	timer_init(timer16, BIT16);
+	
+	// Enable global interrupts
+	sei();
+	
+	IR ir_list[NUM_SENSORS];
+	
+	ir_init(ir_list);
 
     adc_init();
-
-	uint32_t count = 0;
 	
-	uint16_t res;    
-    
+	IRQueue ir_queue;
+	
+	ir_queue_init(&ir_queue, timer8);
+	
+	// Add all ir_sensor to ir_queue
+	for(uint8_t i = 0; i < NUM_SENSORS; i++) {
+		schedule(&ir_queue, ir_list[2].port);
+	}
+
+	Gyro gyro;
+
+	gyro_init(&gyro, timer16);
+
+	uint32_t count = 0;  
+	
+	// TEST timers
+	//uint32_t time = timer_value_millis(timer16);
+	//PORTD = 0x00;		
+	//while (timer_value_millis(timer16) < 5000) {}
+	//PORTD = 0x0F;
+	//while (timer_value_millis(timer16) < 65000) {}
+	//PORTD = 0xFF;
+	    
 	while(1) {
-		count++;
 		
-		if (count % 10000 == 0) {
-			adc_start_conversion(5);
-			while (ADCSRA & (1<<ADSC)) {}
-			res = adc_read_result();
+		// if first irport in queue has new value then start A/D conv. and save data 
+		/*if(has_new_value(&ir_queue)) {
+			irport_t port = dequeue(&ir_queue);
+			ir_add_data(&ir_list[port], adc_read(port));
+			res1 = ir_list[port].raw_data_list[NUM_SENSORS-1];
+			schedule(&ir_queue, port);
+		}*/
 			
-			PORTB = (uint8_t)((unsigned int)res >> 2);
+	
+		
+		if(has_new_value(&ir_queue)) {
+			irport_t port = dequeue(&ir_queue);
+			ir_add_data(&ir_list[port], adc_read(port));
+			schedule(&ir_queue, port);
 		}
+
+		if(gyro_has_new_value(&gyro)) {
+			gyro_add_data(&gyro, adc_read(GYRO_PORT));
+			gyro_schedule(&gyro);
+		}
+		
+		//PORTB = (uint8_t)((unsigned int)res1 >> 2);
+		//PORTD = (uint8_t)((unsigned int)res2 >> 2);
 		
 	}
 }

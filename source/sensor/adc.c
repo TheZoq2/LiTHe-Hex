@@ -1,4 +1,22 @@
+// Copyright 2016 Noak Ringman, Emil Segerbäck, Robin Sliwa, Frans Skarman, Hannes Tuhkala, Malcolm Wigren, Olav Övrebö
+
+// This file is part of LiTHe Hex.
+
+// LiTHe Hex is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+
+// LiTHe Hex is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+
+// You should have received a copy of the GNU General Public License
+// along with LiTHe Hex.  If not, see <http://www.gnu.org/licenses/>.
+
 #include "adc.h"
+#include "error.h"
 
 void adc_init() {
     
@@ -11,23 +29,19 @@ void adc_init() {
 
 }
 
-void adc_start_conversion(uint8_t channel) {
+uint16_t adc_read(uint8_t channel) {
 
-    // make sure channel is 0-7
-    channel &= 7;
+    if (channel > 7 || channel < 0) error();
 
     // set the multiplexer for this channel
     ADMUX = (ADMUX & 0xF8) | channel;
 
     // start a conversion
     ADCSRA |= (1<<ADSC);
-}
 
-bool adc_conversion_done() {
-    // read the interrupt flag bit
-    return !((bool)(ADCSRA & (1<<ADSC))); 
-}
+    // wait for conversion to complete
+    while (ADCSRA & (1<<ADSC)); 
 
-uint16_t adc_read_result() {
     return (ADC);
 }
+

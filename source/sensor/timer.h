@@ -15,53 +15,41 @@
 // You should have received a copy of the GNU General Public License
 // along with LiTHe Hex.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef IR_H
-#define IR_H
+#ifndef TIMER_H
+#define TIMER_H
 
-#include <avr/io.h>
 #include <stdint.h>
-#include <stdbool.h>
 
-#define NUM_SENSORS			5
-#define NUM_SENSOR_DATA		5
-#define DUMMY_PORT			255
+enum Resolution {BIT8, BIT16};
 
-typedef uint8_t irport_t;
+// prescaler 1024
+const static uint8_t TIMER8_PRESCALER = 0x05;
 
-enum Range {LONG_RANGE, SHORT_RANGE};
+// no prescaling
+const static uint8_t TIMER16_PRESCALER = 0x01;
 
-const static double LONG_BASE = 17391.0;
-const static double LONG_EXP = -1.071;
+const static uint16_t TIMER8_PRESCALER_VALUE = 1024;
+const static uint16_t TIMER16_PRESCALER_VALUE = 1;
 
-const static double SHORT_BASE = 2680.8;
-const static double SHORT_EXP = -1.018;
+const static uint8_t MAX_8BIT_VALUE = 255;
+const static uint16_t MAX_16BIT_VALUE = 65535;
 
-const static enum Range RANGES[NUM_SENSORS] = {
-    SHORT_RANGE, LONG_RANGE, LONG_RANGE, LONG_RANGE, LONG_RANGE
-};
+const static double TIMER_SCALER = 0.95;
 
-typedef struct IR {
+// 8 MHz
+const static uint32_t CLOCK_FREQUENCY = 8000000;
 
-    enum Range range;
+typedef struct Timer {
 
-    irport_t port;
+    enum Resolution resolution;
 
-    double value;
-	
-	double raw_data_list[NUM_SENSOR_DATA];
+    uint32_t num_overflows;
 
-    bool enabled;
+} Timer;
 
-} IR;
+void timer_init(Timer* timer, enum Resolution res);
 
-void ir_init(IR ir_list[NUM_SENSORS]);
-
-void ir_add_data(IR* ir, uint16_t data);
-
-void ir_reduce_noise(IR* ir);
-
-double latest_ir_value(IR* ir);
-
-double ir_value_to_meters(uint16_t val, enum Range range);
+uint32_t timer_value_millis(Timer* timer);
+uint32_t timer_value_micros(Timer* timer);
 
 #endif

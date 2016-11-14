@@ -1,4 +1,4 @@
-// Copyright 2016 Noak Ringman, Emil SegerbÃ¤ck, Robin Sliwa, Frans Skarman, Hannes Tuhkala, Malcolm Wigren, Olav Ã–vrebÃ¶
+// Copyright 2016 Noak Ringman, Emil Segerbäck, Robin Sliwa, Frans Skarman, Hannes Tuhkala, Malcolm Wigren, Olav Övrebö
 
 // This file is part of LiTHe Hex.
 
@@ -15,13 +15,10 @@
 // You should have received a copy of the GNU General Public License
 // along with LiTHe Hex.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef ADC_H
-#define ADC_H
+#include "error.h"
 
-#include <avr/io.h>
-#include <stdbool.h>
-
-void adc_init();
-uint16_t adc_read(uint8_t channel);
-
-#endif 
+void error() {
+	DDRB |= 0x01;
+	PORTB |= 0x01;
+	while (1);
+}

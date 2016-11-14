@@ -15,53 +15,33 @@
 // You should have received a copy of the GNU General Public License
 // along with LiTHe Hex.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef IR_H
-#define IR_H
+#ifndef GYRO_H
+#define GYRO_H
 
 #include <avr/io.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include "timer.h"
 
-#define NUM_SENSORS			5
-#define NUM_SENSOR_DATA		5
-#define DUMMY_PORT			255
+#define NUM_GYRO_DATA		5
+#define GYRO_PORT			5
 
-typedef uint8_t irport_t;
+const static uint32_t GYRO_UPDATE_TIME = 50;
 
-enum Range {LONG_RANGE, SHORT_RANGE};
-
-const static double LONG_BASE = 17391.0;
-const static double LONG_EXP = -1.071;
-
-const static double SHORT_BASE = 2680.8;
-const static double SHORT_EXP = -1.018;
-
-const static enum Range RANGES[NUM_SENSORS] = {
-    SHORT_RANGE, LONG_RANGE, LONG_RANGE, LONG_RANGE, LONG_RANGE
-};
-
-typedef struct IR {
-
-    enum Range range;
-
-    irport_t port;
+typedef struct Gyro {
 
     double value;
 	
-	double raw_data_list[NUM_SENSOR_DATA];
+    uint32_t last_time_measured;
 
-    bool enabled;
+    Timer* timer;
 
-} IR;
+} Gyro;
 
-void ir_init(IR ir_list[NUM_SENSORS]);
+void gyro_init(Gyro* gyro, Timer* timer);
 
-void ir_add_data(IR* ir, uint16_t data);
+void gyro_reset(Gyro* gyro);
 
-void ir_reduce_noise(IR* ir);
-
-double latest_ir_value(IR* ir);
-
-double ir_value_to_meters(uint16_t val, enum Range range);
+void gyro_measure(Gyro* gyro);
 
 #endif

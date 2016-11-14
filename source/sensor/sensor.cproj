@@ -47,7 +47,7 @@
         <InterfaceName>JTAG</InterfaceName>
       </ToolOptions>
       <ToolType>com.atmel.avrdbg.tool.atmelice</ToolType>
-      <ToolNumber>J41800005310</ToolNumber>
+      <ToolNumber>J41800005321</ToolNumber>
       <ToolName>Atmel-ICE</ToolName>
     </com_atmel_avrdbg_tool_atmelice>
     <avrtoolinterface>JTAG</avrtoolinterface>
@@ -117,13 +117,37 @@
     <Compile Include="adc.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="error.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="error.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="gyro.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="gyro.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="ir.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="ir.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="ir_queue.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="ir_queue.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="sensor.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="timer.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="timer.h">
       <SubType>compile</SubType>
     </Compile>
   </ItemGroup>
