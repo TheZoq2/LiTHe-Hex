@@ -32,11 +32,7 @@ typedef struct Gyro {
 
     double value;
 	
-	double raw_data_list[NUM_GYRO_DATA];
-
-    bool enabled;
-
-    uint16_t last_time_measured;
+    uint32_t last_time_measured;
 
     Timer* timer;
 
@@ -44,16 +40,8 @@ typedef struct Gyro {
 
 void gyro_init(Gyro* gyro, Timer* timer);
 
-void gyro_add_data(Gyro* gyro, uint16_t data);
+void gyro_reset(Gyro* gyro);
 
-void gyro_reduce_noise(Gyro* gyro);
-
-double latest_gyro_value(Gyro* gyro);
-
-double gyro_value_to_rad(uint16_t val);
-
-bool gyro_has_new_value(Gyro* gyro);
-
-void gyro_schedule(Gyro* gyro);
+void gyro_measure(Gyro* gyro);
 
 #endif
