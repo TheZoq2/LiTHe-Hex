@@ -8,8 +8,9 @@ use kiss3d::light::Light;
 mod leg;
 use leg::Leg;
 
-use std::fs::File;
+use std::fs::{File};
 use std::io::prelude::{Read};
+use std::io::Write;
 
 use std::vec::Vec;
 
@@ -62,6 +63,23 @@ impl Robot
         {
             self.legs[i].set_target_angles(&angles[i])
         }
+    }
+
+    pub fn write_angles(&self) 
+    {
+        let mut file = File::create("/tmp/hexsim/leg_output").unwrap();
+
+        let mut result = String::from("");
+        for leg in &self.legs
+        {
+            for angle in leg.get_angles()
+            {
+                result += format!("{},", angle).as_str();
+            }
+            result += "\n";
+        }
+
+        file.write_all(result.into_bytes().as_slice());
     }
 }
 
@@ -120,5 +138,6 @@ fn main() {
 
         robot.set_target_angles(target_angles);
         robot.update(delta_time);
+        robot.write_angles();
     }
 }
