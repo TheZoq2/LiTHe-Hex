@@ -54,3 +54,27 @@ void lidar_measure(Lidar* lidar) {
     lidar_add_value(lidar, centimeters);
 }
 
+void i2c_init(void) {
+
+}
+
+void i2c_send_start(void) {
+
+}
+
+void i2c_send_stop(void) {
+
+}
+
+void i2c_write_byte(uint8_t sens_addr, uint8_t reg, uint8_t data) {
+
+}
+
+uint8_t i2c_read_byte(uint8_t sens_addr, uint8_t reg) {
+
+}
+
+void lidar_add_value(Lidar* lidar, uint16_t centimeters) {
+
+}
+
