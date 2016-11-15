@@ -208,4 +208,9 @@ Wire Wire Line
 Wire Wire Line
 	6800 3950 8750 3950
 Connection ~ 8750 3950
+Text Notes 3200 2850 0    118  ~ 0
+16MHzclock\nEXO3
+Connection ~ 3950 2800
+Wire Wire Line
+	3950 2800 4600 2800
 $EndSCHEMATC
