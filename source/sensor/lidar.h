@@ -18,11 +18,13 @@
 #ifndef LIDAR_H
 #define LIDAR_H 
 
+#define NUM_LIDAR_DATA	5;
+
 typedef struct Lidar {
 
     double value;
 
-    double raw_data_list
+    double raw_data_list[NUM_LIDAR_DATA];
 
 } Lidar;
 

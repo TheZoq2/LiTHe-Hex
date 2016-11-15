@@ -59,11 +59,12 @@ void i2c_init(void) {
 }
 
 void i2c_send_start(void) {
-
+	TWCR = (1<<TWINT)|(1<<TWSTA)|(1<<TWEN);
+	while ((TWCR & (1<<TWINT)) == 0);
 }
 
 void i2c_send_stop(void) {
-
+	TWCR = (1<<TWINT)|(1<<TWSTO)|(1<<TWEN);
 }
 
 void i2c_write_byte(uint8_t sens_addr, uint8_t reg, uint8_t data) {
@@ -75,6 +76,14 @@ uint8_t i2c_read_byte(uint8_t sens_addr, uint8_t reg) {
 }
 
 void lidar_add_value(Lidar* lidar, uint16_t centimeters) {
-
+	
+	for(uint8_t i = 0; i < NUM_LIDAR_DATA-1; i++) {
+		lidar->raw_data_list[i] = lidar->raw_data_list[i+1];
+	}
+	lidar->raw_data_list[NUM_LIDAR_DATA-1] = lidar_value_to_meters(centimeters);
 }
 
+double lidar_add_value(uint16_t centimeters) {
+	
+	return centimeters * 100;
+}
