@@ -78,7 +78,7 @@ int main(void) {
 	//PORTD = 0x0F;
 	//while (timer_value_millis(timer16) < 65000) {}
 	//PORTD = 0xFF;
-	    
+
 	while(1) {
 		
 		// if first irport in queue has new value then start A/D conv. and save data 
@@ -91,19 +91,21 @@ int main(void) {
 			
 	
 		
-		if(has_new_value(&ir_queue)) {
+		/*if(has_new_value(&ir_queue)) {
 			irport_t port = dequeue(&ir_queue);
 			ir_add_data(&ir_list[port], adc_read(port));
 			schedule(&ir_queue, port);
+		}*/
+
+		while (timer_value_millis(timer8) < 5000) {
+			gyro_measure(&gyro);
 		}
 
-		if(gyro_has_new_value(&gyro)) {
-			gyro_add_data(&gyro, adc_read(GYRO_PORT));
-			gyro_schedule(&gyro);
-		}
-		
-		//PORTB = (uint8_t)((unsigned int)res1 >> 2);
-		//PORTD = (uint8_t)((unsigned int)res2 >> 2);
+		timer_reset(timer8);
+
+		//gyro.value = 0;
+
+		// PORTD = (uint8_t)((unsigned int)res2 >> 2);
 		
 	}
 }

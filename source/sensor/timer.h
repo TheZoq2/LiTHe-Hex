@@ -48,6 +48,7 @@ typedef struct Timer {
 } Timer;
 
 void timer_init(Timer* timer, enum Resolution res);
+void timer_reset(Timer* timer);
 
 uint32_t timer_value_millis(Timer* timer);
 uint32_t timer_value_micros(Timer* timer);
