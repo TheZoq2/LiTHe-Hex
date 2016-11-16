@@ -17,6 +17,7 @@
 
 #include "timer.h"
 #include <avr/io.h>
+#include <avr/interrupt.h>
 
 void timer_init(Timer* timer, enum Resolution res) {
     timer->resolution = res;
@@ -65,13 +66,22 @@ uint32_t timer_value_micros(Timer* timer) {
     if (timer->resolution == BIT8) {
         
         return ((TCNT0 + (timer->num_overflows * MAX_8BIT_VALUE)) 
-                / (CLOCK_FREQUENCY / TIMER8_PRESCALER_VALUE)) * TIMER_SCALER;
+                / (CLOCK_FREQUENCY / TIMER8_PRESCALER_VALUE)) * 1000000 * TIMER_SCALER;
 
     } else {
 
         return ((TCNT1 + (timer->num_overflows * MAX_16BIT_VALUE)) 
-                / (CLOCK_FREQUENCY / TIMER16_PRESCALER_VALUE)) * TIMER_SCALER;
+                / (CLOCK_FREQUENCY / TIMER16_PRESCALER_VALUE)) * 1000000 * TIMER_SCALER;
 
     }
+}
+
+void timer_reset(Timer* timer) {
+	if (timer->resolution == BIT8) {
+		TCNT0 = 0;
+	} else {
+		TCNT1 = 0;
+	}
+	timer->num_overflows = 0;
 }
 

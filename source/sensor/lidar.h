@@ -15,42 +15,21 @@
 // You should have received a copy of the GNU General Public License
 // along with LiTHe Hex.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef TIMER_H
-#define TIMER_H
+#ifndef LIDAR_H
+#define LIDAR_H 
 
-#include <stdint.h>
+#define NUM_LIDAR_DATA	5;
 
-enum Resolution {BIT8, BIT16};
+typedef struct Lidar {
 
-// prescaler 1024
-const static uint8_t TIMER8_PRESCALER = 0x05;
+    double value;
 
-// no prescaling
-const static uint8_t TIMER16_PRESCALER = 0x01;
+    double raw_data_list[NUM_LIDAR_DATA];
 
-const static uint16_t TIMER8_PRESCALER_VALUE = 1024;
-const static uint16_t TIMER16_PRESCALER_VALUE = 1;
+} Lidar;
 
-const static uint8_t MAX_8BIT_VALUE = 255;
-const static uint16_t MAX_16BIT_VALUE = 65535;
+void lidar_init(Lidar* lidar);
 
-const static double TIMER_SCALER = 0.95;
+void lidar_measure(Lidar* lidar);
 
-// 8 MHz
-const static uint32_t CLOCK_FREQUENCY = 8000000;
-
-typedef struct Timer {
-
-    enum Resolution resolution;
-
-    uint32_t num_overflows;
-
-} Timer;
-
-void timer_init(Timer* timer, enum Resolution res);
-void timer_reset(Timer* timer);
-
-uint32_t timer_value_millis(Timer* timer);
-uint32_t timer_value_micros(Timer* timer);
-
-#endif
+#endif /* ifndef LIDAR_H */

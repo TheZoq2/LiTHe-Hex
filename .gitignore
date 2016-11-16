@@ -425,5 +425,6 @@ repl-temp-*
 /deps
 erl_crash.dump
 *.ez
+!/source/web/lib
 /source/simulators/IK/index.html
 /source/simulators/IK/elm.js
