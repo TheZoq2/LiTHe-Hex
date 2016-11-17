@@ -21,6 +21,7 @@
 #include "avr/interrupt.h"
 #include "timer.h"
 #include "gyro.h"
+#include "lidar.h"
 
 Timer* timer8;
 Timer* timer16;
@@ -37,7 +38,8 @@ ISR(TIMER1_OVF_vect) {
 
 int main(void) {
 	
-	DDRD = 0xFF;
+	DDRD = 0x00;
+	PORTD = 0x00;
 	
 	Timer timer8bit;
 	timer8 = &timer8bit;
@@ -65,11 +67,13 @@ int main(void) {
 		schedule(&ir_queue, ir_list[2].port);
 	}
 
-	Gyro gyro;
+	//Gyro gyro;
 
-	gyro_init(&gyro, timer16);
+	//gyro_init(&gyro, timer16);
 
-	uint32_t count = 0;  
+	Lidar lidar;
+	
+	lidar_init(&lidar, timer16);
 	
 	// TEST timers
 	//uint32_t time = timer_value_millis(timer16);
@@ -96,12 +100,8 @@ int main(void) {
 			ir_add_data(&ir_list[port], adc_read(port));
 			schedule(&ir_queue, port);
 		}*/
-
-		while (timer_value_millis(timer8) < 5000) {
-			gyro_measure(&gyro);
-		}
-
-		timer_reset(timer8);
+		
+		//lidar_measure(&lidar);
 
 		//gyro.value = 0;
 
