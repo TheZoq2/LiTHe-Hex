@@ -19,7 +19,7 @@
 #include "math.h"
 #include "adc.h"
 
-#define GYRO_ZERO   732
+#define GYRO_ZERO   728
 /*double gyro_value_to_rad(uint16_t val);
 void gyro_add_data(Gyro* gyro, uint16_t data);
 double latest_gyro_value(Gyro* gyro);
@@ -69,8 +69,14 @@ bool gyro_has_new_value(Gyro* gyro) {
 }
 */
 void gyro_measure(Gyro* gyro) {
+	uint16_t gyro_read = adc_read(GYRO_PORT);
+    double raw = ((double)adc_read(GYRO_PORT) - GYRO_ZERO);
+	if (raw < 10 && raw > -10) {
+		 raw = 0;
+	} else {
+		raw /= 10000000;		
+	}
 
-    double raw = ((double)adc_read(GYRO_PORT) - (double)GYRO_ZERO) / 10000000;
 	double time = (double)timer_value_micros(gyro->timer);
     gyro->value += (double) (raw * (time - (double)gyro->last_time_measured));
 	gyro->last_time_measured = timer_value_micros(gyro->timer);
