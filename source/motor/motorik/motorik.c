@@ -158,7 +158,7 @@ int main(void)
 		
 		usart_transmit(0x55);
 
-		send_servo_command(0x55, 0xff, 0x0, 0);
+		send_servo_command(0x0, 0x01, 0, 0);
 
 		ServoReply servo_reply = receive_servo_reply();
 	}
