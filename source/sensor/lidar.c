@@ -16,168 +16,54 @@
 // along with LiTHe Hex.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "lidar.h"
+#include "math.h"
 
-#define SENSOR_ADDR_READ     0xC4
-#define SENSOR_ADDR_WRITE    0xC5
-#define LIDAR_DATA_REG       0x8F
+#define TRIGGER_MEAS = 0xDF;
 
-void i2c_init(void);
-void i2c_send_start(void);
-void i2c_send_stop(void);
-void i2c_write_byte(uint8_t reg, uint8_t data);
-void i2c_wait(void);
-uint8_t i2c_read_data(void);
-double lidar_value_to_meters(uint16_t centimeters);
+double lidar_value_to_meters(uint32_t pulse_time);
 
-void lidar_add_value(Lidar* lidar, uint16_t centimeters);
+void lidar_add_value(Lidar* lidar, double data);
 
-void lidar_init(Lidar* lidar) {
-    
-    i2c_init();
+void lidar_init(Lidar* lidar, Timer* timer) {
 
     lidar->value = 0.0;
+    lidar->timer = timer;
+    LIDAR_PORT_SIDE = 0;
+    LIDAR_PORT_SIDE |= (1 << TRIGGER_PORT);
+    LIDAR_DIR_REG = 0;
+    LIDAR_DIR_REG |= (1 << TRIGGER_DIR);
 
 }
 
 void lidar_measure(Lidar* lidar) {
-    i2c_write_byte(SENSOR_ADDR, 0x00, 0x04);
     
-    i2c_wait();
+    // if the pin is already high, we should wait it out
+    while ((MONITOR_MASK & PIND) != 0);
+    uint32_t start;
+    uint32_t end;
+    // wait until we detect a rising edge
+    while ((MONITOR_MASK & PIND) == 0);
+    start = timer_value_micros(lidar->timer);
     
-    lidar_add_value(lidar, i2c_read_data());
+    // wait until the falling edge
+    while ((MONITOR_MASK & PIND) != 0);
+    end = timer_value_micros(lidar->timer);
+
+    uint32_t pulse_time = end - start;
+
+    lidar_add_value(lidar, lidar_value_to_meters(pulse_time));   
 }
 
-void i2c_init(void) {
+void lidar_add_value(Lidar* lidar, double data) {
 
-    // reset I2C status register
-    TWSR = 0x00;
-
-    // set I2C bitrate to 400kHz
-    TWBR = 0x0C;
-
-    // enable I2C
-    TWCR = (1 << TWEN);
-
-}
-
-void i2c_send_start(void) {
-    
-}
-
-void i2c_send_stop(void) {
-
-}
-
-void i2c_write_byte(uint8_t reg, uint8_t data) {
-    i2c_send_start();
-    
-    // send sensor address
-    TWDR = SENSOR_ADDR_WRITE;
-    TWCR = (1 << TWINT)|(1 << TWEN);
-    while ((TWCR & (1 << TWINT)) == 0);
-
-    // send register address
-    TWDR = reg;
-    TWCR = (1 << TWINT)|(1 << TWEN);
-    while ((TWCR & (1 << TWINT)) == 0);
-
-    // send data 
-    TWDR = data;
-    TWCR = (1 << TWINT)|(1 << TWEN);
-    while ((TWCR & (1 << TWINT)) == 0);
-
-    i2c_send_stop();
-}
-
-uint16_t i2c_read_data(void) {
-    i2c_send_start();
-
-    // send sensor address
-    TWDR = SENSOR_ADDR_WRITE;
-    TWCR = (1 << TWINT)|(1 << TWEN);
-    while ((TWCR & (1 << TWINT)) == 0);
-	
-	// send register address
-	TWDR = LIDAR_DATA_REG;
-	TWCR = (1 << TWINT)|(1 << TWEN);
-	while ((TWCR & (1 << TWINT)) == 0);
-
-	i2c_send_stop();
-
-	i2c_send_start();
-
-	// send sensor address, read
-	TWDR = SENSOR_ADDR_READ;
-	TWCR = (1 << TWINT)|(1 << TWEN);
-	while ((TWCR & (1 << TWINT)) == 0);
-	
-	TWCR = (1 << TWINT)|(1 << TWEN)|(1 << TWEA);
-	while ((TWCR & (1 << TWINT)) == 0);
-	uint8_t least_sig = TWDR;
-	
-	TWCR = (1 << TWINT)|(1 << TWEN)|(1 << TWEA);
-	while ((TWCR & (1 << TWINT)) == 0);
-	uint8_t most_sig = TWDR;
-
-	i2c_send_stop();
-	
-	return (most_sig << 8) & least_sig;
-
-void i2c_send_start(void) {
-	TWCR = (1<<TWINT)|(1<<TWSTA)|(1<<TWEN);
-	while ((TWCR & (1<<TWINT)) == 0);
-}
-
-void i2c_send_stop(void) {
-	TWCR = (1<<TWINT)|(1<<TWSTO)|(1<<TWEN);
-}
-
-void i2c_wait() {
-    uint8_t status = 1;
-
-    while (status != 0) {
-        i2c_send_start();
-
-        // send sensor address
-        TWDR = SENSOR_ADDR_WRITE;
-        TWCR = (1 << TWINT)|(1 << TWEN);
-        while ((TWCR & (1 << TWINT)) == 0);
-
-        // send status register address
-        TWDR = 0;
-        TWCR = (1 << TWINT)|(1 << TWEN);
-        while ((TWCR & (1 << TWINT)) == 0);
-
-        i2c_send_stop();
-
-        i2c_send_start();
-
-        // send sensor address, read
-        TWDR = SENSOR_ADDR_READ;
-        TWCR = (1 << TWINT)|(1 << TWEN);
-        while ((TWCR & (1 << TWINT)) == 0);
-        
-        // read status register
-        TWCR = (1 << TWINT)|(1 << TWEN)|(1 << TWEA);
-        while ((TWCR & (1 << TWINT)) == 0);
-        
-        status = (0xFE & TWDR);
-
-        i2c_send_stop();
-        
-    }
-
-}
-
-void lidar_add_value(Lidar* lidar, uint16_t centimeters) {
-	
-	for(uint8_t i = 0; i < NUM_LIDAR_DATA-1; i++) {
+	for(uint8_t i = 0; i < NUM_LIDAR_DATA - 1; i++) {
 		lidar->raw_data_list[i] = lidar->raw_data_list[i+1];
 	}
-	lidar->raw_data_list[NUM_LIDAR_DATA-1] = lidar_value_to_meters(centimeters);
+	lidar->raw_data_list[NUM_LIDAR_DATA - 1] = data;
+
 }
 
-double lidar_value_to_meters(uint16_t centimeters) {
-	
-	return centimeters / 100;
+
+double lidar_value_to_meters(double pulse_time) {
+	return floor(pulse_time / 10) / 100;
 }

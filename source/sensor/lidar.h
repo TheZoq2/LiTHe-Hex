@@ -18,13 +18,24 @@
 #ifndef LIDAR_H
 #define LIDAR_H 
 
-#define NUM_LIDAR_DATA	5;
+#include <avr/io.h>
+#include "timer.h"
+
+#define NUM_LIDAR_DATA	5
+#define MONITOR_PORT    PD6
+#define MONITOR_MASK    0xBF
+#define TRIGGER_DIR     DDD5
+#define LIDAR_PORT_SIDE PORTD
+#define LIDAR_DIR_REG   DDRD
+#define MONITOR_INPUT   PIND
 
 typedef struct Lidar {
 
     double value;
 
     double raw_data_list[NUM_LIDAR_DATA];
+
+    Timer* timer;
 
 } Lidar;
 
