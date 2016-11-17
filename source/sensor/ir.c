@@ -44,9 +44,23 @@ void ir_add_data(IR* ir, uint16_t data) {
 
 }
 
-/* For now just take first value from raw_data_list put as value */
+/* For now just take first value from raw_data_list put as value 
+WIP: take 
+*/
 void ir_reduce_noise(IR* ir) {
+	/*
+	double weight_less[NUM_SENSOR_DATA-1] = {0.98, 0.97, 0.96, 0.95};
+	double weight_more[NUM_SENSOR_DATA-1] = {1.02, 1.03, 1.04, 1.05};
+	double res = ir->raw_data_list[0];
+	for(uint8_t i = 1; i < NUM_SENSOR_DATA-1; i++) {
+		if(((ir->raw_data_list[i-1] + ir->raw_data_list[i]) / 2 > ir->raw_data_list[i]) {
+			res += ir->raw_data_list[i]*weight_less[i];
+		} else if(((ir->raw_data_list[i-1] + ir->raw_data_list[i]) / 2 < ir->raw_data_list[i]) {
+			res += ir->raw_data_list[i]*weight_more[i];
+		}
+	}
 	
+	ir->value = res / NUM_SENSOR_DATA;*/
 	ir->value = ir->raw_data_list[0];
 }
 

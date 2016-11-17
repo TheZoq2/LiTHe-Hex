@@ -16,9 +16,11 @@
 // along with LiTHe Hex.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "lidar.h"
+#include <stdint.h>
+#include <avr/io.h>
 
-#define SENSOR_ADDR_READ     0xC4
-#define SENSOR_ADDR_WRITE    0xC5
+#define SENSOR_ADDR_READ     0xC5
+#define SENSOR_ADDR_WRITE    0xC4
 #define LIDAR_DATA_REG       0x8F
 
 void i2c_init(void);
@@ -26,7 +28,7 @@ void i2c_send_start(void);
 void i2c_send_stop(void);
 void i2c_write_byte(uint8_t reg, uint8_t data);
 void i2c_wait(void);
-uint8_t i2c_read_data(void);
+uint16_t i2c_read_data(void);
 double lidar_value_to_meters(uint16_t centimeters);
 
 void lidar_add_value(Lidar* lidar, uint16_t centimeters);
@@ -40,7 +42,10 @@ void lidar_init(Lidar* lidar) {
 }
 
 void lidar_measure(Lidar* lidar) {
-    i2c_write_byte(SENSOR_ADDR, 0x00, 0x04);
+	
+	//i2c_send_start();
+	
+    i2c_write_byte(0x00, 0x04);
     
     i2c_wait();
     
@@ -48,6 +53,10 @@ void lidar_measure(Lidar* lidar) {
 }
 
 void i2c_init(void) {
+	
+	// set pull-up res.
+	//DDRC &= 0xFC;
+	PORTC = (1 << PC0)|(1 << PC1);
 
     // reset I2C status register
     TWSR = 0x00;
@@ -61,11 +70,12 @@ void i2c_init(void) {
 }
 
 void i2c_send_start(void) {
-    
+	TWCR = (1<<TWINT)|(1<<TWSTA)|(1<<TWEN);
+	while ((TWCR & (1<<TWINT)) == 0);
 }
 
 void i2c_send_stop(void) {
-
+	TWCR = (1<<TWINT)|(1<<TWSTO)|(1<<TWEN);
 }
 
 void i2c_write_byte(uint8_t reg, uint8_t data) {
@@ -111,7 +121,7 @@ uint16_t i2c_read_data(void) {
 	TWCR = (1 << TWINT)|(1 << TWEN);
 	while ((TWCR & (1 << TWINT)) == 0);
 	
-	TWCR = (1 << TWINT)|(1 << TWEN)|(1 << TWEA);
+	TWCR = (1 << TWINT)|(1 << TWEN);
 	while ((TWCR & (1 << TWINT)) == 0);
 	uint8_t least_sig = TWDR;
 	
@@ -122,14 +132,6 @@ uint16_t i2c_read_data(void) {
 	i2c_send_stop();
 	
 	return (most_sig << 8) & least_sig;
-
-void i2c_send_start(void) {
-	TWCR = (1<<TWINT)|(1<<TWSTA)|(1<<TWEN);
-	while ((TWCR & (1<<TWINT)) == 0);
-}
-
-void i2c_send_stop(void) {
-	TWCR = (1<<TWINT)|(1<<TWSTO)|(1<<TWEN);
 }
 
 void i2c_wait() {
@@ -161,7 +163,7 @@ void i2c_wait() {
         TWCR = (1 << TWINT)|(1 << TWEN)|(1 << TWEA);
         while ((TWCR & (1 << TWINT)) == 0);
         
-        status = (0xFE & TWDR);
+        status = (0x01 & TWDR);
 
         i2c_send_stop();
         
@@ -179,5 +181,5 @@ void lidar_add_value(Lidar* lidar, uint16_t centimeters) {
 
 double lidar_value_to_meters(uint16_t centimeters) {
 	
-	return centimeters / 100;
+	return (centimeters / 100);
 }
