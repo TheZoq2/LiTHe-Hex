@@ -2,6 +2,7 @@
 #include <avr/interrupt.h>
 
 #include <stdint.h>
+#include <stdlib.h>
 
 #define DD_MOSI 6
 
@@ -59,6 +60,17 @@ void usart_transmit(uint8_t data)
 	UDR0 = data;
 }
 
+uint8_t usart_receive()
+{
+	//Wait for data to arrive
+	while(!(UCSR0A & (1<<RXC0)))
+	{
+		
+	}
+
+	return UDR0;
+}
+
 void send_servo_command(uint8_t id, uint8_t instruction, void* data, uint8_t length)
 {
 	PORTD = 0b00000000;
@@ -86,6 +98,48 @@ void send_servo_command(uint8_t id, uint8_t instruction, void* data, uint8_t len
 	PORTD = 0b00000100;
 }
 
+//TODO: Kodstandard?
+//Remember to deallocate the parameters when they go out of scope
+typedef struct ServoReply
+{
+	uint8_t id;
+	uint8_t length;
+	uint8_t error;
+
+	uint8_t parameter_amount;
+	uint8_t* parameters;
+
+	uint8_t checksum;
+} ServoReply;
+
+ServoReply receive_servo_reply()
+{
+	struct ServoReply servo_reply;
+
+	//Receive the 2 start bytes. These are ignored for now
+	//TODO: Ensure that they are 0xff
+	usart_receive(); 
+	usart_receive();
+
+	servo_reply.id = usart_receive();
+	servo_reply.length = usart_receive();
+	servo_reply.error = usart_receive();
+
+	malloc(sizeof(ServoReply) * servo_reply.length);
+
+	for(uint8_t i = 0; i < servo_reply.length; ++i)
+	{
+		servo_reply.parameters[i] = usart_receive();
+	}
+
+	//TODO: Check the checksum
+	servo_reply.checksum = usart_receive();
+
+	return servo_reply;
+}
+
+
+
 int main(void)
 {
 	//spi_slave_init();
@@ -105,6 +159,8 @@ int main(void)
 		usart_transmit(0x55);
 
 		send_servo_command(0x55, 0xff, 0x0, 0);
+
+		ServoReply servo_reply = receive_servo_reply();
 	}
 }
 
