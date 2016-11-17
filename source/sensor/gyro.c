@@ -19,13 +19,12 @@
 #include "math.h"
 #include "adc.h"
 
-#define GYRO_ZERO   734
-
-double gyro_value_to_rad(uint16_t val);
+#define GYRO_ZERO   728
+/*double gyro_value_to_rad(uint16_t val);
 void gyro_add_data(Gyro* gyro, uint16_t data);
 double latest_gyro_value(Gyro* gyro);
 bool gyro_has_new_value(Gyro* gyro);
-
+*/
 void gyro_init(Gyro* gyro, Timer* timer) {
 
         gyro->value = 0.0;
@@ -44,16 +43,16 @@ void gyro_reset(Gyro* gyro) {
 }
 
 /* Move all element one step forward (remove first) and add a new data value last in data_list */
-void gyro_add_data(Gyro* gyro, uint16_t data) {
+/*void gyro_add_data(Gyro* gyro, uint16_t data) {
 
 	for(uint8_t i = 0; i < NUM_GYRO_DATA-1; i++) {
 		gyro->data_list[i] = gyro->data_list[i+1];
 	}
 	gyro->data_list[NUM_GYRO_DATA-1] = gyro_value_to_rad(data);
 
-}
+}*/
 
-double gyro_value_to_rad(uint16_t val) {
+/*double gyro_value_to_rad(uint16_t val) {
     // TODO implement
     return (double)val;
 }
@@ -68,12 +67,19 @@ bool gyro_has_new_value(Gyro* gyro) {
     return timer_value_millis(gyro->timer) - 
         gyro->last_time_measured >= GYRO_UPDATE_TIME;
 }
-
+*/
 void gyro_measure(Gyro* gyro) {
+	uint16_t gyro_read = adc_read(GYRO_PORT);
+    double raw = ((double)adc_read(GYRO_PORT) - GYRO_ZERO);
+	if (raw < 10 && raw > -10) {
+		 raw = 0;
+	} else {
+		raw /= 10000000;		
+	}
 
-    gyro->last_time_measured = timer_value_micros(gyro->timer);
-
-    uint16_t raw = adc_read(GYRO_PORT) - GYRO_ZERO;
-    gyro->value = (double) timer_value_micros(gyro->timer) * raw;
+	double time = (double)timer_value_micros(gyro->timer);
+    gyro->value += (double) (raw * (time - (double)gyro->last_time_measured));
+	gyro->last_time_measured = timer_value_micros(gyro->timer);
+	PORTD = raw;
 }
 

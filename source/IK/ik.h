@@ -20,17 +20,23 @@
 
 #include <math.h>
 
-const float JOINT_1_MAX = M_PI / 2;
-const float JOINT_1_MIN = -M_PI / 2;
-const float JOINT_2_MAX = M_PI / 2;
-const float JOINT_2_MIN = -M_PI / 2;
-const float JOINT_3_MAX = M_PI / 2;
-const float JOINT_3_MIN = -M_PI / 2;
+const static float JOINT_1_MAX = M_PI / 2;
+const static float JOINT_1_MIN = -M_PI / 2;
+const static float JOINT_2_MAX = M_PI / 2;
+const static float JOINT_2_MIN = -M_PI / 2;
+const static float JOINT_3_MAX = M_PI / 2;
+const static float JOINT_3_MIN = -M_PI / 2;
 
-const float JOINT_1_LENGTH = 0.05;
-const float JOINT_2_LENGTH = 0.065;
-const float JOINT_3_LENGTH = 0.13;
+const static float JOINT_1_LENGTH = 0.05;
+const static float JOINT_2_LENGTH = 0.065;
+const static float JOINT_3_LENGTH = 0.13;
 
-void leg_ik(float x, float y, float z, float* a1, float* a2, float* a3);
+struct Leg {
+    float angle1;
+    float angle2;
+    float angle3;
+};
+
+struct Leg leg_ik(float x, float y, float z);
 
 #endif
