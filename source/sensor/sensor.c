@@ -38,6 +38,9 @@ ISR(TIMER1_OVF_vect) {
 
 int main(void) {
 	
+	DDRD = 0x00;
+	PORTD = 0x00;
+	
 	Timer timer8bit;
 	timer8 = &timer8bit;
 	timer_init(timer8, BIT8);
@@ -64,13 +67,13 @@ int main(void) {
 		schedule(&ir_queue, ir_list[2].port);
 	}
 
-	Gyro gyro;
+	//Gyro gyro;
 
-	gyro_init(&gyro, timer16);
+	//gyro_init(&gyro, timer16);
 
-	//Lidar lidar;
+	Lidar lidar;
 	
-	//lidar_init(&lidar);
+	lidar_init(&lidar, timer16);
 	
 	// TEST timers
 	//uint32_t time = timer_value_millis(timer16);
@@ -101,14 +104,15 @@ int main(void) {
 		t = timer_value_millis(timer16);
 		while (timer_value_millis(timer16) - t < 1500) {}
 		
-		
-			
-
 		/*if(has_new_value(&ir_queue)) {
 			irport_t port = dequeue(&ir_queue);
 			ir_add_data(&ir_list[port], adc_read(port));
 			schedule(&ir_queue, port);
 		}*/
+		
+		//lidar_measure(&lidar);
+
+		//gyro.value = 0;
 
 		// PORTD = (uint8_t)((unsigned int)res2 >> 2);
 		
