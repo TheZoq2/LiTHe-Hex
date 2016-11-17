@@ -1,0 +1,216 @@
+EESchema Schematic File Version 2
+LIBS:power
+LIBS:device
+LIBS:transistors
+LIBS:conn
+LIBS:linear
+LIBS:regul
+LIBS:74xx
+LIBS:cmos4000
+LIBS:adc-dac
+LIBS:memory
+LIBS:xilinx
+LIBS:microcontrollers
+LIBS:dsp
+LIBS:microchip
+LIBS:analog_switches
+LIBS:motorola
+LIBS:texas
+LIBS:intel
+LIBS:audio
+LIBS:interface
+LIBS:digital-audio
+LIBS:philips
+LIBS:display
+LIBS:cypress
+LIBS:siliconi
+LIBS:opto
+LIBS:atmel
+LIBS:contrib
+LIBS:valves
+LIBS:hex
+LIBS:motorik-cache
+EELAYER 25 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 1 1
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L ATMEGA1284-P IC?
+U 1 1 581A3238
+P 5600 3700
+F 0 "IC?" H 4750 5580 50  0000 L BNN
+F 1 "ATMEGA1284-P" H 6000 1750 50  0000 L BNN
+F 2 "DIL40" H 5600 3700 50  0000 C CIN
+F 3 "" H 5600 3700 50  0000 C CNN
+	1    5600 3700
+	1    0    0    -1  
+$EndComp
+$Comp
+L AX12 U?
+U 1 1 581A32FE
+P 9400 2650
+F 0 "U?" H 9400 2550 60  0000 C CNN
+F 1 "AX12" H 9400 2650 60  0000 C CNN
+F 2 "" H 9400 2650 60  0001 C CNN
+F 3 "" H 9400 2650 60  0001 C CNN
+	1    9400 2650
+	1    0    0    -1  
+$EndComp
+$Comp
+L AX12 U?
+U 1 1 581A3457
+P 9400 3400
+F 0 "U?" H 9400 3300 60  0000 C CNN
+F 1 "AX12" H 9400 3400 60  0000 C CNN
+F 2 "" H 9400 3400 60  0001 C CNN
+F 3 "" H 9400 3400 60  0001 C CNN
+	1    9400 3400
+	1    0    0    -1  
+$EndComp
+$Comp
+L AX12 U?
+U 1 1 581A34AD
+P 9400 5000
+F 0 "U?" H 9400 4900 60  0000 C CNN
+F 1 "AX12" H 9400 5000 60  0000 C CNN
+F 2 "" H 9400 5000 60  0001 C CNN
+F 3 "" H 9400 5000 60  0001 C CNN
+	1    9400 5000
+	1    0    0    -1  
+$EndComp
+Text Notes 9450 3650 3    394  ~ 0
+...
+Text Notes 8950 4050 0    197  ~ 0
+18\n
+$Comp
+L +BATT #PWR?
+U 1 1 581A3A30
+P 9850 1950
+F 0 "#PWR?" H 9850 1800 50  0001 C CNN
+F 1 "+BATT" H 9850 2090 50  0000 C CNN
+F 2 "" H 9850 1950 50  0000 C CNN
+F 3 "" H 9850 1950 50  0000 C CNN
+	1    9850 1950
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR?
+U 1 1 581A3A4C
+P 8900 5950
+F 0 "#PWR?" H 8900 5700 50  0001 C CNN
+F 1 "GND" H 8900 5800 50  0000 C CNN
+F 2 "" H 8900 5950 50  0000 C CNN
+F 3 "" H 8900 5950 50  0000 C CNN
+	1    8900 5950
+	1    0    0    -1  
+$EndComp
+$Comp
+L +5V #PWR?
+U 1 1 581A3DF0
+P 5400 1500
+F 0 "#PWR?" H 5400 1350 50  0001 C CNN
+F 1 "+5V" H 5400 1640 50  0000 C CNN
+F 2 "" H 5400 1500 50  0000 C CNN
+F 3 "" H 5400 1500 50  0000 C CNN
+	1    5400 1500
+	1    0    0    -1  
+$EndComp
+$Comp
+L 74LS241 U?
+U 1 1 582B5B5E
+P 7600 4600
+F 0 "U?" H 7650 4400 50  0000 C CNN
+F 1 "74LS241" H 7700 4200 50  0000 C CNN
+F 2 "" H 7600 4600 50  0000 C CNN
+F 3 "" H 7600 4600 50  0000 C CNN
+	1    7600 4600
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	8750 2650 8750 5000
+Connection ~ 8750 3400
+Wire Wire Line
+	5600 5700 5600 5900
+Wire Wire Line
+	10000 5900 10000 2200
+Wire Wire Line
+	10000 2200 9450 2200
+Wire Wire Line
+	9450 2950 10000 2950
+Connection ~ 10000 2950
+Wire Wire Line
+	9450 4550 10000 4550
+Connection ~ 10000 4550
+Wire Wire Line
+	9350 4550 9350 4350
+Wire Wire Line
+	9350 4350 10100 4350
+Wire Wire Line
+	10100 4350 10100 1950
+Wire Wire Line
+	10100 1950 9350 1950
+Wire Wire Line
+	9350 1950 9350 2200
+Wire Wire Line
+	9350 2950 9350 2900
+Wire Wire Line
+	9350 2900 10100 2900
+Connection ~ 10100 2900
+Wire Wire Line
+	5600 5900 10000 5900
+Wire Wire Line
+	8900 5900 8900 5950
+Connection ~ 8900 5900
+Wire Wire Line
+	5400 1700 5400 1500
+Wire Wire Line
+	6900 5100 6750 5100
+Wire Wire Line
+	6750 5100 6750 4900
+Wire Wire Line
+	6750 4900 6600 4900
+Wire Wire Line
+	6900 5000 6750 5000
+Connection ~ 6750 5000
+Wire Wire Line
+	8300 4100 8750 4100
+Connection ~ 8750 4100
+Wire Wire Line
+	6600 4800 6750 4800
+Wire Wire Line
+	6750 4800 6750 4100
+Wire Wire Line
+	6750 4100 6900 4100
+Wire Wire Line
+	6600 4700 6700 4700
+Wire Wire Line
+	6700 4700 6700 5300
+Wire Wire Line
+	6700 5300 8500 5300
+Wire Wire Line
+	8500 5300 8500 4800
+Wire Wire Line
+	8500 4800 8300 4800
+Wire Wire Line
+	6900 4800 6800 4800
+Wire Wire Line
+	6800 4800 6800 3950
+Wire Wire Line
+	6800 3950 8750 3950
+Connection ~ 8750 3950
+Text Notes 3200 2850 0    118  ~ 0
+16MHzclock\nEXO3
+Connection ~ 3950 2800
+Wire Wire Line
+	3950 2800 4600 2800
+$EndSCHEMATC
