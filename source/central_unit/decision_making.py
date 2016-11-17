@@ -78,7 +78,7 @@ def get_corridors_and_dead_ends(sensor_data):
         # check if back sensor also detects long distance
         if (sensor_data[BACK_RIGHT_SENSOR] >= DEAD_END_DISTANCE and
             corridors_and_dead_ends[RIGHT] == MAYBE_CORRIDOR):
-            corridors_and_dead_ends[RIGHT] = CORRIDOT
+            corridors_and_dead_ends[RIGHT] = CORRIDOR
 
     else:
         corridors_and_dead_ends[RIGHT] = DEAD_END
@@ -95,7 +95,7 @@ def get_decision(corridors_and_dead_ends):
 
     for value in corridors_and_dead_ends:
         # if more than one corridor to choose from
-        if (corridors_and_dead_ends.count(0) > 1):
+        if (corridors_and_dead_ends.count(CORRIDOR) > 1):
             print("Maze too complicated")
 
         if ((corridors_and_dead_ends[LEFT] == CORRIDOR) and
