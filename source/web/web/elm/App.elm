@@ -1,7 +1,7 @@
 module App exposing (..)
 
-import Html exposing (Html, h1, text, div, input, br, form)
-import Html.Attributes exposing (style, value)
+import Html exposing (Html, h1, img, text, div, input, br, form)
+import Html.Attributes exposing (style, value, src)
 import Html.Events exposing (onInput, onSubmit)
 import Html.App
 import Json.Encode as JE
@@ -10,28 +10,29 @@ import Phoenix.Socket exposing (Socket)
 import Phoenix.Channel
 import Phoenix.Push
 import Material
-import Material.Scheme
-import Material.Button as Button
 import Material.Textfield as Textfield
 import Material.List as Lists
 import Material.Layout as Layout
-import Material.Options exposing (css)
-import Debug
 import Array exposing (Array)
+import Time exposing (Time, millisecond)
+import Joystick
 
 
 type Msg
     = PhoenixMsg (Phoenix.Socket.Msg Msg)
-    | Mdl (Material.Msg Msg)
     | SetNewMessage String
     | SendMessage
     | ReceiveChatMessage JE.Value
+    | AxisData Joystick.JoystickData
+    | Tick Time
+    | Mdl (Material.Msg Msg)
 
 
 type alias Model =
     { phxSocket : Socket Msg
     , currentMessage : String
     , messages : Array String
+    , joystick : Joystick.JoystickData
     , mdl : Material.Model
     }
 
@@ -53,6 +54,7 @@ init =
         , currentMessage = ""
         , messages = Array.empty
         , mdl = Material.model
+        , joystick = { x = 0, y = 0, rotation = 0, thrust = 0 }
         }
             ! [ Cmd.map PhoenixMsg phxCmd ]
 
@@ -94,6 +96,12 @@ update msg model =
         SetNewMessage str ->
             { model | currentMessage = str } ! []
 
+        Tick time ->
+            (model, Joystick.poll 0)
+
+        AxisData data ->
+            ( { model | joystick = data }, Cmd.none )
+
         SendMessage ->
             let
                 payload =
@@ -116,7 +124,11 @@ update msg model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Phoenix.Socket.listen model.phxSocket PhoenixMsg
+    [ Phoenix.Socket.listen model.phxSocket PhoenixMsg
+    , Joystick.axisData AxisData
+    , Time.every (millisecond*10) Tick
+    ]
+        |> Sub.batch
 
 
 showMessage : String -> Html a
@@ -124,7 +136,7 @@ showMessage str =
     Lists.li []
         [ Lists.content []
             [ Lists.avatarIcon "photo_camera" []
-            , text str
+            , Html.text str
             ]
         ]
 
@@ -139,8 +151,14 @@ view model =
     Layout.render Mdl
         model.mdl
         [ Layout.fixedHeader
+        , Layout.scrolling
         ]
-        { header = [ h1 [ style [ ( "padding", "2rem" ) ] ] [ text "Emiluren.se" ] ]
+        { header =
+            [ h1 [ Html.Attributes.style [ ( "padding", "2rem" ) ] ]
+                [ img [ src "/images/logo_small.png" ] []
+                , Html.text "LiTHe Hex"
+                ]
+            ]
         , drawer = []
         , tabs = ( [], [] )
         , main = [ viewBody model ]
@@ -149,7 +167,7 @@ view model =
 
 viewBody : Model -> Html Msg
 viewBody model =
-    div [ style [ ( "padding", "2rem" ) ] ]
+    div [ Html.Attributes.style [ ( "padding", "2rem" ) ] ]
         [ div []
             [ (messageList <| Array.toList model.messages) ]
         , form [ onSubmit SendMessage ]
@@ -158,6 +176,7 @@ viewBody model =
                 model.mdl
                 [ Textfield.onInput SetNewMessage, Textfield.value model.currentMessage ]
             ]
+        , Joystick.joystickDisplay model.joystick
         ]
 
 
@@ -169,4 +188,3 @@ main =
         , subscriptions = subscriptions
         , view = view
         }
-

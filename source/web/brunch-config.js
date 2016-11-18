@@ -30,6 +30,8 @@ exports.config = {
     }
   },
 
+  notifications: false,
+
   conventions: {
     // This option sets where we should place non-css and non-js assets in.
     // By default, we set this to "/web/static/assets". Files in this directory
