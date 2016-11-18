@@ -21,6 +21,7 @@
 #include "avr/interrupt.h"
 #include "timer.h"
 #include "gyro.h"
+#include "lidar.h"
 
 Timer* timer8;
 Timer* timer16;
@@ -37,7 +38,8 @@ ISR(TIMER1_OVF_vect) {
 
 int main(void) {
 	
-	DDRD = 0xFF;
+	DDRD = 0x00;
+	PORTD = 0x00;
 	
 	Timer timer8bit;
 	timer8 = &timer8bit;
@@ -62,48 +64,26 @@ int main(void) {
 	
 	// Add all ir_sensor to ir_queue
 	for(uint8_t i = 0; i < NUM_SENSORS; i++) {
-		schedule(&ir_queue, ir_list[2].port);
+		schedule(&ir_queue, ir_list[i].port);
 	}
 
-	Gyro gyro;
-
-	gyro_init(&gyro, timer16);
-
-	uint32_t count = 0;  
+	Lidar lidar;
 	
-	// TEST timers
-	//uint32_t time = timer_value_millis(timer16);
-	//PORTD = 0x00;		
-	//while (timer_value_millis(timer16) < 5000) {}
-	//PORTD = 0x0F;
-	//while (timer_value_millis(timer16) < 65000) {}
-	//PORTD = 0xFF;
-	    
+	lidar_init(&lidar, timer16);
+	
+	PORTD = 0x00;	
+	DDRD = (1 << DDD6);	
+
 	while(1) {
 		
 		// if first irport in queue has new value then start A/D conv. and save data 
-		/*if(has_new_value(&ir_queue)) {
-			irport_t port = dequeue(&ir_queue);
-			ir_add_data(&ir_list[port], adc_read(port));
-			res1 = ir_list[port].raw_data_list[NUM_SENSORS-1];
-			schedule(&ir_queue, port);
-		}*/
-			
-	
-		
 		if(has_new_value(&ir_queue)) {
 			irport_t port = dequeue(&ir_queue);
 			ir_add_data(&ir_list[port], adc_read(port));
+			ir_reduce_noise(&ir_list[port]);
 			schedule(&ir_queue, port);
 		}
-
-		if(gyro_has_new_value(&gyro)) {
-			gyro_add_data(&gyro, adc_read(GYRO_PORT));
-			gyro_schedule(&gyro);
-		}
-		
-		//PORTB = (uint8_t)((unsigned int)res1 >> 2);
-		//PORTD = (uint8_t)((unsigned int)res2 >> 2);
-		
+	
+		lidar_measure(&lidar);	
 	}
 }
