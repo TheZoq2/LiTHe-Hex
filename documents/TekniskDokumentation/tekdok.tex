@@ -21,6 +21,8 @@
 \usepackage{listings}
 \usepackage{color}
 
+\usepackage[colorinlistoftodos,prependcaption,textsize=tiny]{todonotes}
+
 \definecolor{dkgreen}{rgb}{0,0.6,0}
 \definecolor{gray}{rgb}{0.5,0.5,0.5}
 \definecolor{mauve}{rgb}{0.58,0,0.82}
@@ -67,6 +69,7 @@
 \posttitle{\end{center}}
 
 \begin{document}
+\listoftodos
 	\title{\LARGE
 		\textbf{Teknisk dokumentation för sexbent robot} \\
 		\vspace*{0.5\baselineskip}
@@ -357,6 +360,27 @@
     data för att den är mitt i utförandet av en annan funktion. Utifrån denna data
     fattar centralenheten beslut om hexapodens färdriktning.
 
+    I beslutsfattning ingår bland annat korridorreglering, svänga in i korridorer, detektera
+    och undvika återvändsgränder och gå över hinder när det har upptäckts.
+
+    Korridorregleringen sker med hjälp av de fyra IR-sensorerna som sitter på
+    sidorna av roboten. En vinkel räknas ut med med datan från dessa som säger
+    hur roboten är vinklad i en korridor. Regleringen sker samtidigt som när
+    roboten går framåt för att få jämnare gång i korridoren. Detta uppnås genom
+    att en offset från mitten av korridoren beräknas och används när roboten ska
+    vrida sig tillbaka till mitten. Ju närmare mitten den är desto mindre kommer
+    den att vrida sig mot mitten.
+
+    Biblioteket SpiDev användes för att möjliggöra SPI-kommunikation via med
+    Python. Se Pseudokoden nedan.
+
+    \todo{Lägg till pseudokod för korridorreglering}%
+
+    Förutom de fyra IR-sensorerna används även LIDAR och en femte IR-sensor.
+    LIDAR-sensorn som är riktad framåt används för att undvika ingång i
+    återvändsgränder framåt. 
+    \todo{Lägg till pseudokod för beslutsfattning}%
+    
     \subsubsection{Manuell navigation}
     För den manuella navigationen kommer sockets att användas mellan webbservern
     och centralenheten. Det kommer att komma in ett nytt meddelande med data för varje
