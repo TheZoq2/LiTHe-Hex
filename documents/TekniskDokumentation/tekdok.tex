@@ -369,11 +369,17 @@
     roboten går framåt för att få jämnare gång i korridoren. Detta uppnås genom
     att en offset från mitten av korridoren beräknas och används när roboten ska
     vrida sig tillbaka till mitten. Ju närmare mitten den är desto mindre kommer
-    den att vrida sig mot mitten. 
+    den att vrida sig mot mitten.
+
+    Biblioteket SpiDev användes för att möjliggöra SPI-kommunikation via med
+    Python. Se Pseudokoden nedan.
 
     \todo{Lägg till pseudokod för korridorreglering}%
 
-    \todo{lägg till pseudokod för beslutsfattning}
+    Förutom de fyra IR-sensorerna används även LIDAR och en femte IR-sensor.
+    LIDAR-sensorn som är riktad framåt används för att undvika ingång i
+    återvändsgränder framåt. 
+    \todo{Lägg till pseudokod för beslutsfattning}%
     
     \subsubsection{Manuell navigation}
     För den manuella navigationen kommer sockets att användas mellan webbservern
