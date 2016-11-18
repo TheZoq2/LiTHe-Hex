@@ -4,7 +4,17 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+#include "macros.h"
+
+
 #define DD_MOSI 6
+
+#define PIN_RX_TOGGLE 3
+
+#define 
+
+
+const uint32_t CPU_FREQ = 16000000;
 
 void spi_slave_init(void)
 {
@@ -30,14 +40,13 @@ void usart_init(uint16_t baud)
 	//DDRD = 0b11111110;
 	DDRD = 0b11111110;
 
-		//Set baudrate
-	UBRR0H = (uint8_t)(baud>>8);
-	UBRR0L = (uint8_t)baud;
+	UBRR0H = ((F_CPU / 16 + baud / 2) / baud - 1) >> 8;
+	UBRR0L = ((F_CPU / 16 + baud / 2) / baud - 1);
 
 	//Enable receive + transmit
 	UCSR0B = (1<<RXEN0) | (1<<TXEN0);
 	//Set frame format
-	UCSR0C = (1<<USBS0)|(2<<UCSZ00);
+	UCSR0C = (1<<USBS0)|(3<<UCSZ00);
 }
 
 void uart_wait()
