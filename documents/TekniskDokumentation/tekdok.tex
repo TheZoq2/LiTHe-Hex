@@ -371,14 +371,16 @@
     vrida sig tillbaka till mitten. Ju närmare mitten den är desto mindre kommer
     den att vrida sig mot mitten.
 
-    Biblioteket SpiDev användes för att möjliggöra SPI-kommunikation via med
-    Python. Se Pseudokoden nedan.
-
     \todo{Lägg till pseudokod för korridorreglering}%
 
-    Förutom de fyra IR-sensorerna används även LIDAR och en femte IR-sensor.
-    LIDAR-sensorn som är riktad framåt används för att undvika ingång i
-    återvändsgränder framåt. 
+    Förutom de fyra IR-sensorerna på sidorna används även LIDAR och en femte
+    IR-sensor när beslut ska fattas. LIDAR-sensorn som är riktad framåt används
+    för att undvika ingång i återvändsgränder framåt. När ett beslut om korridor
+    eller återvändsgränd fattas används sidosensorerna för att detektera och
+    bekräfta det som detekterats. Inget beslut fattas innan båda sidosensorerna
+    har detekterat samma sak så att risken för felbeslut minskar. Den femte
+    IR-sensorn är riktad nedåt för att detektera hinder i labyrinten. 
+    
     \todo{Lägg till pseudokod för beslutsfattning}%
     
     \subsubsection{Manuell navigation}
