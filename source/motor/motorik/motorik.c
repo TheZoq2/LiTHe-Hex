@@ -39,6 +39,7 @@ void usart_init(uint16_t baud)
 	//TXD+DD output RX input
 	//DDRD = 0b11111110;
 	DDRD = 0b11111110;
+	PORTD = 0xFE;
 
 	UBRR0H = ((F_CPU / 16 + baud / 2) / baud - 1) >> 8;
 	UBRR0L = ((F_CPU / 16 + baud / 2) / baud - 1);
@@ -46,7 +47,7 @@ void usart_init(uint16_t baud)
 	//Enable receive + transmit
 	UCSR0B = (1<<RXEN0) | (1<<TXEN0);
 	//Set frame format
-	UCSR0C = (1<<USBS0)|(3<<UCSZ00);
+	UCSR0C = (0<<USBS0)|(3<<UCSZ00);
 }
 
 void uart_wait()
@@ -74,23 +75,25 @@ uint8_t usart_receive()
 	//Wait for data to arrive
 	while(!(UCSR0A & (1<<RXC0)))
 	{
-		
+		int a = 0;
 	}
 
 	return UDR0;
 }
 
-void send_servo_command(uint8_t id, uint8_t instruction, void* data, uint8_t length)
+void send_servo_command(uint8_t id, uint8_t instruction, void* data, uint8_t data_amount)
 {
-	PORTD = 0b00000000;
+	uint8_t length = data_amount + 2;
+	PORTD = PORTD & 0b11111011;
 	usart_transmit(0xff);
 	usart_transmit(0xff);
 	usart_transmit(id);
 	usart_transmit(length);
+	usart_transmit(instruction);
 
-	uint8_t checksum = id+length;
+	uint8_t checksum = id+length + instruction;
 
-	for(uint8_t i = 0; i < length; ++i)
+	for(uint8_t i = 0; i < data_amount; ++i)
 	{
 		uint8_t data_int = ((uint8_t*)data)[i];
 		usart_transmit(data_int);
@@ -104,12 +107,12 @@ void send_servo_command(uint8_t id, uint8_t instruction, void* data, uint8_t len
 	
 	uart_wait();
 	
-	PORTD = 0b00000100;
+	PORTD = PORTD | 0b00000100;
 }
 
 //TODO: Kodstandard?
 //Remember to deallocate the parameters when they go out of scope
-typedef struct ServoReply
+typedef struct
 {
 	uint8_t id;
 	uint8_t length;
@@ -123,7 +126,7 @@ typedef struct ServoReply
 
 ServoReply receive_servo_reply()
 {
-	struct ServoReply servo_reply;
+	ServoReply servo_reply;
 
 	//Receive the 2 start bytes. These are ignored for now
 	//TODO: Ensure that they are 0xff
@@ -154,8 +157,9 @@ int main(void)
 	//spi_slave_init();
 	
 
-	DDRD = 0xff;
-	usart_init(9600);
+	//DDRD = 0xfE;
+	//
+	usart_init(1000000);
 	
 	while(1)
 	{
@@ -165,11 +169,13 @@ int main(void)
 		
 		//PORTD &= 0b11111101;
 		
-		usart_transmit(0x55);
+		//usart_transmit(0x55);
 
-		send_servo_command(0x0, 0x01, 0, 0);
+		send_servo_command(0x00, 0x01, 0, 0);
 
-		ServoReply servo_reply = receive_servo_reply();
+		//ServoReply servo_reply = receive_servo_reply();
+		
+		int a = 0;
 	}
 }
 
