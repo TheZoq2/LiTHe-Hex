@@ -11,8 +11,8 @@
 
 #define PIN_RX_TOGGLE 3
 
-#define 
-
+#define DIRECTION_TX 1
+#define DIRECTION_RX 0
 
 const uint32_t CPU_FREQ = 16000000;
 
@@ -34,18 +34,17 @@ uint8_t spi_slave_receive(void)
 	return SPDR;
 }
 
-void usart_init(uint16_t baud)
+void usart_init(uint32_t baud)
 {
 	//TXD+DD output RX input
 	//DDRD = 0b11111110;
 	DDRD = 0b11111110;
-	PORTD = 0xFE;
 
-	UBRR0H = ((F_CPU / 16 + baud / 2) / baud - 1) >> 8;
-	UBRR0L = ((F_CPU / 16 + baud / 2) / baud - 1);
+	UBRR0H = ((CPU_FREQ / 16 + baud / 2) / baud - 1) >> 8;
+	UBRR0L = ((CPU_FREQ / 16 + baud / 2) / baud - 1);
 
 	//Enable receive + transmit
-	UCSR0B = (1<<RXEN0) | (1<<TXEN0);
+	//UCSR0B = (1<<RXEN0) | (1<<TXEN0);
 	//Set frame format
 	UCSR0C = (0<<USBS0)|(3<<UCSZ00);
 }
@@ -83,6 +82,13 @@ uint8_t usart_receive()
 
 void send_servo_command(uint8_t id, uint8_t instruction, void* data, uint8_t data_amount)
 {
+	//Enable uart tx, disable rx
+	clear_bit(UCSR0C, RXEN0);
+	set_bit(UCSROC, TXEN0);
+
+	//Set the direction of the trirstate gate
+	clear_bit(PORTD, PIN_RX_TOGGLE);
+
 	uint8_t length = data_amount + 2;
 	PORTD = PORTD & 0b11111011;
 	usart_transmit(0xff);
@@ -107,7 +113,8 @@ void send_servo_command(uint8_t id, uint8_t instruction, void* data, uint8_t dat
 	
 	uart_wait();
 	
-	PORTD = PORTD | 0b00000100;
+	//Reset the direction of the tristate gate
+	set_bit(PORTD, PIN_RX_TOGGLE);
 }
 
 //TODO: Kodstandard?
