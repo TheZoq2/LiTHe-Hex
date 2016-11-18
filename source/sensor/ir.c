@@ -18,6 +18,10 @@
 #include "ir.h"
 #include "math.h"
 
+#define NUM_CORRECT_DATA_POINTS	4
+#define PERCENT_FAULT_TOLERANCE 0.20
+#define CORRECTION_FACTOR	0.02
+
 void ir_init(IR ir_list[NUM_SENSORS]) {
 
     for (uint8_t i = 0; i < NUM_SENSORS; ++i) {
@@ -44,24 +48,51 @@ void ir_add_data(IR* ir, uint16_t data) {
 
 }
 
-/* For now just take first value from raw_data_list put as value 
-WIP: take 
-*/
+/* Remove data if out of fault_tolerance, compensate for more recent value before calculate new ir->value */
 void ir_reduce_noise(IR* ir) {
-	/*
-	double weight_less[NUM_SENSOR_DATA-1] = {0.98, 0.97, 0.96, 0.95};
-	double weight_more[NUM_SENSOR_DATA-1] = {1.02, 1.03, 1.04, 1.05};
-	double res = ir->raw_data_list[0];
-	for(uint8_t i = 1; i < NUM_SENSOR_DATA-1; i++) {
-		if(((ir->raw_data_list[i-1] + ir->raw_data_list[i]) / 2 > ir->raw_data_list[i]) {
-			res += ir->raw_data_list[i]*weight_less[i];
-		} else if(((ir->raw_data_list[i-1] + ir->raw_data_list[i]) / 2 < ir->raw_data_list[i]) {
-			res += ir->raw_data_list[i]*weight_more[i];
-		}
-	}
 	
-	ir->value = res / NUM_SENSOR_DATA;*/
-	ir->value = ir->raw_data_list[0];
+	// Reverse raw_data_list
+	double data_list[NUM_SENSOR_DATA];
+	uint8_t j = NUM_SENSOR_DATA-1;
+	for(uint8_t i = 0; i < NUM_SENSOR_DATA; i++) {
+		data_list[j] = ir->raw_data_list[i];
+		j--;
+	}
+
+	uint8_t num_data_points = 0;
+	double res = 0; 
+
+	for(uint8_t i = 0; i < NUM_SENSOR_DATA; i++) {
+
+		// If difference more then PRECENT_FAULT_TOLERANCE, remove data
+		uint8_t remove_data = 1;
+		for(uint8_t j = 0; j < NUM_SENSOR_DATA; j++) {
+			if(fabs(data_list[j] - data_list[i]) / data_list[j] > PERCENT_FAULT_TOLERANCE) {
+				remove_data++;
+			}
+		} 
+
+		// remove_data = number of points utside FAULT_TOLERANCE, not add data to res
+		if(remove_data > NUM_CORRECT_DATA_POINTS) continue;
+
+		// If current value less/more then current average add/remove correction factor before add to res
+		if(res / num_data_points > data_list[i]) {
+
+			res += data_list[i]*(1.0+CORRECTION_FACTOR*i);
+			
+		} else if(res / num_data_points < data_list[i]) {
+
+			res += data_list[i]*(1.0-CORRECTION_FACTOR*i);
+			
+		} else {
+			res += data_list[i];
+		}
+
+		num_data_points++;
+
+	}
+	// average of res
+	ir->value = res / num_data_points;
 }
 
 double ir_value_to_meters(uint16_t val, enum Range range) {

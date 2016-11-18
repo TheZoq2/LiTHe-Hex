@@ -64,57 +64,26 @@ int main(void) {
 	
 	// Add all ir_sensor to ir_queue
 	for(uint8_t i = 0; i < NUM_SENSORS; i++) {
-		schedule(&ir_queue, ir_list[2].port);
+		schedule(&ir_queue, ir_list[i].port);
 	}
-
-	//Gyro gyro;
-
-	//gyro_init(&gyro, timer16);
 
 	Lidar lidar;
 	
 	lidar_init(&lidar, timer16);
 	
-	// TEST timers
-	//uint32_t time = timer_value_millis(timer16);
 	PORTD = 0x00;	
 	DDRD = (1 << DDD6);	
-
-	//while (timer_value_millis(timer16) < 65000) {}
-	//PORTD = 0xFF;
-	
-	//PORTD = (1 << PD6);
-
-	uint32_t t;
 
 	while(1) {
 		
 		// if first irport in queue has new value then start A/D conv. and save data 
-		/*if(has_new_value(&ir_queue)) {
+		if(has_new_value(&ir_queue)) {
 			irport_t port = dequeue(&ir_queue);
 			ir_add_data(&ir_list[port], adc_read(port));
-			res1 = ir_list[port].raw_data_list[NUM_SENSORS-1];
+			ir_reduce_noise(&ir_list[port]);
 			schedule(&ir_queue, port);
-		}*/
-		
-		PORTD |= (1 << PD6);
-		t = timer_value_millis(timer16);
-		while (timer_value_millis(timer16) - t < 1000) {}
-		PORTD &= 0b10111111;
-		t = timer_value_millis(timer16);
-		while (timer_value_millis(timer16) - t < 1500) {}
-		
-		/*if(has_new_value(&ir_queue)) {
-			irport_t port = dequeue(&ir_queue);
-			ir_add_data(&ir_list[port], adc_read(port));
-			schedule(&ir_queue, port);
-		}*/
-		
-		//lidar_measure(&lidar);
-
-		//gyro.value = 0;
-
-		// PORTD = (uint8_t)((unsigned int)res2 >> 2);
-		
+		}
+	
+		lidar_measure(&lidar);	
 	}
 }
