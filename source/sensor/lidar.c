@@ -18,7 +18,7 @@
 #include "lidar.h"
 #include "math.h"
 
-double lidar_value_to_meters(uint32_t pulse_time);
+uint16_t lidar_value_to_centimeters(uint32_t pulse_time);
 
 void lidar_init(Lidar* lidar, Timer* timer) {
 

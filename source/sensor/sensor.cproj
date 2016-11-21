@@ -150,6 +150,12 @@
     <Compile Include="sensor.c">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="table.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="table.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="timer.c">
       <SubType>compile</SubType>
     </Compile>
