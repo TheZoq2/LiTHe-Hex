@@ -18,6 +18,9 @@
 #ifndef COMMUNICATION_H
 #define COMMUNICATION_H 
 
+#include <avr/io.h>
+#include <avr/interrupt.h>
+
 void spi_init();
 uint8_t spi_recieve_byte();
 uint8_t spi_transmit_byte(uint8_t data);
