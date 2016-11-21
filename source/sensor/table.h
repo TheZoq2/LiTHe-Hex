@@ -15,27 +15,30 @@
 // You should have received a copy of the GNU General Public License
 // along with LiTHe Hex.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef LIDAR_H
-#define LIDAR_H 
+#ifndef MAINTABLE_H
+#define MAINTABLE_H 
 
-#include <avr/io.h>
-#include "timer.h"
+#include "ir.h"
+#include "lidar.h"
 
-#define MONITOR_PORT    PD5
-#define MONITOR_MASK    0x20
-#define MONITOR_INPUT   PIND
+typedef struct MainTable {
 
+    IR ir_list[NUM_SENSORS];
 
-typedef struct Lidar {
+    uint16_t front_distance;
 
-    uint16_t value;
+    uint8_t left_distance;
 
-    Timer* timer;
+    uint8_t right_distance;
 
-} Lidar;
+    float corridor_angle;
 
-void lidar_init(Lidar* lidar, Timer* timer);
+} MainTable;
 
-void lidar_measure(Lidar* lidar);
+void table_init(MainTable* table, IR ir_list[NUM_SENSORS]);
 
-#endif /* ifndef LIDAR_H */
+void update(MainTable* table, Lidar* lidar);
+
+void send_sensor_data();
+
+#endif /* ifndef MAINTABLE_H */

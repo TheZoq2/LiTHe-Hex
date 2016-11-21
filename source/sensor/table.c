@@ -15,27 +15,29 @@
 // You should have received a copy of the GNU General Public License
 // along with LiTHe Hex.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef LIDAR_H
-#define LIDAR_H 
+#include "table.h"
+#include <math.h>
+#include "ir.h"
 
-#include <avr/io.h>
-#include "timer.h"
+//uint8_t left_distance();
+//uint8_t right_distance();
+float corridor_angle();
 
-#define MONITOR_PORT    PD5
-#define MONITOR_MASK    0x20
-#define MONITOR_INPUT   PIND
+void table_init(MainTable* table, IR ir_list[NUM_SENSORS]){
+	table->ir_list = ir_list;
+	table->front_distance = 0;
+	table->left_distance = 0;
+	table->right_distance = 0;
+	table->corridor_angle = 0;
+}
 
+void update(MainTable* table, Lidar* lidar) {
+	table->front_distance = lidar->value;
+	table->corridor_angle = corridor_angle(table->ir_list[1], table->ir_list[2]);
+}
 
-typedef struct Lidar {
-
-    uint16_t value;
-
-    Timer* timer;
-
-} Lidar;
-
-void lidar_init(Lidar* lidar, Timer* timer);
-
-void lidar_measure(Lidar* lidar);
-
-#endif /* ifndef LIDAR_H */
+float corridor_angle(IR ir_front, IR ir_back) {
+	double wall_len = squrt(pow(LEN_BETWEEN_SIDE_IR, 2) + pow((ir_back.value + ir_front.value), 2));
+	double angle = M_PI - M_PI/2 - asin(wall_len/ir_front.value);
+	return angle;
+}

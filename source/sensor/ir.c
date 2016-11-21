@@ -20,7 +20,7 @@
 
 #define NUM_CORRECT_DATA_POINTS	4
 #define PERCENT_FAULT_TOLERANCE 0.20
-#define CORRECTION_FACTOR	0.02
+#define CORRECTION_FACTOR		20
 
 void ir_init(IR ir_list[NUM_SENSORS]) {
 
@@ -29,6 +29,8 @@ void ir_init(IR ir_list[NUM_SENSORS]) {
         IR ir;
 
         ir.range = RANGES[i];
+
+        ir.placement = PLACEMENTS[i];
 
         ir.port = i;
         
@@ -44,7 +46,7 @@ void ir_add_data(IR* ir, uint16_t data) {
 	for(uint8_t i = 0; i < NUM_SENSOR_DATA-1; i++) {
 		ir->raw_data_list[i] = ir->raw_data_list[i+1];
 	}
-	ir->raw_data_list[NUM_SENSOR_DATA-1] = ir_value_to_meters(data, ir->range);
+	ir->raw_data_list[NUM_SENSOR_DATA-1] = ir_value_to_centimeters(data, ir->range);
 
 }
 
@@ -72,7 +74,7 @@ void ir_reduce_noise(IR* ir) {
 			}
 		} 
 
-		// remove_data = number of points utside FAULT_TOLERANCE, not add data to res
+		// remove_data = number of points outside FAULT_TOLERANCE, not add data to res
 		if(remove_data > NUM_CORRECT_DATA_POINTS) continue;
 
 		// If current value less/more then current average add/remove correction factor before add to res
@@ -92,18 +94,23 @@ void ir_reduce_noise(IR* ir) {
 
 	}
 	// average of res
-	ir->value = res / num_data_points;
+	double val = res / num_data_points;
+	if(val < 160) {
+		ir->value = (uint8_t)val;
+	} else {
+		ir->value = 255;
+	}
 }
 
-double ir_value_to_meters(uint16_t val, enum Range range) {
+double ir_value_to_centimeters(uint16_t val, enum Range range) {
 
     if (range == LONG_RANGE) {
         
-        return (LONG_BASE * pow(val, LONG_EXP)) / 100;
+        return (LONG_BASE * pow(val, LONG_EXP));
 
     } else {
 
-        return (SHORT_BASE * pow(val, SHORT_EXP)) / 100;
+        return (SHORT_BASE * pow(val, SHORT_EXP));
     
     }
 }

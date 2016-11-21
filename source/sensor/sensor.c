@@ -22,9 +22,11 @@
 #include "timer.h"
 #include "gyro.h"
 #include "lidar.h"
+#include "table.h"
 
 Timer* timer8;
 Timer* timer16;
+MainTable* mainTable;
 
 // When TIMER0 overflow increase timer8 overflow counter;
 ISR(TIMER0_OVF_vect) {
@@ -36,10 +38,17 @@ ISR(TIMER1_OVF_vect) {
 	timer16->num_overflows++;
 }
 
-int main(void) {
-	
+// Setup hardware ports on AVR
+void port_init(){
 	DDRD = 0x00;
 	PORTD = 0x00;
+	PORTD = 0x00;
+	DDRD = (1 << DDD6);
+}
+
+int main(void) {
+	
+	port_init();
 	
 	Timer timer8bit;
 	timer8 = &timer8bit;
@@ -53,13 +62,11 @@ int main(void) {
 	sei();
 	
 	IR ir_list[NUM_SENSORS];
-	
 	ir_init(ir_list);
 
     adc_init();
 	
 	IRQueue ir_queue;
-	
 	ir_queue_init(&ir_queue, timer8);
 	
 	// Add all ir_sensor to ir_queue
@@ -68,11 +75,11 @@ int main(void) {
 	}
 
 	Lidar lidar;
-	
 	lidar_init(&lidar, timer16);
 	
-	PORTD = 0x00;	
-	DDRD = (1 << DDD6);	
+	MainTable mainTableData;
+	mainTable = &mainTableData;
+	table_init(mainTable, ir_list);
 
 	while(1) {
 		
@@ -84,6 +91,8 @@ int main(void) {
 			schedule(&ir_queue, port);
 		}
 	
-		lidar_measure(&lidar);	
+		lidar_measure(&lidar);
+		
+		update(mainTable, &lidar);
 	}
 }

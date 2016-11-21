@@ -15,27 +15,15 @@
 // You should have received a copy of the GNU General Public License
 // along with LiTHe Hex.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef LIDAR_H
-#define LIDAR_H 
+#ifndef COMMUNICATION_H
+#define COMMUNICATION_H 
 
 #include <avr/io.h>
-#include "timer.h"
+#include <avr/interrupt.h>
 
-#define MONITOR_PORT    PD5
-#define MONITOR_MASK    0x20
-#define MONITOR_INPUT   PIND
+void spi_init();
+uint8_t spi_recieve_byte();
+uint8_t spi_transmit_byte(uint8_t data);
+void spi_transmit_ack();
 
-
-typedef struct Lidar {
-
-    uint16_t value;
-
-    Timer* timer;
-
-} Lidar;
-
-void lidar_init(Lidar* lidar, Timer* timer);
-
-void lidar_measure(Lidar* lidar);
-
-#endif /* ifndef LIDAR_H */
+#endif /* ifndef COMMUNICATION_H */

@@ -15,27 +15,37 @@
 // You should have received a copy of the GNU General Public License
 // along with LiTHe Hex.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef LIDAR_H
-#define LIDAR_H 
+#include "spi.h"
 
-#include <avr/io.h>
-#include "timer.h"
+#define ACK 0x7E
 
-#define MONITOR_PORT    PD5
-#define MONITOR_MASK    0x20
-#define MONITOR_INPUT   PIND
+void spi_init() {
+    // Set MISO output, all others input
+    DDRB &= 0x0F;
+    DDRB |= (1 << DDB6);
+	// Enable SPI and interrupt enable bit
+	SPCR = (1<<SPE) | (1<<SPIE);
+}
 
+uint8_t spi_recieve_byte() {
 
-typedef struct Lidar {
+	// Wait for reception complete 
+	while(!(SPSR) & (1<<SPIF));
 
-    uint16_t value;
+	// Return Data Register
+	return SPDR;
+}
 
-    Timer* timer;
+uint8_t spi_transmit_byte(uint8_t data) {
+	SPDR = data;
+	// Wait for reception complete
+	while(!(SPSR) & (1<<SPIF)){}
 
-} Lidar;
+	// Return Data Register
+	return SPDR;
+}
 
-void lidar_init(Lidar* lidar, Timer* timer);
+void transmit_ack() {
+    spi_transmit_byte(ACK);
+}
 
-void lidar_measure(Lidar* lidar);
-
-#endif /* ifndef LIDAR_H */
