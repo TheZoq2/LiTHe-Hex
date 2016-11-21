@@ -58,10 +58,6 @@ int main(void) {
 	timer16 = &timer16bit;
 	timer_init(timer16, BIT16);
 	
-	MainTable mainTableData;
-	mainTable = &mainTableData;
-	table_init(mainTable, ir_list);
-	
 	// Enable global interrupts
 	sei();
 	
@@ -80,6 +76,10 @@ int main(void) {
 
 	Lidar lidar;
 	lidar_init(&lidar, timer16);
+	
+	MainTable mainTableData;
+	mainTable = &mainTableData;
+	table_init(mainTable, ir_list);
 
 	while(1) {
 		
@@ -93,6 +93,6 @@ int main(void) {
 	
 		lidar_measure(&lidar);
 		
-		update();
+		update(mainTable, &lidar);
 	}
 }

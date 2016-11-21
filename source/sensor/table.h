@@ -19,6 +19,7 @@
 #define MAINTABLE_H 
 
 #include "ir.h"
+#include "lidar.h"
 
 typedef struct MainTable {
 
@@ -36,7 +37,7 @@ typedef struct MainTable {
 
 void table_init(MainTable* table, IR ir_list[NUM_SENSORS]);
 
-void update();
+void update(MainTable* table, Lidar* lidar);
 
 void send_sensor_data();
 

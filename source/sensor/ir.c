@@ -20,7 +20,7 @@
 
 #define NUM_CORRECT_DATA_POINTS	4
 #define PERCENT_FAULT_TOLERANCE 0.20
-#define CORRECTION_FACTOR	0.02
+#define CORRECTION_FACTOR		20
 
 void ir_init(IR ir_list[NUM_SENSORS]) {
 
@@ -74,7 +74,7 @@ void ir_reduce_noise(IR* ir) {
 			}
 		} 
 
-		// remove_data = number of points utside FAULT_TOLERANCE, not add data to res
+		// remove_data = number of points outside FAULT_TOLERANCE, not add data to res
 		if(remove_data > NUM_CORRECT_DATA_POINTS) continue;
 
 		// If current value less/more then current average add/remove correction factor before add to res
@@ -95,10 +95,10 @@ void ir_reduce_noise(IR* ir) {
 	}
 	// average of res
 	double val = res / num_data_points;
-	if(val < 160) {}
+	if(val < 160) {
 		ir->value = (uint8_t)val;
 	} else {
-		ir->values = 255;
+		ir->value = 255;
 	}
 }
 
