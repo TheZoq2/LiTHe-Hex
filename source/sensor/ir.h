@@ -29,6 +29,7 @@
 typedef uint8_t irport_t;
 
 enum Range {LONG_RANGE, SHORT_RANGE};
+enum Placement {FRONT_LEFT, BACK_LEFT, FRONT_RIGHT, BACK_RIGHT, DOWN};
 
 const static double LONG_BASE = 17391.0;
 const static double LONG_EXP = -1.071;
@@ -40,17 +41,21 @@ const static enum Range RANGES[NUM_SENSORS] = {
     SHORT_RANGE, LONG_RANGE, LONG_RANGE, LONG_RANGE, LONG_RANGE
 };
 
+const static enum Placement PLACEMENTS[NUM_SENSORS] = {
+    DOWN, FRONT_LEFT, BACK_LEFT, FRONT_RIGHT, BACK_RIGHT
+};
+
 typedef struct IR {
 
     enum Range range;
+
+    enum Placement placement;
 
     irport_t port;
 
     double value;
 	
 	double raw_data_list[NUM_SENSOR_DATA];
-
-    bool enabled;
 
 } IR;
 
