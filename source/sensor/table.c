@@ -15,13 +15,6 @@
 // You should have received a copy of the GNU General Public License
 // along with LiTHe Hex.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef MAINTABLE_H
-#define MAINTABLE_H 
+#include "table.h"
 
-typedef struct MainTable {
 
-} MainTable;
-
-void insert_ir();
-
-#endif /* ifndef MAINTABLE_H */

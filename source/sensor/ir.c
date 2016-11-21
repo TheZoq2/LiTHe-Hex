@@ -30,6 +30,8 @@ void ir_init(IR ir_list[NUM_SENSORS]) {
 
         ir.range = RANGES[i];
 
+        ir.placement = PLACEMENTS[i];
+
         ir.port = i;
         
         ir.value = 0.0;

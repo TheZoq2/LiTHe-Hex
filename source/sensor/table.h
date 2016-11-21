@@ -15,3 +15,29 @@
 // You should have received a copy of the GNU General Public License
 // along with LiTHe Hex.  If not, see <http://www.gnu.org/licenses/>.
 
+#ifndef MAINTABLE_H
+#define MAINTABLE_H 
+
+#include "ir.h"
+
+typedef struct MainTable {
+
+    IR ir_list[NUM_SENSORS];
+
+    uint16_t front_distance;
+
+    uint8_t left_distance;
+
+    uint8_t right_distance;
+
+    float corridor_angle;
+
+} MainTable;
+
+void table_init(MainTable* table, IR ir_list[NUM_SENSORS]);
+
+void update();
+
+void send_sensor_data();
+
+#endif /* ifndef MAINTABLE_H */
