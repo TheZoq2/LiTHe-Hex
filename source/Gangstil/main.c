@@ -50,8 +50,8 @@ Point2D legs_target[6];
  * @param leg indicates what leg of the robot (LF, RF, LM, RM, LB, RB) should be returned.
  * @return a standardised leg position, relative to joint.
  */
-Point2D defaultLegPosition(size_t leg){
-    Point2D res;
+Point2D * defaultLegPosition(size_t leg){
+    Point2D * res = (Point2D *)malloc(sizeof(Point2D));
     if (leg < 2){   //front
         res.x = 0.1;
         res.y = 0.1;
@@ -76,23 +76,23 @@ Point2D defaultLegPosition(size_t leg){
  * @param leg indicates what leg joint of the robot (LF, RF, LM, RM, LB, RB) should be returned.
  * @return a standardised joint position, relative to robot center.
  */
-Point2D jointPosition(size_t leg){
-    Point2D res;
+Point2D * jointPosition(size_t leg){
+    Point2D * res = (Point2D *)malloc(sizeof(Point2D));
     if (leg < 2){   //front
-        res.x = FRONT_LEG_JOINT_X;
-        res.y = FRONT_LEG_JOINT_Y;
+        res->x = FRONT_LEG_JOINT_X;
+        res->y = FRONT_LEG_JOINT_Y;
     }
     else if (leg < 4){  //mid
-        res.x = 0;
-        res.y = MID_LEG_JOINT_Y;
+        res->x = 0;
+        res->y = MID_LEG_JOINT_Y;
     }
     else{
-        res.x = -FRONT_LEG_JOINT_X;
-        res.y = FRONT_LEG_JOINT_Y;
+        res->x = -FRONT_LEG_JOINT_X;
+        res->y = FRONT_LEG_JOINT_Y;
     }    //back
 
     if ((leg & 1) == 1)  //right
-        res.y = -res.y ;
+        res->y = -res->y ;
     return res;
 }
 
@@ -106,40 +106,6 @@ float absf(float a){
     if(a < 0)
         return -a;
     return a;
-}
-
-
-/**
- * @brief atAttention deprecated, puts robot into a reliable, hard-coded stance.
- */
-void atAttention(){
-    float legHeight[NUM_LEGS];
-
-    legHeight[LF] = HIGH;
-    legHeight[RM] = HIGH;
-    legHeight[LB] = HIGH;
-    //todo: execute
-    legs_target[LF] = defaultLegPosition(LF);
-    legs_target[RM] = defaultLegPosition(RM);
-    legs_target[LB] = defaultLegPosition(LB);
-    //todo: execute
-    legHeight[LF] = GROUNDED;
-    legHeight[RM] = GROUNDED;
-    legHeight[LB] = GROUNDED;
-    //todo: execute
-
-    legHeight[RF] = HIGH;
-    legHeight[LM] = HIGH;
-    legHeight[5] = HIGH;
-    //todo: execute
-    legs_target[RF] = defaultLegPosition(RF);
-    legs_target[LM] = defaultLegPosition(LM);
-    legs_target[5] = defaultLegPosition(5);
-    //todo: execute
-    legHeight[RF] = GROUNDED;
-    legHeight[LM] = GROUNDED;
-    legHeight[5] = GROUNDED;
-    //todo: execute
 }
 
 
@@ -366,23 +332,28 @@ float scaleLegs(Point2D * targ, Point2D * curr, Point2D * diff, float * scale, b
  * from target, with negative rotation, if feet are grounded).
  */
 void directLegs(float rot, Point2D * targ, Point2D * current, Point2D * req, bool lrlRaised){
+    Point2D * attention = (Point2D *)malloc(sizeof(Point2D));
+    Point2D * absTarg   = (Point2D *)malloc(sizeof(Point2D));
+
     for(size_t leg = LF; leg < NUM_LEGS; ++leg){
-        Point2D attention;
-        attention.x = /*defaultLegPosition(index).x*/current[leg].x + jointPosition(leg).x;
-        attention.y = /*defaultLegPosition(index).y*/current[leg].y + jointPosition(leg).y;
-        Point2D absTarg;
+        Point2D * joint = jointPosition(leg);
+        attention->x = current[leg].x + joint->x;
+        attention->y = current[leg].y + joint->y;
 
         if (lrlRaised == (leg == 0 || leg == 3 || leg == 4)){ //move legs "away" from position (body towards)
-            absTarg.x =  req->x + cos(rot) * attention.x - sin(rot) * attention.y;
-            absTarg.y =  req->y + sin(rot) * attention.x + cos(rot) * attention.y;
+            absTarg->x =  req->x + cos(rot) * attention->x - sin(rot) * attention->y;
+            absTarg->y =  req->y + sin(rot) * attention->x + cos(rot) * attention->y;
         }
         else{   //move legs "towards" target position (step)
-            absTarg.x =   - req->x  + cos(rot) * attention.x + sin(rot) * attention.y;
-            absTarg.y =   - req->y  - sin(rot) * attention.x + cos(rot) * attention.y;
+            absTarg->x =   - req->x  + cos(rot) * attention->x + sin(rot) * attention->y;
+            absTarg->y =   - req->y  - sin(rot) * attention->x + cos(rot) * attention->y;
         }
-        targ[leg].x = absTarg.x - jointPosition(leg).x;
-        targ[leg].y = absTarg.y - jointPosition(leg).y;
+        targ[leg].x = absTarg->x - joint->x;
+        targ[leg].y = absTarg->y - joint->y;
+        free(joint);
     }
+    free(attention);
+    free(absTarg);
 }
 
 
@@ -394,18 +365,18 @@ void directLegs(float rot, Point2D * targ, Point2D * current, Point2D * req, boo
  */
 int main(int argc, char *argv[]){
     //testing variables
-    Point2D current[NUM_LEGS];
-    Point2D target[NUM_LEGS];
-    Point2D command;
-    Point2D diff[NUM_LEGS];
+    Point2D * current   = (Point2D *)calloc(NUM_LEGS, sizeof(Point2D));
+    Point2D * target    = (Point2D *)calloc(NUM_LEGS, sizeof(Point2D));
+    Point2D * command   = (Point2D *)malloc(sizeof(Point2D));
+    Point2D * diff      = (Point2D *)calloc(NUM_LEGS, sizeof(Point2D));
     float scale[NUM_LEGS];
     float rotation = 1;
     for (int var = 0; var < 6; ++var) {
         current[var] = defaultLegPosition(var);
     }
     bool lrlRaised = false;
-    command.x = 0;
-    command.y = 0;
+    command->x = 0;
+    command->y = 0;
 
     directLegs(rotation, target, current, & command, lrlRaised);
     scaleLegs(target, current, diff, scale, lrlRaised);
@@ -432,5 +403,13 @@ int main(int argc, char *argv[]){
         printf("diff x: %f y: %f, abs: %f \n", diff[var].x ,diff[var].y, dist(& diff[var]) );
     }
 
+    free(current);
+    free(target);
+    free(command);
+    free(diff);
+    current = NULL;
+    target  = NULL;
+    command = NULL;
+    diff    = NULL;
     return 0;
 }
