@@ -15,7 +15,7 @@ const size_t LB = 4;
 const size_t RB = 5;
 
 const float FRONT_LEG_JOINT_X = 0.12;
-const float FRONT_LEG_JOINT_Y = 0.6;
+const float FRONT_LEG_JOINT_Y = 0.06;
 const float MID_LEG_JOINT_Y = 0.1;
 const float HIGH        = 0.1;//placeholder value; adjust
 const float GROUNDED    = 0;
@@ -31,13 +31,6 @@ const float CLOSE_BORDER_TILT = -1;
 
 const size_t NUM_LEGS   = 6;
 
-
-typedef struct{
-    float x;
-    float y;
-    float z;
-}Point;
-
 typedef struct{
     float x;
     float y;
@@ -51,27 +44,28 @@ struct Instruction{
 };
 
 struct Instruction instruction;
-Point legs_current[6];   //0 = lf, 1 = rf, 2 = lm, 3 = rm, 4 = lb, 5 = rb
-Point legs_target[6];
-Point legs_default[6];
-
-bool lrl_feet = true;               //true = lrl, false = rlr next for use
+Point2D legs_current[6];   //0 = lf, 1 = rf, 2 = lm, 3 = rm, 4 = lb, 5 = rb
+Point2D legs_target[6];
+Point2D legs_default[6];
 
 
-Point defaultLegPosition(size_t leg){
-    Point res;
-    res.z = 0;
-    if (leg < 2)   //front
+Point2D defaultLegPosition(size_t leg){
+    Point2D res;
+    if (leg < 2){   //front
         res.x = 0.1;
-    else if (leg < 4)  //mid
-        res.x = 0;
-    else
-        res.x = -0.1;    //back
-
-    if ((leg & 1) == 0)  //left
         res.y = 0.1;
-    else
-        res.y = -0.1;    //right
+    }
+    else if (leg < 4){  //mid
+        res.x = 0;
+        res.y = 0.14;
+    }
+    else{
+        res.x = -0.1;
+        res.y = 0.1;
+    }    //back
+
+    if ((leg & 1) == 1)  //right
+        res.y = -res.y ;
     return res;
 }
 
@@ -103,46 +97,37 @@ float absf(float a){
 
 
 void atAttention(){ //hardcoded function to set robot in a default position.
-    legs_target[0].z = 0.1;
-    legs_target[3].z = 0.1;
-    legs_target[4].z = 0.1;
+    float legHeight[NUM_LEGS];
+
+    legHeight[LF] = HIGH;
+    legHeight[RM] = HIGH;
+    legHeight[LB] = HIGH;
     //todo: execute
-    legs_target[0] = defaultLegPosition(0);
-    legs_target[0].z = 0.1;
-    legs_target[3] = defaultLegPosition(3);
-    legs_target[3].z = 0.1;
-    legs_target[4] = defaultLegPosition(4);
-    legs_target[4].z = 0.1;
+    legs_target[LF] = defaultLegPosition(LF);
+    legs_target[RM] = defaultLegPosition(RM);
+    legs_target[LB] = defaultLegPosition(LB);
     //todo: execute
-    legs_target[0].z = GROUNDED;
-    legs_target[3].z = GROUNDED;
-    legs_target[4].z = GROUNDED;
+    legHeight[LF] = GROUNDED;
+    legHeight[RM] = GROUNDED;
+    legHeight[LB] = GROUNDED;
     //todo: execute
 
-    legs_target[1].z = 0.1;
-    legs_target[2].z = 0.1;
-    legs_target[5].z = 0.1;
+    legHeight[RF] = HIGH;
+    legHeight[LM] = HIGH;
+    legHeight[5] = HIGH;
     //todo: execute
-    legs_target[1] = defaultLegPosition(1);
-    legs_target[1].z = 0.1;
-    legs_target[2] = defaultLegPosition(2);
-    legs_target[2].z = 0.1;
+    legs_target[RF] = defaultLegPosition(RF);
+    legs_target[LM] = defaultLegPosition(LM);
     legs_target[5] = defaultLegPosition(5);
-    legs_target[5].z = 0.1;
     //todo: execute
-    legs_target[1].z = GROUNDED;
-    legs_target[2].z = GROUNDED;
-    legs_target[5].z = GROUNDED;
+    legHeight[RF] = GROUNDED;
+    legHeight[LM] = GROUNDED;
+    legHeight[5] = GROUNDED;
     //todo: execute
 }
 
 
-float dist(Point * vect){
-    return (float)(sqrt((vect->x * vect->x) + (vect->y * vect->y)));
-}
-
-
-float dist2(Point2D * vect){
+float dist(Point2D* vect){
     return (float)(sqrt((vect->x * vect->x) + (vect->y * vect->y)));
 }
 
@@ -167,14 +152,10 @@ float minf(float a, float b){
 }
 
 
-void executeScaling(Point * targ, Point * curr, Point2D * diff, float * scale){
-    for (int var = 0; var < 6; ++var) {
-
-    }
+void executeScaling(Point2D * targ, Point2D * curr, Point2D * diff, float * scale){
 
     float lrlScaledown = minf(minf(scale[0], scale[3]), scale[4]);
     float rlrScaledown = minf(minf(scale[1], scale[2]), scale[5]);
-    printf("lrl scaledown: %f \n rlr scaledown: %f \n", lrlScaledown, rlrScaledown);
     for(size_t index = 0; index < NUM_LEGS; ++index){
         float scale = lrlScaledown;
         if (index == RF || index == LM || index == RB)
@@ -190,7 +171,7 @@ void executeScaling(Point * targ, Point * curr, Point2D * diff, float * scale){
 /*
  * returns scaling needed to not overstep boundry
 */
-float boundryIntersect(Point * curr, Point * targ, float k, float m, bool upperLimit){
+float boundryIntersect(Point2D * curr, Point2D * targ, float k, float m, bool upperLimit){
 
     if((targ->y - m> k * targ->x) != upperLimit)
         return 1; //no scaling needed; targ is within boundry
@@ -199,7 +180,6 @@ float boundryIntersect(Point * curr, Point * targ, float k, float m, bool upperL
     if (targ->x == curr->x){    //vertical leg movement
         float diff = (curr->x * k) + m - curr->y;
         float scale =absf(diff/(targ->y - curr->y));
-        printf("vertical intersection; scale set to %f \n");
         return scale;//no div by zero; that would mean legs do not move
     }
 
@@ -207,18 +187,15 @@ float boundryIntersect(Point * curr, Point * targ, float k, float m, bool upperL
     float m2 = curr->y - (k2 * curr->x);
 
     if (k == k2)
-        printf("parallell\n");
-    if (k == k2)
         return 1;   //parallel lines; no scaling. Should not realistically happen.
 
     float newX = (m - m2)/(k2 - k); //no div by zero; see preceeding if statement
     float scale =(newX - curr->x) / (targ->x - curr->x);
-    printf("diagonal intersection; scale set to %f , k: %f, m: %f, upper limit: %s\n", scale, k, m, upperLimit ? "true" : "false");
     return scale;  //no div by zero; see prior if statement
 }
 
 
-void scaleToStraightBounds(float * scale, Point * targ, Point * curr){
+void scaleToStraightBounds(float * scale, Point2D * targ, Point2D * curr){
     scale[LF] = minf(boundryIntersect(& curr[LF], & targ[LF], HORIZ_BORDER_TILT, VERT_HEAD_LEG_BORDER_OFFSET, false),
                 minf(boundryIntersect(& curr[LF], & targ[LF], DIAG_DIVISIVE_BORDER_TILT, DIAG_DIVISIVE_BORDER_OFFSET, true),
                      boundryIntersect(& curr[LF], & targ[LF], CLOSE_BORDER_TILT, CLOSE_BORDER_OFFSET, false)));
@@ -245,7 +222,7 @@ void scaleToStraightBounds(float * scale, Point * targ, Point * curr){
 }
 
 
-void scaleLegs(Point * targ, Point * curr, Point2D * diff, float * scale ){
+void scaleLegs(Point2D * targ, Point2D * curr, Point2D * diff, float * scale ){
 
     for(size_t index = 0; index < NUM_LEGS; ++index){
         diff[index].x = targ[index].x - curr[index].x;
@@ -255,7 +232,7 @@ void scaleLegs(Point * targ, Point * curr, Point2D * diff, float * scale ){
         scale[index] = 1;       //if leg within bounds, no change is necessary => scaledown = 1
 
         if (targLength > MAX_DIST)
-            scale[index] = scaleToRangeBounds(targLength, dist(& curr[index]), dist2(& diff[index]), MAX_DIST);
+            scale[index] = scaleToRangeBounds(targLength, dist(& curr[index]), dist(& diff[index]), MAX_DIST);
     }
 
     executeScaling(targ, curr, diff, scale);
@@ -268,26 +245,23 @@ void scaleLegs(Point * targ, Point * curr, Point2D * diff, float * scale ){
     executeScaling(targ, curr, diff, scale);
 
     scaleToStraightBounds(scale, targ, curr);
-    for (int var = 0; var < 6; ++var) {
-        if(scale[var] != 1)
-            printf("imperfect scaling in leg %d with value %f \n", var, scale[var]);
-    }
 }
 
 
-void directLegs(float rot, Point * targ, Point2D * req){
+void directLegs(float rot, Point2D * targ, Point2D * req, bool lrlRaised){
     for(size_t index = 0; index < NUM_LEGS; ++index){
-        Point attention;
+        Point2D attention;
         attention.x = defaultLegPosition(index).x + jointPosition(index).x;
         attention.y = defaultLegPosition(index).y + jointPosition(index).y;
-        Point absTarg;
-        if (targ[index].z == 0){ //move legs "away" from position (body towards)
-            absTarg.x =  - req->x + cos(rot) * attention.x + sin(rot) * attention.y;
-            absTarg.y =  - req->y - sin(rot) * attention.y + cos(rot) * attention.y;
+        Point2D absTarg;
+
+        if (lrlRaised == (index == 0 || index == 3 || index == 4)){ //move legs "away" from position (body towards)
+            absTarg.x =  req->x + cos(rot) * attention.x - sin(rot) * attention.y;
+            absTarg.y =  req->y + sin(rot) * attention.x + cos(rot) * attention.y;
         }
         else{   //move legs "towards" target position (step)
-            absTarg.x =    req->x  + cos(rot) * attention.x - sin(rot) * attention.y;
-            absTarg.y =    req->y  + sin(rot) * attention.x + cos(rot) * attention.y;
+            absTarg.x =   - req->x  + cos(rot) * attention.x + sin(rot) * attention.y;
+            absTarg.y =   - req->y  - sin(rot) * attention.x + cos(rot) * attention.y;
         }
         targ[index].x = absTarg.x - jointPosition(index).x;
         targ[index].y = absTarg.y - jointPosition(index).y;
@@ -295,58 +269,46 @@ void directLegs(float rot, Point * targ, Point2D * req){
     }
 }
 
-
-void instruction_decode(struct Instruction command){
-    Point2D legs_diff[NUM_LEGS];
-    float scaledown[NUM_LEGS];
-    float rot = command.turn * command.step_length;
-
-    for(size_t index = 0; index < NUM_LEGS; ++index){
-
-        if (lrl_feet == (index == LF || index == RM || index == LB))
-            legs_target[index].z = HIGH;    //move legs this sequence
-        else
-            legs_target[index].z = GROUNDED;       //keep legs grounded.
-
-        //set desired target position
-
-        directLegs(rot, legs_target, & command.targ);
-    }
-
-    scaleLegs(legs_target, legs_current, legs_diff, scaledown);
-    //leg movement has been scaled propperly
-
-}
-
-
 int main(int argc, char *argv[]){
     //testing variables
-    Point current[NUM_LEGS];
-    Point target[NUM_LEGS];
+    Point2D current[NUM_LEGS];
+    Point2D target[NUM_LEGS];
     Point2D command;
     Point2D diff[NUM_LEGS];
     float scale[NUM_LEGS];
     float rotation = 1;
     for (int var = 0; var < 6; ++var) {
         current[var] = defaultLegPosition(var);
-        target[var].z = 0;
     }
-    target[1].z = 0.1;
-    target[2].z = 0.1;
-    target[5].z = 0.1;
+    bool lrlRaised = false;
     command.x = 0;
     command.y = 0;
 
-
-    directLegs(rotation,target,&command);
+    directLegs(rotation,target,&command, lrlRaised);
 
     scaleLegs(target, current, diff, scale);
-    for (int var = 0; var < 6; ++var) {
-        //printf("target x: %f y: %f \n", target[var].x ,target[var].y );
-        printf("diff x: %f y: %f \n", diff[var].x ,diff[var].y );
+
+
+    for (int index = 0; index < NUM_LEGS; ++index) {
+        current[index].x = target[index].x;
+        current[index].y = target[index].y;
     }
 
-    printf("%f", DIAG_DIVISIVE_BORDER_TILT);
+    for (int var = 0; var < 6; ++var) {
+        printf("diff x: %f y: %f, abs: %f \n", diff[var].x ,diff[var].y, dist(& diff[var]) );
+    }
+
+    printf("\nnew run starts here \n\n");
+
+    lrlRaised = true;
+
+    directLegs(rotation, target, & command, lrlRaised);
+    scaleLegs(target, current, diff, scale);
+
+
+    for (int var = 0; var < 6; ++var) {
+        printf("diff x: %f y: %f, abs: %f \n", diff[var].x ,diff[var].y, dist(& diff[var]) );
+    }
 
     return 0;
 }
