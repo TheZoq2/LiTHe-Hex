@@ -53,7 +53,7 @@ typedef struct IR {
 
     irport_t port;
 
-    double value;
+    uint8_t value;
 	
 	double raw_data_list[NUM_SENSOR_DATA];
 
@@ -67,6 +67,6 @@ void ir_reduce_noise(IR* ir);
 
 double latest_ir_value(IR* ir);
 
-double ir_value_to_meters(uint16_t val, enum Range range);
+double ir_value_to_centimeters(uint16_t val, enum Range range);
 
 #endif

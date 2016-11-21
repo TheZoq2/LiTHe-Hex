@@ -28,7 +28,7 @@
 
 typedef struct Lidar {
 
-    double value;
+    uint16_t value;
 
     Timer* timer;
 

@@ -44,7 +44,7 @@ void ir_add_data(IR* ir, uint16_t data) {
 	for(uint8_t i = 0; i < NUM_SENSOR_DATA-1; i++) {
 		ir->raw_data_list[i] = ir->raw_data_list[i+1];
 	}
-	ir->raw_data_list[NUM_SENSOR_DATA-1] = ir_value_to_meters(data, ir->range);
+	ir->raw_data_list[NUM_SENSOR_DATA-1] = ir_value_to_centimeters(data, ir->range);
 
 }
 
@@ -92,18 +92,23 @@ void ir_reduce_noise(IR* ir) {
 
 	}
 	// average of res
-	ir->value = res / num_data_points;
+	double val = res / num_data_points;
+	if(val < 160) {}
+		ir->value = (uint8_t)val;
+	} else {
+		ir->values = 255;
+	}
 }
 
-double ir_value_to_meters(uint16_t val, enum Range range) {
+double ir_value_to_centimeters(uint16_t val, enum Range range) {
 
     if (range == LONG_RANGE) {
         
-        return (LONG_BASE * pow(val, LONG_EXP)) / 100;
+        return (LONG_BASE * pow(val, LONG_EXP));
 
     } else {
 
-        return (SHORT_BASE * pow(val, SHORT_EXP)) / 100;
+        return (SHORT_BASE * pow(val, SHORT_EXP));
     
     }
 }

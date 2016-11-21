@@ -28,7 +28,7 @@ void lidar_init(Lidar* lidar, Timer* timer) {
 
 void lidar_measure(Lidar* lidar) {
     
-    // if the pin is already high, we should wait it out
+    // if the pin is already high, we should wait it out 
     while ((MONITOR_MASK & PIND) != 0);
     uint32_t start;
     uint32_t end;
@@ -42,9 +42,9 @@ void lidar_measure(Lidar* lidar) {
 
     uint32_t pulse_time = end - start;
 
-    lidar->value = lidar_value_to_meters(pulse_time);
+    lidar->value = lidar_value_to_centimeters(pulse_time);
 }
 
-double lidar_value_to_meters(uint32_t pulse_time) {
-	return floor(pulse_time / 10) / 100;
+uint16_t lidar_value_to_centimeters(uint32_t pulse_time) {
+	return floor(pulse_time / 10);
 }
