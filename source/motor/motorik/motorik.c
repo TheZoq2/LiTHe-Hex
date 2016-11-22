@@ -1,5 +1,8 @@
+#define F_CPU 16000000UL
+
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#include <util/delay.h>
 
 #include <stdint.h>
 #include <stdlib.h>
@@ -9,12 +12,13 @@
 
 #define DD_MOSI 6
 
-#define PIN_RX_TOGGLE 3
+//0 Indexed
+#define PIN_RX_TOGGLE 2
 
 #define DIRECTION_TX 1
 #define DIRECTION_RX 0
 
-const uint32_t CPU_FREQ = 16000000;
+//const uint32_t CPU_FREQ = 16000000;
 
 void spi_slave_init(void)
 {
@@ -38,13 +42,15 @@ void usart_init(uint32_t baud)
 {
 	//TXD+DD output RX input
 	//DDRD = 0b11111110;
-	DDRD = 0b11111110;
+	//DDRD = 0b11111110;
 
-	UBRR0H = ((CPU_FREQ / 16 + baud / 2) / baud - 1) >> 8;
-	UBRR0L = ((CPU_FREQ / 16 + baud / 2) / baud - 1);
+	//UBRR0H = ((CPU_FREQ / 16 + baud / 2) / baud - 1) >> 8;
+	//UBRR0L = ((CPU_FREQ / 16 + baud / 2) / baud - 1);
+	UBRR0H = 0;
+	UBRR0L = 0;
 
 	//Enable receive + transmit
-	//UCSR0B = (1<<RXEN0) | (1<<TXEN0);
+	UCSR0B = (1<<RXEN0) | (1<<TXEN0);
 	//Set frame format
 	UCSR0C = (0<<USBS0)|(3<<UCSZ00);
 }
@@ -83,8 +89,8 @@ uint8_t usart_receive()
 void send_servo_command(uint8_t id, uint8_t instruction, void* data, uint8_t data_amount)
 {
 	//Enable uart tx, disable rx
-	clear_bit(UCSR0C, RXEN0);
-	set_bit(UCSROC, TXEN0);
+	//clear_bit(UCSR0C, RXEN0);
+	//set_bit(UCSR0C, TXEN0);
 
 	//Set the direction of the trirstate gate
 	clear_bit(PORTD, PIN_RX_TOGGLE);
@@ -114,10 +120,9 @@ void send_servo_command(uint8_t id, uint8_t instruction, void* data, uint8_t dat
 	uart_wait();
 	
 	//Reset the direction of the tristate gate
-	set_bit(PORTD, PIN_RX_TOGGLE);
+	//set_bit(PORTD, PIN_RX_TOGGLE);
 }
 
-//TODO: Kodstandard?
 //Remember to deallocate the parameters when they go out of scope
 typedef struct
 {
@@ -164,25 +169,56 @@ int main(void)
 	//spi_slave_init();
 	
 
-	//DDRD = 0xfE;
+	DDRD = 0xfE;
 	//
 	usart_init(1000000);
 	
+	_delay_ms(100);
+	
+	//set_bit(PORTD, 2);
+	//PORTD = 0b00000100;
+	
+	uint8_t servo_id = 0x04;
+	
+	{
+		uint8_t torque_value[2] = {0x18, 0x00};
+		send_servo_command(servo_id, 0x03, (void*) &torque_value, 2);
+	}
+	
+	
+	uint8_t torque_value[2] = {0x18, 0x01};
+	send_servo_command(servo_id, 0x03, (void*) &torque_value, 2);
+	
+	
 	while(1)
 	{
-		
-		//Set output high
-		//PORTD |= 0b00000010;
-		
-		//PORTD &= 0b11111101;
-		
-		//usart_transmit(0x55);
+		//Enable uart tx, disable rx
+		//clear_bit(UCSR0C, RXEN0);
+		//set_bit(UCSR0C, TXEN0);
 
-		send_servo_command(0x00, 0x01, 0, 0);
+		//Set the direction of the trirstate gate
+		clear_bit(PORTD, PIN_RX_TOGGLE);
 
-		//ServoReply servo_reply = receive_servo_reply();
 		
-		int a = 0;
+		uint8_t command[3] = {0x1E, 0x01, 0xff};
+		send_servo_command(servo_id, 0x03, (void*)&command, 3);
+		//send_servo_command(0x06, 0x03, (void*) &torque_value, 2);
+		
+		//send_servo_command(0x06, 0x03)
+		//usart_transmit(0xff);
+		//usart_transmit(0xff);
+		//usart_transmit(0x04);
+		//usart_transmit(0x07);
+		//usart_transmit(0x03);
+		//usart_transmit(0x1E);
+		//usart_transmit(0x00);
+		//usart_transmit(0x02);
+		//usart_transmit(0x00);
+		//usart_transmit(0x02);
+		//usart_transmit(0xD3);
+		uart_wait();
+
+		_delay_ms(100);
 	}
 }
 
