@@ -41,14 +41,18 @@ type alias ChatMessage =
     { body : String }
 
 
-init : ( Model, Cmd Msg )
-init =
+type alias Flags =
+    { host : String }
+
+
+init : Flags -> ( Model, Cmd Msg )
+init { host } =
     let
         ( phxSocket, phxCmd ) =
-            Phoenix.Socket.init "wss://emiluren.se:443/socket/websocket"
+            Phoenix.Socket.init ("ws://" ++ host ++ "/socket/websocket")
                 |> Phoenix.Socket.withDebug
-                |> Phoenix.Socket.on "new_msg" "room:lobby" ReceiveChatMessage
-                |> Phoenix.Socket.join (Phoenix.Channel.init "room:lobby")
+                |> Phoenix.Socket.on "new_msg" "debug:lobby" ReceiveChatMessage
+                |> Phoenix.Socket.join (Phoenix.Channel.init "debug:lobby")
     in
         { phxSocket = phxSocket
         , currentMessage = ""
@@ -108,7 +112,7 @@ update msg model =
                     JE.object [ ( "body", JE.string model.currentMessage ) ]
 
                 push =
-                    Phoenix.Push.init "new_msg" "room:lobby"
+                    Phoenix.Push.init "new_msg" "debug:lobby"
                         |> Phoenix.Push.withPayload payload
 
                 ( phxSocket, phxCmd ) =
@@ -180,9 +184,9 @@ viewBody model =
         ]
 
 
-main : Program Never
+main : Program Flags
 main =
-    Html.App.program
+    Html.App.programWithFlags
         { init = init
         , update = update
         , subscriptions = subscriptions
