@@ -148,16 +148,16 @@ int main(void)
 	//set_bit(PORTD, 2);
 	//PORTD = 0b00000100;
 	
-	uint8_t servo_id = 0x04;
+	uint8_t servo_id = 0xFE;
 	
 	{
-		uint8_t torque_value[2] = {0x18, 0x00};
-		send_servo_command(servo_id, 0x03, (void*) &torque_value, 2);
+		//uint8_t torque_value[2] = {0x18, 0x00};
+		//send_servo_command(servo_id, 0x03, (void*) &torque_value, 2);
 	}
 	
 	
-	uint8_t torque_value[2] = {0x18, 0x01};
-	send_servo_command(servo_id, 0x03, (void*) &torque_value, 2);
+	uint8_t command[2] = {0x01};
+	write_servo_data(servo_id, TORQUE_ENABLE_ADDRESS, command, 1);
 	
 	
 	while(1)
@@ -170,8 +170,11 @@ int main(void)
 		clear_bit(PORTD, PIN_RX_TOGGLE);
 
 		
-		uint8_t command[3] = {0x1E, 0x01, 0xff};
-		send_servo_command(servo_id, 0x03, (void*)&command, 3);
+		//uint8_t command[3] = {0x1E, 0x01, 0xff};
+		//send_servo_command(servo_id, 0x03, (void*)&command, 3);
+		//uint8_t command[2] = {0x01, 0xff};
+		
+		
 		//send_servo_command(0x06, 0x03, (void*) &torque_value, 2);
 		
 		//send_servo_command(0x06, 0x03)
