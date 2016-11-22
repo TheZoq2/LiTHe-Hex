@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with LiTHe Hex.  If not, see <http://www.gnu.org/licenses/>.
 
-import spidev
+#import spidev
 
 MOTOR_ADDR = (0, 0)
 SENSOR_ADDR = (0, 1)
@@ -26,10 +26,42 @@ DATA_REQ    = 0x02
 SEND_FAIL   = 0x1F
 ACK         = 0x0F
 
+MAX_BYTE_SIZE = 255
+MAX_16BIT_SIZE = MAX_BYTE_SIZE**2
 
-def _send_bytes(spi, data):
-    pass
 
+class InvalidCommandException(Exception):
+
+    def __init__(self, message, command=""):
+        self.message = message
+        self.command = command
+
+    def __repr__(self):
+        return self.message
+
+    def __str__(self):
+        return self.message
+
+
+class CommunicationError(Exception):
+
+    def __init__(self, message, cause=None):
+        self.message = message
+        self.cause = cause
+
+    def __repr__(self):
+        return self.message
+
+    def __str__(self):
+        return self.message
+
+
+def _send_bytes(spi, *data):
+    # check if all are bytes
+    if sum([(not isinstance(x, int)) or x > MAX_BYTE_SIZE or x < MAX_BYTE_SIZE for x in data]):
+        raise InvalidCommandException("Data sequence {} contains non-bytes".format(data))
+    return spi.xfer2(data)
+        
 
 def _recieve_muliple_bytes(spi, type_):
     length = spi.readbytes(1)
@@ -64,18 +96,36 @@ def _select_device(addr):
     spi.open(*addr)
 
 
+def _check_response(response):
+    if response == SEND_FAIL:
+        raise CommunicationError("Send fail revieved")
+    elif response != ACK:
+        raise CommunicationError("No acknowledge message recieved")
+
+
 def communication_init():
     spi = spidev.SpiDev()
     spi.open(*MOTOR_ADDR)
     return spi
 
 
-def toggle_obstacle_mode(spi):
-    pass
+def set_obstacle_mode(spi, value):
+    if value not in (True, False):
+        raise InvalidCommandException("Value \"{}\" is not a valid mode.".format(value))
+    # yes i'm paranoid
+    value = 0x01 if value else 0x00
+    _select_device(spi, MOTOR_ADDR)
+    response = _send_bytes(spi, 0x03, value)
+    _check_response(response)
 
 
 def set_servo_speed(spi, speed):
-    pass
+    if speed < 0 or speed > MAX_16BIT_SIZE:
+        raise InvalidCommandException("Speed \"{}\" is not a 16-bit value".format(speed))
+    least = speed & 0x00FF
+    most = (speed & 0xFF00) >> 8
+    response = _send_bytes(spi, least, most)
+    _check_response(response)
 
 
 def walk(spi, x_speed, y_speed, turn_speed):

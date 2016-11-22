@@ -20,9 +20,11 @@
 
 import communication
 
-def main():
-    pass
 
-if '__name__' == __main__:
+def main():
+    communication.set_servo_speed(None, 0xF2F3)
+
+
+if __name__ == '__main__':
     main()
 
