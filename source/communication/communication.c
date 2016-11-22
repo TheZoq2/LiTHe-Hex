@@ -18,6 +18,8 @@
 #include <stdbool.h>
 #include "spi.h"
 #include "communication.h"
+#include "../sensor/table.h"
+#include <stdio.h>
 
 uint8_t replay_msg_id[5] = {0x02, 0x03, 0x04, 0x20, 0x05};
 
@@ -43,16 +45,9 @@ void on_spi_recv() {
 	bool success = check_partiy(&frame_recv); 
 	if(success) { // continue if message ok
 		spi_transmit_ack();
-		
+
 		bool replay = message_require_replay(current_id);
 		if(replay) { // send a replay to central-unit
-			if(current_id == 0x02) {
-				Frame frame_send;
-				frame_send.control_byte = 0x20;
-				frame_send.len = 0x01;
-				frame_send.msg = 0xCC;
-				send_frame(&frame_send);
-			}
 			#ifdef MainTable
 				send_replay_sensor(current_id);
 			#endif
@@ -69,11 +64,11 @@ void on_spi_recv() {
 
 bool check_partiy(Frame* frame) {
 	// check parity for control_byte
-	uint8_t byte = frame->control_byte
+	uint8_t byte = frame->control_byte;
 	bool parity_con = false;
 	while(byte) {
 		parity_con = !parity_con;
-		byte &= (byte - 1); 
+		byte &= (byte - 1);
 	}
 
 	// check parity for length and message bytes
@@ -81,29 +76,63 @@ bool check_partiy(Frame* frame) {
 	for(uint8_t i = 0; i < frame->len; i++) {
 		uint8_t msg = frame->msg[i];
 		while(msg) {
+			printf("!!%i - %i\n", byte, parity_con);
 			parity_con = !parity_con;
 			msg &= (msg - 1);
 		}
 	}
+
+	printf("ANS: %i - %i\n", parity_con, parity_msg);
 	
-	return parity_con && parity_msg;
+	return (parity_con == (frame->control_byte & 0x01)) && (parity_msg == (frame->control_byte & 0x02));
+}
+
+void calculate_parity(Frame* frame) {
+	// calculate parity for length and message bytes
+	bool parity_msg = false;
+	for(uint8_t i = 0; i < frame->len; i++) {
+		uint8_t msg = frame->msg[i];
+		while(msg) {
+			parity_msg = !parity_msg;
+			msg &= (msg - 1);
+		}
+	}
+
+	// Set parity bit
+	if(parity_msg) {
+		frame->control_byte | 0x02;
+	}
+	
+	// calculate parity for control_byte
+	uint8_t byte = frame->control_byte;
+	bool parity_con = false;
+	while(byte) {
+		parity_con = !parity_con;
+		byte &= (byte - 1);
+	}
+
+	// Set parity bit
+	if(parity_con) {
+		frame->control_byte | 0x01;
+	}
+
 }
 
 void get_new_frame(Frame* frame_recv) {
 	frame_recv->control_byte = spi_recieve_byte();
 	if(frame_recv->control_byte & 0x80) { // msg is one byte long
-		
+		frame_recv->len = 0;
+		frame_recv->msg[0] = spi_recive_byte();
 	} else { // msg is more than one byte long
 		frame_recv->len = spi_recieve_byte();
-		frame_recv->msg[frame->len];
 		for(uint8_t i = 0; i < frame_recv->len; i++) {
 			frame_recv->msg[i] = spi_recieve_byte();
 		}
 	}
 }
 
-char get_current_id(Frame* fram_recve) {
-	return frame_recv->control_byte;
+uint8_t get_current_id(Frame* frame_recv) {
+	return (frame_recv->control_byte & 0xFC) >> 2;
 }
 
 bool message_require_replay(uint8_t current_msg) {
@@ -123,14 +152,16 @@ void send_replay_sensor(uint8_t current_id) {
 		frame_send_2.control_byte = 0x21;
 		send_sensor_wall_data(&frame_send_2);
 	}
-	frame_send(&frame_send_1);
-	frame_send(&frame_send_2);
+	send_frame(&frame_send_1);
+	send_frame(&frame_send_2);
 }
 
 void send_frame(Frame* frame) {
+	// Test print insted of spi transmit
+	calculate_parity(frame);
 	spi_transmit_byte(frame->control_byte);
 	spi_transmit_byte(frame->len);
-	for(uint8_t i = 0; i < frame->len; i++) {}
+	for(uint8_t i = 0; i < frame->len; i++) {
 		spi_transmit_byte(frame->msg[i]);
 	}
 }
@@ -138,7 +169,7 @@ void send_frame(Frame* frame) {
 void control_motor(uint8_t current_msg) {
 	switch(current_msg){
 		case 0x03 :
-			// Toggle hindergong
+			// Toggle obstacle
 			break;
 		case 0x04 :
 			// Set speed
@@ -155,14 +186,14 @@ void control_motor(uint8_t current_msg) {
 void send_replay_motor(uint8_t current_msg) {
 	Frame frame_send_status;
 	Frame frame_send_string;
-	Frame frame_send_hinder;
-	frame_send_status.control_byte = 0x20;
+	Frame frame_send_obstacle;
+	frame_send_status.control_byte = 0x20 << 2;
 	// Send servo status
-	frame_send_status.control_byte = 0x21;
+	frame_send_string.control_byte = 0x21 << 2;
 	// Send debug string
-	frame_send_status.control_byte = 0x03;
+	frame_send_obstacle.control_byte = 0x03 << 2;
 	// Hinder here?
-	send_frame(frame_send_status);
-	send_frame(frame_send_string);
-	send_frame(frame_send_hinder);
+	send_frame(&frame_send_status);
+	send_frame(&frame_send_string);
+	send_frame(&frame_send_obstacle);
 }

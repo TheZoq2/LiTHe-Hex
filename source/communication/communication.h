@@ -18,10 +18,14 @@
 #ifndef COMMUNICATION_H
 #define COMMUNICATION_H
 
+#include <stdint.h>
+
+#define LONGEST_MSG	20
+
 typedef struct Frame {
 	uint8_t control_byte;
 	uint8_t len;
-	uint8_t msg[];
+	uint8_t msg[LONGEST_MSG];
 } Frame;
 
 void on_spi_recv();
