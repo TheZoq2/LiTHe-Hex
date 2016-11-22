@@ -1,13 +1,20 @@
-#define F_CPU 16000000UL
+//#define F_CPU 16000000UL
 
+#include "avr_helper.h"
+
+#ifndef IS_X86
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
+#endif
+
+#include "macros.h"
+
+#include "uart_lib.h"
 
 #include <stdint.h>
 #include <stdlib.h>
 
-#include "macros.h"
 
 
 #define DD_MOSI 6
@@ -18,73 +25,13 @@
 #define DIRECTION_TX 1
 #define DIRECTION_RX 0
 
+
+const uint8_t WRITE_DATA_INSTRUCTION = 0x03;
+
+const uint8_t TORQUE_ENABLE_ADDRESS = 0x18;
+const uint8_t GOAL_POSITION_ADDRESS = 0x1E;
+
 //const uint32_t CPU_FREQ = 16000000;
-
-void spi_slave_init(void)
-{
-	//Mosi output, everything else input
-	DDRB = (1<<DD_MOSI);
-	//Enable spi
-	SPCR = (1 << SPE);
-}
-
-uint8_t spi_slave_receive(void)
-{
-	//Wait for transmission
-	while(!(SPSR & (1<<SPIF)))
-	;
-	
-	//Return the data
-	return SPDR;
-}
-
-void usart_init(uint32_t baud)
-{
-	//TXD+DD output RX input
-	//DDRD = 0b11111110;
-	//DDRD = 0b11111110;
-
-	//UBRR0H = ((CPU_FREQ / 16 + baud / 2) / baud - 1) >> 8;
-	//UBRR0L = ((CPU_FREQ / 16 + baud / 2) / baud - 1);
-	UBRR0H = 0;
-	UBRR0L = 0;
-
-	//Enable receive + transmit
-	UCSR0B = (1<<RXEN0) | (1<<TXEN0);
-	//Set frame format
-	UCSR0C = (0<<USBS0)|(3<<UCSZ00);
-}
-
-void uart_wait()
-{
-	//Wait for buffer to be empty
-	while(!(UCSR0A & (1<<UDRE0)))
-	{
-		
-	}
-}
-
-void usart_transmit(uint8_t data)
-{
-	//Set output
-	//PORTD = 0b00000000;
-
-	//Wait for buffer to be empty
-	uart_wait();
-	
-	UDR0 = data;
-}
-
-uint8_t usart_receive()
-{
-	//Wait for data to arrive
-	while(!(UCSR0A & (1<<RXC0)))
-	{
-		int a = 0;
-	}
-
-	return UDR0;
-}
 
 void send_servo_command(uint8_t id, uint8_t instruction, void* data, uint8_t data_amount)
 {
@@ -96,7 +43,7 @@ void send_servo_command(uint8_t id, uint8_t instruction, void* data, uint8_t dat
 	clear_bit(PORTD, PIN_RX_TOGGLE);
 
 	uint8_t length = data_amount + 2;
-	PORTD = PORTD & 0b11111011;
+	//PORTD = PORTD & 0b11111011;
 	usart_transmit(0xff);
 	usart_transmit(0xff);
 	usart_transmit(id);
@@ -121,6 +68,30 @@ void send_servo_command(uint8_t id, uint8_t instruction, void* data, uint8_t dat
 	
 	//Reset the direction of the tristate gate
 	//set_bit(PORTD, PIN_RX_TOGGLE);
+}
+
+void write_servo_data(uint8_t id, uint8_t address, uint8_t* data, uint8_t data_amount)
+{
+	uint8_t new_data_amount = data_amount + 1;
+	
+	uint8_t* new_data = malloc(new_data_amount);
+
+	new_data[0] = address;
+
+	for(uint8_t i = 0; i < data_amount; i++)
+	{
+		new_data[i+1] = data[i];
+	}
+
+	send_servo_command(id, WRITE_DATA_INSTRUCTION, (void*)new_data, new_data_amount);
+
+	free(new_data);
+}
+
+void write_2_bytes_to_servo(uint8_t id, uint8_t addres, uint8_t b1, uint8_t b2)
+{
+	uint8_t data[2] = {b1, b2};
+	write_servo_data(id, addres, data, 2);
 }
 
 //Remember to deallocate the parameters when they go out of scope
@@ -163,15 +134,14 @@ ServoReply receive_servo_reply()
 }
 
 
-
 int main(void)
 {
 	//spi_slave_init();
 	
 
-	DDRD = 0xfE;
+	set_ddr(DDRD, 0xfE);
 	//
-	usart_init(1000000);
+	usart_init();
 	
 	_delay_ms(100);
 	
