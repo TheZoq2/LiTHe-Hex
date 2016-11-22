@@ -146,7 +146,7 @@ int main(void)
 	_delay_ms(100);
 	
 	
-	uint8_t servo_id = 0x01;
+	uint8_t servo_id = 0x03;
 
 	
 	uint8_t command[2] = {0x01};
