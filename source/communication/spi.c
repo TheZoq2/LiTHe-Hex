@@ -30,7 +30,7 @@ void spi_init() {
 uint8_t spi_recieve_byte() {
 
 	// Wait for reception complete 
-	while(!(SPSR) & (1<<SPIF));
+	while(!((SPSR) & (1<<SPIF)));
 
 	// Return Data Register
 	return SPDR;
@@ -39,7 +39,7 @@ uint8_t spi_recieve_byte() {
 uint8_t spi_transmit_byte(uint8_t data) {
 	SPDR = data;
 	// Wait for reception complete
-	while(!(SPSR) & (1<<SPIF)){}
+	while(!((SPSR) & (1<<SPIF)));
 
 	// Return Data Register
 	return SPDR;
