@@ -295,8 +295,8 @@ void scaleToStraightBounds(float * scale, Point2D * targ, Point2D * curr){
  * grounded. Conversely, lrlRaised false means lrl set of legs is grounded.
  * @return scale multiplier applied to grounded set of legs.
  */
-float scaleLegs(Point2D * targ, Point2D * curr, Point2D * diff, float * scale, bool lrlRaised){
-
+float scaleLegs(Point2D * targ, Point2D * curr, float * scale, bool lrlRaised){
+    Point2D * diff = (Point2D *)calloc(NUM_LEGS, sizeof(Point2D));
     for(size_t index = 0; index < NUM_LEGS; ++index){
         diff[index].x = targ[index].x - curr[index].x;
         diff[index].y = targ[index].y - curr[index].y;
@@ -315,6 +315,7 @@ float scaleLegs(Point2D * targ, Point2D * curr, Point2D * diff, float * scale, b
     printf("res is %f\n", res);
 
     printf("\ntotal scaledown of grounded legs is %f \n\n", res);
+    free(diff);
     return res;
 }
 
@@ -358,6 +359,137 @@ void directLegs(float rot, Point2D * targ, Point2D * current, Point2D * req, boo
 
 
 /**
+ * @brief assumeStandardizedStance Positions the robot in a reliable, standardized
+ * hard-coded stance.
+ * @param current current position of the legs.
+ */
+void assumeStandardizedStance(Point2D * current){
+    bool lrlRaised = true;
+    bool rlrRaised = false;
+
+    //todo: execute
+
+    Point2D * stdLeg = defaultLegPosition(LF);
+    current->x = stdLeg->x;
+    current->y = stdLeg->y;
+    free(stdLeg);
+    stdLeg = defaultLegPosition(RM);
+    current->x = stdLeg->x;
+    current->y = stdLeg->y;
+    free(stdLeg);
+    stdLeg = defaultLegPosition(LB);
+    current->x = stdLeg->x;
+    current->y = stdLeg->y;
+    free(stdLeg);
+
+    //todo: execute;
+    lrlRaised = false;
+    //todo: execute;
+    rlrRaised = true;
+    //todo: execute;
+
+    stdLeg = defaultLegPosition(RF);
+    current->x = stdLeg->x;
+    current->y = stdLeg->y;
+    free(stdLeg);
+    stdLeg = defaultLegPosition(LM);
+    current->x = stdLeg->x;
+    current->y = stdLeg->y;
+    free(stdLeg);
+    stdLeg = defaultLegPosition(RB);
+    current->x = stdLeg->x;
+    current->y = stdLeg->y;
+    free(stdLeg);
+
+    //todo: execute
+    rlrRaised = false;
+    //todo; execute
+}
+
+
+/**
+ * @brief workTowardsGoal takes the robot closer to a requested position and
+ * rotation, stepping with the set of legs that best accomplishes this.
+ *
+ * Also, returns the scaledown applied to whichever set of legs is selected as
+ * optimal for forward movement.
+ * @param rot requested angle the robot should preferably rotate, positive
+ * anticlockwise as seen from above, whilst moving to the requested goal
+ * position.
+ * @param goal requested position to which the robot should preferrably be able
+ * to move.
+ * @param current position the legs curerently hold.
+ * @return scaledown applied to grounded set of legs.
+ */
+float workTowardsGoal(float rot, Point2D * goal, Point2D * current){
+    Point2D * targ0 = calloc(NUM_LEGS, sizeof(Point2D));
+    Point2D * targ1 = calloc(NUM_LEGS, sizeof(Point2D));
+
+    float * scale = (float *)calloc(NUM_LEGS, sizeof(float));
+    directLegs(rot, targ0, current, goal, true);
+    float scaledown0 = scaleLegs(targ0, current, scale, true);
+
+    directLegs(rot, targ0, current, goal, false);
+    float scaledown1 = scaleLegs(targ0, current, scale, false);
+
+    if (scaledown0 > scaledown1){
+        //todo: execute with targ0
+    }
+    else{
+        //todo: execute with targ1
+    }
+
+    free(targ0);
+    free(targ1);
+    free(scsle);
+    if (scaledown0 > scaledown1)
+        return scale0;
+    else
+        return scale1;
+}
+
+
+/**
+ * @brief rotateSetSmallAngle rotates the robot a small angle, assumed to be at
+ * sufficiently small that the robot legs should not be crossing across the
+ * robot's body. Does not terminate until the full rotation has been achieved
+ * (appart from refraining from minimal, near-unnoticible movements to finalize
+ * the rotation).
+ * @param angle rotation the robot shall achieve.
+ * @param current position the legs currently hold.
+ */
+void rotateSetSmallAngle(float angle, Point2D * current){
+    float remaining = 1;
+    Point2D * emptyGoal = (Point2D *)malloc(sizeof(Point2D));
+    emptyGoal->x = 0;
+    emptyGoal->y = 0;
+
+    while (remaining > 0.01) {
+        float remainingAngle = remaining * angle;
+        remaining = remaining - workTowardsGoal(remainingAngle, emptyGoal, current);
+    }
+    free(emptyGoal);
+}
+
+
+/**
+ * @brief rotateSetAngle keeps rotating until the robot has fully altered its
+ * direction by the requested angle.
+ * @param angle provides the angle the robot should rotate.
+ * @param current position the legs currently hold.
+ */
+void rotateSetAngle(float angle, Point2D * current){
+    assumeStandardizedStance(current);
+
+    while(angle > 1){
+        angle = angle - 1;
+        rotateSetSmallAngle(angle, current);
+    }
+    rotateSetSmallAngle(angle, current);
+}
+
+
+/**
  * @brief main currently used for testing.
  * @param argc unused
  * @param argv unused
@@ -379,7 +511,7 @@ int main(int argc, char *argv[]){
     command->y = 0;
 
     directLegs(rotation, target, current, & command, lrlRaised);
-    scaleLegs(target, current, diff, scale, lrlRaised);
+    scaleLegs(target, current, scale, lrlRaised);
 
 
     for (int index = 0; index < NUM_LEGS; ++index) {
@@ -396,7 +528,7 @@ int main(int argc, char *argv[]){
     lrlRaised = true;
 
     directLegs(rotation, target, current, & command, lrlRaised);
-    scaleLegs(target, current, diff, scale, lrlRaised);
+    scaleLegs(target, current, scale, lrlRaised);
 
 
     for (int var = 0; var < 6; ++var) {
