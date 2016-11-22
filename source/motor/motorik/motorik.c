@@ -30,6 +30,8 @@ const uint8_t WRITE_DATA_INSTRUCTION = 0x03;
 const uint8_t WRITE_REG_INSTRUCTION = 0x04;
 const uint8_t ACTION_INSTRUCTION = 0x05;
 
+
+const uint8_t ANGLE_LIMIT_ADDRESS = 0x06;
 const uint8_t TORQUE_ENABLE_ADDRESS = 0x18;
 const uint8_t GOAL_POSITION_ADDRESS = 0x1E;
 
@@ -85,7 +87,7 @@ void write_servo_data(uint8_t id, uint8_t address, uint8_t* data, uint8_t data_a
 		new_data[i+1] = data[i];
 	}
 
-	send_servo_command(id, WRITE_REG_INSTRUCTION, (void*)new_data, new_data_amount);
+	send_servo_command(id, WRITE_DATA_INSTRUCTION, (void*)new_data, new_data_amount);
 
 	free(new_data);
 }
@@ -148,22 +150,28 @@ int main(void)
 	_delay_ms(100);
 	
 	
-	uint8_t servo_id = 0x03;
+	uint8_t servo_id = 0x00;
 
 	
 	uint8_t command[2] = {0x01};
 	write_servo_data(servo_id, TORQUE_ENABLE_ADDRESS, command, 1);
 
-	{
-		uint8_t command[4] = {0x01, 0xff, 0x00, 0x02};
 
-		write_servo_data(servo_id, GOAL_POSITION_ADDRESS, command, 4);
+	{
+		uint8_t command[4] = {0x00, 0x00, 0x03, 0xff};
+
+		write_servo_data(servo_id, ANGLE_LIMIT_ADDRESS, command, 4);
 	}
 	
 	
 	while(1)
 	{
-		send_servo_command(servo_id, ACTION_INSTRUCTION, 0, 0);
+		{
+			uint8_t command[4] = {0x00, 0x02, 0x00, 0x02};
+
+			write_servo_data(servo_id, GOAL_POSITION_ADDRESS, command, 4);
+		}
+		//send_servo_command(servo_id, ACTION_INSTRUCTION, 0, 0);
 		
 		_delay_ms(100);
 	}
