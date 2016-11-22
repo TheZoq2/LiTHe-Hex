@@ -1,4 +1,4 @@
-// Copyright 2016 Noak Ringman, Emil SegerbÃ¤ck, Robin Sliwa, Frans Skarman, Hannes Tuhkala, Malcolm Wigren, Olav Ã–vrebÃ¶
+// Copyright 2016 Noak Ringman, Emil Segerbäck, Robin Sliwa, Frans Skarman, Hannes Tuhkala, Malcolm Wigren, Olav Övrebö
 
 // This file is part of LiTHe Hex.
 
@@ -15,36 +15,9 @@
 // You should have received a copy of the GNU General Public License
 // along with LiTHe Hex.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef TABLE_H
-#define TABLE_H 
+#ifndef COMMUNICATION_H
+#define COMMUNICATION_H
 
-#include "ir.h"
-#include "lidar.h"
+void on_spi_recv();
 
-typedef struct MainTable {
-
-    IR* ir_list;
-
-    uint16_t front_distance;
-
-    uint8_t left_distance;
-
-    uint8_t right_distance;
-	
-	uint8_t down_distance;
-
-    float corridor_angle;
-
-} MainTable;
-
-MainTable* mainTable;
-
-void table_init(MainTable* table, IR ir_list[NUM_SENSORS]);
-
-void update(MainTable* table, Lidar* lidar);
-
-void send_sensor_data();
-
-void send_sensor_wall_data();
-
-#endif /* ifndef MAINTABLE_H */
+#endif /* ifndef COMMUNICATION_H */

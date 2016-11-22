@@ -18,12 +18,11 @@
 #include "table.h"
 #include <math.h>
 #include "ir.h"
+#include "spi.h"
 
-#define LEN_BETWEEN_SIDE_IR 10
 #define PERCENT_FAULT_TOLERANCE_ANGLE 0.5
+#define NUM_BYTE_SEND				  5
 
-//uint8_t left_distance();
-//uint8_t right_distance();
 float corridor_angle();
 
 void table_init(MainTable* table, IR ir_list[NUM_SENSORS]){
@@ -36,14 +35,27 @@ void table_init(MainTable* table, IR ir_list[NUM_SENSORS]){
 void update(MainTable* table, Lidar* lidar) {
 	table->front_distance = lidar->value;
 	table->corridor_angle = corridor_angle(table);
-	table->down_distance = table->ir_list[0].value;
+	table->down_distance = table->ir_list[DOWN].value;
 }
 
-float corridor_angle(MainTable* ir_back) {
-	double angle_left_side = atan((table->ir_list[1].value - table->ir_list[2].value)/LEN_BETWEEN_SIDE_IR);
-	double angle_right_side = atan((table->ir_list[3].value - table->ir_list[4].value)/LEN_BETWEEN_SIDE_IR);
+float corridor_angle(MainTable* table) {
+	double angle_left_side = atan((table->ir_list[FRONT_LEFT].value - table->ir_list[BACK_LEFT].value)/LEN_BETWEEN_SIDE_IR);
+	double angle_right_side = atan((table->ir_list[FRONT_RIGHT].value - table->ir_list[BACK_RIGHT].value)/LEN_BETWEEN_SIDE_IR);
 	if(fabs(angle_left_side - angle_right_side) / angle_left_side > PERCENT_FAULT_TOLERANCE_ANGLE) {
-		return 90.0 // Can not tell angle, to much diff at sides
+		return M_PI; // Can not tell angle, to much diff at sides
 	}
-	return (fabs(a) + fabs(b)) / 2
+	return (fabs(angle_left_side) + fabs(angle_right_side)) / 2;
+}
+
+void send_sensor_data() {
+	spi_transmit_byte(NUM_BYTE_SEND);
+	for(uint8_t i = 0; i < NUM_SENSORS; i++) {
+		spi_transmit_byte(mainTable->ir_list[i].value);
+	}
+	//spi_transmit_byte(mainTable->front_distance);
+	//spi_transmit_byte(mainTable->front_distance);
+}
+
+void send_sensor_wall_data() {
+	
 }

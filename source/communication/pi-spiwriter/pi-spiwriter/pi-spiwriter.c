@@ -9,16 +9,14 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include "spi.h"
+#include "communication.h"
 
 #define ACK 0x7E
 volatile uint16_t data;
 
 ISR(SPI_STC_vect)
 {
-  data = spi_recieve_byte();
-  data |= (spi_recieve_byte()<<8);
-  spi_transmit_ack();
-
+  on_spi_recv();
 }
 
 int main(void)
