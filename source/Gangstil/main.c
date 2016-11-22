@@ -452,23 +452,24 @@ float workTowardsGoal(float rot, Point2D * goal, Point2D * current){
 /**
  * @brief rotateSetSmallAngle rotates the robot a small angle, assumed to be at
  * sufficiently small that the robot legs should not be crossing across the
- * robot's body. Does not terminate until the full rotation has been achieved
- * (appart from refraining from minimal, near-unnoticible movements to finalize
- * the rotation).
+ * robot's body. Does not terminate until the full rotation has been achieved.
  * @param angle rotation the robot shall achieve.
  * @param current position the legs currently hold.
+ * @return float indicating portion of angle remaining uncompleted.
  */
-void rotateSetSmallAngle(float angle, Point2D * current){
+float rotateSetSmallAngle(float angle, Point2D * current){
     float remaining = 1;
     Point2D * emptyGoal = (Point2D *)malloc(sizeof(Point2D));
     emptyGoal->x = 0;
     emptyGoal->y = 0;
 
-    while (remaining > 0.01) {
+    while (remaining > 0.2) {
         float remainingAngle = remaining * angle;
         remaining = remaining - workTowardsGoal(remainingAngle, emptyGoal, current);
     }
     free(emptyGoal);
+    
+    return remaining;
 }
 
 
@@ -482,10 +483,12 @@ void rotateSetAngle(float angle, Point2D * current){
     assumeStandardizedStance(current);
 
     while(angle > 1){
-        angle = angle - 1;
-        rotateSetSmallAngle(angle, current);
+        float completion = rotateSetSmallAngle(1, current);
+        angle = angle - (1 - completion);
     }
-    rotateSetSmallAngle(angle, current);
+    float remaining = angle * ( 1 - rotateSetSmallAngle(angle, current));
+    if (remaining > 0.1)
+        rotateSetSmallAngle(remaining, current);
 }
 
 
