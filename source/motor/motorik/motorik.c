@@ -148,19 +148,19 @@ int main(void)
 	
 	uint8_t servo_id = 0x01;
 
-	//Sending factory reset command
-	send_servo_command(servo_id, 0x06, 0, 0);
-	
 	
 	uint8_t command[2] = {0x01};
 	write_servo_data(servo_id, TORQUE_ENABLE_ADDRESS, command, 1);
-	
-	
-	while(1)
+
 	{
 		uint8_t command[4] = {0x01, 0xff, 0x00, 0x02};
 
 		write_servo_data(servo_id, GOAL_POSITION_ADDRESS, command, 4);
+	}
+	
+	
+	while(1)
+	{
 
 		
 		_delay_ms(100);
