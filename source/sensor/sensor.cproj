@@ -141,7 +141,19 @@
     <Compile Include="ir_queue.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="lidar.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lidar.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="sensor.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="table.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="table.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="timer.c">

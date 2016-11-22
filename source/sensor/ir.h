@@ -25,10 +25,12 @@
 #define NUM_SENSORS			5
 #define NUM_SENSOR_DATA		5
 #define DUMMY_PORT			255
+#define LEN_BETWEEN_SIDE_IR 10
 
 typedef uint8_t irport_t;
 
 enum Range {LONG_RANGE, SHORT_RANGE};
+enum Placement {FRONT_LEFT, BACK_LEFT, FRONT_RIGHT, BACK_RIGHT, DOWN};
 
 const static double LONG_BASE = 17391.0;
 const static double LONG_EXP = -1.071;
@@ -40,17 +42,21 @@ const static enum Range RANGES[NUM_SENSORS] = {
     SHORT_RANGE, LONG_RANGE, LONG_RANGE, LONG_RANGE, LONG_RANGE
 };
 
+const static enum Placement PLACEMENTS[NUM_SENSORS] = {
+    DOWN, FRONT_LEFT, BACK_LEFT, FRONT_RIGHT, BACK_RIGHT
+};
+
 typedef struct IR {
 
     enum Range range;
 
+    enum Placement placement;
+
     irport_t port;
 
-    double value;
+    uint8_t value;
 	
 	double raw_data_list[NUM_SENSOR_DATA];
-
-    bool enabled;
 
 } IR;
 
@@ -62,6 +68,6 @@ void ir_reduce_noise(IR* ir);
 
 double latest_ir_value(IR* ir);
 
-double ir_value_to_meters(uint16_t val, enum Range range);
+double ir_value_to_centimeters(uint16_t val, enum Range range);
 
 #endif

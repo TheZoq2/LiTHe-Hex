@@ -6,6 +6,7 @@ use kiss3d::window::Window;
 use kiss3d::light::Light;
 
 mod leg;
+mod constants;
 use leg::Leg;
 
 use std::fs::{File};
@@ -37,9 +38,20 @@ impl Robot
     {
         let mut legs = vec!();
 
+        let leg_positions = vec!(
+                            na::Vector3::new(-6., 0., 12.) * constants::UNIT_SCALE,
+                            na::Vector3::new(6., 0., 12.) * constants::UNIT_SCALE,
+                            na::Vector3::new(-10., 0., 0.) * constants::UNIT_SCALE,
+                            na::Vector3::new(10., 0., 0.) * constants::UNIT_SCALE,
+                            na::Vector3::new(-6., 0., -12.) * constants::UNIT_SCALE,
+                            na::Vector3::new(6., 0., -12.) * constants::UNIT_SCALE,
+                        );
+
+        let leg_angles = vec!(-PI/4., PI/4., -PI/2., PI/2., -3.*PI/4., 3.*PI/4.);
+
         for i in 0..6
         {
-            legs.push(Leg::new(window, i as f32 * PI / 3.));
+            legs.push(Leg::new(window, leg_angles[i], leg_positions[i]));
         }
 
         Robot {

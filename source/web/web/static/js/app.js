@@ -19,3 +19,64 @@ import "phoenix_html"
 // paths "./socket" or full ones "web/static/js/socket".
 
 // import socket from "./socket"
+
+var haveEvents = 'ongamepadconnected' in window;
+var controllers = {};
+
+function addGamepad(gamepad) {
+    console.log("Gamepad connected at index " + gamepad.index + ": " + gamepad.id +
+        ". It has " + gamepad.buttons.length + " buttons and " + gamepad.axes.length + " axes.");
+    controllers[gamepad.index] = gamepad;
+}
+
+function pollRequestReceived(gamePadIndex) {
+    if (!haveEvents) {
+        scangamepads();
+    }
+
+    if (gamePadIndex in controllers) {
+        var gamepad = controllers[gamePadIndex];
+        var data = {
+            x: gamepad.axes[0],
+            y: gamepad.axes[1],
+            rotation: gamepad.axes[3],
+            thrust: (1 - gamepad.axes[2]) / 2
+        }
+        elmApp.ports.axisData.send(data);
+    }
+}
+
+function removeGamepad(gamepad) {
+    delete controllers[gamepad.index];
+}
+
+function scangamepads() {
+    var gamepads = navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads() : []);
+    for (var i = 0; i < gamepads.length; i++) {
+        if (gamepads[i]) {
+            if (gamepads[i].index in controllers) {
+                controllers[gamepads[i].index] = gamepads[i];
+            } else {
+                addGamepad(gamepads[i]);
+            }
+        }
+    }
+}
+
+// Set up Elm
+const elmDiv = document.querySelector('#elm-container');
+const elmApp = Elm.App.embed(elmDiv, {host: location.host});
+
+elmApp.ports.poll.subscribe(pollRequestReceived);
+
+window.addEventListener("gamepadconnected", function(e) {
+    addGamepad(e.gamepad);
+});
+
+window.addEventListener("gamepaddisconnected", function(e) {
+    removeGamepad(e.gamepad);
+});
+
+if (!haveEvents) {
+    setInterval(scangamepads, 500);
+}
