@@ -145,15 +145,11 @@ int main(void)
 	
 	_delay_ms(100);
 	
-	//set_bit(PORTD, 2);
-	//PORTD = 0b00000100;
 	
-	uint8_t servo_id = 0xFE;
-	
-	{
-		//uint8_t torque_value[2] = {0x18, 0x00};
-		//send_servo_command(servo_id, 0x03, (void*) &torque_value, 2);
-	}
+	uint8_t servo_id = 0x01;
+
+	//Sending factory reset command
+	send_servo_command(servo_id, 0x06, 0, 0);
 	
 	
 	uint8_t command[2] = {0x01};
@@ -162,35 +158,11 @@ int main(void)
 	
 	while(1)
 	{
-		//Enable uart tx, disable rx
-		//clear_bit(UCSR0C, RXEN0);
-		//set_bit(UCSR0C, TXEN0);
+		uint8_t command[4] = {0x01, 0xff, 0x00, 0x02};
 
-		//Set the direction of the trirstate gate
-		clear_bit(PORTD, PIN_RX_TOGGLE);
+		write_servo_data(servo_id, GOAL_POSITION_ADDRESS, command, 4);
 
 		
-		//uint8_t command[3] = {0x1E, 0x01, 0xff};
-		//send_servo_command(servo_id, 0x03, (void*)&command, 3);
-		//uint8_t command[2] = {0x01, 0xff};
-		
-		
-		//send_servo_command(0x06, 0x03, (void*) &torque_value, 2);
-		
-		//send_servo_command(0x06, 0x03)
-		//usart_transmit(0xff);
-		//usart_transmit(0xff);
-		//usart_transmit(0x04);
-		//usart_transmit(0x07);
-		//usart_transmit(0x03);
-		//usart_transmit(0x1E);
-		//usart_transmit(0x00);
-		//usart_transmit(0x02);
-		//usart_transmit(0x00);
-		//usart_transmit(0x02);
-		//usart_transmit(0xD3);
-		uart_wait();
-
 		_delay_ms(100);
 	}
 }
