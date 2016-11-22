@@ -45,7 +45,7 @@ uint8_t spi_transmit_byte(uint8_t data) {
 	return SPDR;
 }
 
-void spi_transmit_ack() {
+void transmit_ack() {
     spi_transmit_byte(ACK);
 }
 

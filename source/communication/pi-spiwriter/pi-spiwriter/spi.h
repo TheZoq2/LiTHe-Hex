@@ -15,37 +15,15 @@
 // You should have received a copy of the GNU General Public License
 // along with LiTHe Hex.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "spi.h"
+#ifndef COMMUNICATION_H
+#define COMMUNICATION_H 
 
-#define ACK 0x7E
+#include <avr/io.h>
+#include <avr/interrupt.h>
 
-void spi_init() {
-    // Set MISO output, all others input
-    DDRB &= 0x0F;
-    DDRB |= (1 << DDB6);
-	// Enable SPI and interrupt enable bit
-	SPCR = (1<<SPE) | (1<<SPIE);
-}
+void spi_init();
+uint8_t spi_recieve_byte();
+uint8_t spi_transmit_byte(uint8_t data);
+void spi_transmit_ack();
 
-uint8_t spi_recieve_byte() {
-
-	// Wait for reception complete 
-	while(!(SPSR) & (1<<SPIF));
-
-	// Return Data Register
-	return SPDR;
-}
-
-uint8_t spi_transmit_byte(uint8_t data) {
-	SPDR = data;
-	// Wait for reception complete
-	while(!(SPSR) & (1<<SPIF)){}
-
-	// Return Data Register
-	return SPDR;
-}
-
-void spi_transmit_ack() {
-    spi_transmit_byte(ACK);
-}
-
+#endif /* ifndef COMMUNICATION_H */
