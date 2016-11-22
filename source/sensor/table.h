@@ -20,6 +20,7 @@
 
 #include "ir.h"
 #include "lidar.h"
+#include "../communication/communication.h"
 
 typedef struct MainTable {
 
@@ -43,8 +44,8 @@ void table_init(MainTable* table, IR ir_list[NUM_SENSORS]);
 
 void update(MainTable* table, Lidar* lidar);
 
-void send_sensor_data();
+void send_sensor_data(Frame* frame);
 
-void send_sensor_wall_data();
+void send_sensor_wall_data(Frame* frame);
 
 #endif /* ifndef MAINTABLE_H */

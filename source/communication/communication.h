@@ -18,6 +18,12 @@
 #ifndef COMMUNICATION_H
 #define COMMUNICATION_H
 
+typedef struct Frame {
+	uint8_t control_byte;
+	uint8_t len;
+	uint8_t msg[];
+} Frame;
+
 void on_spi_recv();
 
 #endif /* ifndef COMMUNICATION_H */
