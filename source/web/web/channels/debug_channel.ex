@@ -22,6 +22,11 @@ defmodule Web.DebugChannel do
     {:noreply, socket}
   end
 
+  def handle_in("new_msg", %{"body" => body}, socket) do
+    broadcast! socket, "new_msg", %{body: body}
+    {:noreply, socket}
+  end
+
   # Add authorization logic here as required.
   defp authorized?(_payload) do
     true
