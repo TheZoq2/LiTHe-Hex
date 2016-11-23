@@ -1,4 +1,4 @@
-#!/urs/bin/env python3
+#!/usr/bin/env python3
 
 # Copyright 2016 Noak Ringman, Emil Segerbäck, Robin Sliwa, Frans Skarman, Hannes Tuhkala, Malcolm Wigren, Olav Övrebö
 # 
