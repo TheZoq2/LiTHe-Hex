@@ -19,13 +19,14 @@
 # along with LiTHe Hex.  If not, see <http://www.gnu.org/licenses/>.
 
 import communication
-
+import pdb
 
 def main():
     spi = communication.communication_init()
     res = []
+    pdb.set_trace()
     while True:
-        res.append(communication._send_bytes(spi, 0x12, 0xFE))
+        communication.set_obstacle_mode(spi, True)
 
 
 if __name__ == '__main__':

@@ -17,6 +17,7 @@
 # along with LiTHe Hex.  If not, see <http://www.gnu.org/licenses/>.
 
 import spidev
+import time
 
 MOTOR_ADDR = (0, 0)
 SENSOR_ADDR = (0, 1)
@@ -60,7 +61,13 @@ def _send_bytes(spi, *data):
     # check if all are bytes
     if sum([(not isinstance(x, int)) or x > MAX_BYTE_SIZE or x < 0 for x in data]):
         raise InvalidCommandException("Data sequence {} contains non-bytes".format(data))
-    return spi.xfer(list(data))
+    spi.writebytes([66])
+    spi.writebytes(list(data))
+    return spi.readbytes(1)
+    # res = []
+    # for d in data:
+    #     res.append(spi.xfer2([d]))
+    # return res
         
 
 def _recieve_muliple_bytes(spi, type_):
@@ -92,7 +99,7 @@ def _request_data(data_id):
         return False
 
 
-def _select_device(addr):
+def _select_device(spi, addr):
     spi.open(*addr)
 
 
