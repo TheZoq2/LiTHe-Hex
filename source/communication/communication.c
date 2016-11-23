@@ -21,8 +21,6 @@
 #include "../sensor/table.h"
 #include <stdio.h>
 
-uint8_t replay_msg_id[5] = {0x02, 0x03, 0x04, 0x20, 0x05};
-
 bool check_partiy();
 
 void send_replay_sensor(uint8_t current_msg);
@@ -37,20 +35,29 @@ void get_new_frame(Frame* frame_recv);
 
 void send_frame(Frame* frame_send);
 
+void send_replay_test();
+
 void on_spi_recv() {
+
 	Frame frame_recv;
 	get_new_frame(&frame_recv);
 	uint8_t current_id = get_current_id(&frame_recv);
 	
 	bool success = check_partiy(&frame_recv); 
 	if(success) { // continue if message ok
-		spi_transmit_ack();
-
+		Frame send_ack;
+		send_ack.control_byte = 0x0F << 2;
+		send_ack.len = 0;
+		send_ack.msg[0] = 0x00;
+		send_frame(&send_ack);
+	
 		bool replay = message_require_replay(current_id);
 		if(replay) { // send a replay to central-unit
-			#ifdef MainTable
-				send_replay_sensor(current_id);
-			#endif
+			// TEST
+			send_replay_test();
+			//#ifdef TABLE_H
+				//send_replay_sensor(current_id);
+			//#endif
 			//#ifdef //TODO send replay for motor if some file is def
 				//send_replay_motor();
 		} else { // 
@@ -58,11 +65,27 @@ void on_spi_recv() {
 			//control_motor();
 		}
 	} else { // Something was wrong with message
-		spi_transmit_byte(0x1F);
+		Frame frame_send;
+		frame_send.control_byte = 0x1F << 2;
+		frame_send.len = 0;
+		frame_send.msg[0] = 0x00;
+		send_frame(&frame_send);
 	}
 }
 
+void send_replay_test() {
+
+	Frame test_frame;
+	test_frame.control_byte = 20 << 2;
+	test_frame.len = 3;
+	test_frame.msg[0] = 0xBA;
+	test_frame.msg[0] = 0xFC;
+	test_frame.msg[0] = 0xEC;
+	send_frame(&test_frame);
+}
+
 bool check_partiy(Frame* frame) {
+
 	// check parity for control_byte
 	uint8_t byte = frame->control_byte;
 	bool parity_con = false;
@@ -85,6 +108,7 @@ bool check_partiy(Frame* frame) {
 }
 
 void calculate_parity(Frame* frame) {
+
 	// calculate parity for length and message bytes
 	bool parity_msg = false;
 	for(uint8_t i = 0; i < frame->len; i++) {
@@ -116,6 +140,7 @@ void calculate_parity(Frame* frame) {
 }
 
 void get_new_frame(Frame* frame_recv) {
+
 	frame_recv->control_byte = spi_recieve_byte();
 	if(frame_recv->control_byte & 0x80) { // msg is one byte long
 		frame_recv->len = 0;
@@ -129,33 +154,45 @@ void get_new_frame(Frame* frame_recv) {
 }
 
 uint8_t get_current_id(Frame* frame_recv) {
+
 	return (frame_recv->control_byte & 0xFC) >> 2;
 }
 
 bool message_require_replay(uint8_t current_msg) {
-	for(uint8_t i = 0; i < 7; i++) {
-		if(current_msg == replay_msg_id[i]) {
+
+	switch(current_msg) {
+		case 0x02 :
+		case 0x03 :
+		case 0x04 :
+		case 0x20 :
+		case 0x05 :
 			return true;
-		}
 	}
+	return false;
 }
 
 void send_replay_sensor(uint8_t current_id) {
+
 	Frame frame_send_1;
 	Frame frame_send_2;
 	if(current_id == 0x02) {
 		frame_send_1.control_byte = 0x20 << 2;
-		send_sensor_data(&frame_send_1);
+	//	send_sensor_data(&frame_send_1);
 		frame_send_2.control_byte = 0x21 << 2;
-		send_sensor_wall_data(&frame_send_2);
+	//	send_sensor_wall_data(&frame_send_2);
 	}
 	send_frame(&frame_send_1);
 	send_frame(&frame_send_2);
 }
 
 void send_frame(Frame* frame) {
+
 	calculate_parity(frame);
 	spi_transmit_byte(frame->control_byte);
+	if(!frame->len) {
+		spi_transmit_byte(frame->msg[0]);
+		return;
+	}
 	spi_transmit_byte(frame->len);
 	for(uint8_t i = 0; i < frame->len; i++) {
 		spi_transmit_byte(frame->msg[i]);
@@ -163,6 +200,7 @@ void send_frame(Frame* frame) {
 }
 
 void control_motor(uint8_t current_msg) {
+
 	switch(current_msg){
 		case 0x03 :
 			// Toggle obstacle
@@ -180,6 +218,7 @@ void control_motor(uint8_t current_msg) {
 }
 
 void send_replay_motor(uint8_t current_msg) {
+
 	Frame frame_send_status;
 	Frame frame_send_string;
 	Frame frame_send_obstacle;
