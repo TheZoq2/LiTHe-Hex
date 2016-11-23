@@ -16,18 +16,18 @@
 // along with LiTHe Hex.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <stdbool.h>
-#include "spi.h"
+
 #include "communication.h"
-#include "../sensor/table.h"
-#include <stdio.h>
+//#include "../sensor/table.h"
+//#include <stdio.h>
 
-bool check_partiy();
+bool check_parity();
 
-void send_replay_sensor(uint8_t current_msg);
+void send_reply_sensor(uint8_t current_msg);
 
-void send_replay_motor(uint8_t current_msg);
+void send_reply_motor(uint8_t current_msg);
 
-bool message_require_replay(uint8_t current_msg);
+bool message_require_reply(uint8_t current_msg);
 
 uint8_t get_current_id(Frame* frame_recv);
 
@@ -35,7 +35,7 @@ void get_new_frame(Frame* frame_recv);
 
 void send_frame(Frame* frame_send);
 
-void send_replay_test();
+void send_reply_test();
 
 void on_spi_recv() {
 
@@ -43,18 +43,18 @@ void on_spi_recv() {
 	get_new_frame(&frame_recv);
 	uint8_t current_id = get_current_id(&frame_recv);
 	
-	bool success = check_partiy(&frame_recv); 
+	bool success = check_parity(&frame_recv); 
 	if(success) { // continue if message ok
-		Frame send_ack;
-		send_ack.control_byte = 0x0F << 2;
-		send_ack.len = 0;
-		send_ack.msg[0] = 0x00;
-		send_frame(&send_ack);
+		Frame ack_frame;
+		ack_frame.control_byte = 0x0F << 2;
+		ack_frame.len = 0;
+		ack_frame.msg[0] = 0x00;
+		send_frame(&ack_frame);
 	
-		bool replay = message_require_replay(current_id);
-		if(replay) { // send a replay to central-unit
+		bool reply = message_require_reply(current_id);
+		if(reply) { // send a replay to central-unit
 			// TEST
-			send_replay_test();
+			send_reply_test();
 			//#ifdef TABLE_H
 				//send_replay_sensor(current_id);
 			//#endif
@@ -73,7 +73,7 @@ void on_spi_recv() {
 	}
 }
 
-void send_replay_test() {
+void send_reply_test() {
 
 	Frame test_frame;
 	test_frame.control_byte = 20 << 2;
@@ -84,7 +84,7 @@ void send_replay_test() {
 	send_frame(&test_frame);
 }
 
-bool check_partiy(Frame* frame) {
+bool check_parity(Frame* frame) {
 
 	// check parity for control_byte
 	uint8_t byte = frame->control_byte;
@@ -141,14 +141,17 @@ void calculate_parity(Frame* frame) {
 
 void get_new_frame(Frame* frame_recv) {
 
-	frame_recv->control_byte = spi_recieve_byte();
-	if(frame_recv->control_byte & 0x80) { // msg is one byte long
+	frame_recv->control_byte = spi_receive_byte();
+	//frame_recv->len = spi_receive_byte();
+	//frame_recv->msg[0] =
+ 
+	if(!(frame_recv->control_byte & 0x80)) { // msg is one byte long
 		frame_recv->len = 0;
-		frame_recv->msg[0] = spi_recive_byte();
+		frame_recv->msg[0] = spi_receive_byte();
 	} else { // msg is more than one byte long
-		frame_recv->len = spi_recieve_byte();
+		frame_recv->len = spi_receive_byte();
 		for(uint8_t i = 0; i < frame_recv->len; i++) {
-			frame_recv->msg[i] = spi_recieve_byte();
+			frame_recv->msg[i] = spi_receive_byte();
 		}
 	}
 }
@@ -158,7 +161,7 @@ uint8_t get_current_id(Frame* frame_recv) {
 	return (frame_recv->control_byte & 0xFC) >> 2;
 }
 
-bool message_require_replay(uint8_t current_msg) {
+bool message_require_reply(uint8_t current_msg) {
 
 	switch(current_msg) {
 		case 0x02 :
@@ -167,11 +170,11 @@ bool message_require_replay(uint8_t current_msg) {
 		case 0x20 :
 		case 0x05 :
 			return true;
+		default: return false;
 	}
-	return false;
 }
 
-void send_replay_sensor(uint8_t current_id) {
+void send_reply_sensor(uint8_t current_id) {
 
 	Frame frame_send_1;
 	Frame frame_send_2;
@@ -217,7 +220,7 @@ void control_motor(uint8_t current_msg) {
 	}
 }
 
-void send_replay_motor(uint8_t current_msg) {
+void send_reply_motor(uint8_t current_msg) {
 
 	Frame frame_send_status;
 	Frame frame_send_string;

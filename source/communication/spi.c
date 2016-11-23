@@ -27,7 +27,7 @@ void spi_init() {
 	SPCR = (1<<SPE) | (1<<SPIE);
 }
 
-uint8_t spi_recieve_byte() {
+uint8_t spi_receive_byte() {
 
 	// Wait for reception complete 
 	while(!((SPSR) & (1<<SPIF)));
