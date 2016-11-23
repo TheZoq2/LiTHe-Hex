@@ -76,13 +76,10 @@ bool check_partiy(Frame* frame) {
 	for(uint8_t i = 0; i < frame->len; i++) {
 		uint8_t msg = frame->msg[i];
 		while(msg) {
-			printf("!!%i - %i\n", byte, parity_con);
 			parity_con = !parity_con;
 			msg &= (msg - 1);
 		}
 	}
-
-	printf("ANS: %i - %i\n", parity_con, parity_msg);
 	
 	return (parity_con == (frame->control_byte & 0x01)) && (parity_msg == (frame->control_byte & 0x02));
 }
@@ -98,7 +95,7 @@ void calculate_parity(Frame* frame) {
 		}
 	}
 
-	// Set parity bit
+	// Set parity bit for len and message
 	if(parity_msg) {
 		frame->control_byte | 0x02;
 	}
@@ -111,7 +108,7 @@ void calculate_parity(Frame* frame) {
 		byte &= (byte - 1);
 	}
 
-	// Set parity bit
+	// Set parity bit for control_byte
 	if(parity_con) {
 		frame->control_byte | 0x01;
 	}
@@ -147,9 +144,9 @@ void send_replay_sensor(uint8_t current_id) {
 	Frame frame_send_1;
 	Frame frame_send_2;
 	if(current_id == 0x02) {
-		frame_send_1.control_byte = 0x20;
+		frame_send_1.control_byte = 0x20 << 2;
 		send_sensor_data(&frame_send_1);
-		frame_send_2.control_byte = 0x21;
+		frame_send_2.control_byte = 0x21 << 2;
 		send_sensor_wall_data(&frame_send_2);
 	}
 	send_frame(&frame_send_1);
@@ -157,7 +154,6 @@ void send_replay_sensor(uint8_t current_id) {
 }
 
 void send_frame(Frame* frame) {
-	// Test print insted of spi transmit
 	calculate_parity(frame);
 	spi_transmit_byte(frame->control_byte);
 	spi_transmit_byte(frame->len);
