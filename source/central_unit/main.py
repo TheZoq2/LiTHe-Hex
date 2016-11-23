@@ -22,7 +22,9 @@ import communication
 
 
 def main():
-    communication.set_servo_speed(None, 0xF2F3)
+    spi = communication.communication_init()
+    while True:
+        communication._send_bytes(spi, 0x12, 0xFE)
 
 
 if __name__ == '__main__':

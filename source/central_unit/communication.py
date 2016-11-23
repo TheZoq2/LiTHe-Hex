@@ -58,7 +58,7 @@ class CommunicationError(Exception):
 
 def _send_bytes(spi, *data):
     # check if all are bytes
-    if sum([(not isinstance(x, int)) or x > MAX_BYTE_SIZE or x < MAX_BYTE_SIZE for x in data]):
+    if sum([(not isinstance(x, int)) or x > MAX_BYTE_SIZE or x < 0 for x in data]):
         raise InvalidCommandException("Data sequence {} contains non-bytes".format(data))
     return spi.xfer2(data)
         
