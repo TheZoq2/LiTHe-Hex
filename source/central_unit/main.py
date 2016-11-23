@@ -23,8 +23,9 @@ import communication
 
 def main():
     spi = communication.communication_init()
+    res = []
     while True:
-        communication._send_bytes(spi, 0x12, 0xFE)
+        res.append(communication._send_bytes(spi, 0x12, 0xFE))
 
 
 if __name__ == '__main__':
