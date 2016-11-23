@@ -31,7 +31,7 @@ int main(void)
 	
 	
 	
-	reset_servo_max_angles(0);
+	reset_servo_bounds(0);
 	enable_servo_torque(0);
 	set_servo_angle(0, 0x0200);
 		

@@ -11,7 +11,25 @@ const uint8_t GOAL_POSITION_ADDRESS = 0x1E;
 
 const uint8_t TORQUE_ON = 0x01;
 
-void send_servo_command(uint8_t id, uint8_t instruction, void* data, uint8_t data_amount)
+
+
+const uint8_t LEFT_FRONT = 0;
+const uint8_t LEFT_MID = 1;
+const uint8_t LEFT_BACK = 2;
+const uint8_t RIGHT_FRONT = 3;
+const uint8_t RIGHT_MID = 4;
+const uint8_t RIGHT_BACK = 5;
+
+const uint8_t SERVO_MAP[6][3] = {
+	{1,3,5},
+	{13,15,17},
+	{7,9,11},
+	{2,4,6},
+	{14,16,18},
+	{8,9,12},
+};
+
+void send_servo_command(uint8_t id, uint8_t instruction, const void* data, uint8_t data_amount)
 {
 	//Enable uart tx, disable rx
 	//clear_bit(UCSR0C, RXEN0);
@@ -48,7 +66,7 @@ void send_servo_command(uint8_t id, uint8_t instruction, void* data, uint8_t dat
 	//set_bit(PORTD, PIN_RX_TOGGLE);
 }
 
-void write_servo_data(uint8_t id, uint8_t address, uint8_t* data, uint8_t data_amount)
+void write_servo_data(uint8_t id, uint8_t address, const uint8_t* data, uint8_t data_amount)
 {
 	uint8_t new_data_amount = data_amount + 1;
 	
@@ -99,7 +117,7 @@ ServoReply receive_servo_reply()
 }
 
 
-void reset_servo_max_angles(uint8_t id)
+void reset_servo_bounds(uint8_t id)
 {
 	uint8_t command[4] = {0x00, 0x00, 0x03, 0xff};
 
@@ -118,3 +136,15 @@ void set_servo_angle(uint8_t id, uint16_t angle)
 
 	write_servo_data(id, GOAL_POSITION_ADDRESS, command, 2);
 }
+
+void init_all_servos()
+{
+	for(uint8_t i = 0; i < 18; ++i)
+	{
+		enable_servo_torque(i);
+		reset_servo_bounds(i);
+	}
+}
+
+
+
