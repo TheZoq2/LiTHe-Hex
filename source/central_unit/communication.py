@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with LiTHe Hex.  If not, see <http://www.gnu.org/licenses/>.
 
-#import spidev
+import spidev
 
 MOTOR_ADDR = (0, 0)
 SENSOR_ADDR = (0, 1)
@@ -60,7 +60,8 @@ def _send_bytes(spi, *data):
     # check if all are bytes
     if sum([(not isinstance(x, int)) or x > MAX_BYTE_SIZE or x < 0 for x in data]):
         raise InvalidCommandException("Data sequence {} contains non-bytes".format(data))
-    return spi.xfer2(data)
+    data_list = [x for x in data]
+    return spi.xfer2()
         
 
 def _recieve_muliple_bytes(spi, type_):
