@@ -60,8 +60,7 @@ def _send_bytes(spi, *data):
     # check if all are bytes
     if sum([(not isinstance(x, int)) or x > MAX_BYTE_SIZE or x < 0 for x in data]):
         raise InvalidCommandException("Data sequence {} contains non-bytes".format(data))
-    data_list = [x for x in data]
-    return spi.xfer2()
+    return spi.xfer(list(data))
         
 
 def _recieve_muliple_bytes(spi, type_):
