@@ -1,4 +1,4 @@
-port module Joystick exposing (joystickDisplay, poll, axisData, JoystickData)
+port module Joystick exposing (joystickDisplay, connected, disconnected, poll, axisData, JoystickData)
 
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
@@ -12,6 +12,12 @@ type alias JoystickData =
     , rotation : Float
     , thrust : Float
     }
+
+
+port connected : (Int -> msg) -> Sub msg
+
+
+port disconnected : (Int -> msg) -> Sub msg
 
 
 port poll : Int -> Cmd msg
