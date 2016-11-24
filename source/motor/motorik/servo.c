@@ -29,7 +29,7 @@ const uint8_t SERVO_MAP[6][3] = {
 	{7,9,11},
 	{2,4,6},
 	{14,16,18},
-	{8,9,12},
+	{8,10,12},
 };
 
 void send_servo_command(uint8_t id, uint8_t instruction, const void* data, uint8_t data_amount)
@@ -172,7 +172,6 @@ void set_leg_angles(enum Leg leg_index, uint16_t* angles)
 	for (uint8_t i = 0; i < 3; ++i) 
 	{
 		set_servo_angle(ids[i], angles[i]);
-		_delay_ms(5);
 	}
 }
 
