@@ -26,7 +26,7 @@ def main():
     res = []
     while True:
         pdb.set_trace()
-        communication.set_obstacle_mode(spi, True)
+        communication.set_servo_speed(spi, 0xF0F2)
 
 
 if __name__ == '__main__':
