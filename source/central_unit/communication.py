@@ -31,6 +31,7 @@ MAX_BYTE_SIZE = 255
 MAX_16BIT_SIZE = MAX_BYTE_SIZE**2
 
 SET_OBSTACLE = 0x03
+SET_SERVO_SPEED = 0x04
 
 
 class InvalidCommandException(Exception):
@@ -126,6 +127,14 @@ def _check_response(response):
         raise CommunicationError("No acknowledge message recieved")
 
 
+def _get_total_msg(*data):
+    length = len(data)
+    res = str(length) if length > 1 else ""
+    for d in data:
+        res += str(d)
+    return int(res)
+
+
 def communication_init():
     spi = spidev.SpiDev()
     spi.open(*MOTOR_ADDR)
@@ -147,7 +156,8 @@ def set_servo_speed(spi, speed):
         raise InvalidCommandException("Speed \"{}\" is not a 16-bit value".format(speed))
     least = speed & 0x00FF
     most = (speed & 0xFF00) >> 8
-    response = _send_bytes(spi, least, most)
+    response = _send_bytes(spi, _add_parity(SET_OBSTACLE, 
+                                            _get_total_msg(least, most)), least, most)
     _check_response(response)
 
 
