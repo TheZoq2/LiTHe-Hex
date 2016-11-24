@@ -70,8 +70,8 @@ void send_reply_test() {
 	test_frame.control_byte = OBSTACLE << 2;
 	test_frame.len = 3;
 	test_frame.msg[0] = 0xBA;
-	test_frame.msg[0] = 0xFC;
-	test_frame.msg[0] = 0xEC;
+	test_frame.msg[1] = 0xFC;
+	test_frame.msg[2] = 0xEC;
 	send_frame(&test_frame);
 }
 
@@ -109,8 +109,8 @@ bool check_parity(Frame* frame) {
 	}
 	
 	bool result = false;
-	if((frame->control_byte & 0x01) > 0 && parity_con) {
-		if((frame->control_byte & 0x02) > 0 && parity_msg) {
+	if((frame->control_byte & 0x01) > 0 == parity_con) {
+		if((frame->control_byte & 0x02) > 0 == parity_msg) {
 			result = true;
 		}
 	}
@@ -122,8 +122,21 @@ void calculate_parity(Frame* frame) {
 
 	// calculate parity for length and message bytes
 	bool parity_msg = false;
-	for(uint8_t i = 0; i < frame->len; i++) {
-		uint8_t msg = frame->msg[i];
+	if(frame->len > 0) {
+		uint8_t len = frame->len;
+		while(len) {
+			parity_msg = !parity_msg;
+			len &= (len - 1);
+		}
+		for(uint8_t i = 0; i < frame->len; i++) {
+			uint8_t msg = frame->msg[i];
+			while(msg) {
+				parity_msg = !parity_msg;
+				msg &= (msg - 1);
+			}
+		}
+	} else {
+		uint8_t msg = frame->msg[0];
 		while(msg) {
 			parity_msg = !parity_msg;
 			msg &= (msg - 1);
@@ -208,13 +221,13 @@ void send_frame(Frame* frame) {
 
 	calculate_parity(frame);
 	spi_transmit_byte(frame->control_byte);
-	if(!frame->len) {
+	if(frame->len == 0) {
 		spi_transmit_byte(frame->msg[0]);
-		return;
-	}
-	spi_transmit_byte(frame->len);
-	for(uint8_t i = 0; i < frame->len; i++) {
-		spi_transmit_byte(frame->msg[i]);
+	} else {
+		spi_transmit_byte(frame->len);
+		for(uint8_t i = 0; i < frame->len; i++) {
+			spi_transmit_byte(frame->msg[i]);
+		}
 	}
 }
 

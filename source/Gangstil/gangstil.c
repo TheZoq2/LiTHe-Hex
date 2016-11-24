@@ -1,49 +1,52 @@
-﻿#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-#include <stdbool.h>
+#include "gangstil.h"
 
-#ifndef M_PI
-    #define M_PI 3.14159265358979323846
-#endif
+// Copyright 2016 Noak Ringman, Emil Segerbäck, Robin Sliwa, Frans Skarman, Hannes Tuhkala, Malcolm Wigren, Olav Övrebö
 
-const size_t LF = 0;
-const size_t RF = 1;
-const size_t LM = 2;
-const size_t RM = 3;
-const size_t LB = 4;
-const size_t RB = 5;
+// This file is part of LiTHe Hex.
 
-const float FRONT_LEG_JOINT_X           = 0.12;
-const float FRONT_LEG_JOINT_Y           = 0.06;
-const float MID_LEG_JOINT_Y             = 0.1;
-const float HIGH                        = 0.1;
-const float GROUNDED                    = 0;
-const float MIN_DIST                    = 0.06;
-const float MAX_DIST                    = 0.18;
-const float VERT_MID_LEG_BORDER_OFFSET  = 0.06;
-const float VERT_HEAD_LEG_BORDER_OFFSET = -0.03;
-const float HORIZ_BORDER_TILT           = 0;
-const float DIAG_DIVISIVE_BORDER_TILT   = 1.3333333;
-const float CLOSE_BORDER_OFFSET         = 0.085;
-const float DIAG_DIVISIVE_BORDER_OFFSET = 0.045;
-const float CLOSE_BORDER_TILT           = -1;
+// LiTHe Hex is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
 
-const size_t NUM_LEGS = 6;
+// LiTHe Hex is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+
+// You should have received a copy of the GNU General Public License
+// along with LiTHe Hex.  If not, see <http://www.gnu.org/licenses/>.
 
 
 /**
- * struct used to represent leg positions, leg movements and robot positions. x is
- * positive forward, seen from the robot. y is positive to the left.
+ * @brief getAngles produces an array of the leg angles as calculated by the IK.
+ * @param target provides the coordinates relative to the joints for all the legs, as 
+ * they should be after movement.
+ * @return array ordered LF RF LM RM LB RB (left/right - front/mid/back) of calculated 
+ * angles for the legs.
  */
-typedef struct{
+struct Leg* getAngles(Point2D * target){
+    struct Leg* res = (struct Leg *)calloc(NUM_LEGS, sizeof(struct Leg));
     float x;
     float y;
-}Point2D;
-
-
-Point2D legs_target[6];
-
+    float z;
+    for (size_t leg = 0; leg < NUM_LEGS; ++leg){
+        if ((leg & 1) == 0){ //left hand side of robot
+            x = target[leg].y;
+            z = target[leg].x;
+        }
+        else{ //right hand side of robot
+            x = -target[leg].y;
+            z = -target[leg].x;
+        }
+        y = -target[leg].z;
+        res[leg] = leg_ik(x,y,z);
+    }
+    res[LF].angle1 = res[LF].angle1 + (M_PI / 4);
+    res[RF].angle1 = res[RF].angle1 - (M_PI / 4);
+    res[LB].angle1 = res[LB].angle1 - (M_PI / 4);
+    res[RB].angle1 = res[RB].angle1 + (M_PI / 4);
+}
 
 /**
  * @brief defaultLegPosition gives a default position for requested leg.
@@ -497,7 +500,7 @@ void rotateSetAngle(float angle, Point2D * current){
  * @param argc unused
  * @param argv unused
  * @return 0
- */
+ *//*
 int main(int argc, char *argv[]){
     //testing variables
     Point2D * current   = (Point2D *)calloc(NUM_LEGS, sizeof(Point2D));
@@ -547,4 +550,4 @@ int main(int argc, char *argv[]){
     command = NULL;
     diff    = NULL;
     return 0;
-}
+}*/
