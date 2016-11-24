@@ -16,6 +16,7 @@ const uint8_t ACTION_INSTRUCTION = 0x05;
 const uint8_t ANGLE_LIMIT_ADDRESS = 0x06;
 const uint8_t TORQUE_ENABLE_ADDRESS = 0x18;
 const uint8_t GOAL_POSITION_ADDRESS = 0x1E;
+const uint8_t ROTATION_SPEED_ADDRESS = 0x20;
 
 const uint8_t TORQUE_ON = 0x01;
 
@@ -149,15 +150,20 @@ void set_servo_angle(uint8_t id, uint16_t angle)
 
 	write_servo_data(id, GOAL_POSITION_ADDRESS, command, 2);
 }
+void set_servo_rotation_speed(uint8_t id, uint16_t angle)
+{
+	uint8_t command[2] = {(uint8_t)(angle), (uint8_t)(angle >> 8)};
+
+	write_servo_data(id, ROTATION_SPEED_ADDRESS, command, 2);
+}
 
 void init_all_servos()
 {
 	for(uint8_t i = 0; i < 18; ++i)
 	{
 		enable_servo_torque(i);
-		_delay_ms(100);
 		reset_servo_bounds(i);
-		_delay_ms(100);
+		set_servo_rotation_speed(i, 0x0100);
 	}
 }
 
