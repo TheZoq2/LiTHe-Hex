@@ -67,7 +67,7 @@ void on_spi_recv() {
 void send_reply_test() {
 
 	Frame test_frame;
-	test_frame.control_byte = ID_HEX[OBSTACLE] << 2;
+	test_frame.control_byte = OBSTACLE << 2;
 	test_frame.len = 3;
 	test_frame.msg[0] = 0xBA;
 	test_frame.msg[0] = 0xFC;
@@ -154,11 +154,11 @@ uint8_t get_id(Frame* frame_recv) {
 bool message_require_reply(uint8_t current_msg) {
 
 	switch(current_msg) {
-		case ID_HEX[DATA_REQUEST] :
-		case ID_HEX[TOGGLE_OBSTACLE] :
-		case ID_HEX[SET_SERVO_SPEED] :
-		case ID_HEX[WALK_COMMAMD] :
-		case ID_HEX[RETURN_TO_NEUTRAL] :
+		case DATA_REQUEST :
+		case TOGGLE_OBSTACLE :
+		case SET_SERVO_SPEED :
+		case WALK_COMMAMD :
+		case RETURN_TO_NEUTRAL :
 			return true;
 		default: return false;
 	}
@@ -168,10 +168,10 @@ void send_reply_sensor(uint8_t current_id) {
 
 	Frame frame_send_1;
 	Frame frame_send_2;
-	if(current_id == ID_HEX[DATA_REQUEST]) {
-		frame_send_1.control_byte = ID_HEX[SENSOR_DATA] << 2;
+	if(current_id == DATA_REQUEST) {
+		frame_send_1.control_byte = SENSOR_DATA << 2;
 	//	send_sensor_data(&frame_send_1);
-		frame_send_2.control_byte = ID_HEX[CORRIDOR_DATA] << 2;
+		frame_send_2.control_byte = CORRIDOR_DATA << 2;
 	//	send_sensor_wall_data(&frame_send_2);
 	}
 	send_frame(&frame_send_1);
@@ -195,16 +195,16 @@ void send_frame(Frame* frame) {
 void control_motor(uint8_t current_msg) {
 
 	switch(current_msg){
-		case ID_HEX[TOGGLE_OBSTACLE] :
+		case TOGGLE_OBSTACLE :
 			// Toggle obstacle
 			break;
-		case ID_HEX[SET_SERVO_SPEED] :
+		case SET_SERVO_SPEED :
 			// Set speed
 			break;
-		case ID_HEX[WALK_COMMAMD] :
+		case WALK_COMMAMD :
 			// Go command 
 			break;
-		case ID_HEX[RETURN_TO_NEUTRAL] :
+		case RETURN_TO_NEUTRAL :
 			// Return to neutral
 			break;
 	}
@@ -215,11 +215,11 @@ void send_reply_motor(uint8_t current_msg) {
 	Frame frame_send_status;
 	Frame frame_send_string;
 	Frame frame_send_obstacle;
-	frame_send_status.control_byte = ID_HEX[SERVO_STATUS] << 2;
+	frame_send_status.control_byte = SERVO_STATUS << 2;
 	// Send servo status
-	frame_send_string.control_byte = ID_HEX[DEBUG_STRING] << 2;
+	frame_send_string.control_byte = DEBUG_STRING << 2;
 	// Send debug string
-	frame_send_obstacle.control_byte = ID_HEX[OBSTACLE] << 2;
+	frame_send_obstacle.control_byte = OBSTACLE << 2;
 	// Hinder here?
 	send_frame(&frame_send_status);
 	send_frame(&frame_send_string);
