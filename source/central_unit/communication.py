@@ -31,7 +31,14 @@ MAX_BYTE_SIZE = 255
 MAX_16BIT_SIZE = MAX_BYTE_SIZE**2
 
 SET_OBSTACLE = 0x03
+
 SET_SERVO_SPEED = 0x04
+SET_SERVO_SPEED_LENGTH = 2
+
+WALK = 0x20
+WALK_LENGTH = 3
+
+RETURN_TO_NEUTRAL = 0x05
 
 
 class InvalidCommandException(Exception):
@@ -124,9 +131,9 @@ def _check_response(response):
     if isinstance(response, list):
         _check_response(response[0])
     elif response == SEND_FAIL:
-        raise CommunicationError("Send fail revieved")
+        raise CommunicationError("Send fail received")
     elif response != ACK:
-        raise CommunicationError("No acknowledge message recieved")
+        raise CommunicationError("No acknowledge message received")
 
 
 def _get_total_msg(*data):
@@ -156,18 +163,28 @@ def set_obstacle_mode(spi, value):
 def set_servo_speed(spi, speed):
     if speed < 0 or speed > MAX_16BIT_SIZE:
         raise InvalidCommandException("Speed \"{}\" is not a 16-bit value".format(speed))
+    _select_device(spi, MOTOR_ADDR)
     least = speed & 0x00FF
     most = (speed & 0xFF00) >> 8
     response = _send_bytes(spi, _add_parity(SET_OBSTACLE, 
-                                            _get_total_msg(least, most)), least, most)
+                                            _get_total_msg(least, most)), 
+                           SET_SERVO_SPEED_LENGTH, least, most)
     _check_response(response)
 
 
 def walk(spi, x_speed, y_speed, turn_speed):
-    pass
+    if x_speed > MAX_BYTE_SIZE or y_speed > MAX_BYTE_SIZE or turn_speed > MAX_BYTE_SIZE:
+        raise InvalidCommandException("Speeds \"{}\" are not all bytes"
+                                      .format((x_speed, y_speed, turn_speed)))
+    _select_device(spi, MOTOR_ADDR)
+    total_msg = _get_total_msg(x_speed, y_speed, turn_speed)
+    response = _send_bytes(spi, _add_parity(WALK, total_msg),
+                           WALK_LENGTH, x_speed, y_speed, turn_speed)
+    _check_response(response)
 
 
 def back_to_neutral(spi):
+    # response = _send_bytes(spi, _add)
     pass
 
 
@@ -185,4 +202,5 @@ def get_sensor_data(spi):
 
 def get_corridor_data(spi):
     pass
+
 
