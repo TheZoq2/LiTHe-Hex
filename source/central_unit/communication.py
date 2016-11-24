@@ -182,9 +182,6 @@ def set_servo_speed(spi, speed):
 
 
 def walk(spi, x_speed, y_speed, turn_speed):
-    if x_speed > MAX_BYTE_SIZE or y_speed > MAX_BYTE_SIZE or turn_speed > MAX_BYTE_SIZE:
-        raise InvalidCommandException("Speeds \"{}\" are not all bytes"
-                                      .format((x_speed, y_speed, turn_speed)))
     _select_device(spi, MOTOR_ADDR)
     total_msg = _get_total_msg(x_speed, y_speed, turn_speed)
     response = _send_bytes(spi, _add_parity(WALK, total_msg),
