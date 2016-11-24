@@ -26,7 +26,7 @@ def main():
     res = []
     while True:
         pdb.set_trace()
-        print(communication.get_servo_status(spi))
+        print(communication.walk(spi, 10, 2, 1))
 
 
 if __name__ == '__main__':

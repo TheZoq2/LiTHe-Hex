@@ -27,6 +27,7 @@ DATA_REQ    = 0x02
 
 SEND_FAIL   = 0x1F
 ACK         = 0x0F
+GARBAGE     = 0x00
 
 MAX_BYTE_SIZE = 255
 MAX_16BIT_SIZE = MAX_BYTE_SIZE**2
@@ -97,7 +98,7 @@ def _send_bytes(spi, *data):
     # check if all are bytes
     if sum([(not isinstance(x, int)) or x > MAX_BYTE_SIZE or x < 0 for x in data]):
         raise InvalidCommandException("Data sequence {} contains non-bytes".format(data))
-    spi.writebytes([66])
+    spi.writebytes([GARBAGE])
     spi.writebytes(list(data))
     return spi.readbytes(1)
         
@@ -108,7 +109,7 @@ def _recieve_muliple_bytes(spi, type_):
     
 
 def _recieve_single_byte(spi, type_):
-    return spi.readbytes(1)[0]
+    return spi.readbytes(1)
 
 
 def _recieve_bytes(spi):
@@ -117,18 +118,14 @@ def _recieve_bytes(spi):
     # if the most significant bit in the
     # type message is 1, then the message
     # is of variable length
-    if (type_ & 0x80):
+    if _is_multibyte_msg(type_):
         return _recieve_muliple_bytes(spi, type_)
     else:
         return _recieve_single_byte(spi, type_)
 
 
 def _is_multibyte_msg(data_id):
-    tmp = data_id << 2
-    tmp_str = '{0:08b}'.format(tmp)
-    if tmp[0] == '1':
-        return True
-    return False
+    return (data_id & 0x80) != 0
 
 
 def _request_data(spi, data_id):
@@ -154,9 +151,9 @@ def _check_response(response):
 
 def _get_total_msg(*data):
     length = len(data)
-    res = str(length) if length > 1 else ""
+    res = ""
     for d in data:
-        res += str(d)
+        res += "{0:08b}".format(d)
     return int(res)
 
 
@@ -191,7 +188,7 @@ def set_servo_speed(spi, speed):
 
 def walk(spi, x_speed, y_speed, turn_speed):
     _select_device(spi, MOTOR_ADDR)
-    total_msg = _get_total_msg(x_speed, y_speed, turn_speed)
+    total_msg = _get_total_msg(WALK_LENGTH, x_speed, y_speed, turn_speed)
     response = _send_bytes(spi, _add_parity(WALK, total_msg),
                            WALK_LENGTH, x_speed, y_speed, turn_speed)
     _check_response(response)
