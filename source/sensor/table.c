@@ -49,8 +49,13 @@ float corridor_angle(MainTable* table) {
 
 void send_sensor_data(Frame* frame) {
 	frame->len = NUM_BYTE_SEND;
-	for(uint8_t i = 0; i < NUM_SENSORS; i++) {
+	uint8_t i = 0;
+	for(i; i < NUM_SENSORS; i++) {
 		frame->msg[i] = mainTable->ir_list[i].value;
+	}
+	frame[i++] = mainTable->front_distance;
+	for() {
+		frame[i++] = mainTable->corridor_angle;
 	}
 }
 
