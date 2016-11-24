@@ -34,6 +34,8 @@ int main(void)
 	
 	init_all_servos();
 
+	send_servo_action();
+
 	uint16_t angles[3] = {0x1ff, 0x1ff, 0x1ff};
 	set_leg_angles(RIGHT_BACK, angles);
 		

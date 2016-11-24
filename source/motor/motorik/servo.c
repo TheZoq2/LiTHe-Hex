@@ -11,7 +11,7 @@ const uint8_t GOAL_POSITION_ADDRESS = 0x1E;
 
 const uint8_t TORQUE_ON = 0x01;
 
-
+const uint8_t BROADCAST_ID = 0xFE;
 
 const uint8_t LEFT_FRONT = 0;
 const uint8_t LEFT_MID = 1;
@@ -79,9 +79,14 @@ void write_servo_data(uint8_t id, uint8_t address, const uint8_t* data, uint8_t 
 		new_data[i+1] = data[i];
 	}
 
-	send_servo_command(id, WRITE_DATA_INSTRUCTION, (void*)new_data, new_data_amount);
+	send_servo_command(id, WRITE_REG_INSTRUCTION, (void*)new_data, new_data_amount);
 
 	free(new_data);
+}
+
+void send_servo_action()
+{
+	send_servo_command(BROADCAST_ID, ACTION_INSTRUCTION, 0, 0);
 }
 
 void write_servo_single_byte(uint8_t id, uint8_t address, uint8_t value)
