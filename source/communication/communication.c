@@ -49,7 +49,7 @@ void on_spi_recv() {
 		bool reply = message_require_reply(current_id);
 		if(reply) { // send a replay to central-unit
 			// TEST
-			send_reply_test();
+			//send_reply_test();
 			//#ifdef TABLE_H
 				//send_replay_sensor(current_id);
 			//#endif
@@ -62,23 +62,24 @@ void on_spi_recv() {
 	} else { // Something was wrong with message
 		spi_transmit_fail();
 	}
+	frame_recv.len = 0;
 }
 
 void send_reply_test() {
 
 	Frame test_frame;
-	test_frame.control_byte = OBSTACLE << 2;
+	test_frame.control_byte = SERVO_STATUS << 2;
 	test_frame.len = 3;
 	test_frame.msg[0] = 0xBA;
-	test_frame.msg[0] = 0xFC;
-	test_frame.msg[0] = 0xEC;
+	test_frame.msg[1] = 0xFC;
+	test_frame.msg[2] = 0xEC;
 	send_frame(&test_frame);
 }
 
 bool check_parity(Frame* frame) {
 
 	// check parity for control_byte
-	uint8_t byte = frame->control_byte;
+	uint8_t byte = frame->control_byte & 0xFE;
 	bool parity_con = false;
 	while(byte) {
 		parity_con = !parity_con;
@@ -87,24 +88,56 @@ bool check_parity(Frame* frame) {
 
 	// check parity for length and message bytes
 	bool parity_msg = false;
-	for(uint8_t i = 0; i < frame->len; i++) {
-		uint8_t msg = frame->msg[i];
+	if(frame->len > 0) {
+		uint8_t len = frame->len;
+		while(len) {
+			parity_msg = !parity_msg;
+			len &= (len - 1);
+		}
+		for(uint8_t i = 0; i < frame->len; i++) {
+			uint8_t msg = frame->msg[i];
+			while(msg) {
+				parity_msg = !parity_msg;
+				msg &= (msg - 1);
+			}
+		}
+	} else {
+		uint8_t msg = frame->msg[0];
 		while(msg) {
-			parity_con = !parity_con;
+			parity_msg = !parity_msg;
 			msg &= (msg - 1);
 		}
 	}
 	
-	return (parity_con == (frame->control_byte & 0x01)) && 
-			(parity_msg == (frame->control_byte & 0x02));
+	bool result = false;
+	if(((frame->control_byte & TYPE_PARITY_MASK) > 0) == parity_con) {
+		if(((frame->control_byte & MSG_PARITY_MASK) > 0) == parity_msg) {
+			result = true;
+		}
+	}
+	
+	return result;
 }
 
 void calculate_parity(Frame* frame) {
 
 	// calculate parity for length and message bytes
 	bool parity_msg = false;
-	for(uint8_t i = 0; i < frame->len; i++) {
-		uint8_t msg = frame->msg[i];
+	if(frame->len > 0) {
+		uint8_t len = frame->len;
+		while(len) {
+			parity_msg = !parity_msg;
+			len &= (len - 1);
+		}
+		for(uint8_t i = 0; i < frame->len; i++) {
+			uint8_t msg = frame->msg[i];
+			while(msg) {
+				parity_msg = !parity_msg;
+				msg &= (msg - 1);
+			}
+		}
+	} else {
+		uint8_t msg = frame->msg[0];
 		while(msg) {
 			parity_msg = !parity_msg;
 			msg &= (msg - 1);
@@ -113,7 +146,7 @@ void calculate_parity(Frame* frame) {
 
 	// Set parity bit for len and message
 	if(parity_msg) {
-		frame->control_byte | 0x02;
+		frame->control_byte |= 0x02;
 	}
 	
 	// calculate parity for control_byte
@@ -126,18 +159,19 @@ void calculate_parity(Frame* frame) {
 
 	// Set parity bit for control_byte
 	if(parity_con) {
-		frame->control_byte | 0x01;
+		frame->control_byte |= 0x01;
 	}
 
 }
 
 void get_new_frame(Frame* frame_recv) {
 
-    uint8_t b = spi_receive_byte();
-    if (b == GARBAGE) {
-        frame_recv->control_byte = spi_receive_byte();
+    // The first byte might be garbage, check for that
+    uint8_t byte = spi_receive_byte();
+    if (byte == GARBAGE) {
+	    frame_recv->control_byte = spi_receive_byte();
     } else {
-        frame_recv->control_byte = b;
+        frame_recv->control_byte = byte; 
     }
 
  
@@ -188,13 +222,13 @@ void send_frame(Frame* frame) {
 
 	calculate_parity(frame);
 	spi_transmit_byte(frame->control_byte);
-	if(!frame->len) {
+	if(frame->len == 0) {
 		spi_transmit_byte(frame->msg[0]);
-		return;
-	}
-	spi_transmit_byte(frame->len);
-	for(uint8_t i = 0; i < frame->len; i++) {
-		spi_transmit_byte(frame->msg[i]);
+	} else {
+		spi_transmit_byte(frame->len);
+		for(uint8_t i = 0; i < frame->len; i++) {
+			spi_transmit_byte(frame->msg[i]);
+		}
 	}
 }
 
