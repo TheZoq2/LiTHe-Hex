@@ -42,6 +42,11 @@ WALK_LENGTH = 3
 RETURN_TO_NEUTRAL = 0x05
 
 SERVO_STATUS = 0x22
+MOTOR_DEBUG = 0x23
+
+SENSOR_DATA = 0x24
+
+SENSOR_CORRIDOR = 0x25
 
 
 class InvalidCommandException(Exception):
@@ -158,6 +163,7 @@ def _get_total_msg(*data):
 def communication_init():
     spi = spidev.SpiDev()
     spi.open(*MOTOR_ADDR)
+    spi.max_speed_hz = 25000
     return spi
 
 
@@ -192,7 +198,7 @@ def walk(spi, x_speed, y_speed, turn_speed):
 
 
 def back_to_neutral(spi):
-    # response = _send_bytes(spi, _add)
+    _select_device(spi, MOTOR_ADDR)
     pass
 
 
@@ -202,14 +208,17 @@ def get_servo_status(spi):
 
 
 def get_motor_debug(spi):
-    pass
+    _select_device(spi, MOTOR_ADDR)
+    return _request_data(spi, MOTOR_DEBUG)
 
 
 def get_sensor_data(spi):
-    pass
+    _select_device(spi, SENSOR_ADDR)
+    return _request_data(spi, SENSOR_DATA)
 
 
 def get_corridor_data(spi):
-    pass
+    _select_device(spi, SENSOR_ADDR)
+    return _request_data(spi, SENSOR_DATA)
 
 
