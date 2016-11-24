@@ -23,10 +23,11 @@
 #include "gyro.h"
 #include "lidar.h"
 #include "table.h"
+#include "../communication/spi.h"
+#include "../communication/communication.h"
 
 Timer* timer8;
 Timer* timer16;
-MainTable* mainTable;
 
 // When TIMER0 overflow increase timer8 overflow counter;
 ISR(TIMER0_OVF_vect) {
@@ -36,6 +37,11 @@ ISR(TIMER0_OVF_vect) {
 // When TIMER1 overflow increase timer16 overflow counter;
 ISR(TIMER1_OVF_vect) {
 	timer16->num_overflows++;
+}
+
+// If SPI receive something
+ISR(SPI_STC_vect) {
+	on_spi_recv();
 }
 
 // Setup hardware ports on AVR

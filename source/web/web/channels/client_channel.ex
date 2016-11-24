@@ -1,7 +1,7 @@
-defmodule Web.DebugChannel do
+defmodule Web.ClientChannel do
   use Web.Web, :channel
 
-  def join("debug:lobby", payload, socket) do
+  def join("client", payload, socket) do
     if authorized?(payload) do
       {:ok, socket}
     else
@@ -16,9 +16,20 @@ defmodule Web.DebugChannel do
   end
 
   # It is also common to receive messages from the client and
-  # broadcast to everyone in the current topic (debug:lobby).
+  # broadcast to everyone in the current topic (client).
   def handle_in("shout", payload, socket) do
     broadcast socket, "shout", payload
+    {:noreply, socket}
+  end
+
+  def handle_in("joystick", payload, socket) do
+    %{"x" => x, "y" => y, "rotation" => rotation, "thrust" => thrust} = payload
+    #IO.puts("received joystick data: x=#{x}, y=#{y}, rotation=#{rotation}, thrust=#{thrust}")
+    {:noreply, socket}
+  end
+
+  def handle_in("new_msg", %{"body" => body}, socket) do
+    broadcast! socket, "new_msg", %{body: "Received message: " <> body}
     {:noreply, socket}
   end
 

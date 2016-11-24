@@ -27,6 +27,7 @@ function addGamepad(gamepad) {
     console.log("Gamepad connected at index " + gamepad.index + ": " + gamepad.id +
         ". It has " + gamepad.buttons.length + " buttons and " + gamepad.axes.length + " axes.");
     controllers[gamepad.index] = gamepad;
+    elmApp.ports.connected.send(gamepad.index);
 }
 
 function pollRequestReceived(gamePadIndex) {
@@ -34,24 +35,24 @@ function pollRequestReceived(gamePadIndex) {
         scangamepads();
     }
 
-    if (gamePadIndex in controllers) {
-        var gamepad = controllers[gamePadIndex];
-        var data = {
-            x: gamepad.axes[0],
-            y: gamepad.axes[1],
-            rotation: gamepad.axes[3],
-            thrust: (1 - gamepad.axes[2]) / 2
-        }
-        elmApp.ports.axisData.send(data);
+    var gamepad = controllers[gamePadIndex];
+    var data = {
+        x: gamepad.axes[0],
+        y: gamepad.axes[1],
+        rotation: gamepad.axes[3],
+        thrust: (1 - gamepad.axes[2]) / 2
     }
+    elmApp.ports.axisData.send(data);
 }
 
 function removeGamepad(gamepad) {
+    console.log("Gamepad with index " + gamepad.index + " has been disconnected");
+    elmApp.ports.connected.send(gamepad.index);
     delete controllers[gamepad.index];
 }
 
 function scangamepads() {
-    var gamepads = navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads() : []);
+    var gamepads = navigator.getGamepads || navigator.webkitGetGamepads || [];
     for (var i = 0; i < gamepads.length; i++) {
         if (gamepads[i]) {
             if (gamepads[i].index in controllers) {
@@ -65,7 +66,7 @@ function scangamepads() {
 
 // Set up Elm
 const elmDiv = document.querySelector('#elm-container');
-const elmApp = Elm.App.embed(elmDiv);
+const elmApp = Elm.App.embed(elmDiv, {host: location.host});
 
 elmApp.ports.poll.subscribe(pollRequestReceived);
 

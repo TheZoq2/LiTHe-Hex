@@ -13,7 +13,6 @@ import Material
 import Material.Textfield as Textfield
 import Material.List as Lists
 import Material.Layout as Layout
-import Array exposing (Array)
 import Time exposing (Time, millisecond)
 import Joystick
 
@@ -23,17 +22,21 @@ type Msg
     | SetNewMessage String
     | SendMessage
     | ReceiveChatMessage JE.Value
+    | GamepadConnected Int
+    | GamepadDisconnected Int
     | AxisData Joystick.JoystickData
-    | Tick Time
+    | UpdateControlDisplay Time
+    | SendControlToServer Time
     | Mdl (Material.Msg Msg)
 
 
 type alias Model =
     { phxSocket : Socket Msg
     , currentMessage : String
-    , messages : Array String
+    , messages : List String
     , joystick : Joystick.JoystickData
     , mdl : Material.Model
+    , joystickIndex : Maybe Int
     }
 
 
@@ -41,20 +44,25 @@ type alias ChatMessage =
     { body : String }
 
 
-init : ( Model, Cmd Msg )
-init =
+type alias Flags =
+    { host : String }
+
+
+init : Flags -> ( Model, Cmd Msg )
+init { host } =
     let
         ( phxSocket, phxCmd ) =
-            Phoenix.Socket.init "wss://emiluren.se:443/socket/websocket"
+            Phoenix.Socket.init ("ws://" ++ host ++ "/socket/websocket")
                 |> Phoenix.Socket.withDebug
-                |> Phoenix.Socket.on "new_msg" "room:lobby" ReceiveChatMessage
-                |> Phoenix.Socket.join (Phoenix.Channel.init "room:lobby")
+                |> Phoenix.Socket.on "new_msg" "client" ReceiveChatMessage
+                |> Phoenix.Socket.join (Phoenix.Channel.init "client")
     in
         { phxSocket = phxSocket
         , currentMessage = ""
-        , messages = Array.empty
+        , messages = []
         , mdl = Material.model
         , joystick = { x = 0, y = 0, rotation = 0, thrust = 0 }
+        , joystickIndex = Nothing
         }
             ! [ Cmd.map PhoenixMsg phxCmd ]
 
@@ -85,7 +93,7 @@ update msg model =
                 Ok chatMessage ->
                     ( { model
                         | messages =
-                            Array.push chatMessage.body model.messages
+                            chatMessage.body :: model.messages
                       }
                     , Cmd.none
                     )
@@ -96,8 +104,43 @@ update msg model =
         SetNewMessage str ->
             { model | currentMessage = str } ! []
 
-        Tick time ->
-            (model, Joystick.poll 0)
+        UpdateControlDisplay _ ->
+            case model.joystickIndex of
+                Nothing ->
+                    ( model, Cmd.none )
+
+                Just index ->
+                    ( model, Joystick.poll index )
+
+        SendControlToServer _ ->
+            let
+                payload =
+                    JE.object
+                        [ ( "x", JE.float model.joystick.x )
+                        , ( "y", JE.float model.joystick.y )
+                        , ( "rotation", JE.float model.joystick.rotation )
+                        , ( "thrust", JE.float model.joystick.thrust )
+                        ]
+
+                push =
+                    Phoenix.Push.init "joystick" "client"
+                        |> Phoenix.Push.withPayload payload
+
+                ( phxSocket, phxCmd ) =
+                    Phoenix.Socket.push push model.phxSocket
+            in
+                ( { model | phxSocket = phxSocket }
+                , Cmd.map PhoenixMsg phxCmd
+                )
+
+        GamepadConnected index ->
+            ( { model | joystickIndex = Just index }, Cmd.none )
+
+        GamepadDisconnected index ->
+            if Just index == model.joystickIndex then
+                ( { model | joystickIndex = Nothing }, Cmd.none )
+            else
+                ( model, Cmd.none )
 
         AxisData data ->
             ( { model | joystick = data }, Cmd.none )
@@ -108,7 +151,7 @@ update msg model =
                     JE.object [ ( "body", JE.string model.currentMessage ) ]
 
                 push =
-                    Phoenix.Push.init "new_msg" "room:lobby"
+                    Phoenix.Push.init "new_msg" "client"
                         |> Phoenix.Push.withPayload payload
 
                 ( phxSocket, phxCmd ) =
@@ -126,7 +169,10 @@ subscriptions : Model -> Sub Msg
 subscriptions model =
     [ Phoenix.Socket.listen model.phxSocket PhoenixMsg
     , Joystick.axisData AxisData
-    , Time.every (millisecond*10) Tick
+    , Joystick.connected GamepadConnected
+    , Joystick.disconnected GamepadDisconnected
+    , Time.every (millisecond*10) UpdateControlDisplay
+    , Time.every (millisecond*500) SendControlToServer
     ]
         |> Sub.batch
 
@@ -135,9 +181,7 @@ showMessage : String -> Html a
 showMessage str =
     Lists.li []
         [ Lists.content []
-            [ Lists.avatarIcon "photo_camera" []
-            , Html.text str
-            ]
+            [ Html.text str ]
         ]
 
 
@@ -168,21 +212,21 @@ view model =
 viewBody : Model -> Html Msg
 viewBody model =
     div [ Html.Attributes.style [ ( "padding", "2rem" ) ] ]
-        [ div []
-            [ (messageList <| Array.toList model.messages) ]
+        [ Joystick.joystickDisplay model.joystick
         , form [ onSubmit SendMessage ]
             [ Textfield.render Mdl
                 [ 0 ]
                 model.mdl
                 [ Textfield.onInput SetNewMessage, Textfield.value model.currentMessage ]
             ]
-        , Joystick.joystickDisplay model.joystick
+        , div []
+            [ (messageList model.messages) ]
         ]
 
 
-main : Program Never
+main : Program Flags
 main =
-    Html.App.program
+    Html.App.programWithFlags
         { init = init
         , update = update
         , subscriptions = subscriptions

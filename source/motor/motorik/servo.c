@@ -22,12 +22,6 @@ const uint8_t TORQUE_ON = 0x01;
 
 const uint8_t BROADCAST_ID = 0xFE;
 
-const uint8_t LEFT_FRONT = 0;
-const uint8_t LEFT_MID = 1;
-const uint8_t LEFT_BACK = 2;
-const uint8_t RIGHT_FRONT = 3;
-const uint8_t RIGHT_MID = 4;
-const uint8_t RIGHT_BACK = 5;
 
 const uint8_t SERVO_MAP[6][3] = {
 	{1,3,5},
@@ -171,7 +165,7 @@ void init_all_servos()
 }
 
 
-void set_leg_angles(uint8_t leg_index, uint16_t* angles)
+void set_leg_angles(enum Leg leg_index, uint16_t* angles)
 {
 	const uint8_t* ids = SERVO_MAP[leg_index];
 

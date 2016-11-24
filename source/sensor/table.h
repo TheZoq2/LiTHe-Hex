@@ -15,30 +15,37 @@
 // You should have received a copy of the GNU General Public License
 // along with LiTHe Hex.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef MAINTABLE_H
-#define MAINTABLE_H 
+#ifndef TABLE_H
+#define TABLE_H 
 
 #include "ir.h"
 #include "lidar.h"
+#include "../communication/communication.h"
 
 typedef struct MainTable {
 
-    IR ir_list[NUM_SENSORS];
+    IR* ir_list;
 
     uint16_t front_distance;
 
     uint8_t left_distance;
 
     uint8_t right_distance;
+	
+	uint8_t down_distance;
 
     float corridor_angle;
 
 } MainTable;
 
+MainTable* mainTable;
+
 void table_init(MainTable* table, IR ir_list[NUM_SENSORS]);
 
 void update(MainTable* table, Lidar* lidar);
 
-void send_sensor_data();
+void send_sensor_data(Frame* frame);
+
+void send_sensor_wall_data(Frame* frame);
 
 #endif /* ifndef MAINTABLE_H */

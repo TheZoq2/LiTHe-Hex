@@ -506,28 +506,15 @@
 	begränsat antal IR-sensorer mäta åt gången. 
 
     \subsubsection{Huvudloop}
-    Sensorenheten ska köra en huvudloop som sköter det mesta av beräkningarna
-    av sensordatan, medan bland annat mätning med IR-sensorer, A/D-omvandlarna samt
-    kommunikation med sensorenheten styrs via avbrott.
-
-    Huvudloopen startar mätning av lediga IR-sensorer och sätter timrar för när
-    dessa har mätt klart. Dessa timrar triggar avbrott för när IR-sensorerna
-    har producerat ett analogt mätvärde som är redo att omvandlas till ett 
-	digitalt
-    värde. Dessa avbrott lägger representationer av IR-sensorerna i en kö,
-    "IR-kö". Så länge denna kö är tom, används A/D-omvandlaren för att
-    omvandla mätvärden från gyrot, brusreducera dem samt lägga dessa i
-    huvudtabellen, där alla färdiga sensorvärden lagras. Den beräknar också
-    relevant data från omvandlade IR-sensorvärden, som lagrades i en annan kö,
-    "data-kö". I denna kö läggs omvandlade IR-sensorvärden av avbrott när
-    A/D-omvandlingar är klara. Om IR-kön inte är tom, startas en A/D-omvandling
-    för den IR-sensor som är först i kön. Denna algoritm illustreras i Figur 
-    \ref{fig:sensor_flow}. 
-
-    \begin{figure}[h!]
-        \centering{\includegraphics[width=15cm, trim=0cm 0cm 0cm 5cm]{images/flowchart_sensor.pdf}}
-        \caption{Flödeschema för huvudloopen\label{fig:sensor_flow}}
-    \end{figure}
+    Sensorenheten kör en huvudloop som hanterar en kö som varje ir-sensor är placerad 
+    i. Den första ir-sensorn i kön är den första sensorn som kommer att ha ett nytt 
+    värde. Det är kön beräknar tiden sedan förra mätnigen av ir-sensorn och det är inte 
+    möjligt att läsa en ir-sensor innan tiden passerat. Om det det finns ett nytt värde 
+    görs en A/D-omvandling. Data från omvandlingen sparas för den ir-sensorn 
+    tillsammans med äldre värden och sen utförs en brusreducering. När det inte finns 
+    någon ir-sensor som har ett nytt värde läses det värde som Lidar skickar. Sedan 
+    uppdateras den tabbel som innehåller den data som är klar att skickas till 
+    centralenheten. 
 
     \subsubsection{Avbrott}
 	Följade avbrott kommer att vara aktiva:

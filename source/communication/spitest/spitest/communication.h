@@ -1,4 +1,4 @@
-// Copyright 2016 Noak Ringman, Emil SegerbÃ¤ck, Robin Sliwa, Frans Skarman, Hannes Tuhkala, Malcolm Wigren, Olav Ã–vrebÃ¶
+// Copyright 2016 Noak Ringman, Emil Segerbäck, Robin Sliwa, Frans Skarman, Hannes Tuhkala, Malcolm Wigren, Olav Övrebö
 
 // This file is part of LiTHe Hex.
 
@@ -16,15 +16,24 @@
 // along with LiTHe Hex.  If not, see <http://www.gnu.org/licenses/>.
 
 #ifndef COMMUNICATION_H
-#define COMMUNICATION_H 
+#define COMMUNICATION_H
+#define MAX_MESSAGE_LENGTH 20
+#include "spi.h"
+#include <stdint.h>
 
-#include <avr/io.h>
-#include <avr/interrupt.h>
+enum ID {
+    SEND_FAIL = 0x1F, ACKNOWLEDGE = 0x0F, DATA_REQUEST = 0x02, 
+    TOGGLE_OBSTACLE = 0x03, SET_SERVO_SPEED = 0x20, WALK_COMMAMD = 0x21, 
+    RETURN_TO_NEUTRAL = 0x05, SERVO_STATUS = 0x22, DEBUG_STRING = 0x23, 
+    OBSTACLE = 0x03, SENSOR_DATA = 0x24, CORRIDOR_DATA = 0x25
+};
 
-void spi_init();
-uint8_t spi_receive_byte();
-uint8_t spi_transmit_byte(uint8_t data);
-void spi_transmit_ack();
-void spi_transmit_fail();
+typedef struct Frame {
+	uint8_t control_byte;
+	uint8_t len;
+	uint8_t msg[MAX_MESSAGE_LENGTH];
+} Frame;
+
+void on_spi_recv();
 
 #endif /* ifndef COMMUNICATION_H */
