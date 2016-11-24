@@ -196,7 +196,9 @@ def walk(spi, x_speed, y_speed, turn_speed):
 
 def back_to_neutral(spi):
     _select_device(spi, MOTOR_ADDR)
-    pass
+    # we send a zero byte as args
+    response = _send_bytes(spi, _add_parity(RETURN_TO_NEUTRAL, 0), 0)
+    _check_response(response)
 
 
 def get_servo_status(spi):
