@@ -152,12 +152,10 @@ void set_servo_angle(uint8_t id, uint16_t angle)
 
 void init_all_servos()
 {
-	for(uint8_t i = 0; i < 18; ++i)
+	for(uint8_t i = 1; i < 19; ++i)
 	{
 		enable_servo_torque(i);
-		_delay_ms(100);
 		reset_servo_bounds(i);
-		_delay_ms(100);
 	}
 }
 
