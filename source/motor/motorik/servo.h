@@ -60,10 +60,12 @@ void write_servo_single_byte(uint8_t id, uint8_t address, uint8_t value);
 void reset_servo_bounds(uint8_t id);
 void enable_servo_torque(uint8_t id);
 void set_servo_angle(uint8_t id, uint16_t angle);
+void send_servo_action();
 
 void init_all_servos();
 
 void set_leg_angles(uint8_t leg_index, uint16_t* angles);
+
 
 
 #endif
