@@ -133,7 +133,13 @@ void calculate_parity(Frame* frame) {
 
 void get_new_frame(Frame* frame_recv) {
 
-	frame_recv->control_byte = spi_receive_byte();
+    uint8_t b = spi_receive_byte();
+    if (b == GARBAGE) {
+        frame_recv->control_byte = spi_receive_byte();
+    } else {
+        frame_recv->control_byte = b;
+    }
+
  
 	if(frame_recv->control_byte & 0x80) { // msg is more than one byte long 
 		frame_recv->len = spi_receive_byte();

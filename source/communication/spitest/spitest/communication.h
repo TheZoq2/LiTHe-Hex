@@ -18,6 +18,8 @@
 #ifndef COMMUNICATION_H
 #define COMMUNICATION_H
 
+#define GARBAGE     0x00
+
 #include "spi.h"
 #include <stdint.h>
 

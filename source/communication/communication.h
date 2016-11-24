@@ -21,6 +21,8 @@
 #include "spi.h"
 #include <stdint.h>
 
+#define GARBAGE     0x00
+
 enum ID {
     SEND_FAIL = 0x1F ACKNOWLEDGE = 0x0F, DATA_REQUEST = 0x02, 
     TOGGLE_OBSTACLE = 0x03, SET_SERVO_SPEED = 0x04, WALK_COMMAMD = 0x20, 
