@@ -18,6 +18,7 @@
 #include "spi.h"
 
 #define ACK 0x7E
+#define FAIL 0x7C
 
 void spi_init() {
     // Set MISO output, all others input
@@ -27,10 +28,10 @@ void spi_init() {
 	SPCR = (1<<SPE) | (1<<SPIE);
 }
 
-uint8_t spi_recieve_byte() {
+uint8_t spi_receive_byte() {
 
 	// Wait for reception complete 
-	while(!(SPSR) & (1<<SPIF));
+	while(!((SPSR) & (1<<SPIF)));
 
 	// Return Data Register
 	return SPDR;
@@ -39,13 +40,16 @@ uint8_t spi_recieve_byte() {
 uint8_t spi_transmit_byte(uint8_t data) {
 	SPDR = data;
 	// Wait for reception complete
-	while(!(SPSR) & (1<<SPIF)){}
+	while(!((SPSR) & (1<<SPIF)));
 
 	// Return Data Register
 	return SPDR;
 }
 
-void transmit_ack() {
+void spi_transmit_ack() {
     spi_transmit_byte(ACK);
 }
 
+void spi_transmit_fail() {
+    spi_transmit_byte(FAIL);
+}

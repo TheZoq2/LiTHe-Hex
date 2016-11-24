@@ -15124,6 +15124,9 @@ var _user$project$App$chatMessageDecoder = A2(
 	_elm_lang$core$Json_Decode$object1,
 	_user$project$App$ChatMessage,
 	A2(_elm_lang$core$Json_Decode_ops[':='], 'body', _elm_lang$core$Json_Decode$string));
+var _user$project$App$Flags = function (a) {
+	return {host: a};
+};
 var _user$project$App$Mdl = function (a) {
 	return {ctor: 'Mdl', _0: a};
 };
@@ -15236,19 +15239,24 @@ var _user$project$App$view = function (model) {
 var _user$project$App$PhoenixMsg = function (a) {
 	return {ctor: 'PhoenixMsg', _0: a};
 };
-var _user$project$App$init = function () {
-	var _p0 = A2(
+var _user$project$App$init = function (_p0) {
+	var _p1 = _p0;
+	var _p2 = A2(
 		_fbonetti$elm_phoenix_socket$Phoenix_Socket$join,
-		_fbonetti$elm_phoenix_socket$Phoenix_Channel$init('room:lobby'),
+		_fbonetti$elm_phoenix_socket$Phoenix_Channel$init('debug:lobby'),
 		A4(
 			_fbonetti$elm_phoenix_socket$Phoenix_Socket$on,
 			'new_msg',
-			'room:lobby',
+			'debug:lobby',
 			_user$project$App$ReceiveChatMessage,
 			_fbonetti$elm_phoenix_socket$Phoenix_Socket$withDebug(
-				_fbonetti$elm_phoenix_socket$Phoenix_Socket$init('wss://emiluren.se:443/socket/websocket'))));
-	var phxSocket = _p0._0;
-	var phxCmd = _p0._1;
+				_fbonetti$elm_phoenix_socket$Phoenix_Socket$init(
+					A2(
+						_elm_lang$core$Basics_ops['++'],
+						'ws://',
+						A2(_elm_lang$core$Basics_ops['++'], _p1.host, '/socket/websocket'))))));
+	var phxSocket = _p2._0;
+	var phxCmd = _p2._1;
 	return A2(
 		_elm_lang$core$Platform_Cmd_ops['!'],
 		{
@@ -15262,15 +15270,15 @@ var _user$project$App$init = function () {
 			[
 				A2(_elm_lang$core$Platform_Cmd$map, _user$project$App$PhoenixMsg, phxCmd)
 			]));
-}();
+};
 var _user$project$App$update = F2(
 	function (msg, model) {
-		var _p1 = msg;
-		switch (_p1.ctor) {
+		var _p3 = msg;
+		switch (_p3.ctor) {
 			case 'PhoenixMsg':
-				var _p2 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$update, _p1._0, model.phxSocket);
-				var phxSocket = _p2._0;
-				var phxCmd = _p2._1;
+				var _p4 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$update, _p3._0, model.phxSocket);
+				var phxSocket = _p4._0;
+				var phxCmd = _p4._1;
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
@@ -15279,16 +15287,16 @@ var _user$project$App$update = F2(
 					_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$App$PhoenixMsg, phxCmd)
 				};
 			case 'Mdl':
-				return A2(_debois$elm_mdl$Material$update, _p1._0, model);
+				return A2(_debois$elm_mdl$Material$update, _p3._0, model);
 			case 'ReceiveChatMessage':
-				var _p3 = A2(_elm_lang$core$Json_Decode$decodeValue, _user$project$App$chatMessageDecoder, _p1._0);
-				if (_p3.ctor === 'Ok') {
+				var _p5 = A2(_elm_lang$core$Json_Decode$decodeValue, _user$project$App$chatMessageDecoder, _p3._0);
+				if (_p5.ctor === 'Ok') {
 					return {
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
 							{
-								messages: A2(_elm_lang$core$Array$push, _p3._0.body, model.messages)
+								messages: A2(_elm_lang$core$Array$push, _p5._0.body, model.messages)
 							}),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
@@ -15300,7 +15308,7 @@ var _user$project$App$update = F2(
 					_elm_lang$core$Platform_Cmd_ops['!'],
 					_elm_lang$core$Native_Utils.update(
 						model,
-						{currentMessage: _p1._0}),
+						{currentMessage: _p3._0}),
 					_elm_lang$core$Native_List.fromArray(
 						[]));
 			case 'Tick':
@@ -15314,7 +15322,7 @@ var _user$project$App$update = F2(
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
-						{joystick: _p1._0}),
+						{joystick: _p3._0}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			default:
@@ -15330,10 +15338,10 @@ var _user$project$App$update = F2(
 				var push = A2(
 					_fbonetti$elm_phoenix_socket$Phoenix_Push$withPayload,
 					payload,
-					A2(_fbonetti$elm_phoenix_socket$Phoenix_Push$init, 'new_msg', 'room:lobby'));
-				var _p4 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$push, push, model.phxSocket);
-				var phxSocket = _p4._0;
-				var phxCmd = _p4._1;
+					A2(_fbonetti$elm_phoenix_socket$Phoenix_Push$init, 'new_msg', 'debug:lobby'));
+				var _p6 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$push, push, model.phxSocket);
+				var phxSocket = _p6._0;
+				var phxCmd = _p6._1;
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
@@ -15353,8 +15361,15 @@ var _user$project$App$subscriptions = function (model) {
 			]));
 };
 var _user$project$App$main = {
-	main: _elm_lang$html$Html_App$program(
-		{init: _user$project$App$init, update: _user$project$App$update, subscriptions: _user$project$App$subscriptions, view: _user$project$App$view})
+	main: _elm_lang$html$Html_App$programWithFlags(
+		{init: _user$project$App$init, update: _user$project$App$update, subscriptions: _user$project$App$subscriptions, view: _user$project$App$view}),
+	flags: A2(
+		_elm_lang$core$Json_Decode$andThen,
+		A2(_elm_lang$core$Json_Decode_ops[':='], 'host', _elm_lang$core$Json_Decode$string),
+		function (host) {
+			return _elm_lang$core$Json_Decode$succeed(
+				{host: host});
+		})
 };
 
 var Elm = {};

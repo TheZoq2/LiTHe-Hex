@@ -50,7 +50,7 @@ struct Leg leg_ik(float x, float y, float z) {
                       (-2 * JOINT_3_LENGTH * JOINT_2_LENGTH))
         - M_PI;
 
-    leg.angle2 = fmin(fmax(alpha, JOINT_2_MIN), JOINT_2_MAX);
-    leg.angle3 = fmin(fmax(beta, JOINT_3_MIN), JOINT_3_MAX);
+    leg.angle2 = fmin(fmax(alpha + JOINT_2_OFFSET, JOINT_2_MIN), JOINT_2_MAX);
+    leg.angle3 = fmin(fmax(beta + JOINT_3_OFFSET, JOINT_3_MIN), JOINT_3_MAX);
     return leg;
 }

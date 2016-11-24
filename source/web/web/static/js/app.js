@@ -65,7 +65,7 @@ function scangamepads() {
 
 // Set up Elm
 const elmDiv = document.querySelector('#elm-container');
-const elmApp = Elm.App.embed(elmDiv);
+const elmApp = Elm.App.embed(elmDiv, {host: location.host});
 
 elmApp.ports.poll.subscribe(pollRequestReceived);
 
