@@ -30,6 +30,8 @@ ACK         = 0x0F
 MAX_BYTE_SIZE = 255
 MAX_16BIT_SIZE = MAX_BYTE_SIZE**2
 
+SET_OBSTACLE = 0x03
+
 
 class InvalidCommandException(Exception):
 
@@ -57,6 +59,24 @@ class CommunicationError(Exception):
         return self.message
 
 
+def _calculate_parity(data):
+    data_str = "{0:032b}".format(data)
+    num_ones = data_str.count("1")
+    if num_ones % 2 == 0:
+        return 0
+    else:
+        return 1
+
+
+def _add_parity(type_, msg):
+    msg_parity = _calculate_parity(msg)
+    result = type_ << 2
+    result |= msg_parity << 1
+    type_parity = _calculate_parity(result)
+    result |= type_parity
+    return result
+    
+
 def _send_bytes(spi, *data):
     # check if all are bytes
     if sum([(not isinstance(x, int)) or x > MAX_BYTE_SIZE or x < 0 for x in data]):
@@ -64,10 +84,6 @@ def _send_bytes(spi, *data):
     spi.writebytes([66])
     spi.writebytes(list(data))
     return spi.readbytes(1)
-    # res = []
-    # for d in data:
-    #     res.append(spi.xfer2([d]))
-    # return res
         
 
 def _recieve_muliple_bytes(spi, type_):
@@ -122,7 +138,7 @@ def set_obstacle_mode(spi, value):
     # yes i'm paranoid
     value = 0x01 if value else 0x00
     _select_device(spi, MOTOR_ADDR)
-    response = _send_bytes(spi, 0x03, value)
+    response = _send_bytes(spi, _add_parity(SET_OBSTACLE, value), value)
     _check_response(response)
 
 
