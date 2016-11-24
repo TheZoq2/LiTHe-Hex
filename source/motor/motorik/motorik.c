@@ -30,16 +30,22 @@ int main(void)
 	_delay_ms(100);
 	
 	
+	uint8_t sevo_id = 13;
 	
-	//reset_servo_bounds(0);
-	//enable_servo_torque(0);
-	//set_servo_angle(0, 0x0200);
 	init_all_servos();
 
 	send_servo_action();
-
-	//uint16_t angles[3] = {0x1ff, 0x1ff, 0x1ff};
-	//set_leg_angles(LEFT_FRONT, angles);
+	
+	_delay_ms(100);
+	uint16_t angles[3] = {0x1ff, 0x1ff, 0x1ff};
+	for(uint8_t i = 0; i < 6; ++i)
+	{
+		set_leg_angles(i, angles);
+	}
+	
+	_delay_ms(100);
+	
+	send_servo_action();
 		
 	while(1)
 	{

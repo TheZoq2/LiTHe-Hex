@@ -159,7 +159,7 @@ void set_servo_rotation_speed(uint8_t id, uint16_t angle)
 
 void init_all_servos()
 {
-	for(uint8_t i = 0; i < 18; ++i)
+	for(uint8_t i = 1; i < 19; ++i)
 	{
 		enable_servo_torque(i);
 		reset_servo_bounds(i);
