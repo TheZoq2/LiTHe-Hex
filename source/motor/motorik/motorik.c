@@ -32,9 +32,10 @@ int main(void)
 	
 	uint8_t sevo_id = 13;
 	
-	reset_servo_max_angles(sevo_id);
-	enable_servo_torque(sevo_id);
-	set_servo_angle(sevo_id, 0x01ff);
+	init_all_servos();
+
+	uint16_t angles[3] = {0x1ff, 0x1ff, 0x1ff};
+	set_leg_angles(RIGHT_BACK, angles);
 		
 	while(1)
 	{
