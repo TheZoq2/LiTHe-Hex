@@ -78,7 +78,7 @@ void send_reply_test() {
 bool check_parity(Frame* frame) {
 
 	// check parity for control_byte
-	uint8_t byte = frame->control_byte;
+	uint8_t byte = frame->control_byte & 0xFE;
 	bool parity_con = false;
 	while(byte) {
 		parity_con = !parity_con;
@@ -90,20 +90,20 @@ bool check_parity(Frame* frame) {
 	if(frame->len > 0) {
 		uint8_t len = frame->len;
 		while(len) {
-			parity_con = !parity_con;
+			parity_msg = !parity_msg;
 			len &= (len - 1);
 		}
 		for(uint8_t i = 0; i < frame->len; i++) {
 			uint8_t msg = frame->msg[i];
 			while(msg) {
-				parity_con = !parity_con;
+				parity_msg = !parity_msg;
 				msg &= (msg - 1);
 			}
 		}
 	} else {
 		uint8_t msg = frame->msg[0];
 		while(msg) {
-			parity_con = !parity_con;
+			parity_msg = !parity_msg;
 			msg &= (msg - 1);
 		}
 	}
