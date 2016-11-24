@@ -32,13 +32,15 @@ MAX_16BIT_SIZE = MAX_BYTE_SIZE**2
 
 SET_OBSTACLE = 0x03
 
-SET_SERVO_SPEED = 0x24
+SET_SERVO_SPEED = 0x20
 SET_SERVO_SPEED_LENGTH = 2
 
-WALK = 0x20
+WALK = 0x21
 WALK_LENGTH = 3
 
 RETURN_TO_NEUTRAL = 0x05
+
+SERVO_STATUS = 0x22
 
 
 class InvalidCommandException(Exception):
@@ -115,12 +117,19 @@ def _recieve_bytes(spi):
         return _recieve_single_byte(spi, type_)
 
 
-def _request_data(data_id):
-    response = spi.xfer2([DATA_REQ, data_id])
-    if response == ACK:
+def _is_multibyte_msg(data_id):
+    tmp = data << 2
+    tmp_str = '{0:08b}'.format(tmp)
+    if tmp[0] == '1':
         return True
-    else:
-        return False
+    return False
+
+
+def _request_data(spi, data_id):
+    # response = spi.xfer2([DATA_REQ, data_id])
+    response = _send_bytes(spi, DATA_REQ, data_id)
+    _check_response(response)
+    return _recieve_bytes(spi)
 
 
 def _select_device(spi, addr):
@@ -189,7 +198,8 @@ def back_to_neutral(spi):
 
 
 def get_servo_status(spi):
-    pass
+    _select_device(*MOTOR_ADDR)
+    return _request_data(spi, SERVO_STATUS)
 
 
 def get_motor_debug(spi):
