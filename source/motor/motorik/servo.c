@@ -147,4 +147,14 @@ void init_all_servos()
 }
 
 
+void set_leg_angles(uint8_t leg_index, uint16_t* angles)
+{
+	const uint8_t* ids = SERVO_MAP[leg_index];
+
+	for (uint8_t i = 0; i < 3; ++i) 
+	{
+		set_servo_angle(ids[i], angles[i]);
+	}
+}
+
 

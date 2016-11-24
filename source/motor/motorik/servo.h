@@ -63,5 +63,7 @@ void set_servo_angle(uint8_t id, uint16_t angle);
 
 void init_all_servos();
 
+void set_leg_angles(uint8_t leg_index, uint16_t* angles);
+
 
 #endif

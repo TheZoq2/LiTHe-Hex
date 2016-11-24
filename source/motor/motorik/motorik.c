@@ -31,9 +31,13 @@ int main(void)
 	
 	
 	
-	reset_servo_bounds(0);
-	enable_servo_torque(0);
-	set_servo_angle(0, 0x0200);
+	//reset_servo_bounds(0);
+	//enable_servo_torque(0);
+	//set_servo_angle(0, 0x0200);
+	init_all_servos();
+
+	uint16_t angles[3] = {0x1ff, 0x1ff, 0x1ff};
+	set_leg_angles(LEFT_FRONT, angles);
 		
 	while(1)
 	{
