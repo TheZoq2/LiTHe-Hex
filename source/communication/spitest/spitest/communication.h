@@ -21,6 +21,8 @@
 #define GARBAGE     0x00
 
 #define MAX_MESSAGE_LENGTH 20
+#define MSG_PARITY_MASK 0x02
+#define TYPE_PARITY_MASK 0x01
 
 #include "spi.h"
 #include <stdint.h>

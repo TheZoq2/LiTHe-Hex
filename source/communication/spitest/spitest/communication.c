@@ -49,7 +49,7 @@ void on_spi_recv() {
 		bool reply = message_require_reply(current_id);
 		if(reply) { // send a replay to central-unit
 			// TEST
-			send_reply_test();
+			//send_reply_test();
 			//#ifdef TABLE_H
 				//send_replay_sensor(current_id);
 			//#endif
@@ -62,12 +62,13 @@ void on_spi_recv() {
 	} else { // Something was wrong with message
 		spi_transmit_fail();
 	}
+	frame_recv.len = 0;
 }
 
 void send_reply_test() {
 
 	Frame test_frame;
-	test_frame.control_byte = OBSTACLE << 2;
+	test_frame.control_byte = SERVO_STATUS << 2;
 	test_frame.len = 3;
 	test_frame.msg[0] = 0xBA;
 	test_frame.msg[1] = 0xFC;
@@ -109,8 +110,8 @@ bool check_parity(Frame* frame) {
 	}
 	
 	bool result = false;
-	if((frame->control_byte & 0x01) > 0 == parity_con) {
-		if((frame->control_byte & 0x02) > 0 == parity_msg) {
+	if(((frame->control_byte & TYPE_PARITY_MASK) > 0) == parity_con) {
+		if(((frame->control_byte & MSG_PARITY_MASK) > 0) == parity_msg) {
 			result = true;
 		}
 	}
@@ -166,11 +167,11 @@ void calculate_parity(Frame* frame) {
 void get_new_frame(Frame* frame_recv) {
 
     // The first byte might be garbage, check for that
-    uint8_t b = spi_receive_byte();
-    if (b == GARBAGE) {
+    uint8_t byte = spi_receive_byte();
+    if (byte == GARBAGE) {
 	    frame_recv->control_byte = spi_receive_byte();
     } else {
-        frame_recv->control_byte = b; 
+        frame_recv->control_byte = byte; 
     }
 
  
