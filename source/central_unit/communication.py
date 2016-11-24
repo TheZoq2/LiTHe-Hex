@@ -120,7 +120,9 @@ def _select_device(spi, addr):
 
 
 def _check_response(response):
-    if response == SEND_FAIL:
+    if isinstance(response, list):
+        _check_response(response[0])
+    elif response == SEND_FAIL:
         raise CommunicationError("Send fail revieved")
     elif response != ACK:
         raise CommunicationError("No acknowledge message recieved")
