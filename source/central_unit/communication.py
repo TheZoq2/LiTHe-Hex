@@ -32,7 +32,7 @@ MAX_16BIT_SIZE = MAX_BYTE_SIZE**2
 
 SET_OBSTACLE = 0x03
 
-SET_SERVO_SPEED = 0x04
+SET_SERVO_SPEED = 0x24
 SET_SERVO_SPEED_LENGTH = 2
 
 WALK = 0x20
@@ -166,8 +166,8 @@ def set_servo_speed(spi, speed):
     _select_device(spi, MOTOR_ADDR)
     least = speed & 0x00FF
     most = (speed & 0xFF00) >> 8
-    total_msg = _get_total_msg(least, most)
-    response = _send_bytes(spi, _add_parity(SET_OBSTACLE, total_msg), 
+    total_msg = _get_total_msg(SET_SERVO_SPEED_LENGTH, least, most)
+    response = _send_bytes(spi, _add_parity(SET_SERVO_SPEED, total_msg), 
                            SET_SERVO_SPEED_LENGTH, least, most)
     _check_response(response)
 
