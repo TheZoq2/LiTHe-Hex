@@ -18,6 +18,7 @@
 
 import spidev
 import time
+import pdb
 
 MOTOR_ADDR = (0, 0)
 SENSOR_ADDR = (0, 1)
@@ -97,16 +98,16 @@ def _send_bytes(spi, *data):
         
 
 def _recieve_muliple_bytes(spi, type_):
-    length = spi.readbytes(1)
+    length = spi.readbytes(1)[0]
     return spi.readbytes(length)
     
 
 def _recieve_single_byte(spi, type_):
-    return spi.readbytes(1)
+    return spi.readbytes(1)[0]
 
 
 def _recieve_bytes(spi):
-    type_ = spi.readbytes(1)
+    type_ = spi.readbytes(1)[0]
 
     # if the most significant bit in the
     # type message is 1, then the message
@@ -118,7 +119,7 @@ def _recieve_bytes(spi):
 
 
 def _is_multibyte_msg(data_id):
-    tmp = data << 2
+    tmp = data_id << 2
     tmp_str = '{0:08b}'.format(tmp)
     if tmp[0] == '1':
         return True
@@ -127,7 +128,8 @@ def _is_multibyte_msg(data_id):
 
 def _request_data(spi, data_id):
     # response = spi.xfer2([DATA_REQ, data_id])
-    response = _send_bytes(spi, DATA_REQ, data_id)
+    # pdb.set_trace()
+    response = _send_bytes(spi, _add_parity(DATA_REQ, data_id), data_id)
     _check_response(response)
     return _recieve_bytes(spi)
 
@@ -195,7 +197,7 @@ def back_to_neutral(spi):
 
 
 def get_servo_status(spi):
-    _select_device(*MOTOR_ADDR)
+    _select_device(spi, MOTOR_ADDR)
     return _request_data(spi, SERVO_STATUS)
 
 
