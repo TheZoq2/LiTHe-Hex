@@ -1,5 +1,13 @@
 #include "servo.h"
 
+#include "avr_helper.h"
+
+#ifndef IS_X86
+#include <avr/io.h>
+#include <avr/interrupt.h>
+#include <util/delay.h>
+#endif
+
 const uint8_t WRITE_DATA_INSTRUCTION = 0x03;
 const uint8_t WRITE_REG_INSTRUCTION = 0x04;
 const uint8_t ACTION_INSTRUCTION = 0x05;
@@ -147,7 +155,9 @@ void init_all_servos()
 	for(uint8_t i = 0; i < 18; ++i)
 	{
 		enable_servo_torque(i);
+		_delay_ms(100);
 		reset_servo_bounds(i);
+		_delay_ms(100);
 	}
 }
 
