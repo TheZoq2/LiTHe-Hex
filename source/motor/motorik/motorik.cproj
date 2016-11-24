@@ -117,6 +117,12 @@
     <Compile Include="motorik.c">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="servo.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="servo.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="uart_lib.c">
       <SubType>compile</SubType>
     </Compile>

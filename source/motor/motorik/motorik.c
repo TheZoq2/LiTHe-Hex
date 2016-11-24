@@ -30,10 +30,11 @@ int main(void)
 	_delay_ms(100);
 	
 	
+	uint8_t sevo_id = 13;
 	
-	reset_servo_max_angles(0);
-	enable_servo_torque(0);
-	set_servo_angle(0, 0x0200);
+	reset_servo_max_angles(sevo_id);
+	enable_servo_torque(sevo_id);
+	set_servo_angle(sevo_id, 0x01ff);
 		
 	while(1)
 	{
