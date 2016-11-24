@@ -18,6 +18,7 @@
 #include "spi.h"
 
 #define ACK 0x7E
+#define FAIL 0x7C
 
 void spi_init() {
     // Set MISO output, all others input
@@ -49,3 +50,6 @@ void spi_transmit_ack() {
     spi_transmit_byte(ACK);
 }
 
+void spi_transmit_fail() {
+    spi_transmit_byte(FAIL);
+}

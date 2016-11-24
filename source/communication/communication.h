@@ -21,12 +21,17 @@
 #include "spi.h"
 #include <stdint.h>
 
-#define LONGEST_MSG	20
+enum ID {
+    SEND_FAIL = 0x1F ACKNOWLEDGE = 0x0F, DATA_REQUEST = 0x02, 
+    TOGGLE_OBSTACLE = 0x03, SET_SERVO_SPEED = 0x04, WALK_COMMAMD = 0x20, 
+    RETURN_TO_NEUTRAL = 0x05, SERVO_STATUS = 0x20, DEBUG_STRING = 0x21, 
+    OBSTACLE = 0x03, SENSOR_DATA = 0x20, CORRIDOR_DATA = 0x21
+};
 
 typedef struct Packet {
 	uint8_t control_byte;
 	uint8_t len;
-	uint8_t msg[LONGEST_MSG];
+	uint8_t msg[];
 } Packet;
 
 void on_spi_recv();

@@ -19,7 +19,6 @@
 
 #include "communication.h"
 //#include "../sensor/table.h"
-//#include <stdio.h>
 
 bool check_parity();
 
@@ -29,7 +28,7 @@ void send_reply_motor(uint8_t current_msg);
 
 bool message_require_reply(uint8_t current_msg);
 
-uint8_t get_current_id(Frame* frame_recv);
+uint8_t get_id(Frame* frame_recv);
 
 void get_new_frame(Frame* frame_recv);
 
@@ -41,15 +40,11 @@ void on_spi_recv() {
 
 	Frame frame_recv;
 	get_new_frame(&frame_recv);
-	uint8_t current_id = get_current_id(&frame_recv);
+	uint8_t current_id = get_id(&frame_recv);
 	
 	bool success = check_parity(&frame_recv); 
 	if(success) { // continue if message ok
-		Frame ack_frame;
-		ack_frame.control_byte = 0x0F << 2;
-		ack_frame.len = 0;
-		ack_frame.msg[0] = 0x00;
-		send_frame(&ack_frame);
+		spi_transmit_ack();
 	
 		bool reply = message_require_reply(current_id);
 		if(reply) { // send a replay to central-unit
@@ -65,18 +60,14 @@ void on_spi_recv() {
 			//control_motor();
 		}
 	} else { // Something was wrong with message
-		Frame frame_send;
-		frame_send.control_byte = 0x1F << 2;
-		frame_send.len = 0;
-		frame_send.msg[0] = 0x00;
-		send_frame(&frame_send);
+		spi_transmit_fail();
 	}
 }
 
 void send_reply_test() {
 
 	Frame test_frame;
-	test_frame.control_byte = 20 << 2;
+	test_frame.control_byte = ID_HEX[OBSTACLE] << 2;
 	test_frame.len = 3;
 	test_frame.msg[0] = 0xBA;
 	test_frame.msg[0] = 0xFC;
@@ -104,7 +95,8 @@ bool check_parity(Frame* frame) {
 		}
 	}
 	
-	return (parity_con == (frame->control_byte & 0x01)) && (parity_msg == (frame->control_byte & 0x02));
+	return (parity_con == (frame->control_byte & 0x01)) && 
+			(parity_msg == (frame->control_byte & 0x02));
 }
 
 void calculate_parity(Frame* frame) {
@@ -142,33 +134,31 @@ void calculate_parity(Frame* frame) {
 void get_new_frame(Frame* frame_recv) {
 
 	frame_recv->control_byte = spi_receive_byte();
-	//frame_recv->len = spi_receive_byte();
-	//frame_recv->msg[0] =
  
-	if(!(frame_recv->control_byte & 0x80)) { // msg is one byte long
-		frame_recv->len = 0;
-		frame_recv->msg[0] = spi_receive_byte();
-	} else { // msg is more than one byte long
+	if(frame_recv->control_byte & 0x80) { // msg is more than one byte long 
 		frame_recv->len = spi_receive_byte();
 		for(uint8_t i = 0; i < frame_recv->len; i++) {
 			frame_recv->msg[i] = spi_receive_byte();
 		}
+	} else { // msg is one byte long
+		frame_recv->len = 0;
+		frame_recv->msg[0] = spi_receive_byte();
 	}
 }
 
-uint8_t get_current_id(Frame* frame_recv) {
+uint8_t get_id(Frame* frame_recv) {
 
-	return (frame_recv->control_byte & 0xFC) >> 2;
+	return frame_recv->control_byte >> 2;
 }
 
 bool message_require_reply(uint8_t current_msg) {
 
 	switch(current_msg) {
-		case 0x02 :
-		case 0x03 :
-		case 0x04 :
-		case 0x20 :
-		case 0x05 :
+		case ID_HEX[DATA_REQUEST] :
+		case ID_HEX[TOGGLE_OBSTACLE] :
+		case ID_HEX[SET_SERVO_SPEED] :
+		case ID_HEX[WALK_COMMAMD] :
+		case ID_HEX[RETURN_TO_NEUTRAL] :
 			return true;
 		default: return false;
 	}
@@ -178,10 +168,10 @@ void send_reply_sensor(uint8_t current_id) {
 
 	Frame frame_send_1;
 	Frame frame_send_2;
-	if(current_id == 0x02) {
-		frame_send_1.control_byte = 0x20 << 2;
+	if(current_id == ID_HEX[DATA_REQUEST]) {
+		frame_send_1.control_byte = ID_HEX[SENSOR_DATA] << 2;
 	//	send_sensor_data(&frame_send_1);
-		frame_send_2.control_byte = 0x21 << 2;
+		frame_send_2.control_byte = ID_HEX[CORRIDOR_DATA] << 2;
 	//	send_sensor_wall_data(&frame_send_2);
 	}
 	send_frame(&frame_send_1);
@@ -205,16 +195,16 @@ void send_frame(Frame* frame) {
 void control_motor(uint8_t current_msg) {
 
 	switch(current_msg){
-		case 0x03 :
+		case ID_HEX[TOGGLE_OBSTACLE] :
 			// Toggle obstacle
 			break;
-		case 0x04 :
+		case ID_HEX[SET_SERVO_SPEED] :
 			// Set speed
 			break;
-		case 0x20 :
+		case ID_HEX[WALK_COMMAMD] :
 			// Go command 
 			break;
-		case 0x05 :
+		case ID_HEX[RETURN_TO_NEUTRAL] :
 			// Return to neutral
 			break;
 	}
@@ -225,11 +215,11 @@ void send_reply_motor(uint8_t current_msg) {
 	Frame frame_send_status;
 	Frame frame_send_string;
 	Frame frame_send_obstacle;
-	frame_send_status.control_byte = 0x20 << 2;
+	frame_send_status.control_byte = ID_HEX[SERVO_STATUS] << 2;
 	// Send servo status
-	frame_send_string.control_byte = 0x21 << 2;
+	frame_send_string.control_byte = ID_HEX[DEBUG_STRING] << 2;
 	// Send debug string
-	frame_send_obstacle.control_byte = 0x03 << 2;
+	frame_send_obstacle.control_byte = ID_HEX[OBSTACLE] << 2;
 	// Hinder here?
 	send_frame(&frame_send_status);
 	send_frame(&frame_send_string);
