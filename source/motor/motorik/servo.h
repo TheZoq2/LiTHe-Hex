@@ -37,7 +37,7 @@ enum Leg
 
 extern const uint8_t SERVO_MAP[6][3];
 
-const uint8_t BROADCAST_ID;
+extern const uint8_t BROADCAST_ID;
 
 /*
 	Struct that contains a response from a servo. 

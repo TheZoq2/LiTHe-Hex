@@ -169,6 +169,7 @@ void set_leg_angles(enum Leg leg_index, uint16_t* angles)
 	for (uint8_t i = 0; i < 3; ++i) 
 	{
 		set_servo_angle(ids[i], angles[i]);
+		_delay_ms(5);
 	}
 }
 
