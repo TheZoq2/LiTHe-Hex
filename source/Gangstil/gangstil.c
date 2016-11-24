@@ -17,6 +17,37 @@
 // You should have received a copy of the GNU General Public License
 // along with LiTHe Hex.  If not, see <http://www.gnu.org/licenses/>.
 
+
+/**
+ * @brief getAngles produces an array of the leg angles as calculated by the IK.
+ * @param target provides the coordinates relative to the joints for all the legs, as 
+ * they should be after movement.
+ * @return array ordered LF RF LM RM LB RB (left/right - front/mid/back) of calculated 
+ * angles for the legs.
+ */
+struct Leg* getAngles(Point2D * target){
+    struct Leg* res = (struct Leg *)calloc(NUM_LEGS, sizeof(struct Leg));
+    float x;
+    float y;
+    float z;
+    for (size_t leg = 0; leg < NUM_LEGS; ++leg){
+        if ((leg & 1) == 0){ //left hand side of robot
+            x = target[leg].y;
+            z = target[leg].x;
+        }
+        else{ //right hand side of robot
+            x = -target[leg].y;
+            z = -target[leg].x;
+        }
+        y = -target[leg].z;
+        res[leg] = leg_ik(x,y,z);
+    }
+    res[LF].angle1 = res[LF].angle1 + (M_PI / 4);
+    res[RF].angle1 = res[RF].angle1 - (M_PI / 4);
+    res[LB].angle1 = res[LB].angle1 - (M_PI / 4);
+    res[RB].angle1 = res[RB].angle1 + (M_PI / 4);
+}
+
 /**
  * @brief defaultLegPosition gives a default position for requested leg.
  * @param leg indicates what leg of the robot (LF, RF, LM, RM, LB, RB) should be returned.
