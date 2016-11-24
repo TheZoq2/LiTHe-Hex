@@ -166,8 +166,8 @@ def set_servo_speed(spi, speed):
     _select_device(spi, MOTOR_ADDR)
     least = speed & 0x00FF
     most = (speed & 0xFF00) >> 8
-    response = _send_bytes(spi, _add_parity(SET_OBSTACLE, 
-                                            _get_total_msg(least, most)), 
+    total_msg = _get_total_msg(least, most)
+    response = _send_bytes(spi, _add_parity(SET_OBSTACLE, total_msg), 
                            SET_SERVO_SPEED_LENGTH, least, most)
     _check_response(response)
 
