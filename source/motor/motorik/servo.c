@@ -162,8 +162,11 @@ void init_all_servos()
 	for(uint8_t i = 1; i < 19; ++i)
 	{
 		enable_servo_torque(i);
+		_delay_ms(1);
 		reset_servo_bounds(i);
+		_delay_ms(1);
 		set_servo_rotation_speed(i, 0x0100);
+		_delay_ms(1);
 	}
 }
 
@@ -175,6 +178,7 @@ void set_leg_angles(uint8_t leg_index, uint16_t* angles)
 	for (uint8_t i = 0; i < 3; ++i) 
 	{
 		set_servo_angle(ids[i], angles[i]);
+		_delay_ms(5);
 	}
 }
 
