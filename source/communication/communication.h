@@ -40,6 +40,20 @@ typedef struct Frame {
 	uint8_t msg[MAX_MESSAGE_LENGTH];
 } Frame;
 
-void on_spi_recv();
+/*
+ * Recieves a message frame from the SPI master
+ * and puts it in the given frame.
+ */
+void on_spi_recv(Frame* frame_recv);
+
+/*
+ * Checks whether this message requires a reply.
+ */
+bool message_require_reply(uint8_t current_msg);
+
+/*
+ * Sends a frame to the master.
+ */
+void send_frame(Frame* frame_send);
 
 #endif /* ifndef COMMUNICATION_H */
