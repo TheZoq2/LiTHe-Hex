@@ -15,8 +15,8 @@
 // You should have received a copy of the GNU General Public License
 // along with LiTHe Hex.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef COMMUNICATION_H
-#define COMMUNICATION_H 
+#ifndef SPI_H
+#define SPI_H
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
@@ -27,4 +27,4 @@ uint8_t spi_transmit_byte(uint8_t data);
 void spi_transmit_ack();
 void spi_transmit_fail();
 
-#endif /* ifndef COMMUNICATION_H */
+#endif /* ifndef SPI_H */

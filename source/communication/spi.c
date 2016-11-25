@@ -17,8 +17,8 @@
 
 #include "spi.h"
 
-#define ACK 0x7E
-#define FAIL 0x7C
+#define ACK 0x0F
+#define FAIL 0x1F
 
 void spi_init() {
     // Set MISO output, all others input

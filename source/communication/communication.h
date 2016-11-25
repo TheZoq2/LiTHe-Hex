@@ -18,23 +18,25 @@
 #ifndef COMMUNICATION_H
 #define COMMUNICATION_H
 
+#define GARBAGE     0x00
+
+#define MAX_MESSAGE_LENGTH 20
+
 #include "spi.h"
 #include <stdint.h>
 
-#define GARBAGE     0x00
-
 enum ID {
-    SEND_FAIL = 0x1F ACKNOWLEDGE = 0x0F, DATA_REQUEST = 0x02, 
-    TOGGLE_OBSTACLE = 0x03, SET_SERVO_SPEED = 0x04, WALK_COMMAMD = 0x20, 
-    RETURN_TO_NEUTRAL = 0x05, SERVO_STATUS = 0x20, DEBUG_STRING = 0x21, 
-    OBSTACLE = 0x03, SENSOR_DATA = 0x20, CORRIDOR_DATA = 0x21
+    SEND_FAIL = 0x1F, ACKNOWLEDGE = 0x0F, DATA_REQUEST = 0x02, 
+    TOGGLE_OBSTACLE = 0x03, SET_SERVO_SPEED = 0x20, WALK_COMMAMD = 0x21, 
+    RETURN_TO_NEUTRAL = 0x05, SERVO_STATUS = 0x22, DEBUG_STRING = 0x23, 
+    OBSTACLE = 0x03, SENSOR_DATA = 0x24, CORRIDOR_DATA = 0x25
 };
 
-typedef struct Packet {
+typedef struct Frame {
 	uint8_t control_byte;
 	uint8_t len;
-	uint8_t msg[];
-} Packet;
+	uint8_t msg[MAX_MESSAGE_LENGTH];
+} Frame;
 
 void on_spi_recv();
 
