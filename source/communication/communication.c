@@ -167,19 +167,11 @@ void calculate_parity(Frame* frame) {
 void get_new_frame(Frame* frame_recv) {
 
     // The first byte might be garbage, check for that
-<<<<<<< HEAD
-    uint8_t byte = spi_receive_byte();
-    if (byte == GARBAGE) {
-	    frame_recv->control_byte = spi_receive_byte();
-    } else {
-        frame_recv->control_byte = byte; 
-=======
     uint8_t b = spi_receive_byte();
     if (b == GARBAGE) {
 	    frame_recv->control_byte = spi_receive_byte();
     } else {
         frame_recv->control_byte = b; 
->>>>>>> dev_SPI
     }
 
  
