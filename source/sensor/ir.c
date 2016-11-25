@@ -100,6 +100,7 @@ void ir_reduce_noise(IR* ir) {
 	} else {
 		ir->value = 255;
 	}
+	ir->value = ir->raw_data_list[NUM_SENSOR_DATA-1];
 }
 
 double ir_value_to_centimeters(uint16_t val, enum Range range) {

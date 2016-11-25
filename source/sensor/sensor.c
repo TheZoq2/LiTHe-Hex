@@ -18,13 +18,12 @@
 #include "ir.h"
 #include "adc.h"
 #include "ir_queue.h"
-#include "avr/interrupt.h"
+#include <avr/interrupt.h>
 #include "timer.h"
 #include "gyro.h"
 #include "lidar.h"
 #include "table.h"
-#include "../communication/spi.h"
-#include "../communication/communication.h"
+#include "communication.h"
 
 Timer* timer8;
 Timer* timer16;
@@ -41,10 +40,16 @@ ISR(TIMER1_OVF_vect) {
 
 // If SPI receive something
 ISR(SPI_STC_vect) {
-    Frame frame;
-	on_spi_recv(&frame);
-
-    // TODO do something with frame
+    Frame frame_recv;
+	on_spi_recv(&frame_recv);
+	
+	Frame frame_trans;
+	frame_trans.control_byte = SENSOR_DATA << 2;
+	
+	if((get_id(&frame_recv) == DATA_REQUEST) && (frame_recv.msg[0] == SENSOR_DATA)) {
+		get_sensor_data(&frame_trans);
+		send_frame(&frame_trans);
+	}
 }
 
 // Setup hardware ports on AVR
@@ -66,6 +71,8 @@ int main(void) {
 	Timer timer16bit;
 	timer16 = &timer16bit;
 	timer_init(timer16, BIT16);
+
+	spi_init();
 	
 	// Enable global interrupts
 	sei();

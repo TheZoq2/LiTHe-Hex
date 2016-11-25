@@ -25,7 +25,6 @@
 #define TYPE_PARITY_MASK 0x01
 
 #include "spi.h"
-#include <stdint.h>
 
 enum ID {
     SEND_FAIL = 0x1F, ACKNOWLEDGE = 0x0F, DATA_REQUEST = 0x02, 
@@ -55,5 +54,10 @@ bool message_require_reply(uint8_t current_msg);
  * Sends a frame to the master.
  */
 void send_frame(Frame* frame_send);
+
+/* 
+ * Return id for frame
+ */
+uint8_t get_id(Frame* frame_recv);
 
 #endif /* ifndef COMMUNICATION_H */
