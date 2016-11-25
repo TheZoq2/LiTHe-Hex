@@ -110,8 +110,8 @@ bool check_parity(Frame* frame) {
 	}
 	
 	bool result = false;
-	if(((frame->control_byte & TYPE_PARITY_MASK) > 0) == parity_con) {
-		if(((frame->control_byte & MSG_PARITY_MASK) > 0) == parity_msg) {
+	if((frame->control_byte & 0x01) > 0 == parity_con) {
+		if((frame->control_byte & 0x02) > 0 == parity_msg) {
 			result = true;
 		}
 	}
@@ -167,11 +167,19 @@ void calculate_parity(Frame* frame) {
 void get_new_frame(Frame* frame_recv) {
 
     // The first byte might be garbage, check for that
+<<<<<<< HEAD
     uint8_t byte = spi_receive_byte();
     if (byte == GARBAGE) {
 	    frame_recv->control_byte = spi_receive_byte();
     } else {
         frame_recv->control_byte = byte; 
+=======
+    uint8_t b = spi_receive_byte();
+    if (b == GARBAGE) {
+	    frame_recv->control_byte = spi_receive_byte();
+    } else {
+        frame_recv->control_byte = b; 
+>>>>>>> dev_SPI
     }
 
  
