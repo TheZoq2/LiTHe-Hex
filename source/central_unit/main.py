@@ -18,6 +18,7 @@
 # along with LiTHe Hex.  If not, see <http://www.gnu.org/licenses/>.
 
 import communication
+import time
 import pdb
 
 
@@ -25,8 +26,10 @@ def main():
     spi = communication.communication_init()
     res = []
     while True:
-        pdb.set_trace()
-        print(communication.walk(spi, 10, 2, 1))
+        #pdb.set_trace()
+        #print(communication.walk(spi, 10, 2, 1))
+        print(communication.get_sensor_data(spi))
+        time.sleep(1)
 
 
 if __name__ == '__main__':

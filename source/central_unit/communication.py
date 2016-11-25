@@ -1,5 +1,5 @@
 # Copyright 2016 Noak Ringman, Emil Segerbäck, Robin Sliwa, Frans Skarman, Hannes Tuhkala, Malcolm Wigren, Olav Övrebö
-# 
+#
 
 # This file is part of LiTHe Hex.
 
@@ -21,7 +21,7 @@ import time
 import pdb
 
 MOTOR_ADDR = (0, 0)
-SENSOR_ADDR = (0, 1)
+SENSOR_ADDR = (0, 0) #TODO: fix this back to (0,1), SS must be fixed in the hardware
 
 DATA_REQ    = 0x02
 
@@ -92,7 +92,7 @@ def _add_parity(type_, msg):
     type_parity = _calculate_parity(result)
     result |= type_parity
     return result
-    
+
 
 def _send_bytes(spi, *data):
     # check if all are bytes
@@ -101,12 +101,12 @@ def _send_bytes(spi, *data):
     spi.writebytes([GARBAGE])
     spi.writebytes(list(data))
     return spi.readbytes(1)
-        
+
 
 def _recieve_muliple_bytes(spi, type_):
     length = spi.readbytes(1)[0]
     return spi.readbytes(length)
-    
+
 
 def _recieve_single_byte(spi, type_):
     return spi.readbytes(1)
@@ -181,7 +181,7 @@ def set_servo_speed(spi, speed):
     least = speed & 0x00FF
     most = (speed & 0xFF00) >> 8
     total_msg = _get_total_msg(SET_SERVO_SPEED_LENGTH, least, most)
-    response = _send_bytes(spi, _add_parity(SET_SERVO_SPEED, total_msg), 
+    response = _send_bytes(spi, _add_parity(SET_SERVO_SPEED, total_msg),
                            SET_SERVO_SPEED_LENGTH, least, most)
     _check_response(response)
 
@@ -219,5 +219,3 @@ def get_sensor_data(spi):
 def get_corridor_data(spi):
     _select_device(spi, SENSOR_ADDR)
     return _request_data(spi, SENSOR_DATA)
-
-
