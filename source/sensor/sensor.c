@@ -41,7 +41,10 @@ ISR(TIMER1_OVF_vect) {
 
 // If SPI receive something
 ISR(SPI_STC_vect) {
-	on_spi_recv();
+    Frame frame;
+	on_spi_recv(&frame);
+
+    // TODO do something with frame
 }
 
 // Setup hardware ports on AVR

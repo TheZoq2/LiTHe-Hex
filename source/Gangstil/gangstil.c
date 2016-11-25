@@ -1,49 +1,118 @@
-﻿#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-#include <stdbool.h>
+#include "gangstil.h"
 
-#ifndef M_PI
-    #define M_PI 3.14159265358979323846
-#endif
+// Copyright 2016 Noak Ringman, Emil Segerbäck, Robin Sliwa, Frans Skarman, Hannes Tuhkala, Malcolm Wigren, Olav Övrebö
 
-const size_t LF = 0;
-const size_t RF = 1;
-const size_t LM = 2;
-const size_t RM = 3;
-const size_t LB = 4;
-const size_t RB = 5;
+// This file is part of LiTHe Hex.
 
-const float FRONT_LEG_JOINT_X           = 0.12;
-const float FRONT_LEG_JOINT_Y           = 0.06;
-const float MID_LEG_JOINT_Y             = 0.1;
-const float HIGH                        = 0.1;
-const float GROUNDED                    = 0;
-const float MIN_DIST                    = 0.06;
-const float MAX_DIST                    = 0.18;
-const float VERT_MID_LEG_BORDER_OFFSET  = 0.06;
-const float VERT_HEAD_LEG_BORDER_OFFSET = -0.03;
-const float HORIZ_BORDER_TILT           = 0;
-const float DIAG_DIVISIVE_BORDER_TILT   = 1.3333333;
-const float CLOSE_BORDER_OFFSET         = 0.085;
-const float DIAG_DIVISIVE_BORDER_OFFSET = 0.045;
-const float CLOSE_BORDER_TILT           = -1;
+// LiTHe Hex is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
 
-const size_t NUM_LEGS = 6;
+// LiTHe Hex is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+
+// You should have received a copy of the GNU General Public License
+// along with LiTHe Hex.  If not, see <http://www.gnu.org/licenses/>.
 
 
 /**
- * struct used to represent leg positions, leg movements and robot positions. x is
- * positive forward, seen from the robot. y is positive to the left.
+ * @brief getAngles produces an array of the leg angles as calculated by the IK.
+ * @param target provides the coordinates relative to the joints for all the legs, as 
+ * they should be after movement.
+ * @return array ordered LF RF LM RM LB RB (left/right - front/mid/back) of calculated 
+ * angles for the legs.
  */
-typedef struct{
+struct Leg* getAngles(Point2D * target, float * height){
+    struct Leg* res = (struct Leg *)calloc(NUM_LEGS, sizeof(struct Leg));
     float x;
     float y;
-}Point2D;
+    float z;
+    for (size_t leg = 0; leg < NUM_LEGS; ++leg){
+        if ((leg & 1) == 0){ //left hand side of robot
+            x = target[leg].y;
+            z = target[leg].x;
+        }
+        else{ //right hand side of robot
+            x = -target[leg].y;
+            z = -target[leg].x;
+        }
+        y = height[leg] - HIGH;
+        res[leg] = leg_ik(x,y,z);
+    }
+    res[LF].angle1 = res[LF].angle1 + (M_PI / 4);
+    res[RF].angle1 = res[RF].angle1 - (M_PI / 4);
+    res[LB].angle1 = res[LB].angle1 - (M_PI / 4);
+    res[RB].angle1 = res[RB].angle1 + (M_PI / 4);
+}
 
 
-Point2D legs_target[6];
+/**
+ * @brief takes a target set of leg positions and causes the servos to execute them.
+ * @param target set of foot positions arranged LF RF LM RM LB RB, indicating 
+ * intended final placement of feet relative to the mounts of their joints.
+ */
+void executePosition(Point2D * target, float * z){
+    struct Leg* ik= getAngles(target, z);
+    
+    uint16_t* angle = (uint16_t*)calloc(3, sizeof(uint16_t));
+    uint8_t legId;
+    for (size_t leg = 0; leg < NUM_LEGS; ++leg){
+        
+        if ((leg & 1) == 0){
+            angle[0] = (uint16_t)(150 - (ik[leg].angle1* 180 / M_PI));
+            angle[1] = (uint16_t)(150 + (ik[leg].angle2* 180 / M_PI));
+            angle[2] = (uint16_t)(150 + (ik[leg].angle3* 180 / M_PI));
+            legId = (uint8_t)(leg/2);
+        }
+        else{
+            angle[0] = (uint16_t)(150 - (ik[leg].angle1* 180 / M_PI));
+            angle[1] = (uint16_t)(150 - (ik[leg].angle2* 180 / M_PI));
+            angle[2] = (uint16_t)(150 - (ik[leg].angle3* 180 / M_PI));
+            legId = (uint8_t)(leg/2 + 3);
+        }
+        set_leg_angles(legId, angle);
+    }
+    
+    send_servo_action();
+    
+    free(angle);
+}
 
+
+void executeStep(Point2D * current, Point2D * target, bool lrlRaised){
+    float * z = (float *)calloc(NUM_LEGS, sizeof(float));
+    if(lrlRaised){
+        float[LF] = HIGH;
+        float[RM] = HIGH;
+        float[LB] = HIGH;
+        float[RF] = 0;
+        float[LM] = 0;
+        float[RB] = 0;
+    }
+    else{
+        float[LF] = 0;
+        float[RM] = 0;
+        float[LB] = 0;
+        float[RF] = HIGH;
+        float[LM] = HIGH;
+        float[RB] = HIGH;
+    }
+    
+    executePosition(current, z);
+    executePosition(target, z);
+    float[LF] = 0;
+    float[RM] = 0;
+    float[LB] = 0;    
+    float[RF] = 0;
+    float[LM] = 0;
+    float[RB] = 0;
+    executePosition(target, z);
+    
+    free(z);
+}
 
 /**
  * @brief defaultLegPosition gives a default position for requested leg.
@@ -364,10 +433,15 @@ void directLegs(float rot, Point2D * targ, Point2D * current, Point2D * req, boo
  * @param current current position of the legs.
  */
 void assumeStandardizedStance(Point2D * current){
-    bool lrlRaised = true;
-    bool rlrRaised = false;
-
-    //todo: execute
+    
+    float * z = (float *)calloc(NUM_LEGS, sizeof(float));
+    float[LF] = HIGH;
+    float[RM] = HIGH;
+    float[LB] = HIGH;
+    float[RF] = 0;
+    float[LM] = 0;
+    float[RB] = 0;
+    executePosition(current, z);
 
     Point2D * stdLeg = defaultLegPosition(LF);
     current->x = stdLeg->x;
@@ -382,11 +456,19 @@ void assumeStandardizedStance(Point2D * current){
     current->y = stdLeg->y;
     free(stdLeg);
 
-    //todo: execute;
-    lrlRaised = false;
-    //todo: execute;
-    rlrRaised = true;
-    //todo: execute;
+    
+    executePosition(current, z);
+    
+    float[LF] = 0;
+    float[RM] = 0;
+    float[LB] = 0;
+    
+    executePosition(current, z);
+    float[RF] = HIGH;
+    float[LM] = HIGH;
+    float[RB] = HIGH;
+    
+    executePosition(current, z);
 
     stdLeg = defaultLegPosition(RF);
     current->x = stdLeg->x;
@@ -401,9 +483,13 @@ void assumeStandardizedStance(Point2D * current){
     current->y = stdLeg->y;
     free(stdLeg);
 
-    //todo: execute
-    rlrRaised = false;
-    //todo; execute
+    
+    executePosition(current, z);
+    float[RF] = 0;
+    float[LM] = 0;
+    float[RB] = 0;
+    executePosition(current, z);
+    free(z);
 }
 
 
@@ -433,10 +519,10 @@ float workTowardsGoal(float rot, Point2D * goal, Point2D * current){
     float scaledown1 = scaleLegs(targ0, current, scale, false);
 
     if (scaledown0 > scaledown1){
-        //todo: execute with targ0
+        executeStep(current, targ0, true);
     }
     else{
-        //todo: execute with targ1
+        executeStep(current, targ1, false);
     }
 
     free(targ0);
@@ -497,7 +583,7 @@ void rotateSetAngle(float angle, Point2D * current){
  * @param argc unused
  * @param argv unused
  * @return 0
- */
+ *//*
 int main(int argc, char *argv[]){
     //testing variables
     Point2D * current   = (Point2D *)calloc(NUM_LEGS, sizeof(Point2D));
@@ -547,4 +633,4 @@ int main(int argc, char *argv[]){
     command = NULL;
     diff    = NULL;
     return 0;
-}
+}*/

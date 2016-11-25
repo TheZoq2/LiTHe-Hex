@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Atmel Studio Solution File, Format Version 11.00
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "motorik", "motorik\motorik.cproj", "{4AC24A68-738C-40FF-8B68-7E6DE1890AD1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|AVR = Debug|AVR
+		Release|AVR = Release|AVR
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4AC24A68-738C-40FF-8B68-7E6DE1890AD1}.Debug|AVR.ActiveCfg = Debug|AVR
+		{4AC24A68-738C-40FF-8B68-7E6DE1890AD1}.Debug|AVR.Build.0 = Debug|AVR
+		{4AC24A68-738C-40FF-8B68-7E6DE1890AD1}.Release|AVR.ActiveCfg = Release|AVR
+		{4AC24A68-738C-40FF-8B68-7E6DE1890AD1}.Release|AVR.Build.0 = Release|AVR
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

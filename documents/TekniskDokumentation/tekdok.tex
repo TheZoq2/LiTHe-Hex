@@ -231,22 +231,22 @@
 		Datarequest & 02 & data \\ \midrule
 		\\
 		\textbf{Centralenhet $ \to $ motorikenhet}\\ \midrule
-		Toggle hindergång & 03 & på/av \\ \midrule
-		Sätt servohastighet & 04 & $ hastighet $ \\ \midrule
-		Gåkommando &  20 & len, x- och y-hastighet, svänghastighet \\ \midrule
+		Sätt hindergång & 03 & på/av \\ \midrule
+		Sätt servohastighet & 20 & 8 LSB, 8 MSD \\ \midrule
+		Gåkommando &  21 & len, x- och y-hastighet, svänghastighet \\ \midrule
 		Return to neutral & 05 & -- \\ \midrule
 		\\
 		\textbf{Centralenhet $ \gets $ motorikenhet}\\ \midrule
-		Servostatus & 20 & len, ... data ... \\ \midrule
-		Debugsträng & 21 & len, "debugsträng i utf-8" \\ \midrule
+		Servostatus & 22 & len, ... data ... \\ \midrule
+		Debugsträng & 23 & len, "debugsträng i utf-8" \\ \midrule
 		Hinder här? & 03 & ja/nej \\ \midrule
 		\\
 		\textbf{Centralenhet $\to$ sensorenhet} \\ \midrule
 		Återställ orientering & 03 & -- \\ \midrule
 		\\
 		\textbf{Centralenhet $ \gets $ sensorenhet}\\ \midrule
-		Behandlad sensordata & 20 & len, ... avståndsmätardata ..., gyrodata \\ \midrule
-		Korridordata		 & 21 & len, ... avstånd till väggar ..., vinkel \\
+		Behandlad sensordata & 24 & len, ... avståndsmätardata ..., gyrodata \\ \midrule
+		Korridordata		 & 25 & len, ... avstånd till väggar ..., vinkel \\
 
 		\caption{Meddelandespecifikation \label{table:messages}}
 	\end{longtable}
