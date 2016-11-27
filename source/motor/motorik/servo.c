@@ -29,7 +29,7 @@ const uint8_t SERVO_MAP[6][3] = {
 	{7,9,11},
 	{2,4,6},
 	{14,16,18},
-	{8,9,12},
+	{8,10,12},
 };
 
 void send_servo_command(uint8_t id, uint8_t instruction, const void* data, uint8_t data_amount)

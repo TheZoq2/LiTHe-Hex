@@ -36,21 +36,20 @@ int main(void)
 
 	send_servo_action();
 	
-	_delay_ms(100);
 	uint16_t angles[3] = {0x1ff, 0x1ff, 0x1ff};
 	for(uint8_t i = 0; i < 6; ++i)
 	{
 		set_leg_angles(i, angles);
 	}
 	
-	_delay_ms(100);
-	
 	send_servo_action();
+
+	_delay_ms(500);
 		
+	uint16_t angles_1[3] = {0x0ff, 0x1ff, 0x1ff};
 	while(1)
 	{
 		
-		//_delay_ms(100);
 	}
 }
 
