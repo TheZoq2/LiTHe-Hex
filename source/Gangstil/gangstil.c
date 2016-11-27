@@ -1,4 +1,9 @@
 #include "gangstil.h"
+//#include <inttypes.h>
+
+#ifndef M_PI
+    #define M_PI 3.14159265358979323846
+#endif
 
 // Copyright 2016 Noak Ringman, Emil Segerbäck, Robin Sliwa, Frans Skarman, Hannes Tuhkala, Malcolm Wigren, Olav Övrebö
 
@@ -42,12 +47,34 @@ struct Leg* getAngles(Point2D * target, float * height){
         y = height[leg] - HIGH;
         res[leg] = leg_ik(x,y,z);
     }
+
     res[LF].angle1 = res[LF].angle1 + (M_PI / 4);
     res[RF].angle1 = res[RF].angle1 - (M_PI / 4);
     res[LB].angle1 = res[LB].angle1 - (M_PI / 4);
     res[RB].angle1 = res[RB].angle1 + (M_PI / 4);
+
+
+//for debug
+//    printf("\n");
+//    for (int var = 0; var < 6; ++var) {
+//        printf("leg %d rad angle: %f, %f, %f\n", var, res[var].angle1, res[var].angle2, res[var].angle3);
+//    }
+//    printf("\n");
+
+    return res;
 }
 
+//for debug without motor
+//void set_leg_angles(uint8_t id, uint16_t * angle){
+//    printf("set leg %" PRIu8" to angles ", id);
+//    printf("%" PRIu16, angle[0]);
+//    printf(", %" PRIu16, angle[1]);
+//    printf(",%" PRIu16"\n", angle[2]);
+//}
+
+//void send_servo_action(){
+//    printf("execute angles\n\n");
+//}
 
 /**
  * @brief takes a target set of leg positions and causes the servos to execute them.
@@ -55,27 +82,27 @@ struct Leg* getAngles(Point2D * target, float * height){
  * intended final placement of feet relative to the mounts of their joints.
  */
 void executePosition(Point2D * target, float * z){
-    struct Leg* ik= getAngles(target, z);
-    
+    struct Leg* ik = getAngles(target, z);
+
     uint16_t* angle = (uint16_t*)calloc(3, sizeof(uint16_t));
     uint8_t legId;
     for (size_t leg = 0; leg < NUM_LEGS; ++leg){
-        
+        int ang;
         if ((leg & 1) == 0){
-            angle[0] = (uint16_t)(150 - (ik[leg].angle1* 180 / M_PI));
-            angle[1] = (uint16_t)(150 + (ik[leg].angle2* 180 / M_PI));
-            angle[2] = (uint16_t)(150 + (ik[leg].angle3* 180 / M_PI));
+            angle[0] = (uint16_t)(150 - (int)(ik[leg].angle1 * 180 / M_PI));
+            angle[1] = (uint16_t)(150 + (int)(ik[leg].angle2 * 180 / M_PI));
+            angle[2] = (uint16_t)(150 + (int)(ik[leg].angle3 * 180 / M_PI));
             legId = (uint8_t)(leg/2);
         }
         else{
-            angle[0] = (uint16_t)(150 - (ik[leg].angle1* 180 / M_PI));
-            angle[1] = (uint16_t)(150 - (ik[leg].angle2* 180 / M_PI));
-            angle[2] = (uint16_t)(150 - (ik[leg].angle3* 180 / M_PI));
+            angle[0] = (uint16_t)(150 - (int)(ik[leg].angle1 * 180 / M_PI));
+            angle[1] = (uint16_t)(150 - (int)(ik[leg].angle2 * 180 / M_PI));
+            angle[2] = (uint16_t)(150 - (int)(ik[leg].angle3 * 180 / M_PI));
             legId = (uint8_t)(leg/2 + 3);
         }
+
         set_leg_angles(legId, angle);
     }
-    
     send_servo_action();
     
     free(angle);
@@ -84,31 +111,31 @@ void executePosition(Point2D * target, float * z){
 
 void executeStep(Point2D * current, Point2D * target, bool lrlRaised){
     float * z = (float *)calloc(NUM_LEGS, sizeof(float));
+
     if(lrlRaised){
-        float[LF] = HIGH;
-        float[RM] = HIGH;
-        float[LB] = HIGH;
-        float[RF] = 0;
-        float[LM] = 0;
-        float[RB] = 0;
+        z[LF] = HIGH;
+        z[RM] = HIGH;
+        z[LB] = HIGH;
+        z[RF] = 0;
+        z[LM] = 0;
+        z[RB] = 0;
     }
     else{
-        float[LF] = 0;
-        float[RM] = 0;
-        float[LB] = 0;
-        float[RF] = HIGH;
-        float[LM] = HIGH;
-        float[RB] = HIGH;
+        z[LF] = 0;
+        z[RM] = 0;
+        z[LB] = 0;
+        z[RF] = HIGH;
+        z[LM] = HIGH;
+        z[RB] = HIGH;
     }
-    
     executePosition(current, z);
     executePosition(target, z);
-    float[LF] = 0;
-    float[RM] = 0;
-    float[LB] = 0;    
-    float[RF] = 0;
-    float[LM] = 0;
-    float[RB] = 0;
+    z[LF] = 0;
+    z[RM] = 0;
+    z[LB] = 0;
+    z[RF] = 0;
+    z[LM] = 0;
+    z[RB] = 0;
     executePosition(target, z);
     
     free(z);
@@ -122,20 +149,20 @@ void executeStep(Point2D * current, Point2D * target, bool lrlRaised){
 Point2D * defaultLegPosition(size_t leg){
     Point2D * res = (Point2D *)malloc(sizeof(Point2D));
     if (leg < 2){   //front
-        res.x = 0.1;
-        res.y = 0.1;
+        res->x = 0.1;
+        res->y = 0.1;
     }
     else if (leg < 4){  //mid
-        res.x = 0;
-        res.y = 0.14;
+        res->x = 0;
+        res->y = 0.14;
     }
     else{
-        res.x = -0.1;
-        res.y = 0.1;
+        res->x = -0.1;
+        res->y = 0.1;
     }    //back
 
     if ((leg & 1) == 1)  //right
-        res.y = -res.y ;
+        res->y = -res->y ;
     return res;
 }
 
@@ -267,11 +294,6 @@ float updateTargByScale(Point2D * targ, Point2D * curr, Point2D * diff, float * 
     }
 
     if (lrlRaised)
-        printf("scaled grounded by %f\n", rlrScaledown);
-    else
-        printf("scaled grounded by %f\n", lrlScaledown);
-
-    if (lrlRaised)
         return rlrScaledown;
     else
         return lrlScaledown;
@@ -377,13 +399,11 @@ float scaleLegs(Point2D * targ, Point2D * curr, float * scale, bool lrlRaised){
 
     float res = updateTargByScale(targ, curr, diff, scale, lrlRaised);
 
-    printf("res is %f\n", res);
+
     scaleToStraightBounds(scale, targ, curr);
 
     res = res * updateTargByScale(targ, curr, diff, scale, lrlRaised);
-    printf("res is %f\n", res);
 
-    printf("\ntotal scaledown of grounded legs is %f \n\n", res);
     free(diff);
     return res;
 }
@@ -435,12 +455,12 @@ void directLegs(float rot, Point2D * targ, Point2D * current, Point2D * req, boo
 void assumeStandardizedStance(Point2D * current){
     
     float * z = (float *)calloc(NUM_LEGS, sizeof(float));
-    float[LF] = HIGH;
-    float[RM] = HIGH;
-    float[LB] = HIGH;
-    float[RF] = 0;
-    float[LM] = 0;
-    float[RB] = 0;
+    z[LF] = HIGH;
+    z[RM] = HIGH;
+    z[LB] = HIGH;
+    z[RF] = 0;
+    z[LM] = 0;
+    z[RB] = 0;
     executePosition(current, z);
 
     Point2D * stdLeg = defaultLegPosition(LF);
@@ -459,14 +479,14 @@ void assumeStandardizedStance(Point2D * current){
     
     executePosition(current, z);
     
-    float[LF] = 0;
-    float[RM] = 0;
-    float[LB] = 0;
+    z[LF] = 0;
+    z[RM] = 0;
+    z[LB] = 0;
     
     executePosition(current, z);
-    float[RF] = HIGH;
-    float[LM] = HIGH;
-    float[RB] = HIGH;
+    z[RF] = HIGH;
+    z[LM] = HIGH;
+    z[RB] = HIGH;
     
     executePosition(current, z);
 
@@ -485,9 +505,9 @@ void assumeStandardizedStance(Point2D * current){
 
     
     executePosition(current, z);
-    float[RF] = 0;
-    float[LM] = 0;
-    float[RB] = 0;
+    z[RF] = 0;
+    z[LM] = 0;
+    z[RB] = 0;
     executePosition(current, z);
     free(z);
 }
@@ -515,8 +535,9 @@ float workTowardsGoal(float rot, Point2D * goal, Point2D * current){
     directLegs(rot, targ0, current, goal, true);
     float scaledown0 = scaleLegs(targ0, current, scale, true);
 
-    directLegs(rot, targ0, current, goal, false);
-    float scaledown1 = scaleLegs(targ0, current, scale, false);
+    directLegs(rot, targ1, current, goal, false);
+    float scaledown1 = scaleLegs(targ1, current, scale, false);
+
 
     if (scaledown0 > scaledown1){
         executeStep(current, targ0, true);
@@ -527,11 +548,11 @@ float workTowardsGoal(float rot, Point2D * goal, Point2D * current){
 
     free(targ0);
     free(targ1);
-    free(scsle);
+    free(scale);
     if (scaledown0 > scaledown1)
-        return scale0;
+        return scaledown0;
     else
-        return scale1;
+        return scaledown1;
 }
 
 
@@ -583,7 +604,7 @@ void rotateSetAngle(float angle, Point2D * current){
  * @param argc unused
  * @param argv unused
  * @return 0
- *//*
+ */
 int main(int argc, char *argv[]){
     //testing variables
     Point2D * current   = (Point2D *)calloc(NUM_LEGS, sizeof(Point2D));
@@ -591,14 +612,20 @@ int main(int argc, char *argv[]){
     Point2D * command   = (Point2D *)malloc(sizeof(Point2D));
     Point2D * diff      = (Point2D *)calloc(NUM_LEGS, sizeof(Point2D));
     float scale[NUM_LEGS];
-    float rotation = 1;
+    float rotation = 0;
     for (int var = 0; var < 6; ++var) {
-        current[var] = defaultLegPosition(var);
+        Point2D * temp = defaultLegPosition(var);
+        current[var].x = temp->x;
+        current[var].y = temp->y;
     }
     bool lrlRaised = false;
-    command->x = 0;
+    command->x = 1;
     command->y = 0;
 
+
+    workTowardsGoal(rotation, command, current);
+
+    /*
     directLegs(rotation, target, current, & command, lrlRaised);
     scaleLegs(target, current, scale, lrlRaised);
 
@@ -622,7 +649,7 @@ int main(int argc, char *argv[]){
 
     for (int var = 0; var < 6; ++var) {
         printf("diff x: %f y: %f, abs: %f \n", diff[var].x ,diff[var].y, dist(& diff[var]) );
-    }
+    }*/
 
     free(current);
     free(target);
@@ -633,4 +660,4 @@ int main(int argc, char *argv[]){
     command = NULL;
     diff    = NULL;
     return 0;
-}*/
+}

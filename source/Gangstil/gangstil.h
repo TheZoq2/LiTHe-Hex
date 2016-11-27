@@ -20,6 +20,7 @@
 
 #include <math.h>
 #include "../IK/ik.h"
+#include <stdint.h>
 #include "../../motor/motorik/servo.h"
 #include <stdio.h>
 #include <stdlib.h>
