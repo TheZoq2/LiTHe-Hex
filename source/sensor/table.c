@@ -18,7 +18,6 @@
 #include "table.h"
 #include <math.h>
 #include "ir.h"
-#include "../communication/spi.h"
 
 #define PERCENT_FAULT_TOLERANCE_ANGLE 0.5
 #define NUM_BYTE_SEND				  5
@@ -47,16 +46,17 @@ float corridor_angle(MainTable* table) {
 	return (fabs(angle_left_side) + fabs(angle_right_side)) / 2;
 }
 
-void send_sensor_data(Frame* frame) {
-	frame->len = NUM_BYTE_SEND;
+void get_sensor_data(Frame* frame) {
 	uint8_t i = 0;
-	for(i; i < NUM_SENSORS; i++) {
+	for(i = 0; i < NUM_SENSORS; i++) {
 		frame->msg[i] = mainTable->ir_list[i].value;
 	}
-	frame[i++] = mainTable->front_distance;
-	for() {
-		frame[i++] = mainTable->corridor_angle;
-	}
+	frame->msg[NUM_SENSORS] = (uint8_t)(mainTable->front_distance >> 8);
+	frame->msg[NUM_SENSORS + 1] = (uint8_t)mainTable->front_distance;
+	frame->len = NUM_SENSORS + 2;
+	//for() {
+	//	frame[i++] = mainTable->corridor_angle;
+	//}
 }
 
 void send_sensor_wall_data(Frame* frame) {

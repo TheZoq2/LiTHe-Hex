@@ -6,7 +6,7 @@
  */
 
 
-#include "communication.h"
+//#include "communication.h"
 #include <avr/interrupt.h>
 
 // volatile uint8_t data1;

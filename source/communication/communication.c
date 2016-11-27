@@ -18,7 +18,6 @@
 #include <stdbool.h>
 
 #include "communication.h"
-//#include "../sensor/table.h"
 
 bool check_parity();
 
@@ -26,43 +25,22 @@ void send_reply_sensor(uint8_t current_msg);
 
 void send_reply_motor(uint8_t current_msg);
 
-bool message_require_reply(uint8_t current_msg);
-
 uint8_t get_id(Frame* frame_recv);
 
 void get_new_frame(Frame* frame_recv);
 
-void send_frame(Frame* frame_send);
-
 void send_reply_test();
 
-void on_spi_recv() {
+void on_spi_recv(Frame* frame_recv) {
 
-	Frame frame_recv;
-	get_new_frame(&frame_recv);
-	uint8_t current_id = get_id(&frame_recv);
+	get_new_frame(frame_recv);
 	
-	bool success = check_parity(&frame_recv); 
+	bool success = check_parity(frame_recv); 
 	if(success) { // continue if message ok
 		spi_transmit_ack();
-	
-		bool reply = message_require_reply(current_id);
-		if(reply) { // send a replay to central-unit
-			// TEST
-			//send_reply_test();
-			//#ifdef TABLE_H
-				//send_replay_sensor(current_id);
-			//#endif
-			//#ifdef //TODO send replay for motor if some file is def
-				//send_replay_motor();
-		} else { // 
-			//#ifdef //TODO send replay for motor if some file is def
-			//control_motor();
-		}
 	} else { // Something was wrong with message
 		spi_transmit_fail();
 	}
-	frame_recv.len = 0;
 }
 
 void send_reply_test() {
@@ -110,8 +88,8 @@ bool check_parity(Frame* frame) {
 	}
 	
 	bool result = false;
-	if((frame->control_byte & 0x01) > 0 == parity_con) {
-		if((frame->control_byte & 0x02) > 0 == parity_msg) {
+	if(((frame->control_byte & 0x01) > 0) == parity_con) {
+		if(((frame->control_byte & 0x02) > 0) == parity_msg) {
 			result = true;
 		}
 	}
