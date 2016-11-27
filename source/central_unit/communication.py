@@ -53,17 +53,18 @@ SENSOR_CORRIDOR = 0x25
 
 class SensorDataPacket(object):
     """
-    Data structure containing the values of all sensors.
+    Data structure containing the values of all sensors in meters.
     """
 
     def __init__(self, ir_front_left, ir_back_left,
                  ir_front_right, ir_back_right, ir_down, lidar_msd, lidar_lsd):
-        self.ir_front_left  = ir_front_left
-        self.ir_front_right = ir_front_right
-        self.ir_back_left   = ir_back_left 
-        self.ir_back_right  = ir_back_right 
-        self.ir_down        = ir_down
-        self.lidar          = lidar_lsd | (lidar_msd << 8)
+        # divide by hundred to convert from cm -> m
+        self.ir_front_left  = ir_front_left / 100
+        self.ir_front_right = ir_front_right / 100
+        self.ir_back_left   = ir_back_left / 100
+        self.ir_back_right  = ir_back_right / 100
+        self.ir_down        = ir_down / 100
+        self.lidar          = (lidar_lsd | (lidar_msd << 8)) / 100
 
     def __str__(self):
         return """
@@ -84,14 +85,16 @@ Lidar:       {}\n
 
 class CorridorDataPacket(object):
     """
-    Data structure containing corridor data.
+    Data structure containing corridor data in meters/radians.
     """
 
     def __init__(self, front_dist, left_dist, right_dist, down_dist, corr_angle):
-        self.front_dist = front_dist
-        self.left_dist  = left_dist 
-        self.right_dist = right_dist 
-        self.down_dist  = down_dist  
+        # divide by hundred to convert from cm -> m
+        self.front_dist = front_dist / 100
+        self.left_dist  = left_dist / 100
+        self.right_dist = right_dist / 100
+        self.down_dist  = down_dist / 100
+        # TODO convert to radians
         self.corr_angle = corr_angle 
 
     def __str__(self):
