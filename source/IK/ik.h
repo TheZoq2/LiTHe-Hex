@@ -20,6 +20,10 @@
 
 #include <math.h>
 
+#ifndef M_PI
+    #define M_PI 3.14159265358979323846
+#endif
+
 /*
  * The maximum and minimum angles that the different joints can turn.
  * TODO: tweak
