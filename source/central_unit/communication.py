@@ -56,8 +56,8 @@ class SensorDataPacket(object):
     Data structure containing the values of all sensors in meters.
     """
 
-    def __init__(self, ir_front_left, ir_back_left,
-                 ir_front_right, ir_back_right, ir_down, lidar_msd, lidar_lsd):
+    def __init__(self, ir_down, ir_front_left, ir_back_left,
+                 ir_front_right, ir_back_right, lidar_msd, lidar_lsd):
         # divide by hundred to convert from cm -> m
         self.ir_front_left  = ir_front_left / 100
         self.ir_front_right = ir_front_right / 100
