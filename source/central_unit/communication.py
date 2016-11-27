@@ -65,6 +65,22 @@ class SensorDataPacket(object):
         self.ir_down        = ir_down
         self.lidar          = lidar_lsd | (lidar_msd << 8)
 
+    def __str__(self):
+        return """
+                Front left:  {}\n
+                Front right: {}\n
+                Back left:   {}\n
+                Back right:  {}\n
+                Down left:   {}\n
+                Lidar:       {}\n
+                """.format(
+                        self.ir_front_left,
+                        self.ir_front_right,
+                        self.ir_back_left,
+                        self.ir_back_right,
+                        self.ir_down,
+                        self.lidar)
+
 
 class CorridorDataPacket(object):
     """
@@ -77,6 +93,20 @@ class CorridorDataPacket(object):
         self.right_dist = right_dist 
         self.down_dist  = down_dist  
         self.corr_angle = corr_angle 
+
+    def __str__(self):
+        return """
+                Front: {}\n
+                Left:  {}\n
+                Right: {}\n
+                Down : {}\n
+                Angle: {}\n
+                """.format(
+                        self.front_dist, 
+                        self.left_dist,
+                        self.right_dist, 
+                        self.down_dist, 
+                        self.corr_angle)
 
 
 class InvalidCommandException(Exception):
