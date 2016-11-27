@@ -20,6 +20,7 @@ import spidev
 import time
 import pdb
 
+
 MOTOR_ADDR = (0, 0)
 SENSOR_ADDR = (0, 1)
 
@@ -48,6 +49,34 @@ MOTOR_DEBUG = 0x23
 SENSOR_DATA = 0x24
 
 SENSOR_CORRIDOR = 0x25
+
+
+class SensorDataPacket(object):
+    """
+    Data structure containing the values of all sensors.
+    """
+
+    def __init__(self, ir_front_left, ir_back_left,
+                 ir_front_right, ir_back_right, ir_down, lidar_lsd, lidar_msd):
+        self.ir_front_left  = ir_front_left
+        self.ir_front_right = ir_front_right
+        self.ir_back_left   = ir_back_left 
+        self.ir_back_right  = ir_back_right 
+        self.ir_down        = ir_down
+        self.lidar          = lidar_lsd | (lidar_msd << 8)
+
+
+class CorridorDataPacket(object):
+    """
+    Data structure containing corridor data.
+    """
+
+    def __init__(self, front_dist, left_dist, right_dist, down_dist, corr_angle):
+        self.front_dist = front_dist
+        self.left_dist  = left_dist 
+        self.right_dist = right_dist 
+        self.down_dist  = down_dist  
+        self.corr_angle = corr_angle 
 
 
 class InvalidCommandException(Exception):
@@ -158,6 +187,7 @@ def _get_total_msg(*data):
 
 
 def communication_init():
+    """Initializes the SPI-communication"""
     spi = spidev.SpiDev()
     spi.open(*MOTOR_ADDR)
     spi.max_speed_hz = 25000
@@ -167,6 +197,7 @@ def communication_init():
 
 
 def set_obstacle_mode(spi, value):
+    """Sets the obstacle mode to either True or False on the motor unit"""
     if value not in (True, False):
         raise InvalidCommandException("Value \"{}\" is not a valid mode.".format(value))
     # yes i'm paranoid
@@ -177,6 +208,7 @@ def set_obstacle_mode(spi, value):
 
 
 def set_servo_speed(spi, speed):
+    """Sets the global servo speed on the motor unit"""
     if speed < 0 or speed > MAX_16BIT_SIZE:
         raise InvalidCommandException("Speed \"{}\" is not a 16-bit value".format(speed))
     _select_device(spi, MOTOR_ADDR)
@@ -189,6 +221,10 @@ def set_servo_speed(spi, speed):
 
 
 def walk(spi, x_speed, y_speed, turn_speed):
+    """
+    Commands the motor unit to walk in the direction and speed 
+    given by x_speed, y_speed and turn_speed
+    """
     _select_device(spi, MOTOR_ADDR)
     total_msg = _get_total_msg(WALK_LENGTH, x_speed, y_speed, turn_speed)
     response = _send_bytes(spi, _add_parity(WALK, total_msg),
@@ -197,6 +233,7 @@ def walk(spi, x_speed, y_speed, turn_speed):
 
 
 def back_to_neutral(spi):
+    """Commands the motor unit to return to the neutral state"""
     _select_device(spi, MOTOR_ADDR)
     # we send a zero byte as args
     response = _send_bytes(spi, _add_parity(RETURN_TO_NEUTRAL, 0), 0)
@@ -204,20 +241,35 @@ def back_to_neutral(spi):
 
 
 def get_servo_status(spi):
+    """Fetches the servo status"""
+    # TODO create appropriate data structure
     _select_device(spi, MOTOR_ADDR)
     return _request_data(spi, SERVO_STATUS)
 
 
 def get_motor_debug(spi):
+    """Gets a motor unit debug string"""
+    # TODO create string
     _select_device(spi, MOTOR_ADDR)
     return _request_data(spi, MOTOR_DEBUG)
 
 
 def get_sensor_data(spi):
+    """
+    Gets the values of all sensors in the sensor unit,
+    and puts them in a SensorDataPacket
+    """
     _select_device(spi, SENSOR_ADDR)
-    return _request_data(spi, SENSOR_DATA)
-
+    raw_data = _request_data(spi, SENSOR_DATA)
+    return SensorDataPacket(*raw_data)
 
 def get_corridor_data(spi):
+    """
+    Gets the the current corridor data from the 
+    sensor unit, and puts them in a CorridorDataPacket
+    """
     _select_device(spi, SENSOR_ADDR)
-    return _request_data(spi, SENSOR_DATA)
+    raw_data = _request_data(spi, SENSOR_DATA)
+    return CorridorDataPacket(*raw_data)
+
+
