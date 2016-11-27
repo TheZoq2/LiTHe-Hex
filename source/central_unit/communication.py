@@ -21,7 +21,7 @@ import time
 import pdb
 
 MOTOR_ADDR = (0, 0)
-SENSOR_ADDR = (0, 0) #TODO: fix this back to (0,1), SS must be fixed in the hardware
+SENSOR_ADDR = (0, 1) #TODO: fix this back to (0,1), SS must be fixed in the hardware
 
 DATA_REQ    = 0x02
 
