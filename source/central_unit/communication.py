@@ -21,7 +21,7 @@ import time
 import pdb
 
 MOTOR_ADDR = (0, 0)
-SENSOR_ADDR = (0, 1) #TODO: fix this back to (0,1), SS must be fixed in the hardware
+SENSOR_ADDR = (0, 1)
 
 DATA_REQ    = 0x02
 
@@ -160,6 +160,8 @@ def _get_total_msg(*data):
 def communication_init():
     spi = spidev.SpiDev()
     spi.open(*MOTOR_ADDR)
+    spi.max_speed_hz = 25000
+    spi.open(*SENSOR_ADDR)
     spi.max_speed_hz = 25000
     return spi
 

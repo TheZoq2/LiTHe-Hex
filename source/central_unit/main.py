@@ -27,8 +27,10 @@ def main():
     res = []
     while True:
         #pdb.set_trace()
-        #print(communication.walk(spi, 10, 2, 1))
         print(communication.get_sensor_data(spi))
+        time.sleep(1)
+
+        print(communication.walk(spi, 10, 2, 1))
         time.sleep(1)
 
 
