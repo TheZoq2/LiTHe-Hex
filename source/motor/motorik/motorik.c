@@ -16,8 +16,8 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-#include "../../communication/communication.h"
-#include "../../communication/communication.h"
+#include "communication.h"
+#include "spi.h"
 
 void build_spi_reply_frame(Frame *frame_trans);
 void handle_spi_frame(Frame *frame_recv);
