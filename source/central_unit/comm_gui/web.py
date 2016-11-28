@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Copyright 2016 Noak Ringman, Emil Segerbäck, Robin Sliwa, Frans Skarman, Hannes Tuhkala, Malcolm Wigren, Olav Övrebö
 
 # This file is part of LiTHe Hex.
@@ -16,9 +15,6 @@
 # You should have received a copy of the GNU General Public License
 # along with LiTHe Hex.  If not, see <http://www.gnu.org/licenses/>.
 
-import pika
-=======
->>>>>>> 514a9152e2b62bf0f7f9086348db24535c6eb6b0
 import threading
 import pika
 
