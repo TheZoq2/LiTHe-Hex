@@ -18,6 +18,7 @@
 
 import spidev
 import time
+import math
 import pdb
 
 
@@ -47,8 +48,7 @@ SERVO_STATUS = 0x22
 MOTOR_DEBUG = 0x23
 
 SENSOR_DATA = 0x24
-
-SENSOR_CORRIDOR = 0x25
+CORRIDOR_DATA = 0x25
 
 
 class SensorDataPacket(object):
@@ -88,9 +88,9 @@ class CorridorDataPacket(object):
     Data structure containing corridor data in meters/radians.
     """
 
-    def __init__(self, front_dist, left_dist, right_dist, down_dist, corr_angle):
+    def __init__(self, front_msd, front_lsd, down_dist, left_dist, right_dist, corr_angle):
         # divide by hundred to convert from cm -> m
-        self.front_dist = front_dist / 100
+        self.front_dist = (front_lsd | (front_msd << 8)) / 100
         self.left_dist  = left_dist / 100
         self.right_dist = right_dist / 100
         self.down_dist  = down_dist / 100
@@ -302,7 +302,9 @@ def get_corridor_data(spi):
     sensor unit, and puts them in a CorridorDataPacket
     """
     _select_device(spi, SENSOR_ADDR)
-    raw_data = _request_data(spi, SENSOR_DATA)
+    raw_data = _request_data(spi, CORRIDOR_DATA)
+    print("angle= ", raw_data[5])
+    print(raw_data)
     return CorridorDataPacket(*raw_data)
 
 

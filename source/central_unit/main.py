@@ -20,7 +20,9 @@
 import communication
 import time
 import decision_making
+import pid_controller
 import pdb
+import os
 
 
 def main():
@@ -28,9 +30,13 @@ def main():
     res = []
     while True:
         #pdb.set_trace()
+        os.system('clear')
         sensor_data = communication.get_sensor_data(spi)
-        decision = decision_making.get_decision(sensor_data)
-        print(decision)
+        print(sensor_data)
+        corridor_data = communication.get_corridor_data(spi)
+        #decision = decision_making.get_decision(sensor_data)
+        #print(decision)
+        pid_controller.reglate(sensor_data, corridor_data)
         time.sleep(1)
 
         #print(communication.walk(spi, 10, 2, 1))

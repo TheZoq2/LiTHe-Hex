@@ -59,6 +59,7 @@ def _get_corridors_and_dead_ends(sensor_data):
     else:
         corridors_and_dead_ends[RIGHT] = DEAD_END
 
+    print(corridors_and_dead_ends)
     return corridors_and_dead_ends
 
 def _found_obstacle(sensor_data):
