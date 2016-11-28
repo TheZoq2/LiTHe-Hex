@@ -23,6 +23,31 @@
 // along with LiTHe Hex.  If not, see <http://www.gnu.org/licenses/>.
 
 
+const size_t LF = 0;
+const size_t RF = 1;
+const size_t LM = 2;
+const size_t RM = 3;
+const size_t LB = 4;
+const size_t RB = 5;
+
+const float FRONT_LEG_JOINT_X           = 0.12;
+const float FRONT_LEG_JOINT_Y           = 0.06;
+const float MID_LEG_JOINT_Y             = 0.1;
+const float HIGH                        = 0.1;
+const float GROUNDED                    = 0;
+const float MIN_DIST                    = 0.06;
+const float MAX_DIST                    = 0.18;
+const float VERT_MID_LEG_BORDER_OFFSET  = 0.06;
+const float VERT_HEAD_LEG_BORDER_OFFSET = -0.03;
+const float HORIZ_BORDER_TILT           = 0;
+const float DIAG_DIVISIVE_BORDER_TILT   = 1.3333333;
+const float CLOSE_BORDER_OFFSET         = 0.085;
+const float DIAG_DIVISIVE_BORDER_OFFSET = 0.045;
+const float CLOSE_BORDER_TILT           = -1;
+
+const size_t NUM_LEGS = 6;
+
+
 /**
  * @brief get_angle_set produces an array of the leg angles as calculated by the IK.
  * @param target provides the coordinates relative to the joints for all the legs, as 
@@ -608,59 +633,59 @@ void rotate_set_angle(float angle, Point2D * current){
  * @param argv unused
  * @return 0
  */
-int main(int argc, char *argv[]){
-    //testing variables
-    Point2D * current   = (Point2D *)calloc(NUM_LEGS, sizeof(Point2D));
-    Point2D * target    = (Point2D *)calloc(NUM_LEGS, sizeof(Point2D));
-    Point2D * command   = (Point2D *)malloc(sizeof(Point2D));
-    Point2D * diff      = (Point2D *)calloc(NUM_LEGS, sizeof(Point2D));
-    float scale[NUM_LEGS];
-    float rotation = 0;
-    for (int var = 0; var < 6; ++var) {
-        Point2D * temp = get_default_leg_position(var);
-        current[var].x = temp->x;
-        current[var].y = temp->y;
-    }
-    bool lrlRaised = false;
-    command->x = 1;
-    command->y = 0;
-
-
-    work_towards_goal(rotation, command, current);
-
-    /*
-    directLegs(rotation, target, current, & command, lrlRaised);
-    scaleLegs(target, current, scale, lrlRaised);
-
-
-    for (int index = 0; index < NUM_LEGS; ++index) {
-        current[index].x = target[index].x;
-        current[index].y = target[index].y;
-    }
-
-    for (int var = 0; var < 6; ++var) {
-        printf("diff x: %f y: %f, abs: %f \n", diff[var].x ,diff[var].y, dist(& diff[var]) );
-    }
-
-    printf("\nnew run starts here \n\n");
-
-    lrlRaised = true;
-
-    directLegs(rotation, target, current, & command, lrlRaised);
-    scaleLegs(target, current, scale, lrlRaised);
-
-
-    for (int var = 0; var < 6; ++var) {
-        printf("diff x: %f y: %f, abs: %f \n", diff[var].x ,diff[var].y, dist(& diff[var]) );
-    }*/
-
-    free(current);
-    free(target);
-    free(command);
-    free(diff);
-    current = NULL;
-    target  = NULL;
-    command = NULL;
-    diff    = NULL;
-    return 0;
-}
+//int main(int argc, char *argv[]){
+//    //testing variables
+//    Point2D * current   = (Point2D *)calloc(NUM_LEGS, sizeof(Point2D));
+//    Point2D * target    = (Point2D *)calloc(NUM_LEGS, sizeof(Point2D));
+//    Point2D * command   = (Point2D *)malloc(sizeof(Point2D));
+//    Point2D * diff      = (Point2D *)calloc(NUM_LEGS, sizeof(Point2D));
+//    float scale[NUM_LEGS];
+//    float rotation = 0;
+//    for (int var = 0; var < 6; ++var) {
+//        Point2D * temp = get_default_leg_position(var);
+//        current[var].x = temp->x;
+//        current[var].y = temp->y;
+//    }
+//    bool lrlRaised = false;
+//    command->x = 1;
+//    command->y = 0;
+//
+//
+//    work_towards_goal(rotation, command, current);
+//
+//    /*
+//    directLegs(rotation, target, current, & command, lrlRaised);
+//    scaleLegs(target, current, scale, lrlRaised);
+//
+//
+//    for (int index = 0; index < NUM_LEGS; ++index) {
+//        current[index].x = target[index].x;
+//        current[index].y = target[index].y;
+//    }
+//
+//    for (int var = 0; var < 6; ++var) {
+//        printf("diff x: %f y: %f, abs: %f \n", diff[var].x ,diff[var].y, dist(& diff[var]) );
+//    }
+//
+//    printf("\nnew run starts here \n\n");
+//
+//    lrlRaised = true;
+//
+//    directLegs(rotation, target, current, & command, lrlRaised);
+//    scaleLegs(target, current, scale, lrlRaised);
+//
+//
+//    for (int var = 0; var < 6; ++var) {
+//        printf("diff x: %f y: %f, abs: %f \n", diff[var].x ,diff[var].y, dist(& diff[var]) );
+//    }*/
+//
+//    free(current);
+//    free(target);
+//    free(command);
+//    free(diff);
+//    current = NULL;
+//    target  = NULL;
+//    command = NULL;
+//    diff    = NULL;
+//    return 0;
+//}
