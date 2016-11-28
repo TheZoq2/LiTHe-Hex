@@ -94,8 +94,8 @@ class CorridorDataPacket(object):
         self.left_dist  = left_dist / 100
         self.right_dist = right_dist / 100
         self.down_dist  = down_dist / 100
-        # TODO convert to radians
-        self.corr_angle = corr_angle 
+        # convert to radians
+        self.corr_angle = (corr_angle * math.pi)/180
 
     def __str__(self):
         return """

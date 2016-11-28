@@ -19,9 +19,9 @@
 // along with LiTHe Hex.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <math.h>
-#include "../IK/ik.h"
+#include "../../IK/ik.h"
 #include <stdint.h>
-#include "../../motor/motorik/servo.h"
+#include "servo.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -31,29 +31,29 @@
     #define M_PI 3.14159265358979323846
 #endif
 
-const size_t LF = 0;
-const size_t RF = 1;
-const size_t LM = 2;
-const size_t RM = 3;
-const size_t LB = 4;
-const size_t RB = 5;
+extern const size_t LF ;
+extern const size_t RF ;
+extern const size_t LM ;
+extern const size_t RM ;
+extern const size_t LB ;
+extern const size_t RB ;
 
-const float FRONT_LEG_JOINT_X           = 0.12;
-const float FRONT_LEG_JOINT_Y           = 0.06;
-const float MID_LEG_JOINT_Y             = 0.1;
-const float HIGH                        = 0.1;
-const float GROUNDED                    = 0;
-const float MIN_DIST                    = 0.06;
-const float MAX_DIST                    = 0.18;
-const float VERT_MID_LEG_BORDER_OFFSET  = 0.06;
-const float VERT_HEAD_LEG_BORDER_OFFSET = -0.03;
-const float HORIZ_BORDER_TILT           = 0;
-const float DIAG_DIVISIVE_BORDER_TILT   = 1.3333333;
-const float CLOSE_BORDER_OFFSET         = 0.085;
-const float DIAG_DIVISIVE_BORDER_OFFSET = 0.045;
-const float CLOSE_BORDER_TILT           = -1;
+extern const float FRONT_LEG_JOINT_X           ;
+extern const float FRONT_LEG_JOINT_Y           ;
+extern const float MID_LEG_JOINT_Y             ;
+extern const float HIGH                        ;
+extern const float GROUNDED                    ;
+extern const float MIN_DIST                    ;
+extern const float MAX_DIST                    ;
+extern const float VERT_MID_LEG_BORDER_OFFSET  ;
+extern const float VERT_HEAD_LEG_BORDER_OFFSET ;
+extern const float HORIZ_BORDER_TILT           ;
+extern const float DIAG_DIVISIVE_BORDER_TILT   ;
+extern const float CLOSE_BORDER_OFFSET         ;
+extern const float DIAG_DIVISIVE_BORDER_OFFSET ;
+extern const float CLOSE_BORDER_TILT           ;
 
-const size_t NUM_LEGS = 6;
+extern const size_t NUM_LEGS ;
 
 
 /**
@@ -71,7 +71,7 @@ typedef struct{
  * @param angle provides the angle the robot should rotate.
  * @param current position the legs currently hold.
  */
-void rotateSetAngle(float angle, Point2D * current);
+void rotate_set_angle(float angle, Point2D * current);
 
 /**
  * @brief workTowardsGoal takes the robot closer to a requested position and
@@ -87,6 +87,24 @@ void rotateSetAngle(float angle, Point2D * current);
  * @param current position the legs curerently hold.
  * @return scaledown applied to grounded set of legs.
  */
-float workTowardsGoal(float rot, Point2D * goal, Point2D * current);
+float work_towards_goal(float rot, Point2D * goal, Point2D * current);
+
+
+
+/**
+ * @brief get_default_leg_position gives a default position for requested leg.
+ * @param leg indicates what leg of the robot (LF, RF, LM, RM, LB, RB) should be returned.
+ * @return a standardised leg position, relative to joint.
+ */
+Point2D * get_default_leg_position(size_t leg);
+
+
+
+/**
+ * @brief assume_standardized_stance Positions the robot in a reliable, standardized
+ * hard-coded stance.
+ * @param current current position of the legs.
+ */
+void assume_standardized_stance(Point2D * current);
 
 #endif

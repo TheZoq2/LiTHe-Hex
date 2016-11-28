@@ -17,6 +17,16 @@ config :web, Web.Endpoint,
   pubsub: [name: Web.PubSub,
            adapter: Phoenix.PubSub.PG2]
 
+# Configures the other endpoint
+config :web, Web.CentralEndpoint,
+  url: [host: "localhost"],
+  secret_key_base: "bY//i4OGji/0rc5OHAy2W2FmMxqO33Cqiawi8NTR/Nmo4SvjbopNRYmbX7EK0ep/",
+  render_errors: [view: Web.ErrorView, accepts: ~w(html json)],
+  pubsub: [name: Web.PubSub,
+           adapter: Web.PubSub.RabbitMQ,
+           options: [host: "localhost"]
+          ]
+
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
