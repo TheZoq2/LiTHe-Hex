@@ -68,12 +68,12 @@ class SensorDataPacket(object):
 
     def __str__(self):
         return """
-Front left:  {}\n
-Front right: {}\n
-Back left:   {}\n
-Back right:  {}\n
-Down:        {}\n
-Lidar:       {}\n
+Front left:  {}
+Front right: {}
+Back left:   {}
+Back right:  {}
+Down:        {}
+Lidar:       {}
                 """.format(
                         self.ir_front_left,
                         self.ir_front_right,
@@ -99,11 +99,11 @@ class CorridorDataPacket(object):
 
     def __str__(self):
         return """
-Front: {}\n
-Left:  {}\n
-Right: {}\n
-Down : {}\n
-Angle: {}\n
+Front: {}
+Left:  {}
+Right: {}
+Down : {}
+Angle: {}
                 """.format(
                         self.front_dist, 
                         self.left_dist,
