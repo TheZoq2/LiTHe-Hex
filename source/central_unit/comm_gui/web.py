@@ -23,7 +23,7 @@ def handle_delivery(channel, method, header, body):
 
 class CommunicationThread(threading.Thread):
 
-    def __init__(self, send_queue, recieve_queue):
+    def __init__(self, send_queue, receive_queue):
 
         self.channel = None
 
@@ -42,7 +42,7 @@ class CommunicationThread(threading.Thread):
             connection.channel(on_channel_open)
 
         self.send_queue = send_queue
-        self.recieve_queue = recieve_queue
+        self.receive_queue = recieve_queue
         self.parameters = pika.ConnectionParameters()
         self.connection = pika.SelectConnection(self.parameters, on_connected)
 
