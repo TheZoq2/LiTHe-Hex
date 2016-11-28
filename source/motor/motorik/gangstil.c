@@ -33,7 +33,7 @@ const size_t RB = 5;
 const float FRONT_LEG_JOINT_X           = 0.12;
 const float FRONT_LEG_JOINT_Y           = 0.06;
 const float MID_LEG_JOINT_Y             = 0.1;
-const float HIGH                        = 0.1;
+const float HIGH                        = 0.15;
 const float GROUNDED                    = 0;
 const float MIN_DIST                    = 0.06;
 const float MAX_DIST                    = 0.18;
@@ -117,14 +117,14 @@ void execute_position(Point2D * target, float * z){
         int ang;
         if ((leg & 1) == 0){
             angle[0] = (uint16_t)(0x1ff - (int)(ik[leg].angle1 * (0x1ff/150*180) / M_PI));
-            angle[1] = (uint16_t)(0x1ff + (int)(ik[leg].angle2 * (0x1ff/150*180) / M_PI));
-            angle[2] = (uint16_t)(0x1ff + (int)(ik[leg].angle3 * (0x1ff/150*180) / M_PI));
+            angle[1] = (uint16_t)(0x1ff - (int)(ik[leg].angle2 * (0x1ff/150*180) / M_PI));
+            angle[2] = (uint16_t)(0x1ff - (int)(ik[leg].angle3 * (0x1ff/150*180) / M_PI));
             legId = (uint8_t)(leg/2);
         }
         else{
             angle[0] = (uint16_t)(0x1ff - (int)(ik[leg].angle1 * (0x1ff/150*180) / M_PI));
-            angle[1] = (uint16_t)(0x1ff - (int)(ik[leg].angle2 * (0x1ff/150*180) / M_PI));
-            angle[2] = (uint16_t)(0x1ff - (int)(ik[leg].angle3 * (0x1ff/150*180) / M_PI));
+            angle[1] = (uint16_t)(0x1ff + (int)(ik[leg].angle2 * (0x1ff/150*180) / M_PI));
+            angle[2] = (uint16_t)(0x1ff + (int)(ik[leg].angle3 * (0x1ff/150*180) / M_PI));
             legId = (uint8_t)(leg/2 + 3);
         }
 

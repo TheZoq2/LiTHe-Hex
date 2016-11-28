@@ -105,6 +105,8 @@ ServoReply read_servo_data(uint8_t id, uint8_t address)
 void send_servo_action()
 {
 	send_servo_command(BROADCAST_ID, ACTION_INSTRUCTION, 0, 0);
+	//TODO: Olavs fel
+	_delay_ms(500);
 }
 
 void write_servo_single_byte(uint8_t id, uint8_t address, uint8_t value)
