@@ -35,13 +35,13 @@ def main():
     thread.start()
 
     while True:
-        sensor_data = communication.get_sensor_data(spi)
+        sensor_data = communication.SensorDataPacket(1, 1, 1, 1, 1, 1, 1)
         time.sleep(0.1)
-        corridor = communication.get_corridor_data(spi)
+        corridor = communication.CorridorDataPacket(2.0, 2.0, 3.0, 2.0, 0.0)
         time.sleep(0.1)
 
         print("Putting data in queue")
-        send_queue.put(ServerSendPacket(sensor_data, corridor))
+        send_queue.put(web.ServerSendPacket(sensor_data, corridor))
 
         if not receive_queue.empty():
             print("Getting: ")
