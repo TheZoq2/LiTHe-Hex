@@ -34,23 +34,20 @@ def main():
 
     thread.start()
 
-    c = 0
-
     while True:
-        print("Putting shit{} in queue".format(c))
-        send_queue.put(web.ServerSendPacket("shit{}".format(c)))
+        sensor_data = communication.get_sensor_data(spi)
+        time.sleep(0.1)
+        corridor = communication.get_corridor_data(spi)
+        time.sleep(0.1)
+
+        print("Putting data in queue")
+        send_queue.put(ServerSendPacket(sensor_data, corridor))
 
         if not receive_queue.empty():
             print("Getting: ")
             print(receive_queue.get().get_raw())
         time.sleep(1)
 
-        c += 1
-        # print(communication.get_sensor_data(spi))
-        # time.sleep(1)
-
-        # print(communication.walk(spi, 10, 2, 1))
-        # time.sleep(1)
 
 
 if __name__ == '__main__':

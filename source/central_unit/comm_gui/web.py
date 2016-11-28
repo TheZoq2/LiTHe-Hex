@@ -17,41 +17,12 @@
 
 import threading
 import pika
+import json
 
 CENTRAL_UNIT_KEY_RECEIVE = 'to_pi'
 CENTRAL_UNIT_KEY_SEND = 'from_pi'
 
 QUEUE_CHECK_DELAY = 0.05
-
-# # SEND
-# connection = pika.BlockingConnection(pika.ConnectionParameters(
-#         host='localhost'))
-# channel = connection.channel()
-# 
-# channel.queue_declare(queue='hello')
-# 
-# channel.basic_publish(exchange='',
-#                       routing_key='hello',
-#                       body='Hello World!')
-# print(" [x] Sent 'Hello World!'")
-# connection.close()
-# 
-# # RECEIVE
-# connection = pika.BlockingConnection(pika.ConnectionParameters(
-#         host='localhost'))
-# channel = connection.channel()
-# 
-# channel.queue_declare(queue='hello')
-# 
-# def callback(ch, method, properties, body):
-#     print(" [x] Received %r" % body)
-# 
-# channel.basic_consume(callback,
-#                       queue='hello',
-#                       no_ack=True)
-# 
-# print(' [*] Waiting for messages. To exit press CTRL+C')
-# channel.start_consuming()
 
 
 class ServerReceivedPacket(object):
@@ -61,15 +32,12 @@ class ServerReceivedPacket(object):
     """
 
     def __init__(self, json_string):
-        # TODO decode json string
-        self.string = json_string
-        self.x = None
-        self.y = None
-        self.rotation = None
-        self.thrust = None
-
-    def get_raw(self):
-        return self.string
+        data = json.loads(json_string)
+        self.x = data['x_spd']
+        self.y = data['y_spd'] 
+        self.rotation = data['rotation'] 
+        self.thrust = data['thrust'] 
+        self.auto = data['auto']
 
 
 class ServerSendPacket(object):
@@ -78,14 +46,29 @@ class ServerSendPacket(object):
     and sent to the web server.
     """
 
-    def __init__(self, debug):
-        # TODO add parameters
-        self.debug = debug
-        pass
+    def __init__(self, sensor_data_packet, corridor_data_packet):
+        """
+        Constructs a ServerSendPacket from a SensorDataPacket and 
+        CorridorDataPacket.
+        """
+        self.sensor = sensor_data_packet
+        self.corridor = corridor_data_packet
     
-    def to_json(self):
-        # TODO implement
-        return self.debug
+    def get_json(self):
+        data = {
+            "ir_down": self.sensor.ir_down,
+            "ir_fl": self.sensor.ir_front_left,
+            "ir_fr": self.sensor.ir_front_right,
+            "ir_bl": self.sensor.ir_back_left,
+            "ir_br": self.sensor.ir_back_right,
+            "lidar": self.sensor.lidar,
+            "dist_f": self.corridor.front_dist,
+            "dist_l": self.corridor.left_dist,
+            "dist_r": self.corridor.right_dist,
+            "dist_d": self.corridor.down_dist,
+            "corr_angle": self.corridor.corr_angle
+        }
+        return json.dumps(data)
 
 
 class ServerSenderThread(threading.Thread):
@@ -103,7 +86,7 @@ class ServerSenderThread(threading.Thread):
                 packet = self.queue.get()
                 self.channel.basic_publish(exchange='', 
                                            routing_key=CENTRAL_UNIT_KEY_SEND,
-                                           body=packet.to_json())
+                                           body=packet.get_json())
 
     def stop(self):
         self._stop_flag.set()

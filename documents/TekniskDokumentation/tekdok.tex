@@ -637,9 +637,41 @@
     också finnas en eller flera grafer som beskriver några av de olika sensorernas data.
     Man ska också kunna ändra styrparametrarna till regleralgoritmen.
 
+    \subsection{Kommunikation}
+
+	\begin{longtable}[c]{l l l }
+        \textbf{Data} & \textbf{Nyckel} & \textbf{Typ} \\ \midrule
+        IR-sensor ned & "ir\_down" & float \\
+        IR-sensor fram vänster & "ir\_fl" & float \\
+        IR-sensor fram höger & "ir\_fr" & float \\
+        IR-sensor bak vänster & "ir\_bl" & float \\
+        IR-sensor bak höger & "ir\_br" & float \\
+        LIDAR & "lidar" & float \\
+        Avstånd fram & "dist\_f" & float \\
+        Avstånd vänster & "dist\_l" & float \\
+        Avstånd höger & "dist\_r" & float \\
+        Avstånd ned & "dist\_d" & float \\
+        Korridorvinkel & "corr\_angle" & float \\
+
+		\caption{Format på JSON-strängen från centralenheten\label{table:guimessages}}
+	\end{longtable}
+
+	\begin{longtable}[c]{l l l }
+        \textbf{Data} & \textbf{Nyckel} & \textbf{Typ} \\ \midrule
+        X-hastighet & "x\_spd" & float \\
+        Y-hastighet & "y\_spd" & float \\
+        Rotation & "rotation" & float \\
+        Thrust & "thrust" & float \\
+        Självgående läge & "auto" & bool \\
+
+		\caption{Format på JSON-strängen till centralenheten\label{table:guimessages}}
+	\end{longtable}
+    
+
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%						Simuleringar
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    \newpage
 	\section{Simuleringar}
 	För att underlätta utvecklingen av vissa delar av projektet kommer vi att skriva
 	kod för att simulera dessa delar. Simuleringarna ska kunna köra samma kod som ska
