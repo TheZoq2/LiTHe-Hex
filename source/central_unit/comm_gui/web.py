@@ -62,11 +62,14 @@ class ServerReceivedPacket(object):
 
     def __init__(self, json_string):
         # TODO decode json string
-        print(json_string)
+        self.string = json_string
         self.x = None
         self.y = None
         self.rotation = None
         self.thrust = None
+
+    def get_raw(self):
+        return self.string
 
 
 class ServerSendPacket(object):
@@ -75,13 +78,14 @@ class ServerSendPacket(object):
     and sent to the web server.
     """
 
-    def __init__(self):
+    def __init__(self, debug):
         # TODO add parameters
+        self.debug = debug
         pass
     
     def to_json(self):
         # TODO implement
-        return "{}"
+        return self.debug
 
 
 class ServerSenderThread(threading.Thread):
@@ -95,8 +99,8 @@ class ServerSenderThread(threading.Thread):
 
     def run(self):
         while not self._stop_flag.wait(QUEUE_CHECK_DELAY):
-            if not queue.empty():
-                packet = queue.get()
+            if not self.queue.empty():
+                packet = self.queue.get()
                 self.channel.basic_publish(exchange='', 
                                            routing_key=CENTRAL_UNIT_KEY_SEND,
                                            body=packet.to_json())
@@ -121,10 +125,10 @@ class ServerReceiverThread(threading.Thread):
                                    no_ack=True)
 
     def run(self):
-        channel.start_consuming()
+        self.channel.start_consuming()
 
     def stop(self):
-        channel.close()
+        self.channel.close()
     
 
 class CommunicationThread(threading.Thread):

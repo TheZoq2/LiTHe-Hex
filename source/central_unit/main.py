@@ -34,9 +34,18 @@ def main():
 
     thread.start()
 
+    c = 0
+
     while True:
-        #pdb.set_trace()
-        pass
+        print("Putting shit{} in queue".format(c))
+        send_queue.put(web.ServerSendPacket("shit{}".format(c)))
+
+        if not receive_queue.empty():
+            print("Getting: ")
+            print(receive_queue.get().get_raw())
+        time.sleep(1)
+
+        c += 1
         # print(communication.get_sensor_data(spi))
         # time.sleep(1)
 
