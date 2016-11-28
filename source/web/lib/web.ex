@@ -12,7 +12,7 @@ defmodule Web do
       supervisor(Web.Repo, []),
       # Start the endpoint when the application starts
       supervisor(Web.Endpoint, []),
-      supervisor(Web.CentralEndpoint, []),
+      #supervisor(Web.CentralEndpoint, []),
       # Start your own worker by calling: Web.Worker.start_link(arg1, arg2, arg3)
       # worker(Web.Worker, [arg1, arg2, arg3]),
     ]

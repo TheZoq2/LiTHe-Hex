@@ -1,5 +1,6 @@
 defmodule Web.CentralEndpoint do
-  use Phoenix.CentralEndpoint, otp_app: :web
+  #use Phoenix.CentralEndpoint, otp_app: :web
+  use Phoenix.Endpoint, otp_app: :web
 
   # Serve at "/" the static files from "priv/static" directory.
   #

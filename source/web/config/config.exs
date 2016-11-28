@@ -24,7 +24,7 @@ config :web, Web.CentralEndpoint,
   render_errors: [view: Web.ErrorView, accepts: ~w(html json)],
   pubsub: [name: Web.PubSub,
            adapter: Web.PubSub.RabbitMQ,
-           options: [host: "localhost"]
+           options: [host: "localhost", port: "1339"]
           ]
 
 # Configures Elixir's Logger
