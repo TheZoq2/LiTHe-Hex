@@ -20,6 +20,8 @@
 
 #include <math.h>
 #include "../IK/ik.h"
+#include <stdint.h>
+#include "../../motor/motorik/servo.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -69,7 +71,7 @@ typedef struct{
  * @param angle provides the angle the robot should rotate.
  * @param current position the legs currently hold.
  */
-void rotateSetAngle(float angle, Point2D * current);
+void rotate_set_angle(float angle, Point2D * current);
 
 /**
  * @brief workTowardsGoal takes the robot closer to a requested position and
@@ -85,6 +87,6 @@ void rotateSetAngle(float angle, Point2D * current);
  * @param current position the legs curerently hold.
  * @return scaledown applied to grounded set of legs.
  */
-float workTowardsGoal(float rot, Point2D * goal, Point2D * current);
+float work_towards_goal(float rot, Point2D * goal, Point2D * current);
 
 #endif
