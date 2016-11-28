@@ -20,6 +20,10 @@
 
 #include <math.h>
 
+#ifndef M_PI
+    #define M_PI 3.14159265358979323846
+#endif
+
 /*
  * The maximum and minimum angles that the different joints can turn.
  * TODO: tweak
@@ -35,11 +39,8 @@ const static float JOINT_1_LENGTH = 0.05;
 const static float JOINT_2_LENGTH = 0.065;
 const static float JOINT_3_LENGTH = 0.13;
 
-/* Used because some joints are angled and need a different angle than 0 to
- * point straight. TODO: tweak
- */
-const static float JOINT_2_OFFSET = 0;
-const static float JOINT_3_OFFSET = 0;
+const static float JOINT_2_OFFSET = 0.349;
+const static float JOINT_3_OFFSET = 0.873;
 
 struct Leg {
     float angle1;
