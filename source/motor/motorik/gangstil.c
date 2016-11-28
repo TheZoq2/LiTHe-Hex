@@ -102,6 +102,7 @@ void send_servo_action(){
     printf("execute angles\n\n");
 }*/
 
+
 /**
  * @brief takes a target set of leg positions and causes the servos to execute them.
  * @param target set of foot positions arranged LF RF LM RM LB RB, indicating 
@@ -115,19 +116,21 @@ void execute_position(Point2D * target, float * z){
     for (size_t leg = 0; leg < NUM_LEGS; ++leg){
         int ang;
         if ((leg & 1) == 0){
-            angle[0] = (uint16_t)(150 - (int)(ik[leg].angle1 * 180 / M_PI));
-            angle[1] = (uint16_t)(150 + (int)(ik[leg].angle2 * 180 / M_PI));
-            angle[2] = (uint16_t)(150 + (int)(ik[leg].angle3 * 180 / M_PI));
+            angle[0] = (uint16_t)(0x1ff - (int)(ik[leg].angle1 * (0x1ff/150*180) / M_PI));
+            angle[1] = (uint16_t)(0x1ff + (int)(ik[leg].angle2 * (0x1ff/150*180) / M_PI));
+            angle[2] = (uint16_t)(0x1ff + (int)(ik[leg].angle3 * (0x1ff/150*180) / M_PI));
             legId = (uint8_t)(leg/2);
         }
         else{
-            angle[0] = (uint16_t)(150 - (int)(ik[leg].angle1 * 180 / M_PI));
-            angle[1] = (uint16_t)(150 - (int)(ik[leg].angle2 * 180 / M_PI));
-            angle[2] = (uint16_t)(150 - (int)(ik[leg].angle3 * 180 / M_PI));
+            angle[0] = (uint16_t)(0x1ff - (int)(ik[leg].angle1 * (0x1ff/150*180) / M_PI));
+            angle[1] = (uint16_t)(0x1ff - (int)(ik[leg].angle2 * (0x1ff/150*180) / M_PI));
+            angle[2] = (uint16_t)(0x1ff - (int)(ik[leg].angle3 * (0x1ff/150*180) / M_PI));
             legId = (uint8_t)(leg/2 + 3);
         }
 
         set_leg_angles(legId, angle);
+
+		printf("yoloswag\n");
     }
     send_servo_action();
     

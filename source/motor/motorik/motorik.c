@@ -6,6 +6,9 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
+
+#include "communication.h"
+#include "spi.h"
 #endif
 
 #include "macros.h"
@@ -17,9 +20,8 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-#include "communication.h"
-#include "spi.h"
 
+#ifndef IS_X86
 void build_spi_reply_frame(Frame *frame_trans);
 void handle_spi_frame(Frame *frame_recv);
 
@@ -41,15 +43,18 @@ ISR(SPI_STC_vect) {
 		handle_spi_frame(&frame_recv);
 	}
 }
+#endif
 
 int main(void)
 {
 	// Enable global interrupts and init spi communication
+#ifndef IS_X86
 	spi_init();
 	sei();
+#endif
 
 	set_ddr(DDRD, 0xfE);
-	//
+	
 	usart_init();
 	
 	_delay_ms(100);
@@ -74,6 +79,7 @@ int main(void)
 	}
 }
 
+#ifndef IS_X86
 void build_spi_reply_frame(Frame *frame_trans) {
 
 	switch(frame_trans->msg[0]) {
@@ -121,3 +127,4 @@ void handle_spi_frame(Frame *frame_recv) {
 			break;
 	}
 }
+#endif
