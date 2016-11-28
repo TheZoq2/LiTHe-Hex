@@ -1,51 +1,27 @@
 import sys
 import math
+import communication
 
-input_file = "/tmp/decisions/sensors"
-output_file = "/tmp/decisions/desicion"
-
-FRONT_SENSOR = 0
-FRONT_LEFT_SENSOR = 1
-BACK_LEFT_SENSOR = 2
-FRONT_RIGHT_SENSOR = 3
-BACK_RIGHT_SENSOR = 4
-
+# types of corridors
 CORRIDOR = 0
 DEAD_END = 1
-MAYBE_CORRIDOR = 2
+MAYBE_CORRIDOR = 2 # when front sensor has detected a corridor but back has yet not
 
+# commands
 GO_FORWARD = 0
 TURN_LEFT = 1
 TURN_RIGHT = 2
 STOP = 3
+CLIMB_OBSTACLE = 4
 
+# general directions
 FRONT = 0
 LEFT = 1
 RIGHT = 2
 
-DEAD_END_DISTANCE = 1 # meters
-
-def get_sensor_data():
-    with open(input_file, 'r') as data:
-        file_content = data.read()
-
-        while len(file_content) == 0:
-            file_content = data.read()
-
-        split_content = file_content.split(',')
-
-        return (
-            float(split_content[FRONT_SENSOR]),
-            float(split_content[FRONT_LEFT_SENSOR]),
-            float(split_content[BACK_LEFT_SENSOR]),
-            float(split_content[FRONT_RIGHT_SENSOR]),
-            float(split_content[BACK_RIGHT_SENSOR])
-        )
-
-
-def write_output_command(command):
-    with open(output_file, 'w') as txt:
-        txt.write(command)
+# distances to different objects in meters
+DEAD_END_DISTANCE = 1
+DISTANCE_TO_OBSTACLE = 0.2
 
 
 def get_corridors_and_dead_ends(sensor_data):
@@ -54,29 +30,29 @@ def get_corridors_and_dead_ends(sensor_data):
     """
     corridors_and_dead_ends = [DEAD_END, DEAD_END, DEAD_END]
 
-    if (sensor_data[FRONT_SENSOR] >= DEAD_END_DISTANCE):
+    if (sensor_data.lidar > DEAD_END_DISTANCE):
         corridors_and_dead_ends[FRONT] = CORRIDOR
     else:
         corridors_and_dead_ends[FRONT] = DEAD_END
 
-    if (sensor_data[FRONT_LEFT_SENSOR] >= DEAD_END_DISTANCE):
+    if (sensor_data.ir_front_left >= DEAD_END_DISTANCE):
         # front left sensor detects a long distance to wall
         corridors_and_dead_ends[LEFT] = MAYBE_CORRIDOR
 
         # check if back sensor also detects long distance
-        if (sensor_data[BACK_LEFT_SENSOR] >= DEAD_END_DISTANCE and
+        if (sensor_data.ir_back_left >= DEAD_END_DISTANCE and
             corridors_and_dead_ends[LEFT] == MAYBE_CORRIDOR):
             corridors_and_dead_ends[LEFT] = CORRIDOR
 
     else:
         corridors_and_dead_ends[LEFT] = DEAD_END
 
-    if (sensor_data[FRONT_RIGHT_SENSOR] >= DEAD_END_DISTANCE):
+    if (sensor_data.ir_front_right >= DEAD_END_DISTANCE):
         # front right sensor detects long distance to wall
         corridors_and_dead_ends[RIGHT] = MAYBE_CORRIDOR
 
         # check if back sensor also detects long distance
-        if (sensor_data[BACK_RIGHT_SENSOR] >= DEAD_END_DISTANCE and
+        if (sensor_data.ir_back_right >= DEAD_END_DISTANCE and
             corridors_and_dead_ends[RIGHT] == MAYBE_CORRIDOR):
             corridors_and_dead_ends[RIGHT] = CORRIDOR
 
@@ -85,6 +61,16 @@ def get_corridors_and_dead_ends(sensor_data):
 
     return corridors_and_dead_ends
 
+def found_obstacle(sensor_data):
+    """
+    Returns whether an obstacle has been detected or not
+    """
+    obstacle_found = False
+    if (sensor_data.ir_down <= DISTANCE_TO_OBSTACLE):
+        obstacle_found = True
+    else:
+        obstacle_found = False
+    return obstacle_found
 
 def get_decision(corridors_and_dead_ends):
     """
@@ -93,35 +79,40 @@ def get_decision(corridors_and_dead_ends):
     # robot will always move forward until it detects a dead end forward
     decision = GO_FORWARD;
 
-    for value in corridors_and_dead_ends:
-        # if more than one corridor to choose from
-        if (corridors_and_dead_ends.count(CORRIDOR) > 1):
-            print("Maze too complicated")
+    if (found_obstacle(sensor_data)):
+        decision = CLIMB_OBSTACLE
 
-        if ((corridors_and_dead_ends[LEFT] == CORRIDOR) and
-            corridors_and_dead_ends[RIGHT] == DEAD_END and
-            corridors_and_dead_ends[FRONT] == DEAD_END):
-            decision = TURN_LEFT
+    else:
 
-        elif (corridors_and_dead_ends[RIGHT] == CORRIDOR and
-            corridors_and_dead_ends[LEFT] == DEAD_END and
-            corridors_and_dead_ends[FRONT] == DEAD_END):
-            decision = TURN_RIGHT
+        for value in corridors_and_dead_ends:
+            # if more than one corridor to choose from
+            if (corridors_and_dead_ends.count(CORRIDOR) > 1):
+                print("Maze too complicated")
 
-        elif (corridors_and_dead_ends[RIGHT] == DEAD_END and
-            corridors_and_dead_ends[LEFT] == DEAD_END and
-            corridors_and_dead_ends[FRONT] == DEAD_END):
-            decision = STOP
+                if ((corridors_and_dead_ends[LEFT] == CORRIDOR) and
+                    corridors_and_dead_ends[RIGHT] == DEAD_END and
+                    corridors_and_dead_ends[FRONT] == DEAD_END):
+                    decision = TURN_LEFT
 
-        else:
-            decision = GO_FORWARD
+                elif (corridors_and_dead_ends[RIGHT] == CORRIDOR and
+                      corridors_and_dead_ends[LEFT] == DEAD_END and
+                      corridors_and_dead_ends[FRONT] == DEAD_END):
+                    decision = TURN_RIGHT
+
+                elif (corridors_and_dead_ends[RIGHT] == DEAD_END and
+                      corridors_and_dead_ends[LEFT] == DEAD_END and
+                      corridors_and_dead_ends[FRONT] == DEAD_END):
+                    decision = STOP
+
+                else:
+                    decision = GO_FORWARD
 
     return decision
 
 
 def main():
     while 1:
-        sensor_data = get_sensor_data()
+        sensor_data = communication.get_sensor_data(spi)
         corridors_and_dead_ends = get_corridors_and_dead_ends(sensor_data)
         decision = get_decision(corridors_and_dead_ends)
 
