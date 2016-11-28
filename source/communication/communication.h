@@ -25,6 +25,7 @@
 #define TYPE_PARITY_MASK 0x01
 
 #include "spi.h"
+#include <stdbool.h>
 
 enum ID {
     SEND_FAIL = 0x1F, ACKNOWLEDGE = 0x0F, DATA_REQUEST = 0x02, 

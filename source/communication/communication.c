@@ -182,20 +182,6 @@ bool message_require_reply(uint8_t current_msg) {
 	}
 }
 
-void send_reply_sensor(uint8_t current_id) {
-
-	Frame frame_send_1;
-	Frame frame_send_2;
-	if(current_id == DATA_REQUEST) {
-		frame_send_1.control_byte = SENSOR_DATA << 2;
-	//	send_sensor_data(&frame_send_1);
-		frame_send_2.control_byte = CORRIDOR_DATA << 2;
-	//	send_sensor_wall_data(&frame_send_2);
-	}
-	send_frame(&frame_send_1);
-	send_frame(&frame_send_2);
-}
-
 void send_frame(Frame* frame) {
 
 	calculate_parity(frame);
@@ -208,38 +194,4 @@ void send_frame(Frame* frame) {
 			spi_transmit_byte(frame->msg[i]);
 		}
 	}
-}
-
-void control_motor(uint8_t current_msg) {
-
-	switch(current_msg){
-		case TOGGLE_OBSTACLE :
-			// Toggle obstacle
-			break;
-		case SET_SERVO_SPEED :
-			// Set speed
-			break;
-		case WALK_COMMAMD :
-			// Go command 
-			break;
-		case RETURN_TO_NEUTRAL :
-			// Return to neutral
-			break;
-	}
-}
-
-void send_reply_motor(uint8_t current_msg) {
-
-	Frame frame_send_status;
-	Frame frame_send_string;
-	Frame frame_send_obstacle;
-	frame_send_status.control_byte = SERVO_STATUS << 2;
-	// Send servo status
-	frame_send_string.control_byte = DEBUG_STRING << 2;
-	// Send debug string
-	frame_send_obstacle.control_byte = OBSTACLE << 2;
-	// Hinder here?
-	send_frame(&frame_send_status);
-	send_frame(&frame_send_string);
-	send_frame(&frame_send_obstacle);
 }
