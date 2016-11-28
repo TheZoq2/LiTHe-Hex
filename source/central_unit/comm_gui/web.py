@@ -18,18 +18,25 @@
 import threading
 import pika
 
+CENTRAL_UNIT_KEY_RECEIVE = 'to_pi'
+CENTRAL_UNIT_KEY_SEND = 'from_pi'
 
-connection = pika.BlockingConnection(pika.ConnectionParameters(
-        host='localhost'))
-channel = connection.channel()
+QUEUE_CHECK_DELAY = 0.05
 
-channel.queue_declare(queue='hello')
-
-channel.basic_publish(exchange='',
-                      routing_key='hello',
-                      body='Hello World!')
-print(" [x] Sent 'Hello World!'")
-connection.close()
+# # SEND
+# connection = pika.BlockingConnection(pika.ConnectionParameters(
+#         host='localhost'))
+# channel = connection.channel()
+# 
+# channel.queue_declare(queue='hello')
+# 
+# channel.basic_publish(exchange='',
+#                       routing_key='hello',
+#                       body='Hello World!')
+# print(" [x] Sent 'Hello World!'")
+# connection.close()
+# 
+# # RECEIVE
 # connection = pika.BlockingConnection(pika.ConnectionParameters(
 #         host='localhost'))
 # channel = connection.channel()
@@ -46,57 +53,106 @@ connection.close()
 # print(' [*] Waiting for messages. To exit press CTRL+C')
 # channel.start_consuming()
 
-# channel = None
-# 
-# def on_connected(connection):
-#     connection.channel()
-# 
-# 
-# def on_channel_open(new_channel):
-#     global channel
-#     channel = new_channel
-#     channel.queue_declare(queue="test", durable=True, exclusive=False, auto_delete=False, callback=on_queue_declared)
-# 
-# 
-# def on_queue_declared(frame):
-#     channel.basic_consume(handle_delivery, queue='test')
-# 
-# 
-# def handle_delivery(channel, method, header, body):
-#     print(body)
+
+class ServerReceivedPacket(object):
+    """
+    Data structure containing the information of parsed JSON-strings
+    from the web server. 
+    """
+
+    def __init__(self, json_string):
+        # TODO decode json string
+        print(json_string)
+        self.x = None
+        self.y = None
+        self.rotation = None
+        self.thrust = None
 
 
-# class CommunicationThread(threading.Thread):
-# 
-#     def __init__(self, send_queue, receive_queue):
-#         super().__init__()
-# 
-#         self.channel = None
-# 
-#         def handle_delivery(channel, method, header, body):
-#             print(body)
-# 
-#         def on_queue_declared(frame):
-#             self.channel.basic_consume(handle_delivery, queue='hello')
-# 
-#         def on_channel_open(new_channel):
-#             self.channel = new_channel
-#             self.channel.queue_declare(queue="hello", durable=True, exclusive=False,
-#                                   auto_delete=False, callback=on_queue_declared)
-# 
-#         def on_connected(connection):
-#             self.connection.channel(on_channel_open)
-# 
-#         self.send_queue = send_queue
-#         self.receive_queue = receive_queue
-#         self.parameters = pika.ConnectionParameters()
-#         self.connection = pika.SelectConnection(self.parameters, on_connected)
-# 
-#     def run(self):
-#         self.connection.ioloop.start()
-# 
-#     def stop(self):
-#         self.connection.close()
+class ServerSendPacket(object):
+    """
+    Data structure containing information to be converted to JSON-strings
+    and sent to the web server.
+    """
+
+    def __init__(self):
+        # TODO add parameters
+        pass
+    
+    def to_json(self):
+        # TODO implement
+        return "{}"
+
+
+class ServerSenderThread(threading.Thread):
+
+    def __init__(self, queue, channel, connection):
+        super().__init__()
+        self._stop_flag = threading.Event()
+        self.queue = queue
+        self.channel = channel
+        self.connection = connection
+
+    def run(self):
+        while not self._stop_flag.wait(QUEUE_CHECK_DELAY):
+            if not queue.empty():
+                packet = queue.get()
+                self.channel.basic_publish(exchange='', 
+                                           routing_key=CENTRAL_UNIT_KEY_SEND,
+                                           body=packet.to_json())
+
+    def stop(self):
+        self._stop_flag.set()
+
+
+class ServerReceiverThread(threading.Thread):
+
+    def __init__(self, queue, channel, connection):
+        super().__init__()
+
+        def _receive_callback(ch, method, properties, body):
+            self.queue.put(ServerReceivedPacket(body))
+
+        self.queue = queue
+        self.channel = channel
+        self.connection = connection
+        self.channel.basic_consume(_receive_callback,
+                                   queue=CENTRAL_UNIT_KEY_RECEIVE,
+                                   no_ack=True)
+
+    def run(self):
+        channel.start_consuming()
+
+    def stop(self):
+        channel.close()
+    
+
+class CommunicationThread(threading.Thread):
+
+    def __init__(self, send_queue, receive_queue):
+        super().__init__()
+
+        connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
+
+        channel_receive = connection.channel()
+        channel_send = connection.channel()
+
+        channel_receive.queue_declare(queue=CENTRAL_UNIT_KEY_RECEIVE)
+        channel_send.queue_declare(queue=CENTRAL_UNIT_KEY_SEND)
+
+        self.receive_thread = ServerReceiverThread(receive_queue, channel_receive, 
+                                                   connection)
+        self.send_thread = ServerSenderThread(send_queue, channel_send, connection)
+
+    def run(self):
+        self.receive_thread.start()
+        self.send_thread.start()
+        self.receive_thread.join()
+        self.send_thread.join()
+
+    def stop(self):
+        self.receive_thread.stop()
+        self.send_thread.stop()
 
 
 # parameters = pika.ConnectionParameters()
