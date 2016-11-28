@@ -3,9 +3,12 @@ module App exposing (..)
 import Html exposing (Html, h1, img, text, div, input, br, form)
 import Html.Attributes exposing (style, value, src)
 import Html.Events exposing (onInput, onSubmit)
+import Html.Lazy exposing (lazy)
 import Html.App
 import Json.Encode as JE
 import Json.Decode as JD exposing ((:=))
+import Time exposing (Time, millisecond)
+import Date
 import Phoenix.Socket exposing (Socket)
 import Phoenix.Channel
 import Phoenix.Push
@@ -13,8 +16,8 @@ import Material
 import Material.Textfield as Textfield
 import Material.List as Lists
 import Material.Layout as Layout
-import Time exposing (Time, millisecond)
 import Joystick
+import Sensors
 
 
 type Msg
@@ -35,8 +38,9 @@ type alias Model =
     , currentMessage : String
     , messages : List String
     , joystick : Joystick.JoystickData
-    , mdl : Material.Model
     , joystickIndex : Maybe Int
+    , sensorData : List ( Date.Date, Float )
+    , mdl : Material.Model
     }
 
 
@@ -60,9 +64,15 @@ init { host } =
         { phxSocket = phxSocket
         , currentMessage = ""
         , messages = []
-        , mdl = Material.model
         , joystick = { x = 0, y = 0, rotation = 0, thrust = 0 }
         , joystickIndex = Nothing
+        , sensorData =
+            [ ( Date.fromTime 1448928000000, 1.7 )
+            , ( Date.fromTime 1451606400000, 2 )
+            , ( Date.fromTime 1454284800000, 1 )
+            , ( Date.fromTime 1456790400000, 1 )
+            ]
+        , mdl = Material.model
         }
             ! [ Cmd.map PhoenixMsg phxCmd ]
 
@@ -171,8 +181,8 @@ subscriptions model =
     , Joystick.axisData AxisData
     , Joystick.connected GamepadConnected
     , Joystick.disconnected GamepadDisconnected
-    , Time.every (millisecond*10) UpdateControlDisplay
-    , Time.every (millisecond*500) SendControlToServer
+    , Time.every (millisecond * 10) UpdateControlDisplay
+    , Time.every (millisecond * 500) SendControlToServer
     ]
         |> Sub.batch
 
@@ -213,6 +223,7 @@ viewBody : Model -> Html Msg
 viewBody model =
     div [ Html.Attributes.style [ ( "padding", "2rem" ) ] ]
         [ Joystick.joystickDisplay model.joystick
+        , lazy Sensors.viewSensor model.sensorData
         , form [ onSubmit SendMessage ]
             [ Textfield.render Mdl
                 [ 0 ]

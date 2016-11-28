@@ -24,12 +24,18 @@ defmodule Web.ClientChannel do
 
   def handle_in("joystick", payload, socket) do
     %{"x" => x, "y" => y, "rotation" => rotation, "thrust" => thrust} = payload
-    #IO.puts("received joystick data: x=#{x}, y=#{y}, rotation=#{rotation}, thrust=#{thrust}")
+    # TODO: send message to central unit
     {:noreply, socket}
   end
 
   def handle_in("new_msg", %{"body" => body}, socket) do
     broadcast! socket, "new_msg", %{body: "Received message: " <> body}
+    {:noreply, socket}
+  end
+
+  def handle_out("new_msg", payload, socket) do
+    IO.puts("pushing #{payload} to client")
+    push socket, "new_msg", payload
     {:noreply, socket}
   end
 
