@@ -25,7 +25,7 @@ extern const uint8_t ANGLE_LIMIT_ADDRESS;
 extern const uint8_t TORQUE_ENABLE_ADDRESS;
 extern const uint8_t GOAL_POSITION_ADDRESS;
 
-enum Leg
+enum LegIds
 {
 	LEFT_FRONT = 0,
 	LEFT_MID = 1,
@@ -127,7 +127,12 @@ void init_all_servos();
 	the first angle is the desired angle of the limb closest
 	to  the body. See set_servo_angle for details.
  */
-void set_leg_angles(enum Leg leg_index, uint16_t* angles);
+void set_leg_angles(enum LegIds leg_index, uint16_t* angles);
+
+/*
+	Sends a read request to a servo and returns the response
+*/
+ServoReply read_servo_data(uint8_t id, uint8_t address);
 
 
 
