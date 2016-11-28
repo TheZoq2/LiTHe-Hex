@@ -12,6 +12,7 @@
 
 #include "uart_lib.h"
 #include "servo.h"
+#include "gangstil.h"
 
 #include <stdint.h>
 #include <stdlib.h>
@@ -53,27 +54,23 @@ int main(void)
 	
 	_delay_ms(100);
 	
-	
-	uint8_t sevo_id = 13;
-	
 	init_all_servos();
 
 	send_servo_action();
-	
-	uint16_t angles[3] = {0x1ff, 0x1ff, 0x1ff};
-	for(uint8_t i = 0; i < 6; ++i)
-	{
-		set_leg_angles(i, angles);
-	}
-	
-	send_servo_action();
 
-	_delay_ms(500);
-		
-	uint16_t angles_1[3] = {0x0ff, 0x1ff, 0x1ff};
+	//Initialize all legs
+	Point2D current_leg_positions[6];
+	for(size_t i = 0; i < 6; i++)
+	{
+		Point2D* current = get_default_leg_position(i);
+		current_leg_positions[i] = *current;
+
+		free(current);
+	}
+	assume_standardized_stance(current_leg_positions);
+	
 	while(1)
 	{
-		
 	}
 }
 
