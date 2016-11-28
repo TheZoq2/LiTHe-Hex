@@ -60,11 +60,11 @@ int main(void)
 
 	send_servo_action();
 	
-	uint16_t angles[3] = {0x1ff, 0x1ff, 0x1ff};
-	for(uint8_t i = 0; i < 6; ++i)
-	{
-		set_leg_angles(i, angles);
-	}
+	//uint16_t angles[3] = {0x1ff, 0x1ff, 0x1ff};
+	//for(uint8_t i = 0; i < 6; ++i)
+	//{
+	//	set_leg_angles(i, angles);
+	//}
 	
 	send_servo_action();
 
@@ -73,6 +73,8 @@ int main(void)
 	uint16_t angles_1[3] = {0x0ff, 0x1ff, 0x1ff};
 	while(1)
 	{
+		ServoReply reply = read_servo_data(1, 0x00);
+		free_servo_reply(reply);
 	}
 }
 
