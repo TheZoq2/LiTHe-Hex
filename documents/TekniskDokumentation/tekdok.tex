@@ -518,46 +518,39 @@
     centralenheten. 
 
     \subsubsection{Avbrott}
-	Följade avbrott kommer att vara aktiva:
+	Följade avbrott är aktiva:
     \begin{itemize}
-        \item Avbrott 25 genereras när den interna A/D-omvandlaren är klar 
-            vilket används för IR-sensorerna och gyro. När A/D-omvandlingen är klar 
-            sparas värdet i en lista som behandlas vid ett senare tillfälle.
         \item Avbrott 20 genereras när någon bit i registret för SPI-kommunikationen
-            ändras. Det kommer att användas för kommunikationen över SPI. Avbrottskoden för 
-            SPI kommer att vara ganska stor eftersom den ska kunna skicka och ta emot data 
-			mellan sensorenheten och centralenheten. 
-        \item Avbrott 27 genereras när någon bit i registret för \itc{}-kommunikationen 
-            ändras. Data skickas och tas emot med LIDAR. 
-		\item Avbrott 14 genereras när Counter1 blir lika med ett specifikt värde. 
-			Kommer att användas när för att veta när IR-sensorer kan mäta. 
+            ändras. Det användas för kommunikationen över SPI med centralenheten. 
+            Avbrottsrutinen för SPI genereras vid första byte från centralenheten 
+            sedan sköts läsning av resterande byte samt evenetuellt svar i samma 
+            avbrott. 
+		\item Avbrott 16 genereras när Counter1 blir sitt maxvärde (overflow). 
+			Det användas för att räkna upp antal overflow vilket gör att vi hela tiden 
+			vet hur lång tid det passerat sedan start. 
+		\item Avbrott 19 genereras när Counter0 blir sitt maxvärde (overflow). 
+			Det användas för att räkna upp antal overflow vilket gör att vi hela tiden 
+			vet hur lång tid det passerat sedan start. 
     \end{itemize}
-
-	\subsection{Gyro}
-
-	Sensorenheten ska använda ett gyro för att mäta vridning i det horisontella
-	planet. Detta är användbart för att roboten ska veta hur mycket
-	den ska rotera när den svänger. En MLX90609 kommer att användas som gyro. Signalen från 
-	gyrot läses analogt in till den interna A/D-omvandlaren på ATmega1284 som konverterar 
-	den analoga signalen till ett digitalt värde med 10-bitars upplösning. 
 	
 	\subsection{Avståndssensorer fram}
 	
-	Sensorenheten ska använda avståndssensorer på framsidan, en sensor för att
-	upptäcka väggar och en sensor som är snett vinklat ner mot golvet för hinderdetektion. 
+	Sensorenheten använder avståndssensorer på framsidan, en sensor för att
+	upptäcka väggar och en sensor som är snett vinklat ner mot golvet för 
+	hinderdetektion. 
 
 	Avståndssensorn som mäter framåt ska utgöras av en LIDAR-sensor, som har
     ett mycket brett mätspann (0-40 m) med 1 centimeters upplösning.
 
-	Sensorn som ska upptäcka hinder ska utgöras av IR-sensorn GP2D120 som kan mäta mellan 
-	4 och 30 cm. Denna IR-sensor ska vara riktad ned och avståndet till marken kommer 
-	att vara mellan 4 och 30 cm. IR-sensorer har fördelen att använda samma analoga gränssnitt 
-	som de andra IR-sensorerna som roboten ska använda. 
+	Sensorn som upptäcker hinder utgöras av IR-sensorn GP2D120 som kan mäta 
+	mellan 4 och 30 cm. Denna IR-sensor är riktad ned och avståndet till marken 
+	är att vara mellan 4 och 30 cm. IR-sensorer har fördelen att använda samma 
+	analoga gränssnitt som de andra IR-sensorerna som roboten använder. 
 
     Monteringen av dessa sensorer illustreras i Figur \ref{fig:sensor_mount}.
 
 	\subsection{Avståndssensorer åt sidorna}
-	Roboten ska ha avståndssensorer på vardera långsida av roboten, för
+	Roboten har två avståndssensorer på vardera långsida av roboten, för
 	detektion av väggar och återvändsgränder. Dessa sensorer utgörs av två 
     IR-sensorer på varje sida där båda pekar ut från samma sida och
 	är placerade på varsin ända av plattformen. IR-sensorerna som ska vara placerade 

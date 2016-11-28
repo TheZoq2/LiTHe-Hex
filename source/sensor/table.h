@@ -34,7 +34,7 @@ typedef struct MainTable {
 	
 	uint8_t down_distance;
 
-    float corridor_angle;
+    uint8_t corridor_angle;
 
 } MainTable;
 
@@ -46,6 +46,6 @@ void update(MainTable* table, Lidar* lidar);
 
 void get_sensor_data(Frame* frame);
 
-void send_sensor_wall_data(Frame* frame);
+void get_wall_data(Frame* frame);
 
 #endif /* ifndef MAINTABLE_H */
