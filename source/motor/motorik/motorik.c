@@ -61,7 +61,10 @@ int main(void)
 	
 	init_all_servos();
 
+	_delay_ms(100);
+
 	send_servo_action();
+	_delay_ms(100);
 
 	//Initialize all legs
 	Point2D current_leg_positions[6];
@@ -79,7 +82,7 @@ int main(void)
 	new_point.x = 1;
 	new_point.y = 0;
 	
-	work_towards_goal(0, &new_point, current_leg_positions);
+	//work_towards_goal(0, &new_point, current_leg_positions);
 		
 	while(1)
 	{
