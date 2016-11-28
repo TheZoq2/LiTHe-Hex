@@ -19,6 +19,7 @@
 
 import communication
 import time
+import decision_making
 import pdb
 
 
@@ -27,11 +28,13 @@ def main():
     res = []
     while True:
         #pdb.set_trace()
-        print(communication.get_sensor_data(spi))
+        sensor_data = communication.get_sensor_data(spi)
+        decision = decision_making.get_decision(sensor_data)
+        print(decision)
         time.sleep(1)
 
-        print(communication.walk(spi, 10, 2, 1))
-        time.sleep(1)
+        #print(communication.walk(spi, 10, 2, 1))
+        #time.sleep(1)
 
 
 if __name__ == '__main__':
