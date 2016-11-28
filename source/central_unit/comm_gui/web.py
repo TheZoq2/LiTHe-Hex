@@ -24,6 +24,23 @@ def handle_delivery(channel, method, header, body):
 class CommunicationThread(threading.Thread):
 
     def __init__(self, send_queue, recieve_queue):
+
+        self.channel = None
+
+        def handle_delivery(channel, method, header, body):
+            print(body)
+
+        def on_queue_declared(frame):
+            channel.basic_consume(handle_delivery, queue='test')
+
+        def on_channel_open(new_channel):
+            self.channel = new_channel
+            self.channel.queue_declare(queue="test", durable=True, exclusive=False,
+                                  auto_delete=False, callback=on_queue_declared)
+
+        def on_connected(connection):
+            connection.channel(on_channel_open)
+
         self.send_queue = send_queue
         self.recieve_queue = recieve_queue
         self.parameters = pika.ConnectionParameters()
