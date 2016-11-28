@@ -18,7 +18,7 @@ defmodule Web.Mixfile do
   # Type `mix help compile.app` for more information.
   def application do
     [mod: {Web, []},
-     applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext, :phoenix_ecto, :postgrex, :amqp]]
+     applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext, :phoenix_ecto, :postgrex, :amqp, :phoenix_pubsub_rabbitmq]]
   end
 
   # Specifies which paths to compile per environment.
@@ -37,7 +37,8 @@ defmodule Web.Mixfile do
      {:phoenix_live_reload, "~> 1.0", only: :dev},
      {:gettext, "~> 0.11"},
      {:cowboy, "~> 1.0"},
-     {:amqp, "~> 0.1.4"},
+     {:amqp, "~> 0.1.4", override: true},
+     {:phoenix_pubsub_rabbitmq, git: "https://github.com/HannesTuhkala/phoenix_pubsub_rabbitmq.git", tag: "v0.0.2"}
    ]
   end
 
