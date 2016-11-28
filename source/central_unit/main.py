@@ -18,6 +18,8 @@
 # along with LiTHe Hex.  If not, see <http://www.gnu.org/licenses/>.
 
 import communication
+import comm_gui.web as web
+import queue
 import time
 import decision_making
 import pid_controller
@@ -28,6 +30,13 @@ import os
 def main():
     spi = communication.communication_init()
     res = []
+    
+    send_queue = queue.Queue()
+    receive_queue = queue.Queue()
+    thread = web.CommunicationThread(send_queue, receive_queue)
+
+    thread.start()
+
     while True:
         #pdb.set_trace()
         os.system('clear')
@@ -41,6 +50,20 @@ def main():
 
         #print(communication.walk(spi, 10, 2, 1))
         #time.sleep(1)
+
+        # Guys, this is test for server stuffs
+        # sensor_data = communication.SensorDataPacket(1, 1, 1, 1, 1, 1, 1)
+        # time.sleep(0.1)
+        # corridor = communication.CorridorDataPacket(2.0, 2.0, 3.0, 2.0, 0.0)
+        # time.sleep(0.1)
+
+        # print("Putting data in queue")
+        # send_queue.put(web.ServerSendPacket(sensor_data, corridor))
+
+        # if not receive_queue.empty():
+        #     print("Getting: ")
+        #     print(receive_queue.get().get_raw())
+        # time.sleep(1)
 
 
 if __name__ == '__main__':
