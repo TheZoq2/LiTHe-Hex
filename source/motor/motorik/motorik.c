@@ -43,11 +43,13 @@ int main(void)
 	}
 	
 	send_servo_action();
+	
+	//uint16_t angles_1[3] = {0x0ff, 0x144, 0x0ff};
+	//uint16_t angles_2[3] = {0x1ff, 0x2CC, 0x1ff};
 		
 	while(1)
 	{
-		
-		//_delay_ms(100);
+
 	}
 }
 
