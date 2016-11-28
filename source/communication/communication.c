@@ -34,8 +34,8 @@ void send_reply_test();
 void on_spi_recv(Frame* frame_recv) {
 
 	get_new_frame(frame_recv);
-	
-	bool success = check_parity(frame_recv); 
+
+	bool success = check_parity(frame_recv);
 	if(success) { // continue if message ok
 		spi_transmit_ack();
 	} else { // Something was wrong with message
@@ -86,14 +86,14 @@ bool check_parity(Frame* frame) {
 			msg &= (msg - 1);
 		}
 	}
-	
+
 	bool result = false;
 	if(((frame->control_byte & 0x01) > 0) == parity_con) {
 		if(((frame->control_byte & 0x02) > 0) == parity_msg) {
 			result = true;
 		}
 	}
-	
+
 	return result;
 }
 
@@ -126,7 +126,7 @@ void calculate_parity(Frame* frame) {
 	if(parity_msg) {
 		frame->control_byte |= 0x02;
 	}
-	
+
 	// calculate parity for control_byte
 	uint8_t byte = frame->control_byte;
 	bool parity_con = false;
@@ -149,11 +149,11 @@ void get_new_frame(Frame* frame_recv) {
     if (b == GARBAGE) {
 	    frame_recv->control_byte = spi_receive_byte();
     } else {
-        frame_recv->control_byte = b; 
+        frame_recv->control_byte = b;
     }
 
- 
-	if(frame_recv->control_byte & 0x80) { // msg is more than one byte long 
+
+	if(frame_recv->control_byte & 0x80) { // msg is more than one byte long
 		frame_recv->len = spi_receive_byte();
 		for(uint8_t i = 0; i < frame_recv->len; i++) {
 			frame_recv->msg[i] = spi_receive_byte();
