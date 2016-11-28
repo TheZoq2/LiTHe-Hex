@@ -21,16 +21,16 @@ RIGHT = 2
 
 # distances to different objects in meters
 DEAD_END_DISTANCE = 1
-DISTANCE_TO_OBSTACLE = 0.2
+DISTANCE_TO_OBSTACLE = 0.0
 
 
-def get_corridors_and_dead_ends(sensor_data):
+def _get_corridors_and_dead_ends(sensor_data):
     """
     Returns the dead ends and corridors detected in the maze
     """
     corridors_and_dead_ends = [DEAD_END, DEAD_END, DEAD_END]
 
-    if (sensor_data.lidar > DEAD_END_DISTANCE):
+    if (sensor_data.lidar >= DEAD_END_DISTANCE):
         corridors_and_dead_ends[FRONT] = CORRIDOR
     else:
         corridors_and_dead_ends[FRONT] = DEAD_END
@@ -61,7 +61,7 @@ def get_corridors_and_dead_ends(sensor_data):
 
     return corridors_and_dead_ends
 
-def found_obstacle(sensor_data):
+def _found_obstacle(sensor_data):
     """
     Returns whether an obstacle has been detected or not
     """
@@ -72,14 +72,17 @@ def found_obstacle(sensor_data):
         obstacle_found = False
     return obstacle_found
 
-def get_decision(corridors_and_dead_ends):
+def get_decision(sensor_data):
     """
     Returns the decision made based on the dead ends and corridors detected
     """
+
+    corridors_and_dead_ends = _get_corridors_and_dead_ends(sensor_data)
+
     # robot will always move forward until it detects a dead end forward
     decision = GO_FORWARD;
 
-    if (found_obstacle(sensor_data)):
+    if (_found_obstacle(sensor_data)):
         decision = CLIMB_OBSTACLE
 
     else:
@@ -89,6 +92,7 @@ def get_decision(corridors_and_dead_ends):
             if (corridors_and_dead_ends.count(CORRIDOR) > 1):
                 print("Maze too complicated")
 
+            else:
                 if ((corridors_and_dead_ends[LEFT] == CORRIDOR) and
                     corridors_and_dead_ends[RIGHT] == DEAD_END and
                     corridors_and_dead_ends[FRONT] == DEAD_END):
@@ -108,14 +112,3 @@ def get_decision(corridors_and_dead_ends):
                     decision = GO_FORWARD
 
     return decision
-
-
-def main():
-    while 1:
-        sensor_data = communication.get_sensor_data(spi)
-        corridors_and_dead_ends = get_corridors_and_dead_ends(sensor_data)
-        decision = get_decision(corridors_and_dead_ends)
-
-        print(decision)
-
-main()
