@@ -43,15 +43,7 @@ class WebTestCase(unittest.TestCase):
     def test_send_packet_empty(self):
         send_packet = web.ServerSendPacket()
         json_string = send_packet.get_json()
-        self.assertDictEqual({}, json_string)
-
-    def test_thread_close(self):
-        send_queue = queue.Queue()
-        receive_queue = queue.Queue()
-        thread = web.CommunicationThread(send_queue, receive_queue)
-        thread.start()
-        time.sleep(0.1)
-        self.assertEqual(thread.stop(), 0)
+        self.assertDictEqual({}, json.loads(json_string))
 
 
 class CommunicationTestCase(unittest.TestCase):

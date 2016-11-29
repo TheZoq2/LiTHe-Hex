@@ -16,6 +16,7 @@
 # along with LiTHe Hex.  If not, see <http://www.gnu.org/licenses/>.
 
 import threading
+import time
 import pika
 import json
 
@@ -39,8 +40,8 @@ class ServerReceivedPacket(object):
         data = json.loads(json_string)
         self.x = data.get('x', None)
         self.y = data.get('y', None)
-        self.rotation = data('rotation', None)
-        self.thrust = data('thrust', None)
+        self.rotation = data.get('rotation', None)
+        self.thrust = data.get('thrust', None)
         self.auto = data.get('auto', None)
 
 
@@ -58,7 +59,7 @@ class ServerSendPacket(object):
         mode is engaged, and an optional debug-string.
         """
         assert auto_mode is None or auto_mode in (True, False)
-        assert isinstance(debug_string, str)
+        assert debug_string is None or isinstance(debug_string, str)
         self.sensor = sensor_data_packet
         self.corridor = corridor_data_packet
         self.auto_mode = auto_mode
@@ -95,8 +96,6 @@ class ServerSenderThread(threading.Thread):
 
     def __init__(self, queue, channel, connection):
         super().__init__()
-        # create a flag that, when set, stops this thread
-        self._stop_flag = threading.Event()
         self.queue = queue
         self.channel = channel
         self.connection = connection
@@ -104,18 +103,14 @@ class ServerSenderThread(threading.Thread):
     def run(self):
         """
         Loop and wait QUEUE_CHECK_DELAY seconds. 
-        Exits the thread if the stop flag is set.
         """
-        while not self._stop_flag.wait(QUEUE_CHECK_DELAY):
+        while True:
             if not self.queue.empty():
                 packet = self.queue.get()
                 self.channel.basic_publish(exchange='', 
                                            routing_key=CENTRAL_UNIT_KEY_SEND,
                                            body=packet.get_json())
-
-    def stop(self):
-        self._stop_flag.set()
-        return 0
+            time.sleep(QUEUE_CHECK_DELAY)
 
 
 class ServerReceiverThread(threading.Thread):
@@ -129,7 +124,6 @@ class ServerReceiverThread(threading.Thread):
 
         def _receive_callback(ch, method, properties, body):
             self.queue.put(ServerReceivedPacket(body.decode("utf-8")))
-            print(body.decode("utf-8"))
 
         self.queue = queue
         self.channel = channel
@@ -141,10 +135,6 @@ class ServerReceiverThread(threading.Thread):
     def run(self):
         self.channel.start_consuming()
 
-    def stop(self):
-        self.channel.close()
-        return 0
-    
 
 class CommunicationThread(threading.Thread):
     """
@@ -176,16 +166,7 @@ class CommunicationThread(threading.Thread):
         self.receive_thread.start()
         self.send_thread.start()
 
-        # wait for the threads to stop (if stop is invoked)
+        # wait for the threads to stop (should never happen)
         self.receive_thread.join()
         self.send_thread.join()
-
-    def stop(self):
-        """
-        Stops the communication to the webserver and exits the thread.
-        Returns 0 on success and 1 on fail.
-        """
-        status_recv = self.receive_thread.stop()
-        status_send = self.send_thread.stop()
-        return 0 if status_recv == 0 and status_send == 0 else 1
 
