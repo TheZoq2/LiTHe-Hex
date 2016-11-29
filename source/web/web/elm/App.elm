@@ -4,9 +4,8 @@ import Html exposing (Html, h1, img, text, div, input, br, form)
 import Html.Attributes exposing (style, value, src)
 import Html.Events exposing (onInput, onSubmit)
 import Html.Lazy exposing (lazy)
-import Html.App
 import Json.Encode as JE
-import Json.Decode as JD exposing ((:=))
+import Json.Decode as JD
 import Time exposing (Time, millisecond)
 import Date
 import Phoenix.Socket exposing (Socket)
@@ -99,24 +98,24 @@ init { host } =
 
 chatMessageDecoder : JD.Decoder ChatMessage
 chatMessageDecoder =
-    JD.object1 ChatMessage
-        ("body" := JD.string)
+    JD.map ChatMessage
+        (JD.field "body" JD.string)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        PhoenixMsg msg' ->
+        PhoenixMsg phxMsg ->
             let
                 ( phxSocket, phxCmd ) =
-                    Phoenix.Socket.update msg' model.phxSocket
+                    Phoenix.Socket.update phxMsg model.phxSocket
             in
                 ( { model | phxSocket = phxSocket }
                 , Cmd.map PhoenixMsg phxCmd
                 )
 
-        Mdl msg' ->
-            Material.update msg' model
+        Mdl mdlMsg ->
+            Material.update mdlMsg model
 
         ReceiveChatMessage raw ->
             case JD.decodeValue chatMessageDecoder raw of
@@ -255,9 +254,9 @@ viewBody model =
         ]
 
 
-main : Program Flags
+main : Program Flags Model Msg
 main =
-    Html.App.programWithFlags
+    Html.programWithFlags
         { init = init
         , update = update
         , subscriptions = subscriptions
