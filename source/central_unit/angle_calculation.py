@@ -1,5 +1,7 @@
 import math
 
+DISTANCE_BETWEEN_SENSORS = 16
+
 # All these functions return angles in degrees
 def get_right_angle(sensor_data):
     return math.atan(math.fabs(sensor_data.ir_front_right - sensor_data.ir_back_right)/DISTANCE_BETWEEN_SENSORS) * (180/math.pi)
