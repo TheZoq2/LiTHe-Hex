@@ -103,6 +103,10 @@ void send_servo_action(){
 }*/
 
 
+int radian_to_servo(float radian_angle)
+{
+	return (int)(radian_angle * (0x1ff/150*180) / M_PI);
+}
 /**
  * @brief takes a target set of leg positions and causes the servos to execute them.
  * @param target set of foot positions arranged LF RF LM RM LB RB, indicating 
@@ -111,35 +115,31 @@ void send_servo_action(){
 void execute_position(Point2D * target, float * z){
     struct Leg* ik = get_angle_set(target, z);
 
-    uint16_t* angle = (uint16_t*)calloc(3, sizeof(uint16_t));
+    uint16_t angles[3];
     uint8_t legId;
     for (size_t leg = 0; leg < NUM_LEGS; ++leg){
         int ang;
         if ((leg & 1) == 0){
-            angle[0] = (uint16_t)(0x1ff - (int)(ik[leg].angle1 * (0x1ff/150*180) / M_PI));
-            angle[1] = (uint16_t)(0x1ff + (int)(ik[leg].angle2 * (0x1ff/150*180) / M_PI));
-            angle[2] = (uint16_t)(0x1ff + (int)(ik[leg].angle3 * (0x1ff/150*180) / M_PI));
+            angles[0] = (uint16_t)(0x1ff - radian_to_servo(ik[leg].angle1));
+            angles[1] = (uint16_t)(0x1ff - radian_to_servo(ik[leg].angle2));
+            angles[2] = (uint16_t)(0x1ff - radian_to_servo(ik[leg].angle3));
             legId = (uint8_t)(leg/2);
         }
         else{
-            angle[0] = (uint16_t)(0x1ff - (int)(ik[leg].angle1 * (0x1ff/150*180) / M_PI));
-            angle[1] = (uint16_t)(0x1ff - (int)(ik[leg].angle2 * (0x1ff/150*180) / M_PI));
-            angle[2] = (uint16_t)(0x1ff - (int)(ik[leg].angle3 * (0x1ff/150*180) / M_PI));
+            angles[0] = (uint16_t)(0x1ff - radian_to_servo(ik[leg].angle1));
+            angles[1] = (uint16_t)(0x1ff + radian_to_servo(ik[leg].angle2));
+            angles[2] = (uint16_t)(0x1ff + radian_to_servo(ik[leg].angle3));
             legId = (uint8_t)(leg/2 + 3);
         }
 
-        set_leg_angles(legId, angle);
-
-		printf("yoloswag\n");
+        set_leg_angles(legId, angles);
     }
     send_servo_action();
-    
-    free(angle);
 }
 
 
 void execute_step(Point2D * current, Point2D * target, bool lrlRaised){
-    float * z = (float *)calloc(NUM_LEGS, sizeof(float));
+    float z[NUM_LEGS];
 
     if(lrlRaised){
         z[LF] = GROUNDED + HIGH;
@@ -166,10 +166,8 @@ void execute_step(Point2D * current, Point2D * target, bool lrlRaised){
     z[LM] = GROUNDED;
     z[RB] = GROUNDED;
     execute_position(target, z);
-    
-    free(z);
 
-    for (int leg = 0; leg < NUM_LEGS; ++leg) {
+    for (size_t leg = 0; leg < NUM_LEGS; ++leg) {
         current[leg].x = target[leg].x;
         current[leg].y = target[leg].y;
     }
@@ -180,23 +178,23 @@ void execute_step(Point2D * current, Point2D * target, bool lrlRaised){
  * @param leg indicates what leg of the robot (LF, RF, LM, RM, LB, RB) should be returned.
  * @return a standardised leg position, relative to joint.
  */
-Point2D * get_default_leg_position(size_t leg){
-    Point2D * res = (Point2D *)malloc(sizeof(Point2D));
+Point2D get_default_leg_position(size_t leg){
+    Point2D res;
     if (leg < 2){   //front
-        res->x = 0.1;
-        res->y = 0.1;
+        res.x = 0.1;
+        res.y = 0.1;
     }
     else if (leg < 4){  //mid
-        res->x = 0;
-        res->y = 0.14;
+        res.x = 0;
+        res.y = 0.14;
     }
     else{
-        res->x = -0.1;
-        res->y = 0.1;
+        res.x = -0.1;
+        res.y = 0.1;
     }    //back
 
     if ((leg & 1) == 1)  //right
-        res->y = -res->y ;
+        res.y = -res.y ;
     return res;
 }
 
@@ -206,23 +204,25 @@ Point2D * get_default_leg_position(size_t leg){
  * @param leg indicates what leg joint of the robot (LF, RF, LM, RM, LB, RB) should be returned.
  * @return a standardised joint position, relative to robot center.
  */
-Point2D * joint_position(size_t leg){
-    Point2D * res = (Point2D *)malloc(sizeof(Point2D));
+Point2D joint_position(size_t leg){
+    Point2D res;
     if (leg < 2){   //front
-        res->x = FRONT_LEG_JOINT_X;
-        res->y = FRONT_LEG_JOINT_Y;
+        res.x = FRONT_LEG_JOINT_X;
+        res.y = FRONT_LEG_JOINT_Y;
     }
     else if (leg < 4){  //mid
-        res->x = 0;
-        res->y = MID_LEG_JOINT_Y;
+        res.x = 0;
+        res.y = MID_LEG_JOINT_Y;
     }
     else{
-        res->x = -FRONT_LEG_JOINT_X;
-        res->y = FRONT_LEG_JOINT_Y;
+        res.x = -FRONT_LEG_JOINT_X;
+        res.y = FRONT_LEG_JOINT_Y;
     }    //back
 
     if ((leg & 1) == 1)  //right
-        res->y = -res->y ;
+	{
+        res.y = -res.y;
+	}
     return res;
 }
 
@@ -423,7 +423,7 @@ void scale_to_straight_bounds(float * scale, Point2D * targ, Point2D * curr){
  * @return scale multiplier applied to grounded set of legs.
  */
 float scale_legs(Point2D * targ, Point2D * curr, float * scale, bool lrlRaised){
-    Point2D * diff = (Point2D *)calloc(NUM_LEGS, sizeof(Point2D));
+    Point2D diff[NUM_LEGS];
     for(size_t index = 0; index < NUM_LEGS; ++index){
         diff[index].x = targ[index].x - curr[index].x;
         diff[index].y = targ[index].y - curr[index].y;
@@ -440,7 +440,6 @@ float scale_legs(Point2D * targ, Point2D * curr, float * scale, bool lrlRaised){
 
     res = res * update_targ_by_scale(targ, curr, diff, scale, lrlRaised);
 
-    free(diff);
     return res;
 }
 
@@ -458,28 +457,25 @@ float scale_legs(Point2D * targ, Point2D * curr, float * scale, bool lrlRaised){
  * from target, with negative rotation, if feet are grounded).
  */
 void direct_legs(float rot, Point2D * targ, Point2D * current, Point2D * req, bool lrlRaised){
-    Point2D * attention = (Point2D *)malloc(sizeof(Point2D));
-    Point2D * absTarg   = (Point2D *)malloc(sizeof(Point2D));
+    Point2D attention;
+    Point2D absTarg;
 
     for(size_t leg = LF; leg < NUM_LEGS; ++leg){
-        Point2D * joint = joint_position(leg);
-        attention->x = current[leg].x + joint->x;
-        attention->y = current[leg].y + joint->y;
+        Point2D joint = joint_position(leg);
+        attention.x = current[leg].x + joint.x;
+        attention.y = current[leg].y + joint.y;
 
         if (lrlRaised == (leg == 0 || leg == 3 || leg == 4)){ //move legs "away" from position (body towards)
-            absTarg->x =  req->x + cos(rot) * attention->x - sin(rot) * attention->y;
-            absTarg->y =  req->y + sin(rot) * attention->x + cos(rot) * attention->y;
+            absTarg.x =  req->x + cos(rot) * attention.x - sin(rot) * attention.y;
+            absTarg.y =  req->y + sin(rot) * attention.x + cos(rot) * attention.y;
         }
         else{   //move legs "towards" target position (step)
-            absTarg->x =   - req->x  + cos(rot) * attention->x + sin(rot) * attention->y;
-            absTarg->y =   - req->y  - sin(rot) * attention->x + cos(rot) * attention->y;
+            absTarg.x =   - req->x  + cos(rot) * attention.x + sin(rot) * attention.y;
+            absTarg.y =   - req->y  - sin(rot) * attention.x + cos(rot) * attention.y;
         }
-        targ[leg].x = absTarg->x - joint->x;
-        targ[leg].y = absTarg->y - joint->y;
-        free(joint);
+        targ[leg].x = absTarg.x - joint.x;
+        targ[leg].y = absTarg.y - joint.y;
     }
-    free(attention);
-    free(absTarg);
 }
 
 
@@ -489,8 +485,7 @@ void direct_legs(float rot, Point2D * targ, Point2D * current, Point2D * req, bo
  * @param current current position of the legs.
  */
 void assume_standardized_stance(Point2D * current){
-    
-    float * z = (float *)calloc(NUM_LEGS, sizeof(float));
+    float z[NUM_LEGS];
     z[LF] = GROUNDED + HIGH;
     z[RM] = GROUNDED + HIGH;
     z[LB] = GROUNDED + HIGH;
@@ -499,18 +494,15 @@ void assume_standardized_stance(Point2D * current){
     z[RB] = GROUNDED;
     execute_position(current, z);
 
-    Point2D * stdLeg = get_default_leg_position(LF);
-    current[LF].x = stdLeg->x;
-    current[LF].y = stdLeg->y;
-    free(stdLeg);
+    Point2D stdLeg = get_default_leg_position(LF);
+    current[LF].x = stdLeg.x;
+    current[LF].y = stdLeg.y;
     stdLeg = get_default_leg_position(RM);
-    current[RM].x = stdLeg->x;
-    current[RM].y = stdLeg->y;
-    free(stdLeg);
+    current[RM].x = stdLeg.x;
+    current[RM].y = stdLeg.y;
     stdLeg = get_default_leg_position(LB);
-    current[LB].x = stdLeg->x;
-    current[LB].y = stdLeg->y;
-    free(stdLeg);
+    current[LB].x = stdLeg.x;
+    current[LB].y = stdLeg.y;
 
     
     execute_position(current, z);
@@ -527,17 +519,16 @@ void assume_standardized_stance(Point2D * current){
     execute_position(current, z);
 
     stdLeg = get_default_leg_position(RF);
-    current[RF].x = stdLeg->x;
-    current[RF].y = stdLeg->y;
-    free(stdLeg);
+    current[RF].x = stdLeg.x;
+    current[RF].y = stdLeg.y;
+
     stdLeg = get_default_leg_position(LM);
-    current[LM].x = stdLeg->x;
-    current[LM].y = stdLeg->y;
-    free(stdLeg);
+    current[LM].x = stdLeg.x;
+    current[LM].y = stdLeg.y;
+
     stdLeg = get_default_leg_position(RB);
-    current[RB].x = stdLeg->x;
-    current[RB].y = stdLeg->y;
-    free(stdLeg);
+    current[RB].x = stdLeg.x;
+    current[RB].y = stdLeg.y;
 
     
     execute_position(current, z);
@@ -545,7 +536,6 @@ void assume_standardized_stance(Point2D * current){
     z[LM] = GROUNDED;
     z[RB] = GROUNDED;
     execute_position(current, z);
-    free(z);
 }
 
 
@@ -564,10 +554,10 @@ void assume_standardized_stance(Point2D * current){
  * @return scaledown applied to grounded set of legs.
  */
 float work_towards_goal(float rot, Point2D * goal, Point2D * current){
-    Point2D * targ0 = calloc(NUM_LEGS, sizeof(Point2D));
-    Point2D * targ1 = calloc(NUM_LEGS, sizeof(Point2D));
+    Point2D targ0[NUM_LEGS];
+    Point2D targ1[NUM_LEGS];
 
-    float * scale = (float *)calloc(NUM_LEGS, sizeof(float));
+    float scale[NUM_LEGS];
     direct_legs(rot, targ0, current, goal, true);
     float scaledown0 = scale_legs(targ0, current, scale, true);
 
@@ -582,13 +572,14 @@ float work_towards_goal(float rot, Point2D * goal, Point2D * current){
         execute_step(current, targ1, false);
     }
 
-    free(targ0);
-    free(targ1);
-    free(scale);
     if (scaledown0 > scaledown1)
+	{
         return scaledown0;
+	}
     else
+	{
         return scaledown1;
+	}
 }
 
 
@@ -602,15 +593,14 @@ float work_towards_goal(float rot, Point2D * goal, Point2D * current){
  */
 float rotate_set_small_angle(float angle, Point2D * current){
     float remaining = 1;
-    Point2D * emptyGoal = (Point2D *)malloc(sizeof(Point2D));
-    emptyGoal->x = 0;
-    emptyGoal->y = 0;
+    Point2D emptyGoal;
+    emptyGoal.x = 0;
+    emptyGoal.y = 0;
 
     while (remaining > 0.2) {
         float remainingAngle = remaining * angle;
-        remaining = remaining - work_towards_goal(remainingAngle, emptyGoal, current);
+        remaining = remaining - work_towards_goal(remainingAngle, &emptyGoal, current);
     }
-    free(emptyGoal);
     
     return remaining;
 }

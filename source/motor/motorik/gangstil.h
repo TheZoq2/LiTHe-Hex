@@ -95,7 +95,7 @@ float work_towards_goal(float rot, Point2D * goal, Point2D * current);
  * @param leg indicates what leg of the robot (LF, RF, LM, RM, LB, RB) should be returned.
  * @return a standardised leg position, relative to joint.
  */
-Point2D * get_default_leg_position(size_t leg);
+Point2D get_default_leg_position(size_t leg);
 
 
 
