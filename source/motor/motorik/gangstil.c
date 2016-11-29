@@ -118,7 +118,6 @@ void execute_position(Point2D * target, float * z){
     uint16_t angles[3];
     uint8_t legId;
     for (size_t leg = 0; leg < NUM_LEGS; ++leg){
-        int ang;
         if ((leg & 1) == 0){
             angles[0] = (uint16_t)(0x1ff - radian_to_servo(ik[leg].angle1));
             angles[1] = (uint16_t)(0x1ff - radian_to_servo(ik[leg].angle2));

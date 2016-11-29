@@ -72,13 +72,7 @@ int main(void)
 	}
 	assume_standardized_stance(current_leg_positions);
 
-	Point2D new_point;
 	
-	new_point.x = 1;
-	new_point.y = 0;
-	
-	//work_towards_goal(0, &new_point, current_leg_positions);
-		
 	while(1)
 	{
 	}
