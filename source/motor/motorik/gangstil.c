@@ -33,8 +33,8 @@ const size_t RB = 5;
 const float FRONT_LEG_JOINT_X           = 0.12;
 const float FRONT_LEG_JOINT_Y           = 0.06;
 const float MID_LEG_JOINT_Y             = 0.1;
-const float HIGH                        = 0.15;
-const float GROUNDED                    = 0;
+const float HIGH                        = 0.05;
+const float GROUNDED                    = -0.1;
 const float MIN_DIST                    = 0.06;
 const float MAX_DIST                    = 0.18;
 const float VERT_MID_LEG_BORDER_OFFSET  = 0.06;
@@ -69,7 +69,7 @@ struct Leg* get_angle_set(Point2D * target, float * height){
             x = -target[leg].y;
             z = -target[leg].x;
         }
-        y = height[leg] - HIGH;
+        y = height[leg];
         res[leg] = leg_ik(x,y,z);
     }
 
@@ -142,32 +142,37 @@ void execute_step(Point2D * current, Point2D * target, bool lrlRaised){
     float * z = (float *)calloc(NUM_LEGS, sizeof(float));
 
     if(lrlRaised){
-        z[LF] = HIGH;
-        z[RM] = HIGH;
-        z[LB] = HIGH;
-        z[RF] = 0;
-        z[LM] = 0;
-        z[RB] = 0;
+        z[LF] = GROUNDED + HIGH;
+        z[RM] = GROUNDED + HIGH;
+        z[LB] = GROUNDED + HIGH;
+        z[RF] = GROUNDED;
+        z[LM] = GROUNDED;
+        z[RB] = GROUNDED;
     }
     else{
-        z[LF] = 0;
-        z[RM] = 0;
-        z[LB] = 0;
-        z[RF] = HIGH;
-        z[LM] = HIGH;
-        z[RB] = HIGH;
+        z[LF] = GROUNDED;
+        z[RM] = GROUNDED;
+        z[LB] = GROUNDED;
+        z[RF] = GROUNDED + HIGH;
+        z[LM] = GROUNDED + HIGH;
+        z[RB] = GROUNDED + HIGH;
     }
     execute_position(current, z);
     execute_position(target, z);
-    z[LF] = 0;
-    z[RM] = 0;
-    z[LB] = 0;
-    z[RF] = 0;
-    z[LM] = 0;
-    z[RB] = 0;
+    z[LF] = GROUNDED;
+    z[RM] = GROUNDED;
+    z[LB] = GROUNDED;
+    z[RF] = GROUNDED;
+    z[LM] = GROUNDED;
+    z[RB] = GROUNDED;
     execute_position(target, z);
     
     free(z);
+
+    for (int leg = 0; leg < NUM_LEGS; ++leg) {
+        current[leg].x = target[leg].x;
+        current[leg].y = target[leg].y;
+    }
 }
 
 /**
@@ -486,12 +491,12 @@ void direct_legs(float rot, Point2D * targ, Point2D * current, Point2D * req, bo
 void assume_standardized_stance(Point2D * current){
     
     float * z = (float *)calloc(NUM_LEGS, sizeof(float));
-    z[LF] = HIGH;
-    z[RM] = HIGH;
-    z[LB] = HIGH;
-    z[RF] = 0;
-    z[LM] = 0;
-    z[RB] = 0;
+    z[LF] = GROUNDED + HIGH;
+    z[RM] = GROUNDED + HIGH;
+    z[LB] = GROUNDED + HIGH;
+    z[RF] = GROUNDED;
+    z[LM] = GROUNDED;
+    z[RB] = GROUNDED;
     execute_position(current, z);
 
     Point2D * stdLeg = get_default_leg_position(LF);
@@ -510,14 +515,14 @@ void assume_standardized_stance(Point2D * current){
     
     execute_position(current, z);
     
-    z[LF] = 0;
-    z[RM] = 0;
-    z[LB] = 0;
+    z[LF] = GROUNDED;
+    z[RM] = GROUNDED;
+    z[LB] = GROUNDED;
     
     execute_position(current, z);
-    z[RF] = HIGH;
-    z[LM] = HIGH;
-    z[RB] = HIGH;
+    z[RF] = GROUNDED + HIGH;
+    z[LM] = GROUNDED + HIGH;
+    z[RB] = GROUNDED + HIGH;
     
     execute_position(current, z);
 
@@ -536,9 +541,9 @@ void assume_standardized_stance(Point2D * current){
 
     
     execute_position(current, z);
-    z[RF] = 0;
-    z[LM] = 0;
-    z[RB] = 0;
+    z[RF] = GROUNDED;
+    z[LM] = GROUNDED;
+    z[RB] = GROUNDED;
     execute_position(current, z);
     free(z);
 }

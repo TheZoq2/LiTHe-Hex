@@ -21,6 +21,8 @@
 #define NUM_CORRECT_DATA_POINTS	4
 #define PERCENT_FAULT_TOLERANCE 0.20
 #define CORRECTION_FACTOR		20
+#define LOWEST_AD_VALUE			80
+#define LONGER_THAN_MAX_RANGE	255
 
 void ir_init(IR ir_list[NUM_SENSORS]) {
 
@@ -46,13 +48,19 @@ void ir_add_data(IR* ir, uint16_t data) {
 	for(uint8_t i = 0; i < NUM_SENSOR_DATA-1; i++) {
 		ir->raw_data_list[i] = ir->raw_data_list[i+1];
 	}
-	ir->raw_data_list[NUM_SENSOR_DATA-1] = ir_value_to_centimeters(data, ir->range);
+	
+	// Formula can not handle to small data value = long range, return 255 = longer than max range for ir sensor
+	if(data > LOWEST_AD_VALUE) { 
+		ir->raw_data_list[NUM_SENSOR_DATA-1] = ir_value_to_centimeters(data, ir->range);
+	} else {
+		ir->raw_data_list[NUM_SENSOR_DATA-1] = LONGER_THAN_MAX_RANGE;
+	}
 
 }
 
 /* Remove data if out of fault_tolerance, compensate for more recent value before calculate new ir->value */
 void ir_reduce_noise(IR* ir) {
-	
+	/*
 	// Reverse raw_data_list
 	double data_list[NUM_SENSOR_DATA];
 	uint8_t j = NUM_SENSOR_DATA-1;
@@ -95,12 +103,13 @@ void ir_reduce_noise(IR* ir) {
 	}
 	// average of res
 	double val = res / num_data_points;
-	if(val < 160) {
-		ir->value = (uint8_t)val;
+	*/
+	uint8_t val = ir->raw_data_list[NUM_SENSOR_DATA-1];
+	if(val < 150) {
+		ir->value = val;
 	} else {
 		ir->value = 255;
 	}
-	ir->value = ir->raw_data_list[NUM_SENSOR_DATA-1];
 }
 
 double ir_value_to_centimeters(uint16_t val, enum Range range) {

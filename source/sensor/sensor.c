@@ -43,12 +43,18 @@ ISR(SPI_STC_vect) {
     Frame frame_recv;
 	on_spi_recv(&frame_recv);
 	
-	Frame frame_trans;
-	frame_trans.control_byte = SENSOR_DATA << 2;
+	if(get_id(&frame_recv) == DATA_REQUEST) {
 	
-	if((get_id(&frame_recv) == DATA_REQUEST) && (frame_recv.msg[0] == SENSOR_DATA)) {
-		get_sensor_data(&frame_trans);
-		send_frame(&frame_trans);
+		Frame frame_trans;
+		frame_trans.control_byte = SENSOR_DATA << 2;
+	
+		if(frame_recv.msg[0] == SENSOR_DATA) {
+			get_sensor_data(&frame_trans);
+			send_frame(&frame_trans);
+		} else if (frame_recv.msg[0] == CORRIDOR_DATA) {
+			get_wall_data(&frame_trans);
+			send_frame(&frame_trans);
+		}
 	}
 }
 
@@ -107,8 +113,12 @@ int main(void) {
 			schedule(&ir_queue, port);
 		}
 	
-		lidar_measure(&lidar);
-		
+       // Disable global interrupts for lidar
+	   // to not interrupt reading of 16 bits
+       //cli();
+       lidar_measure(&lidar);
+       //sei();
+
 		update(mainTable, &lidar);
 	}
 }
