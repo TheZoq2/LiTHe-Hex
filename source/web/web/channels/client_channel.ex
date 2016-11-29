@@ -24,7 +24,7 @@ defmodule Web.ClientChannel do
 
   def handle_in("joystick", payload, socket) do
     #%{"x" => x, "y" => y, "rotation" => rotation, "thrust" => thrust} = payload
-    Web.RabbitMQ.send_message(message)
+    Web.RabbitMQ.send_message(payload)
     {:noreply, socket}
   end
 
