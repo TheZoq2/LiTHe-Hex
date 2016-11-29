@@ -54,8 +54,8 @@ class ServerSendPacket(object):
     def __init__(self, sensor_data_packet=None, 
                  auto_mode=None, debug_string=None):
         """
-        Constructs a ServerSendPacket from an optional SensorDataPacket and 
-        CorridorDataPacket, an optional flag indicating whether automatic
+        Constructs a ServerSendPacket from an optional SensorDataPacket,
+        an optional flag indicating whether automatic
         mode is engaged, and an optional debug-string.
         """
         assert auto_mode is None or auto_mode in (True, False)

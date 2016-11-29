@@ -49,7 +49,6 @@ SERVO_STATUS = 0x22
 MOTOR_DEBUG = 0x23
 
 SENSOR_DATA = 0x24
-CORRIDOR_DATA = 0x25
 
 
 class SensorDataPacket(object):
@@ -85,33 +84,6 @@ Lidar:       {}
                         self.ir_back_right,
                         self.ir_down,
                         self.lidar)
-
-
-class CorridorDataPacket(object):
-    """
-    Data structure containing corridor data in meters/radians.
-    """
-
-    def __init__(self, front_msd, front_lsd, down_dist, left_dist, right_dist):
-        # divide by hundred to convert from cm -> m
-        self.front_dist = (front_lsd | (front_msd << 8)) / 100
-        self.left_dist  = left_dist / 100
-        self.right_dist = right_dist / 100
-        self.down_dist  = down_dist / 100
-        # convert to radians
-
-    def __str__(self):
-        return """
-Front: {}
-Left:  {}
-Right: {}
-Down : {}
-Angle: {}
-                """.format(
-                        self.front_dist, 
-                        self.left_dist,
-                        self.right_dist, 
-                        self.down_dist) 
 
 
 class InvalidCommandException(Exception):
@@ -297,15 +269,5 @@ def get_sensor_data(spi):
     _select_device(spi, SENSOR_ADDR)
     raw_data = _request_data(spi, SENSOR_DATA)
     return SensorDataPacket(*raw_data)
-
-def get_corridor_data(spi):
-    """
-    Gets the the current corridor data from the 
-    sensor unit, and puts them in a CorridorDataPacket
-    """
-    _select_device(spi, SENSOR_ADDR)
-    raw_data = _request_data(spi, CORRIDOR_DATA)
-    print(raw_data)
-    return CorridorDataPacket(*raw_data)
 
 
