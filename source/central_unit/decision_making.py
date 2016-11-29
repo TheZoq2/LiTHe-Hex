@@ -13,6 +13,7 @@ TURN_LEFT = 1
 TURN_RIGHT = 2
 STOP = 3
 CLIMB_OBSTACLE = 4
+COMPLETE_TURN = 5 # after a turn we want the robot to walk forward to enter corridor
 
 # general directions
 FRONT = 0
@@ -89,6 +90,17 @@ def _expected_path(corridors_and_dead_ends, front, left, right):
         return False
 
 
+# TODO: Tweak this and remove magic constant!
+def _is_inside_corridor(sensor_data):
+    if (sensor_data.ir_front_left <= 0.5 and
+        sensor_data.ir_back_left <= 0.5 and
+        sensor_data.ir_front_right <= 0.5 and
+        sensor_data.ir_back_right <= 0.5):
+        return True
+    else:
+        return False
+
+
 def get_decision(sensor_data):
     """
     Returns the decision made based on the dead ends and corridors detected
@@ -122,38 +134,34 @@ def get_decision(sensor_data):
                 else:
                     decision = GO_FORWARD
 
-    """
-    Check if previous decision was to make a turn.
-    If it was we need to let the robot make a full turn before using
-    the sensor data because they will give bad values during a turn.
-    """
+    # Check if previous decision was to make a turn.
+    # If it was we need to let the robot make a full turn before using
+    # the sensor data because they will give bad values during a turn.
     if (previous_decision == TURN_LEFT):
         print("Robot is turning left!")
 
-        """
-        After the robot has started turning the angle will be
-        larger than 5 (0 ideally), so we don't make new decisions until
-        the robot is back at straight angle.
-        """
+        # After the robot has started turning the angle will be
+        # larger than 5 (0 ideally), so we don't make new decisions until
+        # the robot is back at straight angle.
         if (sensor_data.right_angle <= 5): #TODO: test and tweak this
             decision = GO_FORWARD
-            print("The robot has made a turn!")
+            previous_decision = COMPLETE_TURN
+            print("Turning left complete.")
 
-    """
-    Check if previous decision was to make a turn.
-    If it was we need to let the robot make a full turn before using
-    the sensor data because they will give bad values during a turn.
-    """
-    if (previous_decision == TURN_RIGHT):
+    elif (previous_decision == TURN_RIGHT):
         print("Robot is turning left!")
 
-        """
-        After the robot has started turning the angle will be
-        larger than 5 (0 ideally), so we don't make new decisions until
-        the robot is back at straight angle.
-        """
         if (sensor_data.left_angle <= 5): #TODO: test and tweak this
             decision = GO_FORWARD
-            print("The robot has made a turn!")
+            previous_decision = COMPLETE_TURN
+            print("Turning right complete.")
+
+    elif (previous_decision == COMPLETE_TURN):
+        decision = GO_FORWARD
+
+        if (_is_inside_corridor(sensor_data)):
+            previous_decision = GO_FORWARD
+        previous_decision = COMPLETE_TURN
+
 
     return decision
