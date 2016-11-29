@@ -33,8 +33,8 @@ class ServerReceivedPacket(object):
 
     def __init__(self, json_string):
         data = json.loads(json_string)
-        self.x = data['x_spd']
-        self.y = data['y_spd'] 
+        self.x = data['x']
+        self.y = data['y'] 
         self.rotation = data['rotation'] 
         self.thrust = data['thrust'] 
         self.auto = data['auto']
@@ -98,7 +98,8 @@ class ServerReceiverThread(threading.Thread):
         super().__init__()
 
         def _receive_callback(ch, method, properties, body):
-            self.queue.put(ServerReceivedPacket(body))
+            self.queue.put(ServerReceivedPacket(body.decode("utf-8")))
+            print(body.decode("utf-8"))
 
         self.queue = queue
         self.channel = channel
