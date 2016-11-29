@@ -12,15 +12,21 @@ defmodule Web do
       supervisor(Web.Repo, []),
       # Start the endpoint when the application starts
       supervisor(Web.Endpoint, []),
-      #supervisor(Web.CentralEndpoint, []),
       # Start your own worker by calling: Web.Worker.start_link(arg1, arg2, arg3)
       # worker(Web.Worker, [arg1, arg2, arg3]),
     ]
+
+    # Start rabbitmq connection
+    Web.RabbitMQ.init
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: Web.Supervisor]
     Supervisor.start_link(children, opts)
+  end
+
+  def stop(_app) do
+    Web.RabbitMQ.shutdown
   end
 
   # Tell Phoenix to update the endpoint configuration
