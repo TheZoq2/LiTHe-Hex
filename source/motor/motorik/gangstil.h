@@ -52,8 +52,7 @@ extern const float DIAG_DIVISIVE_BORDER_TILT   ;
 extern const float CLOSE_BORDER_OFFSET         ;
 extern const float DIAG_DIVISIVE_BORDER_OFFSET ;
 extern const float CLOSE_BORDER_TILT           ;
-
-extern const size_t NUM_LEGS ;
+extern const size_t NUM_LEGS                   ;
 
 
 /**
