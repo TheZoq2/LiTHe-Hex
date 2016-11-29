@@ -584,7 +584,7 @@
     sensor. Filtret är kopplad mellan sensorerna och de analoga PA-ingångarna på
     processorn.
 
-    LIDAR-sensorn är ansluten via PWM till ???VILKEN_PORT??? på processorn.
+    LIDAR-sensorn är ansluten via PWM till ???VILKEN\_PORT??? på processorn.
 
     PC2 upp till PC5 används som anslutning till JTAG, för programmering av
     processorn, och PB4 upp till PB7 är anslutna via SPI till centralenheten.
@@ -640,11 +640,9 @@
         IR-sensor bak vänster & "ir\_bl" & float \\
         IR-sensor bak höger & "ir\_br" & float \\
         LIDAR & "lidar" & float \\
-        Avstånd fram & "dist\_f" & float \\
-        Avstånd vänster & "dist\_l" & float \\
-        Avstånd höger & "dist\_r" & float \\
-        Avstånd ned & "dist\_d" & float \\
-        Korridorvinkel & "corr\_angle" & float \\
+        Vinkel till vänster vägg & "angle\_l" & float \\
+        Vinkel till höger vägg & "angle\_r" & float \\
+        Genomsnittlig vinkel & "angle\_avg" & float \\
         Självgående läge & "auto" & bool \\
         Debugsträng & "debug" & string \\
 
