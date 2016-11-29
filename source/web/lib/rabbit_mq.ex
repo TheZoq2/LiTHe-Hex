@@ -11,7 +11,7 @@ defmodule Web.RabbitMQ do
   end
 
   def send_message(message) do
-    to_pi = Agent.get(__MODULE__, fn map -> map[:channel] end)
+    to_pi = Agent.get(__MODULE__, fn map -> map[:to_pi] end)
     AMQP.Basic.publish(to_pi, "", "to_pi", message)
   end
 
