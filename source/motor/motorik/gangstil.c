@@ -131,9 +131,29 @@ void execute_position(Point2D * target, float * z){
             legId = (uint8_t)(leg/2 + 3);
         }
 
-        set_leg_angles(legId, angles);
+		//Stupid test code. Plz remove
+		if(leg == 5)
+		{
+			float x = 0.18;
+			float y = 0.1;
+			float z = 0.0;
+
+			struct Leg leg_ik_result = leg_ik(x, y, z);
+			
+			angles[0] = (uint16_t)(0x1ff - radian_to_servo(leg_ik_result.angle1));
+			angles[1] = (uint16_t)(0x1ff - radian_to_servo(leg_ik_result.angle2));
+			angles[2] = (uint16_t)(0x1ff - radian_to_servo(leg_ik_result.angle3));
+
+			set_leg_angles(legId, angles);
+			//You ar idiot if remove more
+		}
+		
+		//set_leg_angles(legId, angles);
     }
+
     send_servo_action();
+
+	free(ik);
 }
 
 
@@ -180,16 +200,16 @@ void execute_step(Point2D * current, Point2D * target, bool lrlRaised){
 Point2D get_default_leg_position(size_t leg){
     Point2D res;
     if (leg < 2){   //front
-        res.x = 0.1;
-        res.y = 0.1;
+        res.x = 0.05;
+        res.y = 0.05;
     }
     else if (leg < 4){  //mid
         res.x = 0;
-        res.y = 0.14;
+        res.y = 0.07;
     }
     else{
-        res.x = -0.1;
-        res.y = 0.1;
+        res.x = -0.05;
+        res.y = 0.05;
     }    //back
 
     if ((leg & 1) == 1)  //right
