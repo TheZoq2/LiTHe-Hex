@@ -21,6 +21,7 @@ const uint8_t ROTATION_SPEED_ADDRESS = 0x20;
 const uint8_t RETURN_LEVEL_ADDRESS = 0x10;
 
 const uint8_t TORQUE_ON = 0x01;
+const uint8_t TORQUE_OFF = 0x00;
 const uint8_t ONLY_REPLY_TO_READ = 0x01;
 
 const uint8_t BROADCAST_ID = 0xFE;
@@ -104,6 +105,8 @@ ServoReply read_servo_data(uint8_t id, uint8_t address)
 void send_servo_action()
 {
 	send_servo_command(BROADCAST_ID, ACTION_INSTRUCTION, 0, 0);
+	//TODO: Olavs fel
+	_delay_ms(500);
 }
 
 void write_servo_single_byte(uint8_t id, uint8_t address, uint8_t value)
@@ -143,6 +146,10 @@ ServoReply receive_servo_reply()
 
 	return servo_reply;
 }
+void free_servo_reply(ServoReply reply)
+{
+	free(reply.parameters);
+}
 
 
 void reset_servo_bounds(uint8_t id)
@@ -156,6 +163,11 @@ void enable_servo_torque(uint8_t id)
 {
 	write_servo_single_byte(id, TORQUE_ENABLE_ADDRESS, TORQUE_ON);
 }
+void disable_servo_torque(uint8_t id)
+{
+	write_servo_single_byte(id, TORQUE_ENABLE_ADDRESS, TORQUE_OFF);
+}
+
 
 
 void set_servo_angle(uint8_t id, uint16_t angle)
@@ -178,9 +190,12 @@ void init_all_servos()
 
 	for(uint8_t i = 1; i < 19; ++i)
 	{
-		enable_servo_torque(i);
+		//enable_servo_torque(i);
+		_delay_ms(1);
 		reset_servo_bounds(i);
+		_delay_ms(1);
 		set_servo_rotation_speed(i, 0x0100);
+		_delay_ms(1);
 	}
 }
 
@@ -191,7 +206,9 @@ void set_leg_angles(enum LegIds leg_index, uint16_t* angles)
 
 	for (uint8_t i = 0; i < 3; ++i) 
 	{
+		printf("Moving servo %i\n", ids[i]);
 		set_servo_angle(ids[i], angles[i]);
+		_delay_ms(5);
 	}
 }
 

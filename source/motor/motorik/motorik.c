@@ -67,12 +67,11 @@ int main(void)
 	Point2D current_leg_positions[6];
 	for(size_t i = 0; i < 6; i++)
 	{
-		Point2D* current = get_default_leg_position(i);
-		current_leg_positions[i] = *current;
-
-		free(current);
+		Point2D current = get_default_leg_position(i);
+		current_leg_positions[i] = current;
 	}
 	assume_standardized_stance(current_leg_positions);
+
 	
 	while(1)
 	{
