@@ -1,8 +1,10 @@
 import unittest
 import communication
 import comm_gui.web as web
+import time
 import json
 import math
+import queue
 
 SENSOR_ARGS = (1, 2, 3, 4, 5, 0x01, 0xFE)
 CORRIDOR_ARGS = (0x01, 0xFE, 1, 2, 3, 180)
@@ -38,9 +40,18 @@ class WebTestCase(unittest.TestCase):
         json_string = send_packet.get_json()
         self.assertDictEqual(EXPECTED_NORMAL, json.loads(json_string))
 
+    def test_send_packet_empty(self):
+        send_packet = web.ServerSendPacket()
+        json_string = send_packet.get_json()
+        self.assertDictEqual({}, json_string)
 
     def test_thread_close(self):
-        pass
+        send_queue = queue.Queue()
+        receive_queue = queue.Queue()
+        thread = web.CommunicationThread(send_queue, receive_queue)
+        thread.start()
+        time.sleep(0.1)
+        self.assertEqual(thread.stop(), 0)
 
 
 class CommunicationTestCase(unittest.TestCase):
