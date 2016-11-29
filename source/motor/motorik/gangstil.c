@@ -130,7 +130,7 @@ void execute_position(Point2D * target, float * z){
 
         set_leg_angles(legId, angle);
 
-		printf("yoloswag\n");
+		printf("moving leg %u\n", leg);
     }
     send_servo_action();
     

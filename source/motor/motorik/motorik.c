@@ -79,7 +79,7 @@ int main(void)
 	new_point.x = 1;
 	new_point.y = 0;
 	
-	work_towards_goal(0, &new_point, current_leg_positions);
+	//work_towards_goal(0, &new_point, current_leg_positions);
 		
 	while(1)
 	{

@@ -206,6 +206,7 @@ void set_leg_angles(enum LegIds leg_index, uint16_t* angles)
 
 	for (uint8_t i = 0; i < 3; ++i) 
 	{
+		printf("Moving servo %i\n", ids[i]);
 		set_servo_angle(ids[i], angles[i]);
 		_delay_ms(5);
 	}
