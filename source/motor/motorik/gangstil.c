@@ -500,16 +500,16 @@ void assume_standardized_stance(Point2D * current){
     execute_position(current, z);
 
     Point2D * stdLeg = get_default_leg_position(LF);
-    current->x = stdLeg->x;
-    current->y = stdLeg->y;
+    current[LF].x = stdLeg->x;
+    current[LF].y = stdLeg->y;
     free(stdLeg);
     stdLeg = get_default_leg_position(RM);
-    current->x = stdLeg->x;
-    current->y = stdLeg->y;
+    current[RM].x = stdLeg->x;
+    current[RM].y = stdLeg->y;
     free(stdLeg);
     stdLeg = get_default_leg_position(LB);
-    current->x = stdLeg->x;
-    current->y = stdLeg->y;
+    current[LB].x = stdLeg->x;
+    current[LB].y = stdLeg->y;
     free(stdLeg);
 
     
@@ -527,16 +527,16 @@ void assume_standardized_stance(Point2D * current){
     execute_position(current, z);
 
     stdLeg = get_default_leg_position(RF);
-    current->x = stdLeg->x;
-    current->y = stdLeg->y;
+    current[RF].x = stdLeg->x;
+    current[RF].y = stdLeg->y;
     free(stdLeg);
     stdLeg = get_default_leg_position(LM);
-    current->x = stdLeg->x;
-    current->y = stdLeg->y;
+    current[LM].x = stdLeg->x;
+    current[LM].y = stdLeg->y;
     free(stdLeg);
     stdLeg = get_default_leg_position(RB);
-    current->x = stdLeg->x;
-    current->y = stdLeg->y;
+    current[RB].x = stdLeg->x;
+    current[RB].y = stdLeg->y;
     free(stdLeg);
 
     
