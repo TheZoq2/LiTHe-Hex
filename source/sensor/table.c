@@ -42,17 +42,16 @@ void update(MainTable* table, Lidar* lidar) {
 }
 
 uint8_t corridor_angle(MainTable* table) {
-	double angle_left_side = atan((table->ir_list[FRONT_LEFT].value - table->ir_list[BACK_LEFT].value) / LEN_BETWEEN_SIDE_IR);
-	double angle_right_side = atan((table->ir_list[FRONT_RIGHT].value - table->ir_list[BACK_RIGHT].value) / LEN_BETWEEN_SIDE_IR);
+        double angle_left_side = atan(fabs(table->ir_list[FRONT_LEFT].value - table->ir_list[BACK_LEFT].value) / LEN_BETWEEN_SIDE_IR);
+        double angle_right_side = atan(fabs(table->ir_list[FRONT_RIGHT].value - table->ir_list[BACK_RIGHT].value) / LEN_BETWEEN_SIDE_IR);
 	if(fabs(angle_left_side - angle_right_side) / angle_left_side > PERCENT_FAULT_TOLERANCE_ANGLE) {
 		return 180; // Can not tell angle, to much diff at sides
 	}
-	return floor(((fabs(angle_left_side) + fabs(angle_right_side)) / 2) * (180 / M_PI)); // Take average of the sides and convert to degrees
+        return floor(((angle_left_side + angle_right_side) / 2) * (180 / M_PI)); // Take average of the sides and convert to degrees
 }
 
 void get_sensor_data(Frame* frame) {
-	uint8_t i = 0;
-	for(i = 0; i < NUM_SENSORS; i++) {
+        for(uint8_t i = 0; i < NUM_SENSORS; i++) {
 		frame->msg[i] = mainTable->ir_list[i].value;
 	}
 	frame->msg[NUM_SENSORS] = (uint8_t)(mainTable->front_distance >> 8);
@@ -61,12 +60,11 @@ void get_sensor_data(Frame* frame) {
 }
 
 void get_wall_data(Frame* frame) {
-	uint8_t i = 0;
-	frame->msg[i] = (uint8_t)(mainTable->front_distance >> 8);
-	frame->msg[i++] = (uint8_t)mainTable->front_distance;
-	frame->msg[i++] = mainTable->down_distance;
-	frame->msg[i++] = mainTable->left_distance;
-	frame->msg[i++] = mainTable->right_distance;
-	frame->msg[i++] = mainTable->corridor_angle;
-	frame->len = i++;
+        frame->msg[0] = (uint8_t)(mainTable->front_distance >> 8);
+        frame->msg[1] = (uint8_t)mainTable->front_distance;
+        frame->msg[2] = mainTable->down_distance;
+        frame->msg[3] = mainTable->left_distance;
+        frame->msg[4] = mainTable->right_distance;
+        frame->msg[5] = mainTable->corridor_angle;
+        frame->len = 6;
 }

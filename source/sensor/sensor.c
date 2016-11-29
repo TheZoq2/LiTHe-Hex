@@ -107,8 +107,11 @@ int main(void) {
 			schedule(&ir_queue, port);
 		}
 	
-		lidar_measure(&lidar);
-		
+                // Disable global interrupts for lidar
+                cli();
+                lidar_measure(&lidar);
+                sei();
+
 		update(mainTable, &lidar);
 	}
 }
