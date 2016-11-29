@@ -645,19 +645,23 @@
         Avstånd höger & "dist\_r" & float \\
         Avstånd ned & "dist\_d" & float \\
         Korridorvinkel & "corr\_angle" & float \\
+        Självgående läge & "auto" & bool \\
+        Debugsträng & "debug" & string \\
 
-		\caption{Format på JSON-strängen från centralenheten\label{table:guimessages}}
+		\caption{Format på JSON-strängen från
+        centralenheten\label{table:guimessagesfromcentral}}
 	\end{longtable}
 
 	\begin{longtable}[c]{l l l }
         \textbf{Data} & \textbf{Nyckel} & \textbf{Typ} \\ \midrule
-        X-hastighet & "x\_spd" & float \\
-        Y-hastighet & "y\_spd" & float \\
+        X-hastighet & "x" & float \\
+        Y-hastighet & "y" & float \\
         Rotation & "rotation" & float \\
         Thrust & "thrust" & float \\
         Självgående läge & "auto" & bool \\
 
-		\caption{Format på JSON-strängen till centralenheten\label{table:guimessages}}
+		\caption{Format på JSON-strängen till
+        centralenheten\label{table:guimessagestocentral}}
 	\end{longtable}
     
 
