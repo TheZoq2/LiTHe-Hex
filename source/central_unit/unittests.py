@@ -28,9 +28,9 @@ EXPECTED_NORMAL = {
 class WebTestCase(unittest.TestCase):
 
     def test_send_packet_normal_json(self):
-        sensor_data_packet = SensorDataPacket(*SENSOR_ARGS)
-        corridor_packet = CorridorDataPacket(*CORRIDOR_ARGS)
-        send_packet = ServerSendPacket(
+        sensor_data_packet = web.SensorDataPacket(*SENSOR_ARGS)
+        corridor_packet = web.CorridorDataPacket(*CORRIDOR_ARGS)
+        send_packet = web.ServerSendPacket(
             sensor_data_packet,
             corridor_packet,
             AUTO_NORMAL,
