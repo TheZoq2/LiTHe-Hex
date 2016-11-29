@@ -51,7 +51,7 @@ class ServerSendPacket(object):
     and sent to the web server.
     """
 
-    def __init__(self, sensor_data_packet=None, corridor_data_packet=None,
+    def __init__(self, sensor_data_packet=None, 
                  auto_mode=None, debug_string=None):
         """
         Constructs a ServerSendPacket from an optional SensorDataPacket and 
@@ -61,7 +61,6 @@ class ServerSendPacket(object):
         assert auto_mode is None or auto_mode in (True, False)
         assert debug_string is None or isinstance(debug_string, str)
         self.sensor = sensor_data_packet
-        self.corridor = corridor_data_packet
         self.auto_mode = auto_mode
         self.debug_string = debug_string
     
@@ -74,12 +73,9 @@ class ServerSendPacket(object):
             data["ir_bl"] = self.sensor.ir_back_left
             data["ir_br"] = self.sensor.ir_back_right
             data["lidar"] = self.sensor.lidar
-        if self.corridor is not None:
-            data["dist_f"] = self.corridor.front_dist
-            data["dist_l"] = self.corridor.left_dist
-            data["dist_r"] = self.corridor.right_dist
-            data["dist_d"] = self.corridor.down_dist
-            data["corr_angle"] = self.corridor.corr_angle
+            data["angle_l"] = self.sensor.left_angle
+            data["angle_r"] = self.sensor.right_angle
+            data["angle_avg"] = self.sensor.average_angle
         if self.auto_mode is not None:
             data["auto"] = self.auto_mode
         if self.debug_string is not None:

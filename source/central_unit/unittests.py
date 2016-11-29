@@ -42,10 +42,8 @@ class WebTestCase(unittest.TestCase):
 
     def test_send_packet_normal_json(self):
         sensor_data_packet = communication.SensorDataPacket(*SENSOR_ARGS)
-        corridor_packet = communication.CorridorDataPacket(*CORRIDOR_ARGS)
         send_packet = web.ServerSendPacket(
             sensor_data_packet,
-            corridor_packet,
             AUTO_NORMAL,
             DEBUG_STRING_NORMAL)
         json_string = send_packet.get_json()
