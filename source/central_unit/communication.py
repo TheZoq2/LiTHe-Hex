@@ -19,6 +19,7 @@
 import spidev
 import time
 import math
+import angle_calculation
 import pdb
 
 
@@ -65,6 +66,9 @@ class SensorDataPacket(object):
         self.ir_back_right  = ir_back_right / 100
         self.ir_down        = ir_down / 100
         self.lidar          = (lidar_lsd | (lidar_msd << 8)) / 100
+        self.left_angle     = angle_calculation.get_left_angle(self)
+        self.right_angle    = angle_calculation.get_right_angle(self)
+        self.average_angle  = angle_calculation.get_average_angle(self)
 
     def __str__(self):
         return """

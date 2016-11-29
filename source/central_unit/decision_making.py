@@ -23,6 +23,11 @@ RIGHT = 2
 DEAD_END_DISTANCE = 1
 DISTANCE_TO_OBSTACLE = 0.0
 
+# distance between the sensors in the mount on same side
+DISTANCE_BETWEEN_SENSORS = 0.16
+
+previous_decision = GO_FORWARD
+
 
 def _get_corridors_and_dead_ends(sensor_data):
     """
@@ -62,6 +67,7 @@ def _get_corridors_and_dead_ends(sensor_data):
     print(corridors_and_dead_ends)
     return corridors_and_dead_ends
 
+
 def _found_obstacle(sensor_data):
     """
     Returns whether an obstacle has been detected or not
@@ -72,6 +78,16 @@ def _found_obstacle(sensor_data):
     else:
         obstacle_found = False
     return obstacle_found
+
+
+def _expected_path(corridors_and_dead_ends, front, left, right):
+    if (corridors_and_dead_ends[FRONT] == front and
+        corridors_and_dead_ends[LEFT] == left and
+        corridors_and_dead_ends[RIGHT] == right):
+        return True
+    else:
+        return False
+
 
 def get_decision(sensor_data):
     """
@@ -94,22 +110,50 @@ def get_decision(sensor_data):
                 print("Maze too complicated")
 
             else:
-                if ((corridors_and_dead_ends[LEFT] == CORRIDOR) and
-                    corridors_and_dead_ends[RIGHT] == DEAD_END and
-                    corridors_and_dead_ends[FRONT] == DEAD_END):
+                if (_expected_path(corridors_and_dead_ends, DEAD_END, CORRIDOR, DEAD_END)):
                     decision = TURN_LEFT
 
-                elif (corridors_and_dead_ends[RIGHT] == CORRIDOR and
-                      corridors_and_dead_ends[LEFT] == DEAD_END and
-                      corridors_and_dead_ends[FRONT] == DEAD_END):
+                elif (_expected_path(corridors_and_dead_ends, DEAD_END, DEAD_END, CORRIDOR)):
                     decision = TURN_RIGHT
 
-                elif (corridors_and_dead_ends[RIGHT] == DEAD_END and
-                      corridors_and_dead_ends[LEFT] == DEAD_END and
-                      corridors_and_dead_ends[FRONT] == DEAD_END):
+                elif (_expected_path(corridors_and_dead_ends, DEAD_END, DEAD_END, DEAD_END)):
                     decision = STOP
 
                 else:
                     decision = GO_FORWARD
+
+    """
+    Check if previous decision was to make a turn.
+    If it was we need to let the robot make a full turn before using
+    the sensor data because they will give bad values during a turn.
+    """
+    if (previous_decision == TURN_LEFT):
+        print("Robot is turning left!")
+
+        """
+        After the robot has started turning the angle will be
+        larger than 5 (0 ideally), so we don't make new decisions until
+        the robot is back at straight angle.
+        """
+        if (sensor_data.right_angle <= 5): #TODO: test and tweak this
+            decision = GO_FORWARD
+            print("The robot has made a turn!")
+
+    """
+    Check if previous decision was to make a turn.
+    If it was we need to let the robot make a full turn before using
+    the sensor data because they will give bad values during a turn.
+    """
+    if (previous_decision == TURN_RIGHT):
+        print("Robot is turning left!")
+
+        """
+        After the robot has started turning the angle will be
+        larger than 5 (0 ideally), so we don't make new decisions until
+        the robot is back at straight angle.
+        """
+        if (sensor_data.left_angle <= 5): #TODO: test and tweak this
+            decision = GO_FORWARD
+            print("The robot has made a turn!")
 
     return decision

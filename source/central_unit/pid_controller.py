@@ -19,15 +19,12 @@ def write_output_command(command):
     with open(output_file, 'w') as txt:
         txt.write(command)
 
-def reglate(sensor_data):
+def regulate(sensor_data, angle):
 
    # offset for the robot length from mid in a corridor
    offset = (CORRIDOR_WIDTH * (sensor_data.ir_front_left + SENSOR_OFFSET)/(sensor_data.ir_front_right + (2 * SENSOR_OFFSET) + sensor_data.ir_front_left)) - (CORRIDOR_WIDTH/2)
 
    command_y = (sensor_data.ir_front_right - sensor_data.ir_front_left) * MOVEMENT_SCALEDOWN
-   angle_right = math.atan(math.fabs(sensor_data.ir_front_right - sensor_data.ir_back_right)/0.16)
-   angle_left = math.atan(math.fabs(sensor_data.ir_front_left - sensor_data.ir_back_left)/0.16)
-   angle = (angle_left + angle_right) * (90/math.pi)
    # TODO: fix a check for if one angle is way off. If it happens do not use it
    # TODO: fix so that we do not use positive angle all the time
 
