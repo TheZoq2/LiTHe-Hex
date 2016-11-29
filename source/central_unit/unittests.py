@@ -30,7 +30,7 @@ EXPECTED_NORMAL = {
 }
 
 EXPECTED_PARTIAL = {
-    "dist_f" : 5.1,
+    "dist_f" : 2.38,
     "dist_d" : 0.01,
     "dist_l" : 0.02,
     "dist_r" : 0.03,
@@ -54,10 +54,10 @@ class WebTestCase(unittest.TestCase):
     def test_send_packet_partial(self):
         corridor_packet = communication.CorridorDataPacket(*CORRIDOR_ARGS_PARTIAL)
         send_packet = web.ServerSendPacket(
-            corridot_data_packet=corridor_packet,
-            debug=DEBUG_STRING_PARTIAL)
+            corridor_data_packet=corridor_packet,
+            debug_string=DEBUG_STRING_PARTIAL)
         json_string = send_packet.get_json()
-        self.assertDictEqual(EXPECTED_NORMAL, json.loads(json_string))
+        self.assertDictEqual(EXPECTED_PARTIAL, json.loads(json_string))
 
 
     def test_send_packet_empty(self):
