@@ -23,19 +23,13 @@ defmodule Web.ClientChannel do
   end
 
   def handle_in("joystick", payload, socket) do
-    %{"x" => x, "y" => y, "rotation" => rotation, "thrust" => thrust} = payload
-    # TODO: send message to central unit
+    #%{"x" => x, "y" => y, "rotation" => rotation, "thrust" => thrust} = payload
+    Web.RabbitMQ.send_message(payload)
     {:noreply, socket}
   end
 
   def handle_in("new_msg", %{"body" => body}, socket) do
     broadcast! socket, "new_msg", %{body: "Received message: " <> body}
-    {:noreply, socket}
-  end
-
-  def handle_out("new_msg", payload, socket) do
-    IO.puts("pushing #{payload} to client")
-    push socket, "new_msg", payload
     {:noreply, socket}
   end
 

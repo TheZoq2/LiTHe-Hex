@@ -168,6 +168,11 @@ void execute_step(Point2D * current, Point2D * target, bool lrlRaised){
     execute_position(target, z);
     
     free(z);
+
+    for (int leg = 0; leg < NUM_LEGS; ++leg) {
+        current[leg].x = target[leg].x;
+        current[leg].y = target[leg].y;
+    }
 }
 
 /**
@@ -486,12 +491,12 @@ void direct_legs(float rot, Point2D * targ, Point2D * current, Point2D * req, bo
 void assume_standardized_stance(Point2D * current){
     
     float * z = (float *)calloc(NUM_LEGS, sizeof(float));
-    z[LF] = HIGH;
-    z[RM] = HIGH;
-    z[LB] = HIGH;
-    z[RF] = 0;
-    z[LM] = 0;
-    z[RB] = 0;
+    z[LF] = GROUNDED + HIGH;
+    z[RM] = GROUNDED + HIGH;
+    z[LB] = GROUNDED + HIGH;
+    z[RF] = GROUNDED;
+    z[LM] = GROUNDED;
+    z[RB] = GROUNDED;
     execute_position(current, z);
 
     Point2D * stdLeg = get_default_leg_position(LF);
