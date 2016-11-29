@@ -27,16 +27,15 @@ import pdb
 import math
 import os
 
-
 def main():
     spi = communication.communication_init()
     res = []
-    
-   # send_queue = queue.Queue()
-   # receive_queue = queue.Queue()
-   # thread = web.CommunicationThread(send_queue, receive_queue)
 
-   # thread.start()
+    # send_queue = queue.Queue()
+    # receive_queue = queue.Queue()
+    # thread = web.CommunicationThread(send_queue, receive_queue)
+
+    # thread.start()
 
     while True:
         #pdb.set_trace()
@@ -44,17 +43,18 @@ def main():
         sensor_data = communication.get_sensor_data(spi)
         print(sensor_data)
 
-        angle_right = math.atan(math.fabs(sensor_data.ir_front_right - sensor_data.ir_back_right)/0.16)
-        angle_left = math.atan(math.fabs(sensor_data.ir_front_left - sensor_data.ir_back_left)/0.16)
+        # Calculate the angles for both sides of the robot
+        # an average angle of calculated angle from both sides
 
-        angle = (angle_left + angle_right) * (90/math.pi)
-        print("right_angle= ",angle_right*(180/math.pi))
-        print("left_angle= ",angle_left*(180/math.pi))
+        print("right_angle= ",sensor_data.right_angle)
+        print("left_angle= ",sensor_data.left_angle)
+        print(sensor_data.average_angle)
 
-        print(angle)
         decision = decision_making.get_decision(sensor_data)
+
         print(decision)
-        pid_controller.reglate(sensor_data)
+
+        pid_controller.regulate(sensor_data)
         time.sleep(1)
 
         #print(communication.walk(spi, 10, 2, 1))
@@ -77,4 +77,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-

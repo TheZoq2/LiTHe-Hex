@@ -58,10 +58,12 @@ typedef struct
 } ServoReply;
 
 /*
-	Receives a reply from the servo. Currently servos are set to
-	never reply to messages.
+	Receives a reply from the servo. Remember to free the reply once done with it
  */
 ServoReply receive_servo_reply();
+
+void free_servo_reply(ServoReply reply);
+
 
 
 /*
@@ -102,6 +104,8 @@ void write_servo_single_byte(uint8_t id, uint8_t address, uint8_t value);
 void reset_servo_bounds(uint8_t id);
 /*Sets torque_enable to 1 on a servo*/
 void enable_servo_torque(uint8_t id);
+void disable_servo_torque(uint8_t id);
+
 /*
 	Sets  the angle of a specific servo. The angles are defined in the
  	ax-12 datasheet on page 17

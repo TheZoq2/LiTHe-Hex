@@ -117,6 +117,18 @@
     <Compile Include="communication.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="gangstil.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="gangstil.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="ik.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="ik.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="macros.h">
       <SubType>compile</SubType>
     </Compile>
