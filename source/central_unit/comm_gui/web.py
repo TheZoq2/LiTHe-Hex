@@ -57,8 +57,6 @@ class ServerSendPacket(object):
         CorridorDataPacket, an optional flag indicating whether automatic
         mode is engaged, and an optional debug-string.
         """
-        assert sensor_data_packet is None or isinstance(sensor_data_packet, SensorDataPacket)
-        assert corridor_data_packet is None or isinstance(sensor_data_packet, CorridorDataPacket)
         assert auto_mode is None or auto_mode in (True, False)
         assert isinstance(debug_string, str)
         self.sensor = sensor_data_packet
