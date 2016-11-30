@@ -77,7 +77,7 @@ float maxf(float a, float b){
  * @param x foot position distance from leg mount, measured from first joint, straight outward.
  * @param y foot position distance from leg mount, measured from first joint, straight upward.
  * @param z foot position distance from leg mount, measured from first joint, along the cross product of x and z axes.
- * @return struct Leg containeing angles for each joint, numbered from closest to farthest from robot. angle1 measured
+ * @return struct Leg containing angles for each joint, numbered from closest to farthest from robot. angle1 measured
  * counter-clockwise, seen from above. angle2 and angle3 measured counter clockwise when seen facing z.
  */
 struct Leg alt_ik(float x, float y, float z){
@@ -97,7 +97,7 @@ struct Leg alt_ik(float x, float y, float z){
         float alpha = acos((powf(JOINT_2_LENGTH, 2) + powf(j2ToFoot, 2) - powf(JOINT_3_LENGTH, 2))//no n/0 since diffLength & currLength > 0 if statement is entered
                            / (2 * JOINT_2_LENGTH * j2ToFoot));    // a = acos ((B2 + C2 - A2)/2BC), cosine trig formula
         res.angle2 = gamma + alpha + JOINT_2_OFFSET;
-        res.angle3 =  - M_PI + asin(j2ToFoot * sin(alpha)/JOINT_3_LENGTH) - JOINT_2_OFFSET + JOINT_3_OFFSET;
+        res.angle3 =  - M_PI + asin(j2ToFoot * sin(alpha)/JOINT_3_LENGTH)  - JOINT_2_OFFSET + JOINT_3_OFFSET;
     res.angle1 = minf(JOINT_1_MAX, res.angle1);
     res.angle1 = maxf(JOINT_1_MIN, res.angle1);
     res.angle2 = minf(JOINT_2_MAX, res.angle2);
@@ -193,21 +193,34 @@ void execute_position(Point2D * target, float * z){
         }
 
 		//Stupid test code. Plz remove
-		if(leg == 5)
+		
+		if(legId == 5)
 		{
-			float x = 0.18;
-			float y = 0.1;
-			float z = 0.0;
-
+			float x = 0.15;
+			float y = -0.05;
+			float z = 0.15;
 			struct Leg leg_ik_result = leg_ik(x, y, z);
 			
 			angles[0] = (uint16_t)(0x1ff - radian_to_servo(leg_ik_result.angle1));
-			angles[1] = (uint16_t)(0x1ff - radian_to_servo(leg_ik_result.angle2));
-			angles[2] = (uint16_t)(0x1ff - radian_to_servo(leg_ik_result.angle3));
+			angles[1] = (uint16_t)(0x1ff + radian_to_servo(leg_ik_result.angle2));
+			angles[2] = (uint16_t)(0x1ff + radian_to_servo(leg_ik_result.angle3));
 
 			set_leg_angles(legId, angles);
-			//You ar idiot if remove more
 		}
+		if(legId == 4)
+		{
+			float x = 0.15;
+			float y = -0.05;
+			float z = 0.15;
+			struct Leg leg_ik_result = leg_ik(x, y, z);
+			
+			angles[0] = (uint16_t)(0x1ff - radian_to_servo(leg_ik_result.angle1));
+			angles[1] = (uint16_t)(0x1ff + radian_to_servo(leg_ik_result.angle2));
+			angles[2] = (uint16_t)(0x1ff + radian_to_servo(leg_ik_result.angle3));
+
+			set_leg_angles(legId, angles);
+		}
+		//You ar idiot if remove more
 		
 		//set_leg_angles(legId, angles);
     }

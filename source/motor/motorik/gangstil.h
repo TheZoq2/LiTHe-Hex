@@ -19,7 +19,7 @@
 // along with LiTHe Hex.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <math.h>
-#include "../../IK/ik.h"
+#include "ik.h"
 #include <stdint.h>
 #include "servo.h"
 #include <stdio.h>
