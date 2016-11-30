@@ -34,5 +34,5 @@ def regulate(sensor_data, angle):
        goal_angle = -angle
 
    command = BASE_MOVEMENT + "," + str(command_y) + "," + str(goal_angle)
-   print(command)
+   print("pid_controller command: ", command)
 
