@@ -156,12 +156,13 @@ def get_decision(sensor_data):
             previous_decision = COMPLETE_TURN
             print("Turning right complete.")
 
+    # When the robot has rotated but yet not entered the new corridor
     elif (previous_decision == COMPLETE_TURN):
         decision = GO_FORWARD
+        previous_decision = COMPLETE_TURN
 
         if (_is_inside_corridor(sensor_data)):
             previous_decision = GO_FORWARD
-        previous_decision = COMPLETE_TURN
 
 
     return decision
