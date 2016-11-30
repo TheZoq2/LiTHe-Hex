@@ -1,6 +1,7 @@
 import sys
 import math
 import communication
+import time
 
 # Types of corridors
 CORRIDOR = 0
@@ -27,7 +28,15 @@ DISTANCE_TO_OBSTACLE = 0.0
 # Distance between the sensors in the mount on same side
 DISTANCE_BETWEEN_SENSORS = 0.16
 
-previous_decision = GO_FORWARD
+# Time it takes for the robot to turn
+TIME_NEEDED_TO_TURN = 5
+
+
+class DecisionPacket():
+    def __init__(self, decision, previous_decision, turn_timer):
+        self.decision = GO_FORWARD
+        self.previous_decision = GO_FORWARD
+        self.turn_timer = 0
 
 
 # Returns the dead ends and corridors detected in the maze
@@ -100,15 +109,14 @@ def _is_inside_corridor(sensor_data):
 
 
 # Returns the decision made based on the dead ends and corridors detected
-def get_decision(sensor_data):
-    global previous_decision
+def get_decision(sensor_data, decision_packet):
     corridors_and_dead_ends = _get_corridors_and_dead_ends(sensor_data)
 
     # Robot will always move forward until it detects a dead end forward
-    decision = GO_FORWARD;
+    decision_packet.decision = GO_FORWARD;
 
     if (_found_obstacle(sensor_data)):
-        decision = CLIMB_OBSTACLE
+        decision_packet.decision = CLIMB_OBSTACLE
 
     else:
 
@@ -119,16 +127,16 @@ def get_decision(sensor_data):
 
             else:
                 if (_expected_path(corridors_and_dead_ends, DEAD_END, CORRIDOR, DEAD_END)):
-                    decision = TURN_LEFT
+                    decision_packet.decision = TURN_LEFT
 
                 elif (_expected_path(corridors_and_dead_ends, DEAD_END, DEAD_END, CORRIDOR)):
-                    decision = TURN_RIGHT
+                    decision_packet.decision = TURN_RIGHT
 
                 elif (_expected_path(corridors_and_dead_ends, DEAD_END, DEAD_END, DEAD_END)):
-                    decision = STOP
+                    decision_packet.decision = STOP
 
                 else:
-                    decision = GO_FORWARD
+                    decision_packet.decision = GO_FORWARD
 
     # Check if previous decision was to make a turn.
     # If it was we need to let the robot make a full turn before using
@@ -136,29 +144,36 @@ def get_decision(sensor_data):
     if (previous_decision == TURN_LEFT):
         print("Robot is turning left!")
 
+        if (decision_packet.turn_timer == 0):
+            decision_packet.turn_timer = time.time()
+
         # After the robot has started turning the angle will be
         # larger than 5 (0 ideally), so we don't make new decisions until
         # the robot is back at straight angle.
-        if (sensor_data.right_angle <= 5): #TODO: test and tweak this
-            decision = GO_FORWARD
-            previous_decision = COMPLETE_TURN
+        if (sensor_data.right_angle <= 10 and
+            time.time()-decision_packet.turn_timer >= TIME_NEEDED_TO_TURN): #TODO: test and tweak this
+            decision_packet.decision = GO_FORWARD
+            decision_packet.previous_decision = COMPLETE_TURN
+            decision_packet.turn_timer = 0
             print("Turning left complete.")
 
     elif (previous_decision == TURN_RIGHT):
         print("Robot is turning left!")
 
-        if (sensor_data.left_angle <= 5): #TODO: test and tweak this
-            decision = GO_FORWARD
-            previous_decision = COMPLETE_TURN
+        if (decision_packet.turn_timer == 0):
+            decision_packet.turn_timer = time.time()
+
+        if (sensor_data.left_angle <= 10 and
+            time.time()-decision_packet.turn_timer >= TIME_NEEDED_TO_TURN): #TODO: test and tweak this
+            decision_packet.decision = GO_FORWARD
+            decision_packet.previous_decision = COMPLETE_TURN
+            decision_packet.turn_timer = 0
             print("Turning right complete.")
 
     # When the robot has rotated but yet not entered the new corridor
     elif (previous_decision == COMPLETE_TURN):
-        decision = GO_FORWARD
-        previous_decision = COMPLETE_TURN
+        decision_packet.decision = GO_FORWARD
+        decision_packet.previous_decision = COMPLETE_TURN
 
         if (_is_inside_corridor(sensor_data)):
-            previous_decision = GO_FORWARD
-
-
-    return decision
+            decision_packet.previous_decision = GO_FORWARD
