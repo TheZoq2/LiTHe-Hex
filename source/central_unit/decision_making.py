@@ -79,7 +79,8 @@ def _get_corridors_and_dead_ends(sensor_data):
 # Returns whether an obstacle has been detected or not
 def _found_obstacle(sensor_data):
     obstacle_found = False
-    if (sensor_data.ir_down <= DISTANCE_TO_OBSTACLE):
+    if (sensor_data.ir_down <= DISTANCE_TO_OBSTACLE and
+        sensor_data.lidar >= DEAD_END_DISTANCE):
         obstacle_found = True
     else:
         obstacle_found = False
@@ -116,7 +117,12 @@ def get_decision(sensor_data, decision_packet):
     decision_packet.decision = GO_FORWARD;
 
     if (_found_obstacle(sensor_data)):
-        decision_packet.decision = CLIMB_OBSTACLE
+        if (corridors_and_dead_ends[LEFT] == CORRIDOR):
+            decision_packet.decision = TURN_LEFT
+        elif (corridors_and_dead_ends[RIGHT] == CORRIDOR):
+            decision_packet.decision == TURN_RIGHT
+        else:
+            decision_packet.decision = CLIMB_OBSTACLE
 
     else:
 
