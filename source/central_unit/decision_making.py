@@ -33,7 +33,7 @@ TIME_NEEDED_TO_TURN = 5
 
 
 class DecisionPacket():
-    def __init__(self, decision, previous_decision, turn_timer):
+    def __init__(self):
         self.decision = GO_FORWARD
         self.previous_decision = GO_FORWARD
         self.turn_timer = 0
@@ -79,7 +79,8 @@ def _get_corridors_and_dead_ends(sensor_data):
 # Returns whether an obstacle has been detected or not
 def _found_obstacle(sensor_data):
     obstacle_found = False
-    if (sensor_data.ir_down <= DISTANCE_TO_OBSTACLE):
+    if (sensor_data.ir_down <= DISTANCE_TO_OBSTACLE and
+        sensor_data.lidar >= DEAD_END_DISTANCE):
         obstacle_found = True
     else:
         obstacle_found = False
@@ -116,7 +117,12 @@ def get_decision(sensor_data, decision_packet):
     decision_packet.decision = GO_FORWARD;
 
     if (_found_obstacle(sensor_data)):
-        decision_packet.decision = CLIMB_OBSTACLE
+        if (corridors_and_dead_ends[LEFT] == CORRIDOR):
+            decision_packet.decision = TURN_LEFT
+        elif (corridors_and_dead_ends[RIGHT] == CORRIDOR):
+            decision_packet.decision == TURN_RIGHT
+        else:
+            decision_packet.decision = CLIMB_OBSTACLE
 
     else:
 
@@ -141,7 +147,7 @@ def get_decision(sensor_data, decision_packet):
     # Check if previous decision was to make a turn.
     # If it was we need to let the robot make a full turn before using
     # the sensor data because they will give bad values during a turn.
-    if (previous_decision == TURN_LEFT):
+    if (decision_packet.previous_decision == TURN_LEFT):
         print("Robot is turning left!")
 
         if (decision_packet.turn_timer == 0):
@@ -157,7 +163,7 @@ def get_decision(sensor_data, decision_packet):
             decision_packet.turn_timer = 0
             print("Turning left complete.")
 
-    elif (previous_decision == TURN_RIGHT):
+    elif (decision_packet.previous_decision == TURN_RIGHT):
         print("Robot is turning left!")
 
         if (decision_packet.turn_timer == 0):
@@ -171,7 +177,7 @@ def get_decision(sensor_data, decision_packet):
             print("Turning right complete.")
 
     # When the robot has rotated but yet not entered the new corridor
-    elif (previous_decision == COMPLETE_TURN):
+    elif (decision_packet.previous_decision == COMPLETE_TURN):
         decision_packet.decision = GO_FORWARD
         decision_packet.previous_decision = COMPLETE_TURN
 

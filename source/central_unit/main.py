@@ -31,6 +31,8 @@ def main():
     spi = communication.communication_init()
     res = []
 
+    decision_packet = decision_making.DecisionPacket()
+
     # send_queue = queue.Queue()
     # receive_queue = queue.Queue()
     # thread = web.CommunicationThread(send_queue, receive_queue)
@@ -43,16 +45,13 @@ def main():
         sensor_data = communication.get_sensor_data(spi)
         print(sensor_data)
 
-        # Calculate the angles for both sides of the robot
-        # an average angle of calculated angle from both sides
+        print("right_angle: ",sensor_data.right_angle)
+        print("left_angle: ",sensor_data.left_angle)
+        print("Average angle: ", sensor_data.average_angle)
 
-        print("right_angle= ",sensor_data.right_angle)
-        print("left_angle= ",sensor_data.left_angle)
-        print(sensor_data.average_angle)
+        decision_making.get_decision(sensor_data, decision_packet)
 
-        decision = decision_making.get_decision(sensor_data)
-
-        print(decision)
+        print("Decision: ", decision_packet.decision)
 
         pid_controller.regulate(sensor_data)
         time.sleep(1)
