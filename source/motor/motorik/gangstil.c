@@ -642,19 +642,13 @@ float work_towards_goal(float rot, Point2D * goal, Point2D * current){
 
     if (scaledown0 > scaledown1){
         execute_step(current, targ0, true);
+        return scaledown0;
     }
     else{
         execute_step(current, targ1, false);
+        return scaledown1;
     }
 
-    if (scaledown0 > scaledown1)
-	{
-        return scaledown0;
-	}
-    else
-	{
-        return scaledown1;
-	}
 }
 
 
