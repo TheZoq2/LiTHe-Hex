@@ -27,7 +27,6 @@ void handle_spi_frame(Frame *frame_recv);
 
 // If SPI receive something
 ISR(SPI_STC_vect) {
-
     Frame frame_recv;
 	on_spi_recv(&frame_recv);
 
