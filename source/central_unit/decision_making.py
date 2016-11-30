@@ -101,6 +101,7 @@ def _is_inside_corridor(sensor_data):
 
 # Returns the decision made based on the dead ends and corridors detected
 def get_decision(sensor_data):
+    global previous_decision
     corridors_and_dead_ends = _get_corridors_and_dead_ends(sensor_data)
 
     # Robot will always move forward until it detects a dead end forward
