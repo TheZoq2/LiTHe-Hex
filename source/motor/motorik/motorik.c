@@ -74,7 +74,7 @@ int main(void)
 	
 	while(1)
 	{
-	}
+		}
 }
 
 #ifndef IS_X86

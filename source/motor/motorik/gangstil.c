@@ -131,7 +131,7 @@ struct Leg* get_angle_set(Point2D * target, float * height){
             z = -target[leg].x;
         }
         y = height[leg];
-        res[leg] = alt_ik(x,y,z);
+        res[leg] = leg_ik(x,y,z);
     }
 
     res[LF].angle1 = res[LF].angle1 + (M_PI / 4);
@@ -168,6 +168,21 @@ int radian_to_servo(float radian_angle)
 }
 
 
+void rotate_to(float x, float y, float z, int legId)
+{
+	struct Leg leg_ik_result = leg_ik(x, y, z);
+	
+	uint16_t angles[3];
+			
+	angles[0] = (uint16_t)(0x1ff - radian_to_servo(leg_ik_result.angle1));
+	angles[1] = (uint16_t)(0x1ff + radian_to_servo(leg_ik_result.angle2));
+	angles[2] = (uint16_t)(0x1ff + radian_to_servo(leg_ik_result.angle3));
+
+	set_leg_angles(legId, angles);
+	send_servo_action();
+	_delay_ms(1000);
+}
+
 /**
  * @brief takes a target set of leg positions and causes the servos to execute them.
  * @param target set of foot positions arranged LF RF LM RM LB RB, indicating 
@@ -191,38 +206,8 @@ void execute_position(Point2D * target, float * z){
             angles[2] = (uint16_t)(0x1ff + radian_to_servo(ik[leg].angle3));
             legId = (uint8_t)(leg/2 + 3);
         }
-
-		//Stupid test code. Plz remove
 		
-		if(legId == 5)
-		{
-			float x = 0.15;
-			float y = -0.05;
-			float z = 0.15;
-			struct Leg leg_ik_result = leg_ik(x, y, z);
-			
-			angles[0] = (uint16_t)(0x1ff - radian_to_servo(leg_ik_result.angle1));
-			angles[1] = (uint16_t)(0x1ff + radian_to_servo(leg_ik_result.angle2));
-			angles[2] = (uint16_t)(0x1ff + radian_to_servo(leg_ik_result.angle3));
-
-			set_leg_angles(legId, angles);
-		}
-		if(legId == 4)
-		{
-			float x = 0.15;
-			float y = -0.05;
-			float z = 0.15;
-			struct Leg leg_ik_result = leg_ik(x, y, z);
-			
-			angles[0] = (uint16_t)(0x1ff - radian_to_servo(leg_ik_result.angle1));
-			angles[1] = (uint16_t)(0x1ff + radian_to_servo(leg_ik_result.angle2));
-			angles[2] = (uint16_t)(0x1ff + radian_to_servo(leg_ik_result.angle3));
-
-			set_leg_angles(legId, angles);
-		}
-		//You ar idiot if remove more
-		
-		//set_leg_angles(legId, angles);
+		set_leg_angles(legId, angles);
     }
 
     send_servo_action();
