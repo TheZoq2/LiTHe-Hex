@@ -106,4 +106,9 @@ Point2D get_default_leg_position(size_t leg);
  */
 void assume_standardized_stance(Point2D * current);
 
+/**
+	Raises the body into the default position as defined by get_default_leg_postion()
+*/
+Point2D* raise_to_default_position();
+
 #endif

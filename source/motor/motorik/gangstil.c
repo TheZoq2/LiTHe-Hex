@@ -136,8 +136,8 @@ struct Leg* get_angle_set(Point2D * target, float * height){
 
     res[LF].angle1 = res[LF].angle1 + (M_PI / 4);
     res[RF].angle1 = res[RF].angle1 - (M_PI / 4);
-    res[LB].angle1 = res[LB].angle1 - (M_PI / 4);
-    res[RB].angle1 = res[RB].angle1 + (M_PI / 4);
+    res[LB].angle1 = res[LB].angle1 + (M_PI / 4);
+    res[RB].angle1 = res[RB].angle1 - (M_PI / 4);
 
     return res;
 }
@@ -267,21 +267,23 @@ void execute_step(Point2D * current, Point2D * target, bool lrlRaised){
  * @return a standardised leg position, relative to joint.
  */
 Point2D get_default_leg_position(size_t leg){
+	const float distance_from_body = 0.18;
+	
     Point2D res;
     if (leg < 2){   //front
-        res.x = 0.05;
-        res.y = 0.05;
+        res.x = distance_from_body / sqrt(2);
+        res.y = distance_from_body / sqrt(2);
     }
     else if (leg < 4){  //mid
         res.x = 0;
-        res.y = 0.07;
+        res.y = distance_from_body;
     }
     else{
-        res.x = -0.05;
-        res.y = 0.05;
+        res.x = distance_from_body / sqrt(2);
+        res.y = distance_from_body / sqrt(2);
     }    //back
 
-    if ((leg & 1) == 1)  //right
+    if (leg % 2 == 1)  //right
         res.y = -res.y ;
     return res;
 }
@@ -567,7 +569,7 @@ void assume_standardized_stance(Point2D * current){
     z[RF] = GROUNDED;
     z[LM] = GROUNDED;
     z[RB] = GROUNDED;
-    execute_position(current, z);
+    //execute_position(current, z);
 
     Point2D stdLeg = get_default_leg_position(LF);
     current[LF].x = stdLeg.x;
@@ -613,6 +615,30 @@ void assume_standardized_stance(Point2D * current){
     execute_position(current, z);
 }
 
+Point2D* raise_to_default_position()
+{
+	//The position of the foot above the body when spreading the legs
+	const float HEIGHT_ABOVE_BODY = 0.07;
+	
+	//Allocate memory for current positions
+	Point2D* current_leg_positions = malloc(NUM_LEGS * sizeof(Point2D));
+	//The current height above the body for all the legs
+	float height[NUM_LEGS];
+	//Get the default position and raise the legs above it
+	for(size_t i = 0; i < NUM_LEGS; i++)
+	{
+		height[i] = HEIGHT_ABOVE_BODY;
+		current_leg_positions[i] = get_default_leg_position(i);
+	}
+	execute_position(current_leg_positions, height);
+	
+	//Set all the legs to ground height
+	for(size_t i = 0; i < NUM_LEGS; ++i)
+	{
+		height[i] = GROUNDED;
+	}
+	execute_position(current_leg_positions, height);
+}
 
 /**
  * @brief work_towards_goal takes the robot closer to a requested position and
