@@ -86,7 +86,7 @@ void rotate_set_angle(float angle, Point2D * current);
  * @param current position the legs curerently hold.
  * @return scaledown applied to grounded set of legs.
  */
-float work_towards_goal(float rot, Point2D * goal, Point2D * current);
+float work_towards_goal(float rot, Point2D goal, Point2D * current);
 
 
 
