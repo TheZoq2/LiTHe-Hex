@@ -118,35 +118,33 @@ Point2D rotate_point_by_angle(Point2D original, float angle)
 	return result;
 }
 
-Point2D robot_to_ik_coords(Point2D original, int leg)
+Point2D robot_to_ik_coords(Point2D original, size_t leg)
 {
 	Point2D result = original;
-	
-	if(leg % 2 == 1)
-	{
-		result.x = -result.x;
-		result.y = -result.y;
-	}
 
-	if(leg == LF)
-	{
-		return rotate_point_by_angle(result, -M_PI / 4);
-	}
-	else if(leg == RF)
+	if(leg == RF)
 	{
 		return rotate_point_by_angle(result, M_PI / 4);
 	}
-	else if(leg == LB)
+	else if(leg == RM)
 	{
-		return rotate_point_by_angle(result, M_PI / 4);
+		return rotate_point_by_angle(result, M_PI / 2);
 	}
 	else if(leg == RB)
 	{
+		return rotate_point_by_angle(result, 3 * M_PI / 4);
+	}
+	else if(leg == LF)
+	{
 		return rotate_point_by_angle(result, -M_PI / 4);
 	}
-	else
+	else if(leg == LM)
 	{
-		return result;
+		return rotate_point_by_angle(result, -M_PI / 2);
+	}
+	else if(leg == LB)
+	{
+		return rotate_point_by_angle(result, -3 * M_PI / 4);
 	}
 }
 
