@@ -4,10 +4,8 @@ import Visualization.Scale as Scale exposing (ContinuousScale, ContinuousTimeSca
 import Visualization.Axis as Axis
 import Visualization.List as List
 import Visualization.Shape as Shape
-import Date
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
-import Date exposing (Date)
 import String
 
 
@@ -33,12 +31,12 @@ import String
 
 w : Float
 w =
-    450
+    200
 
 
 h : Float
 h =
-    225
+    200
 
 
 padding : Float
@@ -46,12 +44,12 @@ padding =
     30
 
 
-viewSensor : List ( Date, Float ) -> Svg msg
+viewSensor : List ( Float, Float ) -> Svg msg
 viewSensor model =
     let
-        xScale : ContinuousTimeScale
+        xScale : ContinuousScale
         xScale =
-            Scale.time ( Date.fromTime 1448928000000, Date.fromTime 1456790400000 ) ( 0, w - 2 * padding )
+            Scale.linear ( -5, 0 ) ( 0, w - 2 * padding )
 
         yScale : ContinuousScale
         yScale =
@@ -69,11 +67,11 @@ viewSensor model =
         yAxis =
             Axis.axis { opts | orientation = Axis.Left, tickCount = 5 } yScale
 
-        areaGenerator : ( Date, Float ) -> Maybe ( ( Float, Float ), ( Float, Float ) )
+        areaGenerator : ( Float, Float ) -> Maybe ( ( Float, Float ), ( Float, Float ) )
         areaGenerator ( x, y ) =
             Just ( ( Scale.convert xScale x, Tuple.first (Scale.rangeExtent yScale) ), ( Scale.convert xScale x, Scale.convert yScale y ) )
 
-        lineGenerator : ( Date, Float ) -> Maybe ( Float, Float )
+        lineGenerator : ( Float, Float ) -> Maybe ( Float, Float )
         lineGenerator ( x, y ) =
             Just ( Scale.convert xScale x, Scale.convert yScale y )
 
