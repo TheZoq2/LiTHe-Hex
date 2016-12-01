@@ -44,6 +44,15 @@ class ServerReceivedPacket(object):
         self.thrust = data.get('thrust', None)
         self.auto = data.get('auto', None)
 
+        # if we got x, then we should have gotten everything else
+        if self.x is not None:
+            assert (self.y is not None and
+                    self.rotation is not None and
+                    self.thrust is not None)
+
+    def has_motion_command(self):
+        return self.x is not None
+
 
 class ServerSendPacket(object):
     """

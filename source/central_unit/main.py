@@ -19,6 +19,7 @@
 
 import communication.avr_communication as avr_communication
 import communication.web as web
+import sys
 import queue
 import time
 import decisions.decision_making as decision_making
@@ -28,50 +29,65 @@ import math
 import os
 
 def main():
+    
+    test_mode = False
+
+    if len(sys.argv) > 0 and sys.argv[0] == "--test":
+        test_mode = True
+
     spi = avr_communication.communication_init()
     res = []
 
+    auto = False
+
     decision_packet = decision_making.DecisionPacket()
 
-    # send_queue = queue.Queue()
-    # receive_queue = queue.Queue()
-    # thread = web.CommunicationThread(send_queue, receive_queue)
+    send_queue = queue.Queue()
+    receive_queue = queue.Queue()
+    thread = web.CommunicationThread(send_queue, receive_queue)
 
-    # thread.start()
+    thread.start()
 
     while True:
         #pdb.set_trace()
-        os.system('clear')
-        sensor_data = avr_communication.get_sensor_data(spi)
-        print(sensor_data)
+        if auto:
 
-        print("right_angle: ",sensor_data.right_angle)
-        print("left_angle: ",sensor_data.left_angle)
-        print("Average angle: ", sensor_data.average_angle)
+            os.system('clear')
+            sensor_data = avr_communication.get_sensor_data(spi)
+            print(sensor_data)
 
-        decision_making.get_decision(sensor_data, decision_packet)
+            print("right_angle: ",sensor_data.right_angle)
+            print("left_angle: ",sensor_data.left_angle)
+            print("Average angle: ", sensor_data.average_angle)
 
-        print("Decision: ", decision_packet.decision)
+            decision_making.get_decision(sensor_data, decision_packet)
 
-        pid_controller.regulate(sensor_data)
-        time.sleep(1)
+            print("Decision: ", decision_packet.decision)
 
-        #print(communication.walk(spi, 10, 2, 1))
-        #time.sleep(1)
+            pid_controller.regulate(sensor_data, decision_packet)
+            print("Pid controller command: " + decision_packet.regulate_base_movement + ", " + decision_packet.regulate_command_y + ", " + decision_packet.regulate_goal_angle);
+            time.sleep(1)
 
-        # Guys, this is test for server stuffs
-        # sensor_data = communication.SensorDataPacket(1, 1, 1, 1, 1, 1, 1)
-        # time.sleep(0.1)
-        # corridor = communication.CorridorDataPacket(2.0, 2.0, 3.0, 2.0, 0.0)
-        # time.sleep(0.1)
+            if not receive_queue.empty():
+                packet = receive_queue.get()
+                if packet.auto is not None:
+                    auto = packet.auto 
 
-        # print("Putting data in queue")
-        # send_queue.put(web.ServerSendPacket(sensor_data, corridor))
+        else:
+            # Guys, this is test for server stuffs
+            sensor_data = avr_communication.get_sensor_data(spi)
+            print("Putting data in queue")
 
-        # if not receive_queue.empty():
-        #     print("Getting: ")
-        #     print(receive_queue.get().get_raw())
-        # time.sleep(1)
+            send_queue.put(web.ServerSendPacket(sensor_data, corridor))
+
+            if not receive_queue.empty():
+                packet = receive_queue.get()
+                if packet.auto is not None:
+                    auto = packet.auto
+                if packet.has_motion_command:
+                    pass
+
+            time.sleep(0.1)
 
 
 if __name__ == '__main__':
