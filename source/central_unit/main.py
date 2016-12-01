@@ -84,7 +84,7 @@ def do_manual_mode_iteration(spi, send_queue, receive_queue):
     sensor_data = avr_communication.get_sensor_data(spi)
     print("Putting data in queue")
 
-    send_queue.put(web.ServerSendPacket(sensor_data, corridor))
+    send_queue.put(web.ServerSendPacket(sensor_data))
 
     auto = False
 

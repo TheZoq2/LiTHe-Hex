@@ -16,7 +16,11 @@
 # You should have received a copy of the GNU General Public License
 # along with LiTHe Hex.  If not, see <http://www.gnu.org/licenses/>.
 
-import spidev
+try:
+    import spidev
+except ImportError:
+    import tests.fake_spi as spidev
+
 import time
 import math
 import communication.angle_calculation as angle_calculation

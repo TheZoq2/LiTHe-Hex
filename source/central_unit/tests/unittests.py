@@ -1,6 +1,24 @@
+# Copyright 2016 Noak Ringman, Emil Segerbäck, Robin Sliwa, Frans Skarman, Hannes Tuhkala, Malcolm Wigren, Olav Övrebö
+
+# This file is part of LiTHe Hex.
+
+# LiTHe Hex is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# LiTHe Hex is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with LiTHe Hex.  If not, see <http://www.gnu.org/licenses/>.
+
 import unittest
 import communication
 import comm_gui.web as web
+import tests.fake_spi as fake_spi
 import time
 import json
 import math
@@ -31,6 +49,7 @@ EXPECTED_PARTIAL = {
     "debug" : DEBUG_STRING_PARTIAL
 }
 
+
 class WebTestCase(unittest.TestCase):
 
     def test_send_packet_normal_json(self):
@@ -51,5 +70,12 @@ class WebTestCase(unittest.TestCase):
         send_packet = web.ServerSendPacket()
         json_string = send_packet.get_json()
         self.assertDictEqual({}, json.loads(json_string))
+
+
+# class SpiTestCase(unittest.TestCase):
+# 
+#     def test_send_bytes(self):
+#         spi = fake_spi.SpiDev()
+        
 
 
