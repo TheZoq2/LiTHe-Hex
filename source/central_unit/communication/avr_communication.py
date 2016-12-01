@@ -19,7 +19,7 @@
 import spidev
 import time
 import math
-import angle_calculation
+import communication.angle_calculation as angle_calculation
 import pdb
 
 
