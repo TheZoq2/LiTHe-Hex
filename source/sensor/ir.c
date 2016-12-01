@@ -60,7 +60,7 @@ void ir_add_data(IR* ir, uint16_t data) {
 
 /* Remove data if out of fault_tolerance, compensate for more recent value before calculate new ir->value */
 void ir_reduce_noise(IR* ir) {
-	/*
+	
 	// Reverse raw_data_list
 	double data_list[NUM_SENSOR_DATA];
 	uint8_t j = NUM_SENSOR_DATA-1;
@@ -102,8 +102,7 @@ void ir_reduce_noise(IR* ir) {
 
 	}
 	// average of res
-	double val = res / num_data_points;
-	*/
+	//uint8_t val = floor((res / num_data_points) * 100);
 	uint8_t val = ir->raw_data_list[NUM_SENSOR_DATA-1];
 	if(val < 150) {
 		ir->value = val;

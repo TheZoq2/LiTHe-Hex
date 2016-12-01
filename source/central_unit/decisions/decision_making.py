@@ -15,6 +15,7 @@ TURN_RIGHT = 2
 STOP = 3
 CLIMB_OBSTACLE = 4
 COMPLETE_TURN = 5 # After a turn we want the robot to walk forward to enter corridor
+MAZE_TOO_COMPLICATED = 6 # Can not take decision
 
 # General directions
 FRONT = 0
@@ -41,6 +42,9 @@ class DecisionPacket():
         self.decision = GO_FORWARD
         self.previous_decision = GO_FORWARD
         self.turn_timer = 0
+        self.regulate_base_movment = 0;
+        self.regulate_command_y = 0;
+        self.regulate_goal_angle = 0;
 
 
 # Returns the dead ends and corridors detected in the maze
@@ -133,7 +137,8 @@ def get_decision(sensor_data, decision_packet):
         for value in corridors_and_dead_ends:
             # If more than one corridor to choose from
             if (corridors_and_dead_ends.count(CORRIDOR) > 1):
-                print("Maze too complicated")
+                decision_packet.decision = MAZE_TOO_COMPLICATED;
+                #print("Maze too complicated")
 
             else:
                 if (_expected_path(corridors_and_dead_ends, DEAD_END, CORRIDOR, DEAD_END)):
@@ -152,7 +157,7 @@ def get_decision(sensor_data, decision_packet):
     # If it was we need to let the robot make a full turn before using
     # the sensor data because they will give bad values during a turn.
     if (decision_packet.previous_decision == TURN_LEFT):
-        print("Robot is turning left!")
+        #print("Robot is turning left!")
 
         if (decision_packet.turn_timer == 0):
             decision_packet.turn_timer = time.time()
@@ -161,24 +166,24 @@ def get_decision(sensor_data, decision_packet):
         # larger than 5 (0 ideally), so we don't make new decisions until
         # the robot is back at straight angle.
         if (sensor_data.average_angle <= ANGLE_10_DEGREE and
-            time.time()-decision_packet.turn_timer >= TIME_NEEDED_TO_TURN): #TODO: test and tweak this
+            time.time() - decision_packet.turn_timer >= TIME_NEEDED_TO_TURN): #TODO: test and tweak this
             decision_packet.decision = GO_FORWARD
             decision_packet.previous_decision = COMPLETE_TURN
             decision_packet.turn_timer = 0
-            print("Turning left complete.")
+            #print("Turning left complete.")
 
     elif (decision_packet.previous_decision == TURN_RIGHT):
-        print("Robot is turning left!")
+        #print("Robot is turning left!")
 
         if (decision_packet.turn_timer == 0):
             decision_packet.turn_timer = time.time()
 
-        if (sensor_data.average_angle <= Angle and
-            time.time()-decision_packet.turn_timer >= TIME_NEEDED_TO_TURN): #TODO: test and tweak this
+        if (sensor_data.average_angle <= ANGLE_10_DEGREE and
+            time.time() - decision_packet.turn_timer >= TIME_NEEDED_TO_TURN): #TODO: test and tweak this
             decision_packet.decision = GO_FORWARD
             decision_packet.previous_decision = COMPLETE_TURN
             decision_packet.turn_timer = 0
-            print("Turning right complete.")
+            #print("Turning right complete.")
 
     # When the robot has rotated but yet not entered the new corridor
     elif (decision_packet.previous_decision == COMPLETE_TURN):

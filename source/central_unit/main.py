@@ -53,7 +53,8 @@ def main():
 
         print("Decision: ", decision_packet.decision)
 
-        pid_controller.regulate(sensor_data)
+        pid_controller.regulate(sensor_data, decision_packet)
+        print("Pid controller command: " + decision_packet.regulate_base_movement + ", " + decision_packet.regulate_command_y + ", " + decision_packet.regulate_goal_angle);
         time.sleep(1)
 
         #print(communication.walk(spi, 10, 2, 1))
