@@ -35,12 +35,12 @@ const static float JOINT_2_MIN = -M_PI / 2;
 const static float JOINT_3_MAX = M_PI / 2;
 const static float JOINT_3_MIN = -M_PI / 2;
 
-const static float JOINT_1_LENGTH = 0.05;
-const static float JOINT_2_LENGTH = 0.065;
-const static float JOINT_3_LENGTH = 0.13;
+const static float JOINT_1_LENGTH = 0.053;
+const static float JOINT_2_LENGTH = 0.066;
+const static float JOINT_3_LENGTH = 0.135;
 
-const static float JOINT_2_OFFSET = 0.349;
-const static float JOINT_3_OFFSET = 0.873;
+const static float JOINT_2_OFFSET = 0.24; // Emil thinks this should be 0.245
+const static float JOINT_3_OFFSET = 0.67;
 
 struct Leg {
     float angle1;

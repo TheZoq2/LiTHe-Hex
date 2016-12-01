@@ -17,62 +17,108 @@
 # You should have received a copy of the GNU General Public License
 # along with LiTHe Hex.  If not, see <http://www.gnu.org/licenses/>.
 
-import communication
-import comm_gui.web as web
+import communication.avr_communication as avr_communication
+import communication.web as web
+import sys
 import queue
 import time
-import decision_making
-import pid_controller
+import decisions.decision_making as decision_making
+import decisions.pid_controller as pid_controller
 import pdb
 import math
 import os
+import constants
+import RPi.GPIO as GPIO
 
 def main():
-    spi = communication.communication_init()
+    
+    test_mode = False
+    GPIO.setmode(GPIO.BOARD)
+    GPIO.setup(40, GPIO.IN, GPIO.PUD_DOWN)
+
+    if len(sys.argv) > 0 and sys.argv[0] == "--test":
+        test_mode = True
+
+    spi = avr_communication.communication_init()
     res = []
+
+    auto = False
+    button_temp = 0
 
     decision_packet = decision_making.DecisionPacket()
 
-    # send_queue = queue.Queue()
-    # receive_queue = queue.Queue()
-    # thread = web.CommunicationThread(send_queue, receive_queue)
+    send_queue = queue.Queue()
+    receive_queue = queue.Queue()
+    thread = web.CommunicationThread(send_queue, receive_queue)
 
-    # thread.start()
+    thread.start()
 
     while True:
         #pdb.set_trace()
-        os.system('clear')
-        sensor_data = communication.get_sensor_data(spi)
-        print(sensor_data)
+        button_input = GPIO.input(40)
+        if (button_input == 1):
+            if (button_temp != button_input):
+                auto = not auto
+                button_temp = 1
+        else:
+            button_temp = 0
 
-        print("right_angle: ",sensor_data.right_angle)
-        print("left_angle: ",sensor_data.left_angle)
-        print("Average angle: ", sensor_data.average_angle)
+        if auto:
+            # Auto mode
+            os.system('clear')
+            sensor_data = avr_communication.get_sensor_data(spi)
+            print(sensor_data)
 
-        decision_making.get_decision(sensor_data, decision_packet)
+            print("button_value: ", button_input)
+            print("right_angle: ",sensor_data.right_angle)
+            print("left_angle: ",sensor_data.left_angle)
+            print("Average angle: ", sensor_data.average_angle)
 
-        print("Decision: ", decision_packet.decision)
+            decision_making.get_decision(sensor_data, decision_packet)
 
-        pid_controller.regulate(sensor_data)
-        time.sleep(1)
+            print("Decision: ", decision_packet.decision)
 
-        #print(communication.walk(spi, 10, 2, 1))
-        #time.sleep(1)
+            pid_controller.regulate(sensor_data, decision_packet)
+            print("Pid controller command: ", decision_packet.regulate_base_movement, ", ", decision_packet.regulate_command_y, ", ", decision_packet.regulate_goal_angle);
+            time.sleep(0.1)
 
-        # Guys, this is test for server stuffs
-        # sensor_data = communication.SensorDataPacket(1, 1, 1, 1, 1, 1, 1)
-        # time.sleep(0.1)
-        # corridor = communication.CorridorDataPacket(2.0, 2.0, 3.0, 2.0, 0.0)
-        # time.sleep(0.1)
+            if not receive_queue.empty():
+                packet = receive_queue.get()
+                if packet.auto is not None:
+                    auto = packet.auto 
 
-        # print("Putting data in queue")
-        # send_queue.put(web.ServerSendPacket(sensor_data, corridor))
+        else:
+            # Manual mode
+            os.system('clear')
+            print("Entering manual mode!")
+            auto = do_manual_mode_iteration(spi, send_queue, receive_queue)
+            time.sleep(0.1)
 
-        # if not receive_queue.empty():
-        #     print("Getting: ")
-        #     print(receive_queue.get().get_raw())
-        # time.sleep(1)
+
+def do_manual_mode_iteration(spi, send_queue, receive_queue):
+    sensor_data = avr_communication.get_sensor_data(spi)
+
+    send_queue.put(web.ServerSendPacket(sensor_data))
+
+    auto = False
+
+    if not receive_queue.empty():
+        packet = receive_queue.get()
+        if packet.auto is not None:
+            auto = packet.auto
+        if packet.has_motion_command():
+            servo_speed = (int)(packet.thrust * constants.MAX_16BIT_SIZE)
+            avr_communication.set_servo_speed(spi, servo_speed)
+
+            x_speed = (int)(((packet.x + 1) / 2) * constants.MAX_BYTE_SIZE)
+            y_speed = (int)(((packet.y + 1) / 2) * constants.MAX_BYTE_SIZE)
+            rotation = (int)(((packet.rotation + 1) / 2)  * constants.MAX_BYTE_SIZE)
+
+            avr_communication.walk(spi, x_speed, y_speed, rotation)
+    
+    return auto
 
 
 if __name__ == '__main__':
     main()
+

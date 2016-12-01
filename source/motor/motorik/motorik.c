@@ -63,18 +63,23 @@ int main(void)
 	send_servo_action();
 
 	//Initialize all legs
-	Point2D current_leg_positions[6];
-	for(size_t i = 0; i < 6; i++)
-	{
-		Point2D current = get_default_leg_position(i);
-		current_leg_positions[i] = current;
-	}
-	assume_standardized_stance(current_leg_positions);
+	
+	Point2D* current_position = raise_to_default_position();
 
+	for(uint8_t i = 0; i < 1; ++i)
+	{
+		Point2D goal;
+		goal.x = 100;
+		goal.y = 0;
+
+		work_towards_goal(0, goal, current_position);
+	}
 	
 	while(1)
 	{
 	}
+
+	free(current_position);
 }
 
 #ifndef IS_X86

@@ -15,15 +15,22 @@ TURN_RIGHT = 2
 STOP = 3
 CLIMB_OBSTACLE = 4
 COMPLETE_TURN = 5 # After a turn we want the robot to walk forward to enter corridor
+MAZE_TOO_COMPLICATED = 6 # Can not take decision
 
 # General directions
 FRONT = 0
 LEFT = 1
 RIGHT = 2
 
+# Angle 
+ANGLE_10_DEGREE = 10
+
 # Distances to different objects in meters
-DEAD_END_DISTANCE = 1
+DEAD_END_DISTANCE = 1.2
+LIDAR_STOP_DISTANCE = 0.30
 DISTANCE_TO_OBSTACLE = 0.0
+DISTANCE_TO_WALL_IN_CORRIDOR = 0.5
+TILE_SIZE = 0.8
 
 # Distance between the sensors in the mount on same side
 DISTANCE_BETWEEN_SENSORS = 0.16
@@ -37,6 +44,9 @@ class DecisionPacket():
         self.decision = GO_FORWARD
         self.previous_decision = GO_FORWARD
         self.turn_timer = 0
+        self.regulate_base_movement = 0;
+        self.regulate_command_y = 0;
+        self.regulate_goal_angle = 0;
 
 
 # Returns the dead ends and corridors detected in the maze
@@ -100,10 +110,10 @@ def _expected_path(corridors_and_dead_ends, front, left, right):
 # Checks if all the sidesensors give small values
 # TODO: Tweak this and remove magic constant!
 def _is_inside_corridor(sensor_data):
-    if (sensor_data.ir_front_left <= 0.5 and
-        sensor_data.ir_back_left <= 0.5 and
-        sensor_data.ir_front_right <= 0.5 and
-        sensor_data.ir_back_right <= 0.5):
+    if (sensor_data.ir_front_left <= DISTANCE_TO_WALL_IN_CORRIDOR and
+        sensor_data.ir_back_left <= DISTANCE_TO_WALL_IN_CORRIDOR and
+        sensor_data.ir_front_right <= DISTANCE_TO_WALL_IN_CORRIDOR and
+        sensor_data.ir_back_right <= DISTANCE_TO_WALL_IN_CORRIDOR):
         return True
     else:
         return False
@@ -128,27 +138,40 @@ def get_decision(sensor_data, decision_packet):
 
         for value in corridors_and_dead_ends:
             # If more than one corridor to choose from
-            if (corridors_and_dead_ends.count(CORRIDOR) > 1):
-                print("Maze too complicated")
+            if (corridors_and_dead_ends.count(CORRIDOR) == 3):
+                decision_packet.decision = TURN_LEFT;
 
-            else:
-                if (_expected_path(corridors_and_dead_ends, DEAD_END, CORRIDOR, DEAD_END)):
+            elif (corridors_and_dead_ends.count(CORRIDOR) == 2):
+                if (sensor_data.lidar > DEAD_END_DISTANCE):
+                    decision_packet.decision = GO_FORWARD
+                else:
+                    if (corridors_and_dead_ends[LEFT] == CORRIDOR):
+                        decision_packet.decision = TURN_LEFT
+                    else:
+                        decision_packet.decision = TURN_RIGHT
+
+            elif (corridors_and_dead_ends.count(CORRIDOR) == 1):
+                if (sensor_data.lidar < TILE_SIZE and sensor_data.lidar > LIDAR_STOP_DISTANCE):
+                    decision_packet.decision = GO_FORWARD
+                elif (corridors_and_dead_ends[LEFT] == CORRIDOR):
                     decision_packet.decision = TURN_LEFT
-
-                elif (_expected_path(corridors_and_dead_ends, DEAD_END, DEAD_END, CORRIDOR)):
+                elif (corridors_and_dead_ends[RIGHT] == CORRIDOR):
                     decision_packet.decision = TURN_RIGHT
-
-                elif (_expected_path(corridors_and_dead_ends, DEAD_END, DEAD_END, DEAD_END)):
-                    decision_packet.decision = STOP
-
                 else:
                     decision_packet.decision = GO_FORWARD
+
+            elif (corridors_and_dead_ends.count(CORRIDOR) == 0):
+                if (sensor_data.lidar > LIDAR_STOP_DISTANCE):
+                    decision_packet.decision = GO_FORWARD
+                else:
+                    decision_packet.decision = TURN_LEFT
+
 
     # Check if previous decision was to make a turn.
     # If it was we need to let the robot make a full turn before using
     # the sensor data because they will give bad values during a turn.
     if (decision_packet.previous_decision == TURN_LEFT):
-        print("Robot is turning left!")
+        #print("Robot is turning left!")
 
         if (decision_packet.turn_timer == 0):
             decision_packet.turn_timer = time.time()
@@ -156,25 +179,25 @@ def get_decision(sensor_data, decision_packet):
         # After the robot has started turning the angle will be
         # larger than 5 (0 ideally), so we don't make new decisions until
         # the robot is back at straight angle.
-        if (sensor_data.right_angle <= 10 and
-            time.time()-decision_packet.turn_timer >= TIME_NEEDED_TO_TURN): #TODO: test and tweak this
+        if (abs(sensor_data.average_angle) <= ANGLE_10_DEGREE and
+            time.time() - decision_packet.turn_timer >= TIME_NEEDED_TO_TURN): #TODO: test and tweak this
             decision_packet.decision = GO_FORWARD
             decision_packet.previous_decision = COMPLETE_TURN
             decision_packet.turn_timer = 0
-            print("Turning left complete.")
+            #print("Turning left complete.")
 
     elif (decision_packet.previous_decision == TURN_RIGHT):
-        print("Robot is turning left!")
+        #print("Robot is turning left!")
 
         if (decision_packet.turn_timer == 0):
             decision_packet.turn_timer = time.time()
 
-        if (sensor_data.left_angle <= 10 and
-            time.time()-decision_packet.turn_timer >= TIME_NEEDED_TO_TURN): #TODO: test and tweak this
+        if ((sensor_data.average_angle) <= ANGLE_10_DEGREE and
+            time.time() - decision_packet.turn_timer >= TIME_NEEDED_TO_TURN): #TODO: test and tweak this
             decision_packet.decision = GO_FORWARD
             decision_packet.previous_decision = COMPLETE_TURN
             decision_packet.turn_timer = 0
-            print("Turning right complete.")
+            #print("Turning right complete.")
 
     # When the robot has rotated but yet not entered the new corridor
     elif (decision_packet.previous_decision == COMPLETE_TURN):

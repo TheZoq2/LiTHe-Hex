@@ -19,7 +19,7 @@
 // along with LiTHe Hex.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <math.h>
-#include "../../IK/ik.h"
+#include "ik.h"
 #include <stdint.h>
 #include "servo.h"
 #include <stdio.h>
@@ -86,7 +86,7 @@ void rotate_set_angle(float angle, Point2D * current);
  * @param current position the legs curerently hold.
  * @return scaledown applied to grounded set of legs.
  */
-float work_towards_goal(float rot, Point2D * goal, Point2D * current);
+float work_towards_goal(float rot, Point2D goal, Point2D * current);
 
 
 
@@ -105,5 +105,17 @@ Point2D get_default_leg_position(size_t leg);
  * @param current current position of the legs.
  */
 void assume_standardized_stance(Point2D * current);
+
+/**
+	Raises the body into the default position as defined by get_default_leg_postion()
+*/
+Point2D* raise_to_default_position();
+
+#ifdef IS_UNIT_TEST
+Point2D rotate_point_by_angle(Point2D original, float angle);
+Point2D robot_to_ik_coords(Point2D original, int leg);
+float absf(float a);
+#endif
+
 
 #endif

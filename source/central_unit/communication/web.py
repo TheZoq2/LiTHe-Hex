@@ -17,7 +17,10 @@
 
 import threading
 import time
-import pika
+try:
+    import pika
+except ImportError:
+    pass
 import json
 
 CENTRAL_UNIT_KEY_RECEIVE = 'to_pi'
@@ -43,6 +46,15 @@ class ServerReceivedPacket(object):
         self.rotation = data.get('rotation', None)
         self.thrust = data.get('thrust', None)
         self.auto = data.get('auto', None)
+
+        # if we got x, then we should have gotten everything else
+        if self.x is not None:
+            assert (self.y is not None and
+                    self.rotation is not None and
+                    self.thrust is not None)
+
+    def has_motion_command(self):
+        return self.x is not None
 
 
 class ServerSendPacket(object):
