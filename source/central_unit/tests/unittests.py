@@ -57,6 +57,9 @@ class WebTestCase(unittest.TestCase):
     """
 
     def test_send_packet_normal_json(self):
+        """
+        Tests a normal json conversion with all of the possible keys.
+        """
         sensor_data_packet = avr_communication.SensorDataPacket(*SENSOR_ARGS)
         send_packet = web.ServerSendPacket(
             sensor_data_packet,
@@ -66,11 +69,17 @@ class WebTestCase(unittest.TestCase):
         self.assertDictEqual(EXPECTED_NORMAL, json.loads(json_string))
 
     def test_send_packet_partial(self):
+        """
+        Tests a json conversion with only a few keys.
+        """
         send_packet = web.ServerSendPacket(debug_string=DEBUG_STRING_PARTIAL)
         json_string = send_packet.get_json()
         self.assertDictEqual(EXPECTED_PARTIAL, json.loads(json_string))
 
     def test_send_packet_empty(self):
+        """
+        Tests json conversion of no keys.
+        """
         send_packet = web.ServerSendPacket()
         json_string = send_packet.get_json()
         self.assertDictEqual({}, json.loads(json_string))
@@ -82,6 +91,9 @@ class SpiTestCase(unittest.TestCase):
     """
 
     def test_send_bytes(self):
+        """
+        Tests the _send_bytes function.
+        """
         spi = fake_spi.SpiDev()
         seq = [0x00, 0x0F, 0xFF]
         spi.set_expected_write_sequence([avr_communication.GARBAGE] + seq)
@@ -91,6 +103,9 @@ class SpiTestCase(unittest.TestCase):
             self.fail("Expected {}, got {}".format(e.expected, e.actual))
 
     def test_read_single_byte(self):
+        """
+        Tests the _recieve_bytes function for a single byte message.
+        """
         spi = fake_spi.SpiDev()
         msg = 0xFE
         # type that indicates that it's a one byte message with an
@@ -101,6 +116,9 @@ class SpiTestCase(unittest.TestCase):
         self.assertListEqual(result, [msg])
 
     def test_read_multiple_bytes(self):
+        """
+        Tests the _recieve_bytes function for a multi-byte message.
+        """
         spi = fake_spi.SpiDev()
         msg = [0x01, 0x02, 0x03, 0x01]
         # type that indicates that it's a multibyte message with an
@@ -111,23 +129,39 @@ class SpiTestCase(unittest.TestCase):
         self.assertListEqual(result, msg)
 
 
+def _set_sensor_data_sequence(spi):
+    # it should send a data request for the sensor data.
+    spi.set_expected_write_sequence([avr_communication.GARBAGE,
+                                     (avr_communication.DATA_REQ << 2) | 0x01, 
+                                     avr_communication.SENSOR_DATA])
+    # we should receive an acknowledge along with the sensor data
+    # type with the lower parity bit set to 1, since te rest of the message
+    # has an uneven number of bits
+    spi.set_fake_read_sequence([avr_communication.ACK, # ack
+                                (avr_communication.SENSOR_DATA << 2) | 0x01, # type
+                                7, # length
+                                1, 1, 1, 1, 1, 1, 2]) # msg
+
+
 class MainLoopTestCase(unittest.TestCase):
+    """
+    Test for the methods used by the main loop.
+    """
 
     def test_manual_mode_no_input(self):
+        """
+        Tests an iteration of the manual mode in the main loop
+        without data input from the server.
+        Makes sure that if does not spontaneously turn on
+        the auto mode, that is requests and sucessfully receives
+        a sensor data packet, puts it in the queue, and that the 
+        avr_communication reads the values correctly.
+        """
         send_queue = queue.Queue()
         receive_queue = queue.Queue()
         spi = fake_spi.SpiDev()
-        # it should send a data request for the sensor data.
-        spi.set_expected_write_sequence([avr_communication.GARBAGE,
-                                         (avr_communication.DATA_REQ << 2) | 0x01, 
-                                         avr_communication.SENSOR_DATA])
-        # we should receive an acknowledge along with the sensor data
-        # type with the lower parity bit set to 1, since te rest of the message
-        # has an uneven number of bits
-        spi.set_fake_read_sequence([avr_communication.ACK, # ack
-                                    (avr_communication.SENSOR_DATA << 2) | 0x01, # type
-                                    7, # length
-                                    1, 1, 1, 1, 1, 1, 2]) # msg
+
+        _set_sensor_data_sequence(spi)
 
         try:
             auto = main.do_manual_mode_iteration(spi, send_queue, receive_queue)
@@ -148,3 +182,50 @@ class MainLoopTestCase(unittest.TestCase):
         self.assertEqual(0.01, sensor_data.ir_back_right)
         self.assertEqual(2.58, sensor_data.lidar)
 
+    def test_auto_change(self):
+        """
+        Tests whether auto mode is changed to true if such
+        a command is sent from the server, when in manual mode.
+        """
+        send_queue = queue.Queue()
+        receive_queue = queue.Queue()
+        spi = fake_spi.SpiDev()
+        _set_sensor_data_sequence(spi)
+
+        packet = web.ServerReceivedPacket("{\"auto\": true}")
+
+        receive_queue.put(packet)
+
+        try:
+            auto = main.do_manual_mode_iteration(spi, send_queue, receive_queue)
+        except fake_spi.UnexpectedDataException as e:
+            self.fail(
+                "Something went wrong when reading sensor data: Expected {}, got {}"
+                .format(e.expected, e.actual))
+
+        self.assertTrue(auto)
+
+    def test_auto_sent_but_not_changed(self):
+        """
+        Makes sure the auto mode does not change if a value for auto mode
+        is sent but set to false when in manual mode.
+        """
+        send_queue = queue.Queue()
+        receive_queue = queue.Queue()
+        spi = fake_spi.SpiDev()
+        _set_sensor_data_sequence(spi)
+
+        packet = web.ServerReceivedPacket("{\"auto\": false}")
+
+        receive_queue.put(packet)
+
+        try:
+            auto = main.do_manual_mode_iteration(spi, send_queue, receive_queue)
+        except fake_spi.UnexpectedDataException as e:
+            self.fail(
+                "Something went wrong when reading sensor data: Expected {}, got {}"
+                .format(e.expected, e.actual))
+
+        self.assertFalse(auto)
+        
+    

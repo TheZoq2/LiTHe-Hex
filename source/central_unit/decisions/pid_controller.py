@@ -1,6 +1,6 @@
 import sys
 import math
-import decision_making
+import decisions.decision_making as decision_making
 
 input_file = "/tmp/hexsim/sensors"
 output_file = "/tmp/hexsim/command"
