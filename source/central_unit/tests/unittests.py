@@ -21,6 +21,7 @@ import communication.web as web
 import tests.fake_spi as fake_spi
 import time
 import json
+import main
 import math
 import queue
 import communication.angle_calculation as angle_calculation
@@ -51,6 +52,9 @@ EXPECTED_PARTIAL = {
 
 
 class WebTestCase(unittest.TestCase):
+    """
+    Tests for the web module.
+    """
 
     def test_send_packet_normal_json(self):
         sensor_data_packet = avr_communication.SensorDataPacket(*SENSOR_ARGS)
@@ -73,6 +77,9 @@ class WebTestCase(unittest.TestCase):
 
 
 class SpiTestCase(unittest.TestCase):
+    """
+    Tests for the avr_communication module.
+    """
 
     def test_send_bytes(self):
         spi = fake_spi.SpiDev()
@@ -88,7 +95,7 @@ class SpiTestCase(unittest.TestCase):
         msg = 0xFE
         # type that indicates that it's a one byte message with an
         # uneven number of ones
-        type_ = 0b00001101
+        type_ = 0b00001110
         spi.set_fake_read_sequence([type_, msg])
         result = avr_communication._recieve_bytes(spi)
         self.assertListEqual(result, [msg])
@@ -104,4 +111,40 @@ class SpiTestCase(unittest.TestCase):
         self.assertListEqual(result, msg)
 
 
+class MainLoopTestCase(unittest.TestCase):
+
+    def test_manual_mode_no_input(self):
+        send_queue = queue.Queue()
+        receive_queue = queue.Queue()
+        spi = fake_spi.SpiDev()
+        # it should send a data request for the sensor data.
+        spi.set_expected_write_sequence([avr_communication.GARBAGE,
+                                         (avr_communication.DATA_REQ << 2) | 0x01, 
+                                         avr_communication.SENSOR_DATA])
+        # we should receive an acknowledge along with the sensor data
+        # type with the lower parity bit set to 1, since te rest of the message
+        # has an uneven number of bits
+        spi.set_fake_read_sequence([avr_communication.ACK, # ack
+                                    (avr_communication.SENSOR_DATA << 2) | 0x01, # type
+                                    7, # length
+                                    1, 1, 1, 1, 1, 1, 2]) # msg
+
+        try:
+            auto = main.do_manual_mode_iteration(spi, send_queue, receive_queue)
+        except fake_spi.UnexpectedDataException as e:
+            self.fail("Expected {}, got {}".format(e.expected, e.actual))
+
+        self.assertFalse(auto)
+        self.assertFalse(send_queue.empty())
+        packet = send_queue.get()
+        self.assertTrue(send_queue.empty())
+        
+        sensor_data = packet.sensor
+
+        self.assertEqual(0.01, sensor_data.ir_down)
+        self.assertEqual(0.01, sensor_data.ir_front_left)
+        self.assertEqual(0.01, sensor_data.ir_back_left)
+        self.assertEqual(0.01, sensor_data.ir_front_right)
+        self.assertEqual(0.01, sensor_data.ir_back_right)
+        self.assertEqual(2.58, sensor_data.lidar)
 
