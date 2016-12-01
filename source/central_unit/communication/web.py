@@ -17,7 +17,10 @@
 
 import threading
 import time
-import pika
+try:
+    import pika
+except ImportError:
+    pass
 import json
 
 CENTRAL_UNIT_KEY_RECEIVE = 'to_pi'

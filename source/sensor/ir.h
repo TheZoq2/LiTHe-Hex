@@ -23,7 +23,7 @@
 #include <stdbool.h>
 
 #define NUM_SENSORS			5
-#define NUM_SENSOR_DATA		5
+#define NUM_SENSOR_DATA		10
 #define DUMMY_PORT			255
 #define LEN_BETWEEN_SIDE_IR 10
 

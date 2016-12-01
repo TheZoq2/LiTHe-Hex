@@ -19,8 +19,8 @@
 #include "math.h"
 
 #define NUM_CORRECT_DATA_POINTS	4
-#define PERCENT_FAULT_TOLERANCE 0.20
-#define CORRECTION_FACTOR	0.20
+#define PERCENT_FAULT_TOLERANCE 0.05
+#define CORRECTION_FACTOR	0.0
 #define LOWEST_AD_VALUE		80
 #define LONGER_THAN_MAX_RANGE	255
 
@@ -102,12 +102,20 @@ void ir_reduce_noise(IR* ir) {
 
 	}
 	// average of res
-	//uint8_t val = floor((res / num_data_points) * 100);
-	uint8_t val = ir->raw_data_list[NUM_SENSOR_DATA-1];
-	if(val < 150) {
-		ir->value = val;
-	} else {
-		ir->value = 255;
+	uint8_t val = floor((res / num_data_points) * 100);
+	//uint8_t val = ir->raw_data_list[NUM_SENSOR_DATA-1];
+	if(ir->range == LONG_RANGE) {
+		if (20 < val && val < 150) {
+			ir->value = val;
+		} else {
+			ir->value = 255;
+		}
+	} else if(ir->range == SHORT_RANGE) {
+		if(4 < val && val < 30) {
+			ir->value = val;
+		} else {
+			ir->value = 255;
+		}
 	}
 }
 
