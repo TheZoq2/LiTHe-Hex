@@ -16,7 +16,7 @@
 # along with LiTHe Hex.  If not, see <http://www.gnu.org/licenses/>.
 
 import unittest
-import communication
+import communication.avr_communication as avr_communication
 import comm_gui.web as web
 import tests.fake_spi as fake_spi
 import time
@@ -29,7 +29,7 @@ SENSOR_ARGS = (1, 2, 3, 4, 5, 0x01, 0xFE)
 DEBUG_STRING_NORMAL = "hello"
 DEBUG_STRING_PARTIAL = "this is the debug string for the partial test"
 AUTO_NORMAL = False
-SENSOR_DATA_PACKET = communication.SensorDataPacket(*SENSOR_ARGS)
+SENSOR_DATA_PACKET = avr_communication.SensorDataPacket(*SENSOR_ARGS)
 
 EXPECTED_NORMAL = {
     "ir_down" : 0.01,
@@ -53,7 +53,7 @@ EXPECTED_PARTIAL = {
 class WebTestCase(unittest.TestCase):
 
     def test_send_packet_normal_json(self):
-        sensor_data_packet = communication.SensorDataPacket(*SENSOR_ARGS)
+        sensor_data_packet = avr_communication.SensorDataPacket(*SENSOR_ARGS)
         send_packet = web.ServerSendPacket(
             sensor_data_packet,
             AUTO_NORMAL,
@@ -72,10 +72,15 @@ class WebTestCase(unittest.TestCase):
         self.assertDictEqual({}, json.loads(json_string))
 
 
-# class SpiTestCase(unittest.TestCase):
-# 
-#     def test_send_bytes(self):
-#         spi = fake_spi.SpiDev()
-        
+class SpiTestCase(unittest.TestCase):
+
+    def test_send_bytes(self):
+        spi = fake_spi.SpiDev()
+        seq = [0x00, 0x0F, 0xFF]
+        spi.set_expected_write_sequence([avr_communication.GARBAGE] + seq)
+        try:
+            avr_communication.writebytes(spi, seq)
+        except fake_spi.UnexpectedDataException as e:
+            self.fail("Expected {}, got {}".format(e.expected, e.actual))
 
 
