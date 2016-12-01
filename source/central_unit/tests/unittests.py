@@ -23,6 +23,7 @@ import time
 import json
 import main
 import math
+import pdb
 import queue
 import communication.angle_calculation as angle_calculation
 
@@ -143,6 +144,22 @@ def _set_sensor_data_sequence(spi):
                                 1, 1, 1, 1, 1, 1, 2]) # msg
 
 
+def _add_servo_speed_and_walk(spi):
+    spi.expected_seq += [
+        avr_communication.GARBAGE,
+        (avr_communication.SET_SERVO_SPEED << 2) | 0x01, # type
+        2, # length
+        0xFF, 0xFF, # servo speed
+
+        avr_communication.GARBAGE,
+        (avr_communication.WALK << 2) | 0x03, # type
+        
+        3, # length
+        255, 0, 127 # x, y, r
+    ]
+    spi.data_sequence += [avr_communication.ACK, avr_communication.ACK]
+
+
 class MainLoopTestCase(unittest.TestCase):
     """
     Test for the methods used by the main loop.
@@ -228,4 +245,25 @@ class MainLoopTestCase(unittest.TestCase):
 
         self.assertFalse(auto)
         
+    def test_manual_walk(self):
+
+        send_queue = queue.Queue()
+        receive_queue = queue.Queue()
+        spi = fake_spi.SpiDev()
+        _set_sensor_data_sequence(spi)
+        _add_servo_speed_and_walk(spi)
+
+        packet = web.ServerReceivedPacket(
+            "{\"x\": 1.0, \"y\": -1.0, \"thrust\": 1.0, \"rotation\": 0.0}")
+
+        receive_queue.put(packet)
+
+        try:
+            auto = main.do_manual_mode_iteration(spi, send_queue, receive_queue)
+        except fake_spi.UnexpectedDataException as e:
+            self.fail(
+                "Something went wrong in the SPI-communication: Expected {}, got {}"
+                .format(e.expected, e.actual))
+
+        self.assertFalse(auto)
     
