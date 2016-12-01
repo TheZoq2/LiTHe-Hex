@@ -23,13 +23,12 @@ defmodule GUI.ClientChannel do
   end
 
   def handle_in("joystick", payload, socket) do
-    #%{"x" => x, "y" => y, "rotation" => rotation, "thrust" => thrust} = payload
     GUI.RabbitMQ.send_message(payload)
     {:noreply, socket}
   end
 
-  def handle_in("new_msg", %{"body" => body}, socket) do
-    broadcast! socket, "new_msg", %{body: "Received message: " <> body}
+  def handle_in("new_msg", payload, socket) do
+    broadcast! socket, "new_msg", payload
     {:noreply, socket}
   end
 

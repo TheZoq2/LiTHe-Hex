@@ -6,8 +6,8 @@ import Html.Events exposing (onInput, onSubmit)
 import Html.Lazy exposing (lazy)
 import Json.Encode as JE
 import Json.Decode as JD
+import Json.Decode.Pipeline exposing (decode, required)
 import Time exposing (Time, millisecond)
-import Date
 import Phoenix.Socket exposing (Socket)
 import Phoenix.Channel
 import Phoenix.Push
@@ -49,6 +49,7 @@ type Msg
     | AxisData Joystick.JoystickData
     | UpdateControlDisplay Time
     | SendControlToServer Time
+    | SelectTab Int
     | Mdl (Material.Msg Msg)
 
 
@@ -58,13 +59,30 @@ type alias Model =
     , messages : List String
     , joystick : Joystick.JoystickData
     , joystickIndex : Maybe Int
-    , sensorData : List ( Date.Date, Float )
+    , sensorData : List ( Float, Float )
+    , autoMode : Bool
+    , selectedTab : Int
     , mdl : Material.Model
     }
 
 
-type alias ChatMessage =
-    { body : String }
+type alias SensorData =
+    { irDown : Float
+    , irFl : Float
+    , irFr : Float
+    , irBl : Float
+    , irBr : Float
+    , lidar : Float
+    , angleL : Float
+    , angleR : Float
+    , angleAvg : Float
+    }
+
+
+type BotMessage
+    = DebugMessage String
+    | AutoMessage Bool
+    | SensorMessage SensorData
 
 
 type alias Flags =
@@ -86,20 +104,48 @@ init { host } =
         , joystick = { x = 0, y = 0, rotation = 0, thrust = 0 }
         , joystickIndex = Nothing
         , sensorData =
-            [ ( Date.fromTime 1448928000000, 1.7 )
-            , ( Date.fromTime 1451606400000, 2 )
-            , ( Date.fromTime 1454284800000, 1 )
-            , ( Date.fromTime 1456790400000, 1 )
+            [ ( -5, 1.7 )
+            , ( -4, 2 )
+            , ( -2.5, 4 )
+            , ( 0, 1 )
             ]
+        , autoMode = False
+        , selectedTab = 0
         , mdl = Material.model
         }
             ! [ Cmd.map PhoenixMsg phxCmd ]
 
 
-chatMessageDecoder : JD.Decoder ChatMessage
+debugMessageDecoder : JD.Decoder BotMessage
+debugMessageDecoder =
+    JD.map DebugMessage
+        (JD.field "debug" JD.string)
+
+
+autoMessageDecoder : JD.Decoder BotMessage
+autoMessageDecoder =
+    JD.map AutoMessage
+        (JD.field "auto" JD.bool)
+
+
+sensorMessageDecoder : JD.Decoder BotMessage
+sensorMessageDecoder =
+    decode (SensorData)
+        |> required "ir_down" JD.float
+        |> required "ir_fl" JD.float
+        |> required "ir_fr" JD.float
+        |> required "ir_bl" JD.float
+        |> required "ir_br" JD.float
+        |> required "lidar" JD.float
+        |> required "angle_l" JD.float
+        |> required "angle_r" JD.float
+        |> required "angle_avg" JD.float
+        |> JD.map SensorMessage
+
+
+chatMessageDecoder : JD.Decoder BotMessage
 chatMessageDecoder =
-    JD.map ChatMessage
-        (JD.field "body" JD.string)
+    JD.oneOf [ debugMessageDecoder, autoMessageDecoder, sensorMessageDecoder ]
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -119,11 +165,22 @@ update msg model =
 
         ReceiveChatMessage raw ->
             case JD.decodeValue chatMessageDecoder raw of
-                Ok chatMessage ->
-                    ( { model
-                        | messages =
-                            chatMessage.body :: model.messages
-                      }
+                Ok (DebugMessage msg) ->
+                    ( { model | messages = msg :: model.messages }
+                    , Cmd.none
+                    )
+
+                Ok (AutoMessage enabled) ->
+                    let
+                        _ =
+                            Debug.log "Auto mode set to " enabled
+                    in
+                        ( { model | autoMode = enabled }
+                        , Cmd.none
+                        )
+
+                Ok (SensorMessage sensorData) ->
+                    ( model -- TODO: Make it set proper sensor data
                     , Cmd.none
                     )
 
@@ -193,6 +250,9 @@ update msg model =
                 , Cmd.map PhoenixMsg phxCmd
                 )
 
+        SelectTab num ->
+            ( { model | selectedTab = num }, Cmd.none )
+
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
@@ -224,6 +284,8 @@ view model =
     Layout.render Mdl
         model.mdl
         [ Layout.fixedHeader
+        , Layout.selectedTab model.selectedTab
+        , Layout.onSelectTab SelectTab
         , Layout.scrolling
         ]
         { header =
@@ -233,16 +295,22 @@ view model =
                 ]
             ]
         , drawer = []
-        , tabs = ( [], [] )
+        , tabs = ( [ text "Control", text "Debug" ], [] )
         , main = [ viewBody model ]
         }
 
 
-viewBody : Model -> Html Msg
-viewBody model =
+viewControl : Model -> Html Msg
+viewControl model =
     div [ Html.Attributes.style [ ( "padding", "2rem" ) ] ]
         [ Joystick.joystickDisplay model.joystick
-        , lazy Sensors.viewSensor model.sensorData
+        ]
+
+
+viewDebug : Model -> Html Msg
+viewDebug model =
+    div [ Html.Attributes.style [ ( "padding", "2rem" ) ] ]
+        [ lazy Sensors.viewSensor model.sensorData
         , form [ onSubmit SendMessage ]
             [ Textfield.render Mdl
                 [ 0 ]
@@ -252,6 +320,14 @@ viewBody model =
         , div []
             [ (messageList model.messages) ]
         ]
+
+
+viewBody : Model -> Html Msg
+viewBody model =
+    if model.selectedTab == 0 then
+        viewControl model
+    else
+        viewDebug model
 
 
 main : Program Flags Model Msg

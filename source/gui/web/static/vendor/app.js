@@ -14823,6 +14823,86 @@ var _MichaelCombs28$elm_mdl$Material_List$ul = function (options) {
 		});
 };
 
+var _NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode = _elm_lang$core$Json_Decode$succeed;
+var _NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$resolve = _elm_lang$core$Json_Decode$andThen(_elm_lang$core$Basics$identity);
+var _NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$custom = _elm_lang$core$Json_Decode$map2(
+	F2(
+		function (x, y) {
+			return y(x);
+		}));
+var _NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$hardcoded = function (_p0) {
+	return _NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$custom(
+		_elm_lang$core$Json_Decode$succeed(_p0));
+};
+var _NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$optionalDecoder = F3(
+	function (pathDecoder, valDecoder, fallback) {
+		var nullOr = function (decoder) {
+			return _elm_lang$core$Json_Decode$oneOf(
+				{
+					ctor: '::',
+					_0: decoder,
+					_1: {
+						ctor: '::',
+						_0: _elm_lang$core$Json_Decode$null(fallback),
+						_1: {ctor: '[]'}
+					}
+				});
+		};
+		var handleResult = function (input) {
+			var _p1 = A2(_elm_lang$core$Json_Decode$decodeValue, pathDecoder, input);
+			if (_p1.ctor === 'Ok') {
+				var _p2 = A2(
+					_elm_lang$core$Json_Decode$decodeValue,
+					nullOr(valDecoder),
+					_p1._0);
+				if (_p2.ctor === 'Ok') {
+					return _elm_lang$core$Json_Decode$succeed(_p2._0);
+				} else {
+					return _elm_lang$core$Json_Decode$fail(_p2._0);
+				}
+			} else {
+				return _elm_lang$core$Json_Decode$succeed(fallback);
+			}
+		};
+		return A2(_elm_lang$core$Json_Decode$andThen, handleResult, _elm_lang$core$Json_Decode$value);
+	});
+var _NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$optionalAt = F4(
+	function (path, valDecoder, fallback, decoder) {
+		return A2(
+			_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$custom,
+			A3(
+				_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$optionalDecoder,
+				A2(_elm_lang$core$Json_Decode$at, path, _elm_lang$core$Json_Decode$value),
+				valDecoder,
+				fallback),
+			decoder);
+	});
+var _NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$optional = F4(
+	function (key, valDecoder, fallback, decoder) {
+		return A2(
+			_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$custom,
+			A3(
+				_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$optionalDecoder,
+				A2(_elm_lang$core$Json_Decode$field, key, _elm_lang$core$Json_Decode$value),
+				valDecoder,
+				fallback),
+			decoder);
+	});
+var _NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$requiredAt = F3(
+	function (path, valDecoder, decoder) {
+		return A2(
+			_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$custom,
+			A2(_elm_lang$core$Json_Decode$at, path, valDecoder),
+			decoder);
+	});
+var _NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required = F3(
+	function (key, valDecoder, decoder) {
+		return A2(
+			_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$custom,
+			A2(_elm_lang$core$Json_Decode$field, key, valDecoder),
+			decoder);
+	});
+
 //import Result //
 
 var _elm_lang$core$Native_Date = function() {
@@ -20711,8 +20791,8 @@ var _user$project$Joystick$JoystickData = F4(
 	});
 
 var _user$project$Sensors$padding = 30;
-var _user$project$Sensors$h = 225;
-var _user$project$Sensors$w = 450;
+var _user$project$Sensors$h = 200;
+var _user$project$Sensors$w = 200;
 var _user$project$Sensors$viewSensor = function (model) {
 	var opts = _gampleman$elm_visualization$Visualization_Axis$defaultOptions;
 	var yScale = A2(
@@ -20726,12 +20806,8 @@ var _user$project$Sensors$viewSensor = function (model) {
 			{orientation: _gampleman$elm_visualization$Visualization_Axis$Left, tickCount: 5}),
 		yScale);
 	var xScale = A2(
-		_gampleman$elm_visualization$Visualization_Scale$time,
-		{
-			ctor: '_Tuple2',
-			_0: _elm_lang$core$Date$fromTime(1448928000000),
-			_1: _elm_lang$core$Date$fromTime(1456790400000)
-		},
+		_gampleman$elm_visualization$Visualization_Scale$linear,
+		{ctor: '_Tuple2', _0: -5, _1: 0},
 		{ctor: '_Tuple2', _0: 0, _1: _user$project$Sensors$w - (2 * _user$project$Sensors$padding)});
 	var xAxis = A2(
 		_gampleman$elm_visualization$Visualization_Axis$axis,
@@ -20930,6 +21006,25 @@ var _user$project$Sensors$viewSensor = function (model) {
 		});
 };
 
+var _user$project$App$viewControl = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$style(
+				{
+					ctor: '::',
+					_0: {ctor: '_Tuple2', _0: 'padding', _1: '2rem'},
+					_1: {ctor: '[]'}
+				}),
+			_1: {ctor: '[]'}
+		},
+		{
+			ctor: '::',
+			_0: _user$project$Joystick$joystickDisplay(model.joystick),
+			_1: {ctor: '[]'}
+		});
+};
 var _user$project$App$showMessage = function (str) {
 	return A2(
 		_MichaelCombs28$elm_mdl$Material_List$li,
@@ -20953,22 +21048,22 @@ var _user$project$App$messageList = function (messages) {
 		{ctor: '[]'},
 		A2(_elm_lang$core$List$map, _user$project$App$showMessage, messages));
 };
-var _user$project$App$Model = F7(
-	function (a, b, c, d, e, f, g) {
-		return {phxSocket: a, currentMessage: b, messages: c, joystick: d, joystickIndex: e, sensorData: f, mdl: g};
+var _user$project$App$Model = F9(
+	function (a, b, c, d, e, f, g, h, i) {
+		return {phxSocket: a, currentMessage: b, messages: c, joystick: d, joystickIndex: e, sensorData: f, autoMode: g, selectedTab: h, mdl: i};
 	});
-var _user$project$App$ChatMessage = function (a) {
-	return {body: a};
-};
-var _user$project$App$chatMessageDecoder = A2(
-	_elm_lang$core$Json_Decode$map,
-	_user$project$App$ChatMessage,
-	A2(_elm_lang$core$Json_Decode$field, 'body', _elm_lang$core$Json_Decode$string));
+var _user$project$App$SensorData = F9(
+	function (a, b, c, d, e, f, g, h, i) {
+		return {irDown: a, irFl: b, irFr: c, irBl: d, irBr: e, lidar: f, angleL: g, angleR: h, angleAvg: i};
+	});
 var _user$project$App$Flags = function (a) {
 	return {host: a};
 };
 var _user$project$App$Mdl = function (a) {
 	return {ctor: 'Mdl', _0: a};
+};
+var _user$project$App$SelectTab = function (a) {
+	return {ctor: 'SelectTab', _0: a};
 };
 var _user$project$App$SendControlToServer = function (a) {
 	return {ctor: 'SendControlToServer', _0: a};
@@ -20992,7 +21087,7 @@ var _user$project$App$SendMessage = {ctor: 'SendMessage'};
 var _user$project$App$SetNewMessage = function (a) {
 	return {ctor: 'SetNewMessage', _0: a};
 };
-var _user$project$App$viewBody = function (model) {
+var _user$project$App$viewDebug = function (model) {
 	return A2(
 		_elm_lang$html$Html$div,
 		{
@@ -21007,56 +21102,55 @@ var _user$project$App$viewBody = function (model) {
 		},
 		{
 			ctor: '::',
-			_0: _user$project$Joystick$joystickDisplay(model.joystick),
+			_0: A2(_elm_lang$html$Html_Lazy$lazy, _user$project$Sensors$viewSensor, model.sensorData),
 			_1: {
 				ctor: '::',
-				_0: A2(_elm_lang$html$Html_Lazy$lazy, _user$project$Sensors$viewSensor, model.sensorData),
+				_0: A2(
+					_elm_lang$html$Html$form,
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Events$onSubmit(_user$project$App$SendMessage),
+						_1: {ctor: '[]'}
+					},
+					{
+						ctor: '::',
+						_0: A4(
+							_MichaelCombs28$elm_mdl$Material_Textfield$render,
+							_user$project$App$Mdl,
+							{
+								ctor: '::',
+								_0: 0,
+								_1: {ctor: '[]'}
+							},
+							model.mdl,
+							{
+								ctor: '::',
+								_0: _MichaelCombs28$elm_mdl$Material_Textfield$onInput(_user$project$App$SetNewMessage),
+								_1: {
+									ctor: '::',
+									_0: _MichaelCombs28$elm_mdl$Material_Textfield$value(model.currentMessage),
+									_1: {ctor: '[]'}
+								}
+							}),
+						_1: {ctor: '[]'}
+					}),
 				_1: {
 					ctor: '::',
 					_0: A2(
-						_elm_lang$html$Html$form,
+						_elm_lang$html$Html$div,
+						{ctor: '[]'},
 						{
 							ctor: '::',
-							_0: _elm_lang$html$Html_Events$onSubmit(_user$project$App$SendMessage),
-							_1: {ctor: '[]'}
-						},
-						{
-							ctor: '::',
-							_0: A4(
-								_MichaelCombs28$elm_mdl$Material_Textfield$render,
-								_user$project$App$Mdl,
-								{
-									ctor: '::',
-									_0: 0,
-									_1: {ctor: '[]'}
-								},
-								model.mdl,
-								{
-									ctor: '::',
-									_0: _MichaelCombs28$elm_mdl$Material_Textfield$onInput(_user$project$App$SetNewMessage),
-									_1: {
-										ctor: '::',
-										_0: _MichaelCombs28$elm_mdl$Material_Textfield$value(model.currentMessage),
-										_1: {ctor: '[]'}
-									}
-								}),
+							_0: _user$project$App$messageList(model.messages),
 							_1: {ctor: '[]'}
 						}),
-					_1: {
-						ctor: '::',
-						_0: A2(
-							_elm_lang$html$Html$div,
-							{ctor: '[]'},
-							{
-								ctor: '::',
-								_0: _user$project$App$messageList(model.messages),
-								_1: {ctor: '[]'}
-							}),
-						_1: {ctor: '[]'}
-					}
+					_1: {ctor: '[]'}
 				}
 			}
 		});
+};
+var _user$project$App$viewBody = function (model) {
+	return _elm_lang$core$Native_Utils.eq(model.selectedTab, 0) ? _user$project$App$viewControl(model) : _user$project$App$viewDebug(model);
 };
 var _user$project$App$view = function (model) {
 	return A4(
@@ -21068,8 +21162,16 @@ var _user$project$App$view = function (model) {
 			_0: _MichaelCombs28$elm_mdl$Material_Layout$fixedHeader,
 			_1: {
 				ctor: '::',
-				_0: _MichaelCombs28$elm_mdl$Material_Layout$scrolling,
-				_1: {ctor: '[]'}
+				_0: _MichaelCombs28$elm_mdl$Material_Layout$selectedTab(model.selectedTab),
+				_1: {
+					ctor: '::',
+					_0: _MichaelCombs28$elm_mdl$Material_Layout$onSelectTab(_user$project$App$SelectTab),
+					_1: {
+						ctor: '::',
+						_0: _MichaelCombs28$elm_mdl$Material_Layout$scrolling,
+						_1: {ctor: '[]'}
+					}
+				}
 			}
 		},
 		{
@@ -21108,7 +21210,15 @@ var _user$project$App$view = function (model) {
 			drawer: {ctor: '[]'},
 			tabs: {
 				ctor: '_Tuple2',
-				_0: {ctor: '[]'},
+				_0: {
+					ctor: '::',
+					_0: _elm_lang$html$Html$text('Control'),
+					_1: {
+						ctor: '::',
+						_0: _elm_lang$html$Html$text('Debug'),
+						_1: {ctor: '[]'}
+					}
+				},
 				_1: {ctor: '[]'}
 			},
 			main: {
@@ -21149,37 +21259,23 @@ var _user$project$App$init = function (_p0) {
 			joystickIndex: _elm_lang$core$Maybe$Nothing,
 			sensorData: {
 				ctor: '::',
-				_0: {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Date$fromTime(1448928000000),
-					_1: 1.7
-				},
+				_0: {ctor: '_Tuple2', _0: -5, _1: 1.7},
 				_1: {
 					ctor: '::',
-					_0: {
-						ctor: '_Tuple2',
-						_0: _elm_lang$core$Date$fromTime(1451606400000),
-						_1: 2
-					},
+					_0: {ctor: '_Tuple2', _0: -4, _1: 2},
 					_1: {
 						ctor: '::',
-						_0: {
-							ctor: '_Tuple2',
-							_0: _elm_lang$core$Date$fromTime(1454284800000),
-							_1: 1
-						},
+						_0: {ctor: '_Tuple2', _0: -2.5, _1: 4},
 						_1: {
 							ctor: '::',
-							_0: {
-								ctor: '_Tuple2',
-								_0: _elm_lang$core$Date$fromTime(1456790400000),
-								_1: 1
-							},
+							_0: {ctor: '_Tuple2', _0: 0, _1: 1},
 							_1: {ctor: '[]'}
 						}
 					}
 				}
 			},
+			autoMode: false,
+			selectedTab: 0,
 			mdl: _MichaelCombs28$elm_mdl$Material$model
 		},
 		{
@@ -21188,6 +21284,105 @@ var _user$project$App$init = function (_p0) {
 			_1: {ctor: '[]'}
 		});
 };
+var _user$project$App$subscriptions = function (model) {
+	return _elm_lang$core$Platform_Sub$batch(
+		{
+			ctor: '::',
+			_0: A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$listen, model.phxSocket, _user$project$App$PhoenixMsg),
+			_1: {
+				ctor: '::',
+				_0: _user$project$Joystick$axisData(_user$project$App$AxisData),
+				_1: {
+					ctor: '::',
+					_0: _user$project$Joystick$connected(_user$project$App$GamepadConnected),
+					_1: {
+						ctor: '::',
+						_0: _user$project$Joystick$disconnected(_user$project$App$GamepadDisconnected),
+						_1: {
+							ctor: '::',
+							_0: A2(_elm_lang$core$Time$every, _elm_lang$core$Time$millisecond * 10, _user$project$App$UpdateControlDisplay),
+							_1: {
+								ctor: '::',
+								_0: A2(_elm_lang$core$Time$every, _elm_lang$core$Time$millisecond * 500, _user$project$App$SendControlToServer),
+								_1: {ctor: '[]'}
+							}
+						}
+					}
+				}
+			}
+		});
+};
+var _user$project$App$SensorMessage = function (a) {
+	return {ctor: 'SensorMessage', _0: a};
+};
+var _user$project$App$sensorMessageDecoder = A2(
+	_elm_lang$core$Json_Decode$map,
+	_user$project$App$SensorMessage,
+	A3(
+		_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
+		'angle_avg',
+		_elm_lang$core$Json_Decode$float,
+		A3(
+			_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
+			'angle_r',
+			_elm_lang$core$Json_Decode$float,
+			A3(
+				_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
+				'angle_l',
+				_elm_lang$core$Json_Decode$float,
+				A3(
+					_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
+					'lidar',
+					_elm_lang$core$Json_Decode$float,
+					A3(
+						_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
+						'ir_br',
+						_elm_lang$core$Json_Decode$float,
+						A3(
+							_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
+							'ir_bl',
+							_elm_lang$core$Json_Decode$float,
+							A3(
+								_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
+								'ir_fr',
+								_elm_lang$core$Json_Decode$float,
+								A3(
+									_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
+									'ir_fl',
+									_elm_lang$core$Json_Decode$float,
+									A3(
+										_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
+										'ir_down',
+										_elm_lang$core$Json_Decode$float,
+										_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(_user$project$App$SensorData)))))))))));
+var _user$project$App$AutoMessage = function (a) {
+	return {ctor: 'AutoMessage', _0: a};
+};
+var _user$project$App$autoMessageDecoder = A2(
+	_elm_lang$core$Json_Decode$map,
+	_user$project$App$AutoMessage,
+	A2(_elm_lang$core$Json_Decode$field, 'auto', _elm_lang$core$Json_Decode$bool));
+var _user$project$App$DebugMessage = function (a) {
+	return {ctor: 'DebugMessage', _0: a};
+};
+var _user$project$App$debugMessageDecoder = A2(
+	_elm_lang$core$Json_Decode$map,
+	_user$project$App$DebugMessage,
+	A2(_elm_lang$core$Json_Decode$field, 'debug', _elm_lang$core$Json_Decode$string));
+var _user$project$App$chatMessageDecoder = _elm_lang$core$Json_Decode$oneOf(
+	{
+		ctor: '::',
+		_0: _user$project$App$debugMessageDecoder,
+		_1: {
+			ctor: '::',
+			_0: _user$project$App$autoMessageDecoder,
+			_1: {
+				ctor: '::',
+				_0: _user$project$App$sensorMessageDecoder,
+				_1: {ctor: '[]'}
+			}
+		}
+	});
 var _user$project$App$update = F2(
 	function (msg, model) {
 		var _p3 = msg;
@@ -21208,15 +21403,30 @@ var _user$project$App$update = F2(
 			case 'ReceiveChatMessage':
 				var _p5 = A2(_elm_lang$core$Json_Decode$decodeValue, _user$project$App$chatMessageDecoder, _p3._0);
 				if (_p5.ctor === 'Ok') {
-					return {
-						ctor: '_Tuple2',
-						_0: _elm_lang$core$Native_Utils.update(
-							model,
-							{
-								messages: {ctor: '::', _0: _p5._0.body, _1: model.messages}
-							}),
-						_1: _elm_lang$core$Platform_Cmd$none
-					};
+					switch (_p5._0.ctor) {
+						case 'DebugMessage':
+							return {
+								ctor: '_Tuple2',
+								_0: _elm_lang$core$Native_Utils.update(
+									model,
+									{
+										messages: {ctor: '::', _0: _p5._0._0, _1: model.messages}
+									}),
+								_1: _elm_lang$core$Platform_Cmd$none
+							};
+						case 'AutoMessage':
+							var _p7 = _p5._0._0;
+							var _p6 = A2(_elm_lang$core$Debug$log, 'Auto mode set to ', _p7);
+							return {
+								ctor: '_Tuple2',
+								_0: _elm_lang$core$Native_Utils.update(
+									model,
+									{autoMode: _p7}),
+								_1: _elm_lang$core$Platform_Cmd$none
+							};
+						default:
+							return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+					}
 				} else {
 					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 				}
@@ -21228,14 +21438,14 @@ var _user$project$App$update = F2(
 						{currentMessage: _p3._0}),
 					{ctor: '[]'});
 			case 'UpdateControlDisplay':
-				var _p6 = model.joystickIndex;
-				if (_p6.ctor === 'Nothing') {
+				var _p8 = model.joystickIndex;
+				if (_p8.ctor === 'Nothing') {
 					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 				} else {
 					return {
 						ctor: '_Tuple2',
 						_0: model,
-						_1: _user$project$Joystick$poll(_p6._0)
+						_1: _user$project$Joystick$poll(_p8._0)
 					};
 				}
 			case 'SendControlToServer':
@@ -21277,9 +21487,9 @@ var _user$project$App$update = F2(
 					_fbonetti$elm_phoenix_socket$Phoenix_Push$withPayload,
 					payload,
 					A2(_fbonetti$elm_phoenix_socket$Phoenix_Push$init, 'joystick', 'client'));
-				var _p7 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$push, push, model.phxSocket);
-				var phxSocket = _p7._0;
-				var phxCmd = _p7._1;
+				var _p9 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$push, push, model.phxSocket);
+				var phxSocket = _p9._0;
+				var phxCmd = _p9._1;
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
@@ -21315,7 +21525,7 @@ var _user$project$App$update = F2(
 						{joystick: _p3._0}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
-			default:
+			case 'SendMessage':
 				var payload = _elm_lang$core$Json_Encode$object(
 					{
 						ctor: '::',
@@ -21330,9 +21540,9 @@ var _user$project$App$update = F2(
 					_fbonetti$elm_phoenix_socket$Phoenix_Push$withPayload,
 					payload,
 					A2(_fbonetti$elm_phoenix_socket$Phoenix_Push$init, 'new_msg', 'client'));
-				var _p8 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$push, push, model.phxSocket);
-				var phxSocket = _p8._0;
-				var phxCmd = _p8._1;
+				var _p10 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$push, push, model.phxSocket);
+				var phxSocket = _p10._0;
+				var phxCmd = _p10._1;
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
@@ -21340,36 +21550,16 @@ var _user$project$App$update = F2(
 						{currentMessage: '', phxSocket: phxSocket}),
 					_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$App$PhoenixMsg, phxCmd)
 				};
+			default:
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{selectedTab: _p3._0}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
 		}
 	});
-var _user$project$App$subscriptions = function (model) {
-	return _elm_lang$core$Platform_Sub$batch(
-		{
-			ctor: '::',
-			_0: A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$listen, model.phxSocket, _user$project$App$PhoenixMsg),
-			_1: {
-				ctor: '::',
-				_0: _user$project$Joystick$axisData(_user$project$App$AxisData),
-				_1: {
-					ctor: '::',
-					_0: _user$project$Joystick$connected(_user$project$App$GamepadConnected),
-					_1: {
-						ctor: '::',
-						_0: _user$project$Joystick$disconnected(_user$project$App$GamepadDisconnected),
-						_1: {
-							ctor: '::',
-							_0: A2(_elm_lang$core$Time$every, _elm_lang$core$Time$millisecond * 10, _user$project$App$UpdateControlDisplay),
-							_1: {
-								ctor: '::',
-								_0: A2(_elm_lang$core$Time$every, _elm_lang$core$Time$millisecond * 500, _user$project$App$SendControlToServer),
-								_1: {ctor: '[]'}
-							}
-						}
-					}
-				}
-			}
-		});
-};
 var _user$project$App$main = _elm_lang$html$Html$programWithFlags(
 	{init: _user$project$App$init, update: _user$project$App$update, subscriptions: _user$project$App$subscriptions, view: _user$project$App$view})(
 	A2(
