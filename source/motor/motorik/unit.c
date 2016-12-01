@@ -1,6 +1,8 @@
 #include <check.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include "gangstil.h"
+
 
 /*
 	To add a unit test: 
@@ -26,8 +28,23 @@ START_TEST (ik_tests)
 }
 END_TEST
 
+START_TEST (coordinate_conversion_tests)
+{
+	{
+		Point2D original;
+		original.x = 1;
+		original.y = 0;
+		float angle = M_PI/2;
+		
+		Point2D rotated = rotate_point_by_angle(angle);
+		ck_assert(rotated.x == 0);
+		ck_assert(rotated.y == 1);
+	}
+}
+END_TEST
 
-Suite * motorik_test(void)
+
+Suite * motor_suite(void)
 {
     Suite *s;
     TCase *tc_core;
@@ -39,6 +56,8 @@ Suite * motorik_test(void)
 
 	//ADD TESTS HERE
     tcase_add_test(tc_core, ik_tests);
+    tcase_add_test(tc_core, coordinate_conversion_tests);
+
     suite_add_tcase(s, tc_core);
 
     return s;
@@ -50,7 +69,7 @@ int main(int argc, char *argv[])
     Suite *s;
     SRunner *sr;
 
-    s = money_suite();
+    s = motor_suite();
     sr = srunner_create(s);
 
     srunner_run_all(sr, CK_NORMAL);
