@@ -26,9 +26,11 @@ RIGHT = 2
 ANGLE_10_DEGREE = 10
 
 # Distances to different objects in meters
-DEAD_END_DISTANCE = 1.3
+DEAD_END_DISTANCE = 1.2
+LIDAR_STOP_DISTANCE = 0.30
 DISTANCE_TO_OBSTACLE = 0.0
 DISTANCE_TO_WALL_IN_CORRIDOR = 0.5
+TILE_SIZE = 0.8
 
 # Distance between the sensors in the mount on same side
 DISTANCE_BETWEEN_SENSORS = 0.16
@@ -42,7 +44,7 @@ class DecisionPacket():
         self.decision = GO_FORWARD
         self.previous_decision = GO_FORWARD
         self.turn_timer = 0
-        self.regulate_base_movment = 0;
+        self.regulate_base_movement = 0;
         self.regulate_command_y = 0;
         self.regulate_goal_angle = 0;
 
@@ -136,22 +138,34 @@ def get_decision(sensor_data, decision_packet):
 
         for value in corridors_and_dead_ends:
             # If more than one corridor to choose from
-            if (corridors_and_dead_ends.count(CORRIDOR) > 1):
-                decision_packet.decision = MAZE_TOO_COMPLICATED;
-                #print("Maze too complicated")
+            if (corridors_and_dead_ends.count(CORRIDOR) == 3):
+                decision_packet.decision = TURN_LEFT;
 
-            else:
-                if (_expected_path(corridors_and_dead_ends, DEAD_END, CORRIDOR, DEAD_END)):
+            elif (corridors_and_dead_ends.count(CORRIDOR) == 2):
+                if (sensor_data.lidar > DEAD_END_DISTANCE):
+                    decision_packet.decision = GO_FORWARD
+                else:
+                    if (corridors_and_dead_ends[LEFT] == CORRIDOR):
+                        decision_packet.decision = TURN_LEFT
+                    else:
+                        decision_packet.decision = TURN_RIGHT
+
+            elif (corridors_and_dead_ends.count(CORRIDOR) == 1):
+                if (sensor_data.lidar < TILE_SIZE and sensor_data.lidar > LIDAR_STOP_DISTANCE):
+                    decision_packet.decision = GO_FORWARD
+                elif (corridors_and_dead_ends[LEFT] == CORRIDOR):
                     decision_packet.decision = TURN_LEFT
-
-                elif (_expected_path(corridors_and_dead_ends, DEAD_END, DEAD_END, CORRIDOR)):
+                elif (corridors_and_dead_ends[RIGHT] == CORRIDOR):
                     decision_packet.decision = TURN_RIGHT
-
-                elif (_expected_path(corridors_and_dead_ends, DEAD_END, DEAD_END, DEAD_END)):
-                    decision_packet.decision = STOP
-
                 else:
                     decision_packet.decision = GO_FORWARD
+
+            elif (corridors_and_dead_ends.count(CORRIDOR) == 0):
+                if (sensor_data.lidar > LIDAR_STOP_DISTANCE):
+                    decision_packet.decision = GO_FORWARD
+                else:
+                    decision_packet.decision = TURN_LEFT
+
 
     # Check if previous decision was to make a turn.
     # If it was we need to let the robot make a full turn before using
