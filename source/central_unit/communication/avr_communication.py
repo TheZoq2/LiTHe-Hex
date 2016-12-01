@@ -19,7 +19,7 @@
 import spidev
 import time
 import math
-import angle_calculation
+import communication.angle_calculation as angle_calculation
 import pdb
 
 
@@ -53,7 +53,8 @@ SENSOR_DATA = 0x24
 
 class SensorDataPacket(object):
     """
-    Data structure containing the values of all sensors in meters.
+    Data structure containing the values of all sensors. All angles
+    are measured in degrees and all distances in meters.
     """
 
     def __init__(self, ir_down, ir_front_left, ir_back_left,

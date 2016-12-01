@@ -17,18 +17,18 @@
 # You should have received a copy of the GNU General Public License
 # along with LiTHe Hex.  If not, see <http://www.gnu.org/licenses/>.
 
-import communication
-import comm_gui.web as web
+import communication.avr_communication as avr_communication
+import communication.web as web
 import queue
 import time
-import decision_making
-import pid_controller
+import decisions.decision_making as decision_making
+import decisions.pid_controller as pid_controller
 import pdb
 import math
 import os
 
 def main():
-    spi = communication.communication_init()
+    spi = avr_communication.communication_init()
     res = []
 
     decision_packet = decision_making.DecisionPacket()
@@ -42,7 +42,7 @@ def main():
     while True:
         #pdb.set_trace()
         os.system('clear')
-        sensor_data = communication.get_sensor_data(spi)
+        sensor_data = avr_communication.get_sensor_data(spi)
         print(sensor_data)
 
         print("right_angle: ",sensor_data.right_angle)
