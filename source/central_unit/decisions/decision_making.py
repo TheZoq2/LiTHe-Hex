@@ -165,7 +165,7 @@ def get_decision(sensor_data, decision_packet):
         # After the robot has started turning the angle will be
         # larger than 5 (0 ideally), so we don't make new decisions until
         # the robot is back at straight angle.
-        if (sensor_data.average_angle <= ANGLE_10_DEGREE and
+        if (abs(sensor_data.average_angle) <= ANGLE_10_DEGREE and
             time.time() - decision_packet.turn_timer >= TIME_NEEDED_TO_TURN): #TODO: test and tweak this
             decision_packet.decision = GO_FORWARD
             decision_packet.previous_decision = COMPLETE_TURN
@@ -178,7 +178,7 @@ def get_decision(sensor_data, decision_packet):
         if (decision_packet.turn_timer == 0):
             decision_packet.turn_timer = time.time()
 
-        if (sensor_data.average_angle <= ANGLE_10_DEGREE and
+        if ((sensor_data.average_angle) <= ANGLE_10_DEGREE and
             time.time() - decision_packet.turn_timer >= TIME_NEEDED_TO_TURN): #TODO: test and tweak this
             decision_packet.decision = GO_FORWARD
             decision_packet.previous_decision = COMPLETE_TURN
