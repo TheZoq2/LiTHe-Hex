@@ -1,6 +1,5 @@
 import sys
 import math
-import angle_calculation
 
 input_file = "/tmp/hexsim/sensors"
 output_file = "/tmp/hexsim/command"
@@ -20,6 +19,11 @@ def write_output_command(command):
     with open(output_file, 'w') as txt:
         txt.write(command)
 
+
+def _to_radians(deg):
+    return (math.pi / 180) * deg
+
+
 def regulate(sensor_data):
 
    # offset for the robot length from mid in a corridor
@@ -30,9 +34,9 @@ def regulate(sensor_data):
    # TODO: fix so that we do not use positive angle all the time
 
    if abs(offset) > ANGULAR_ADJUSTMENT_BORDER:
-       goal_angle = -angle_calculation.get_average_angle(sensor_data) - math.pi * offset * ANGLE_SCALEDOWN
+       goal_angle = -_to_radians(sensor_data.average_angle) - math.pi * offset * ANGLE_SCALEDOWN
    else:
-       goal_angle = -angle_calculation.get_average_angle(sensor_data)
+       goal_angle = -_to_radians(sensor_data.average_angle)
 
    command = BASE_MOVEMENT + "," + str(command_y) + "," + str(goal_angle)
    print("pid_controller command: ", command)
