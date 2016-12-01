@@ -112,24 +112,41 @@ struct Leg alt_ik(float x, float y, float z){
 Point2D rotate_point_by_angle(Point2D original, float angle)
 {
 	Point2D result;
-	result.x = cos(angle)*x - sin(angle)*y;
-	result.y = sin(angle)*x + cos(angle)*y;
+	result.x = cos(angle)*original.x - sin(angle)*original.y;
+	result.y = sin(angle)*original.x + cos(angle)*original.y;
+
+	return result;
 }
 
-Point2D robot_to_ik_coords(Point2D original, size_t leg)
+Point2D robot_to_ik_coords(Point2D original, int leg)
 {
-	switch(leg)
+	Point2D result = original;
+	
+	if(leg % 2 == 1)
 	{
-		case LF:
-			return rotate_point_by_angle(original, -M_PI / 4);
-		case RF:
-			return rotate_point_by_angle(original, M_PI / 4);
-		case LB:
-			return rotate_point_by_angle(original, M_PI / 4);
-		case RB:
-			return rotate_point_by_angle(original, -M_PI / 4);
-		default:
-			return original;
+		result.x = -result.x;
+		result.y = -result.y;
+	}
+
+	if(leg == LF)
+	{
+		return rotate_point_by_angle(result, -M_PI / 4);
+	}
+	else if(leg == RF)
+	{
+		return rotate_point_by_angle(result, M_PI / 4);
+	}
+	else if(leg == LB)
+	{
+		return rotate_point_by_angle(result, M_PI / 4);
+	}
+	else if(leg == RB)
+	{
+		return rotate_point_by_angle(result, -M_PI / 4);
+	}
+	else
+	{
+		return result;
 	}
 }
 
@@ -142,28 +159,13 @@ Point2D robot_to_ik_coords(Point2D original, size_t leg)
  */
 struct Leg* get_angle_set(Point2D * target, float * height){
     struct Leg* res = (struct Leg *)calloc(NUM_LEGS, sizeof(struct Leg));
-    float x;
-    float y;
-    float z;
     for (size_t leg = 0; leg < NUM_LEGS; ++leg){
-        if ((leg & 1) == 0){ //left hand side of robot
-            x = target[leg].y;
-            z = target[leg].x;
-        }
-        else{ //right hand side of robot
-            x = -target[leg].y;
-            z = -target[leg].x;
-        }
-        y = height[leg];
-        res[leg] = leg_ik(x,y,z);
+		Point2D target_robot_coords = robot_to_ik_coords(target[leg], leg);
+
+        res[leg] = leg_ik(target_robot_coords.x, height[leg], target_robot_coords.y);
     }
 
-    res[LF].angle1 = res[LF].angle1 + (M_PI / 4);
-    res[RF].angle1 = res[RF].angle1 - (M_PI / 4);
-    res[LB].angle1 = res[LB].angle1 + (M_PI / 4);
-    res[RB].angle1 = res[RB].angle1 - (M_PI / 4);
-
-    return res;
+	return res;
 }
 
 
