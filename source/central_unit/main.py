@@ -27,6 +27,7 @@ import decisions.pid_controller as pid_controller
 import pdb
 import math
 import os
+import constants
 
 def main():
     
@@ -38,7 +39,7 @@ def main():
     spi = avr_communication.communication_init()
     res = []
 
-    auto = False
+    auto = True
 
     decision_packet = decision_making.DecisionPacket()
 
@@ -51,7 +52,7 @@ def main():
     while True:
         #pdb.set_trace()
         if auto:
-
+            # Auto mode
             os.system('clear')
             sensor_data = avr_communication.get_sensor_data(spi)
             print(sensor_data)
@@ -65,8 +66,8 @@ def main():
             print("Decision: ", decision_packet.decision)
 
             pid_controller.regulate(sensor_data, decision_packet)
-            print("Pid controller command: " + decision_packet.regulate_base_movement + ", " + decision_packet.regulate_command_y + ", " + decision_packet.regulate_goal_angle);
-            time.sleep(1)
+            print("Pid controller command: ", decision_packet.regulate_base_movement, ", ", decision_packet.regulate_command_y, ", ", decision_packet.regulate_goal_angle);
+            time.sleep(0.5)
 
             if not receive_queue.empty():
                 packet = receive_queue.get()
@@ -74,21 +75,35 @@ def main():
                     auto = packet.auto 
 
         else:
-            # Guys, this is test for server stuffs
-            sensor_data = avr_communication.get_sensor_data(spi)
-            print("Putting data in queue")
-
-            send_queue.put(web.ServerSendPacket(sensor_data, corridor))
-
-            if not receive_queue.empty():
-                packet = receive_queue.get()
-                if packet.auto is not None:
-                    auto = packet.auto
-                if packet.has_motion_command:
-                    pass
-
+            # Manual mode
+            auto = do_manual_mode_iteration(spi, send_queue, receive_queue)
             time.sleep(0.1)
+
+
+def do_manual_mode_iteration(spi, send_queue, receive_queue):
+    sensor_data = avr_communication.get_sensor_data(spi)
+
+    send_queue.put(web.ServerSendPacket(sensor_data))
+
+    auto = False
+
+    if not receive_queue.empty():
+        packet = receive_queue.get()
+        if packet.auto is not None:
+            auto = packet.auto
+        if packet.has_motion_command:
+            servo_speed = packet.thrust * constants.MAX_BYTE_SIZE
+            avr_communication.set_servo_speed(spi, servo_speed)
+
+            x_speed = packet.x * constants.MAX_SIGNED_BYTE_SIZE
+            y_speed = packet.y * constants.MAX_SIGNED_BYTE_SIZE
+            rotation = packet.rotation * constants.MAX_SIGNED_BYTE_SIZE
+
+            avr_communication.walk(spi, x_speed, y_speed, rotation)
+    
+    return auto
 
 
 if __name__ == '__main__':
     main()
+

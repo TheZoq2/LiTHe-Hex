@@ -64,12 +64,22 @@ int main(void)
 
 	//Initialize all legs
 	
-	raise_to_default_position();
+	Point2D* current_position = raise_to_default_position();
 
+	for(uint8_t i = 0; i < 1; ++i)
+	{
+		Point2D goal;
+		goal.x = 100;
+		goal.y = 0;
+
+		work_towards_goal(0, goal, current_position);
+	}
 	
 	while(1)
 	{
-		}
+	}
+
+	free(current_position);
 }
 
 #ifndef IS_X86

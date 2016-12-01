@@ -16,11 +16,16 @@
 # You should have received a copy of the GNU General Public License
 # along with LiTHe Hex.  If not, see <http://www.gnu.org/licenses/>.
 
-import spidev
+try:
+    import spidev
+except ImportError:
+    import tests.fake_spi as spidev
+
 import time
 import math
 import communication.angle_calculation as angle_calculation
 import pdb
+import constants
 
 
 MOTOR_ADDR = (0, 0)
@@ -31,9 +36,6 @@ DATA_REQ    = 0x02
 SEND_FAIL   = 0x1F
 ACK         = 0x0F
 GARBAGE     = 0x00
-
-MAX_BYTE_SIZE = 255
-MAX_16BIT_SIZE = MAX_BYTE_SIZE**2
 
 SET_OBSTACLE = 0x03
 
@@ -133,7 +135,7 @@ def _add_parity(type_, msg):
 
 def _send_bytes(spi, *data):
     # check if all are bytes
-    if sum([(not isinstance(x, int)) or x > MAX_BYTE_SIZE or x < 0 for x in data]):
+    if sum([(not isinstance(x, int)) or x > constants.MAX_BYTE_SIZE or x < 0 for x in data]):
         raise InvalidCommandException("Data sequence {} contains non-bytes".format(data))
     spi.writebytes([GARBAGE])
     spi.writebytes(list(data))
@@ -217,7 +219,7 @@ def set_obstacle_mode(spi, value):
 
 def set_servo_speed(spi, speed):
     """Sets the global servo speed on the motor unit"""
-    if speed < 0 or speed > MAX_16BIT_SIZE:
+    if speed < 0 or speed > constants.MAX_16BIT_SIZE:
         raise InvalidCommandException("Speed \"{}\" is not a 16-bit value".format(speed))
     _select_device(spi, MOTOR_ADDR)
     least = speed & 0x00FF
