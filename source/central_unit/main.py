@@ -38,7 +38,7 @@ def main():
     spi = avr_communication.communication_init()
     res = []
 
-    auto = False
+    auto = True
 
     decision_packet = decision_making.DecisionPacket()
 
@@ -65,8 +65,8 @@ def main():
             print("Decision: ", decision_packet.decision)
 
             pid_controller.regulate(sensor_data, decision_packet)
-            print("Pid controller command: " + decision_packet.regulate_base_movement + ", " + decision_packet.regulate_command_y + ", " + decision_packet.regulate_goal_angle);
-            time.sleep(1)
+            print("Pid controller command: ", decision_packet.regulate_base_movement, ", ", decision_packet.regulate_command_y, ", ", decision_packet.regulate_goal_angle);
+            time.sleep(0.5)
 
             if not receive_queue.empty():
                 packet = receive_queue.get()
@@ -78,7 +78,7 @@ def main():
             sensor_data = avr_communication.get_sensor_data(spi)
             print("Putting data in queue")
 
-            send_queue.put(web.ServerSendPacket(sensor_data, corridor))
+            send_queue.put(web.ServerSendPacket(sensor_data))
 
             if not receive_queue.empty():
                 packet = receive_queue.get()
