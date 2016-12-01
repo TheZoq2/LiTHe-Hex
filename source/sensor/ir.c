@@ -20,8 +20,8 @@
 
 #define NUM_CORRECT_DATA_POINTS	4
 #define PERCENT_FAULT_TOLERANCE 0.20
-#define CORRECTION_FACTOR		20
-#define LOWEST_AD_VALUE			80
+#define CORRECTION_FACTOR	0.20
+#define LOWEST_AD_VALUE		80
 #define LONGER_THAN_MAX_RANGE	255
 
 void ir_init(IR ir_list[NUM_SENSORS]) {
@@ -65,7 +65,7 @@ void ir_reduce_noise(IR* ir) {
 	double data_list[NUM_SENSOR_DATA];
 	uint8_t j = NUM_SENSOR_DATA-1;
 	for(uint8_t i = 0; i < NUM_SENSOR_DATA; i++) {
-		data_list[j] = ir->raw_data_list[i];
+		data_list[j] = ir->raw_data_list[i] / 100;
 		j--;
 	}
 

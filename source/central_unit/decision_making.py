@@ -21,9 +21,13 @@ FRONT = 0
 LEFT = 1
 RIGHT = 2
 
+# Angle 
+ANGLE_10_DEGREE = 10
+
 # Distances to different objects in meters
-DEAD_END_DISTANCE = 1
+DEAD_END_DISTANCE = 1.3
 DISTANCE_TO_OBSTACLE = 0.0
+DISTANCE_TO_WALL_IN_CORRIDOR = 0.5
 
 # Distance between the sensors in the mount on same side
 DISTANCE_BETWEEN_SENSORS = 0.16
@@ -100,10 +104,10 @@ def _expected_path(corridors_and_dead_ends, front, left, right):
 # Checks if all the sidesensors give small values
 # TODO: Tweak this and remove magic constant!
 def _is_inside_corridor(sensor_data):
-    if (sensor_data.ir_front_left <= 0.5 and
-        sensor_data.ir_back_left <= 0.5 and
-        sensor_data.ir_front_right <= 0.5 and
-        sensor_data.ir_back_right <= 0.5):
+    if (sensor_data.ir_front_left <= DISTANCE_TO_WALL_IN_CORRIDOR and
+        sensor_data.ir_back_left <= DISTANCE_TO_WALL_IN_CORRIDOR and
+        sensor_data.ir_front_right <= DISTANCE_TO_WALL_IN_CORRIDOR and
+        sensor_data.ir_back_right <= DISTANCE_TO_WALL_IN_CORRIDOR):
         return True
     else:
         return False
@@ -156,7 +160,7 @@ def get_decision(sensor_data, decision_packet):
         # After the robot has started turning the angle will be
         # larger than 5 (0 ideally), so we don't make new decisions until
         # the robot is back at straight angle.
-        if (sensor_data.right_angle <= 10 and
+        if (sensor_data.average_angle <= ANGLE_10_DEGREE and
             time.time()-decision_packet.turn_timer >= TIME_NEEDED_TO_TURN): #TODO: test and tweak this
             decision_packet.decision = GO_FORWARD
             decision_packet.previous_decision = COMPLETE_TURN
@@ -169,7 +173,7 @@ def get_decision(sensor_data, decision_packet):
         if (decision_packet.turn_timer == 0):
             decision_packet.turn_timer = time.time()
 
-        if (sensor_data.left_angle <= 10 and
+        if (sensor_data.average_angle <= Angle and
             time.time()-decision_packet.turn_timer >= TIME_NEEDED_TO_TURN): #TODO: test and tweak this
             decision_packet.decision = GO_FORWARD
             decision_packet.previous_decision = COMPLETE_TURN
