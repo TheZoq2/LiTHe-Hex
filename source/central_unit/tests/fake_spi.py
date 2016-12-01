@@ -26,7 +26,7 @@ class UnexpectedDataException(Exception):
 
 class SpiDev(object):
     """
-    Fake SpiDev class for testing purposes
+    Fake SpiDev class for testing purposes.
     """
     
     def __init__(self):
@@ -37,11 +37,19 @@ class SpiDev(object):
         self.expected_seq = []
 
     def set_fake_read_sequence(self, data):
+        """
+        Sets a data sequence that readbytes will
+        return when invoked.
+        """
         assert isinstance(data, list)
         self.data_sequence = data
 
     def set_expected_write_sequence(self, data):
-        self.expected_seq = seq
+        """
+        Sets a sequence that writebytes expects
+        when invoked.
+        """
+        self.expected_seq = data 
 
     def open(self, spi_port, slave_select):
         self.spi_port = spi_port

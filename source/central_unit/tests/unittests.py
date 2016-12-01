@@ -17,13 +17,13 @@
 
 import unittest
 import communication.avr_communication as avr_communication
-import comm_gui.web as web
+import communication.web as web
 import tests.fake_spi as fake_spi
 import time
 import json
 import math
 import queue
-import angle_calculation
+import communication.angle_calculation as angle_calculation
 
 SENSOR_ARGS = (1, 2, 3, 4, 5, 0x01, 0xFE)
 DEBUG_STRING_NORMAL = "hello"
@@ -79,8 +79,29 @@ class SpiTestCase(unittest.TestCase):
         seq = [0x00, 0x0F, 0xFF]
         spi.set_expected_write_sequence([avr_communication.GARBAGE] + seq)
         try:
-            avr_communication.writebytes(spi, seq)
+            avr_communication._send_bytes(spi, *seq)
         except fake_spi.UnexpectedDataException as e:
             self.fail("Expected {}, got {}".format(e.expected, e.actual))
+
+    def test_read_single_byte(self):
+        spi = fake_spi.SpiDev()
+        msg = 0xFE
+        # type that indicates that it's a one byte message with an
+        # uneven number of ones
+        type_ = 0b00001101
+        spi.set_fake_read_sequence([type_, msg])
+        result = avr_communication._recieve_bytes(spi)
+        self.assertListEqual(result, [msg])
+
+    def test_read_multiple_bytes(self):
+        spi = fake_spi.SpiDev()
+        msg = [0x01, 0x02, 0x03, 0x01]
+        # type that indicates that it's a multibyte message with an
+        # uneven number of ones in the message and length byte
+        type_ = 0b10001111
+        spi.set_fake_read_sequence([type_, 4] + msg)
+        result = avr_communication._recieve_bytes(spi)
+        self.assertListEqual(result, msg)
+
 
 
