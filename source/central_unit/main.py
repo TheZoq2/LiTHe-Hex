@@ -91,7 +91,7 @@ def do_manual_mode_iteration(spi, send_queue, receive_queue):
         packet = receive_queue.get()
         if packet.auto is not None:
             auto = packet.auto
-        if packet.has_motion_command:
+        if packet.has_motion_command():
             servo_speed = packet.thrust * constants.MAX_BYTE_SIZE
             avr_communication.set_servo_speed(spi, servo_speed)
 
