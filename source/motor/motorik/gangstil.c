@@ -36,8 +36,8 @@ const float MID_LEG_JOINT_Y             = 0.1;
 const float HIGH                        = 0.05;
 const float GROUNDED                    = -0.1;
 const float MIN_DIST                    = 0.06;
-const float MAX_DIST                    = 0.18;
-const float VERT_MID_LEG_BORDER_OFFSET  = 0.06;
+const float MAX_DIST                    = 0.25;
+const float VERT_MID_LEG_BORDER_OFFSET  = 0.18;
 const float VERT_HEAD_LEG_BORDER_OFFSET = -0.03;
 const float HORIZ_BORDER_TILT           = 0;
 const float DIAG_DIVISIVE_BORDER_TILT   = 1.3333333;
@@ -109,6 +109,47 @@ struct Leg alt_ik(float x, float y, float z){
 }
 
 
+Point2D rotate_point_by_angle(Point2D original, float angle)
+{
+	Point2D result;
+	result.x = cos(angle)*original.x - sin(angle)*original.y;
+	result.y = sin(angle)*original.x + cos(angle)*original.y;
+
+	return result;
+}
+
+Point2D robot_to_ik_coords(Point2D original, int leg)
+{
+	Point2D result = original;
+	
+	if(leg % 2 == 1)
+	{
+		result.x = -result.x;
+		result.y = -result.y;
+	}
+
+	if(leg == LF)
+	{
+		return rotate_point_by_angle(result, -M_PI / 4);
+	}
+	else if(leg == RF)
+	{
+		return rotate_point_by_angle(result, M_PI / 4);
+	}
+	else if(leg == LB)
+	{
+		return rotate_point_by_angle(result, M_PI / 4);
+	}
+	else if(leg == RB)
+	{
+		return rotate_point_by_angle(result, -M_PI / 4);
+	}
+	else
+	{
+		return result;
+	}
+}
+
 /**
  * @brief get_angle_set produces an array of the leg angles as calculated by the IK.
  * @param target provides the coordinates relative to the joints for all the legs, as 
@@ -118,28 +159,13 @@ struct Leg alt_ik(float x, float y, float z){
  */
 struct Leg* get_angle_set(Point2D * target, float * height){
     struct Leg* res = (struct Leg *)calloc(NUM_LEGS, sizeof(struct Leg));
-    float x;
-    float y;
-    float z;
     for (size_t leg = 0; leg < NUM_LEGS; ++leg){
-        if ((leg & 1) == 0){ //left hand side of robot
-            x = target[leg].y;
-            z = target[leg].x;
-        }
-        else{ //right hand side of robot
-            x = -target[leg].y;
-            z = -target[leg].x;
-        }
-        y = height[leg];
-        res[leg] = leg_ik(x,y,z);
+		Point2D target_robot_coords = robot_to_ik_coords(target[leg], leg);
+
+        res[leg] = leg_ik(target_robot_coords.x, height[leg], target_robot_coords.y);
     }
 
-    res[LF].angle1 = res[LF].angle1 + (M_PI / 4);
-    res[RF].angle1 = res[RF].angle1 - (M_PI / 4);
-    res[LB].angle1 = res[LB].angle1 + (M_PI / 4);
-    res[RB].angle1 = res[RB].angle1 - (M_PI / 4);
-
-    return res;
+	return res;
 }
 
 
@@ -165,22 +191,6 @@ struct Leg* get_angle_set(Point2D * target, float * height){
 int radian_to_servo(float radian_angle)
 {
 	return (int)(radian_angle * (0x1ff/150*180) / M_PI);
-}
-
-
-void rotate_to(float x, float y, float z, int legId)
-{
-	struct Leg leg_ik_result = leg_ik(x, y, z);
-	
-	uint16_t angles[3];
-			
-	angles[0] = (uint16_t)(0x1ff - radian_to_servo(leg_ik_result.angle1));
-	angles[1] = (uint16_t)(0x1ff + radian_to_servo(leg_ik_result.angle2));
-	angles[2] = (uint16_t)(0x1ff + radian_to_servo(leg_ik_result.angle3));
-
-	set_leg_angles(legId, angles);
-	send_servo_action();
-	_delay_ms(1000);
 }
 
 /**
@@ -533,7 +543,7 @@ float scale_legs(Point2D * targ, Point2D * curr, float * scale, bool lrlRaised){
  * determine what direction each leg should be moved, relative to the body (away
  * from target, with negative rotation, if feet are grounded).
  */
-void direct_legs(float rot, Point2D * targ, Point2D * current, Point2D * req, bool lrlRaised){
+void direct_legs(float rot, Point2D * targ, Point2D * current, Point2D req, bool lrlRaised){
     Point2D attention;
     Point2D absTarg;
 
@@ -543,12 +553,12 @@ void direct_legs(float rot, Point2D * targ, Point2D * current, Point2D * req, bo
         attention.y = current[leg].y + joint.y;
 
         if (lrlRaised == (leg == 0 || leg == 3 || leg == 4)){ //move legs "away" from position (body towards)
-            absTarg.x =  req->x + cos(rot) * attention.x - sin(rot) * attention.y;
-            absTarg.y =  req->y + sin(rot) * attention.x + cos(rot) * attention.y;
+            absTarg.x =  req.x + cos(rot) * attention.x - sin(rot) * attention.y;
+            absTarg.y =  req.y + sin(rot) * attention.x + cos(rot) * attention.y;
         }
         else{   //move legs "towards" target position (step)
-            absTarg.x =   - req->x  + cos(rot) * attention.x + sin(rot) * attention.y;
-            absTarg.y =   - req->y  - sin(rot) * attention.x + cos(rot) * attention.y;
+            absTarg.x =   - req.x  + cos(rot) * attention.x + sin(rot) * attention.y;
+            absTarg.y =   - req.y  - sin(rot) * attention.x + cos(rot) * attention.y;
         }
         targ[leg].x = absTarg.x - joint.x;
         targ[leg].y = absTarg.y - joint.y;
@@ -638,6 +648,8 @@ Point2D* raise_to_default_position()
 		height[i] = GROUNDED;
 	}
 	execute_position(current_leg_positions, height);
+
+	return current_leg_positions;
 }
 
 /**
@@ -654,7 +666,7 @@ Point2D* raise_to_default_position()
  * @param current position the legs curerently hold.
  * @return scaledown applied to grounded set of legs.
  */
-float work_towards_goal(float rot, Point2D * goal, Point2D * current){
+float work_towards_goal(float rot, Point2D goal, Point2D * current){
     Point2D targ0[NUM_LEGS];
     Point2D targ1[NUM_LEGS];
 
@@ -694,7 +706,7 @@ float rotate_set_small_angle(float angle, Point2D * current){
 
     while (remaining > 0.2) {
         float remainingAngle = remaining * angle;
-        remaining = remaining - work_towards_goal(remainingAngle, &emptyGoal, current);
+        remaining = remaining - work_towards_goal(remainingAngle, emptyGoal, current);
     }
     
     return remaining;
