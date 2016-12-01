@@ -111,4 +111,11 @@ void assume_standardized_stance(Point2D * current);
 */
 Point2D* raise_to_default_position();
 
+#ifdef IS_UNIT_TEST
+Point2D rotate_point_by_angle(Point2D original, float angle);
+Point2D robot_to_ik_coords(Point2D original, int leg);
+float absf(float a);
+#endif
+
+
 #endif

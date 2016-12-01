@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "gangstil.h"
+#include <stdbool.h>
 
 
 /*
@@ -23,6 +24,25 @@
 	in the motorik_test function.
 */
 
+bool float_is_almost(float tested, float target)
+{
+	return (absf(tested-target) < 0.0001);
+}
+
+/**
+ * Tests functions that are used to test other functions
+ */
+START_TEST (meta_test)
+{
+	ck_assert(float_is_almost(0, 1) == false);
+	ck_assert(float_is_almost(0, 0.00000001) == true);
+	ck_assert(float_is_almost(5, 5.00000001) == true);
+	ck_assert(float_is_almost(5.00000001, 5) == true);
+	ck_assert(float_is_almost(4.99999, 5) == true);
+	ck_assert(float_is_almost(-5, 5) == false);
+}
+END_TEST
+
 START_TEST (ik_tests)
 {
 }
@@ -36,9 +56,52 @@ START_TEST (coordinate_conversion_tests)
 		original.y = 0;
 		float angle = M_PI/2;
 		
-		Point2D rotated = rotate_point_by_angle(angle);
-		ck_assert(rotated.x == 0);
-		ck_assert(rotated.y == 1);
+		Point2D rotated = rotate_point_by_angle(original, angle);
+
+		ck_assert(float_is_almost(rotated.x, 0));
+		ck_assert(float_is_almost(rotated.y, 1));
+	}
+
+	//Testing the side legs
+	{
+		Point2D original;
+		original.x = 0.20;
+		original.y = 0;
+
+		Point2D result = robot_to_ik_coords(original, 2);
+		
+		ck_assert(float_is_almost(result.x, 0.20));
+		ck_assert(float_is_almost(result.y, 0));
+
+		original.x = 0.15;
+		original.y = 0.05;
+
+		result = robot_to_ik_coords(original, 3);
+		
+
+		printf("%f, %f\n", original.x, original.y);
+		ck_assert(float_is_almost(result.x, 0.15));
+		ck_assert(float_is_almost(result.y, 0.05));
+	}
+	//Testing the side legs
+	{
+		Point2D original;
+		original.x = -0.20;
+		original.y = 0;
+
+		Point2D result = robot_to_ik_coords(original, 3);
+		
+		ck_assert(float_is_almost(result.x, 0.20));
+		ck_assert(float_is_almost(result.y, 0));
+
+		original.x = -0.15;
+		original.y = 0.05;
+
+		result = robot_to_ik_coords(original, 3);
+		
+		printf("%f, %f\n", original.x, original.y);
+		ck_assert(float_is_almost(result.x, 0.15));
+		ck_assert(float_is_almost(result.y, 0.05));
 	}
 }
 END_TEST
@@ -55,6 +118,7 @@ Suite * motor_suite(void)
     tc_core = tcase_create("Core");
 
 	//ADD TESTS HERE
+    tcase_add_test(tc_core, meta_test);
     tcase_add_test(tc_core, ik_tests);
     tcase_add_test(tc_core, coordinate_conversion_tests);
 

@@ -19,7 +19,8 @@ test:
 	./a.out
 
 unit:
-	gcc ${SOURCES} ${SOURCES_UNIT} -DIS_X86 -Wall -lm -g -lcheck -o unit_tests
+	gcc ${SOURCES} ${SOURCES_UNIT} -DIS_X86 -Wall -lm -g -lcheck -o unit_tests \
+		-DIS_UNIT_TEST
 	./unit_tests
 
 #avr-objcopy -j .text -j .data -O ihex src.elf src.hex

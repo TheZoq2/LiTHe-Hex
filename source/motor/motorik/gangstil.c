@@ -686,7 +686,6 @@ float work_towards_goal(float rot, Point2D goal, Point2D * current){
         execute_step(current, targ1, false);
         return scaledown1;
     }
-
 }
 
 
