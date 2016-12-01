@@ -28,10 +28,13 @@ import pdb
 import math
 import os
 import constants
+import RPi.GPIO as GPIO
 
 def main():
     
     test_mode = False
+    GPIO.setmode(GPIO.BOARD)
+    GPIO.setup(40, GPIO.IN, GPIO.PUD_DOWN)
 
     if len(sys.argv) > 0 and sys.argv[0] == "--test":
         test_mode = True
@@ -39,7 +42,8 @@ def main():
     spi = avr_communication.communication_init()
     res = []
 
-    auto = True
+    auto = False
+    button_temp = 0
 
     decision_packet = decision_making.DecisionPacket()
 
@@ -51,12 +55,21 @@ def main():
 
     while True:
         #pdb.set_trace()
+        button_input = GPIO.input(40)
+        if (button_input == 1):
+            if (button_temp != button_input):
+                auto = not auto
+                button_temp = 1
+        else:
+            button_temp = 0
+
         if auto:
             # Auto mode
             os.system('clear')
             sensor_data = avr_communication.get_sensor_data(spi)
             print(sensor_data)
 
+            print("button_value: ", button_input)
             print("right_angle: ",sensor_data.right_angle)
             print("left_angle: ",sensor_data.left_angle)
             print("Average angle: ", sensor_data.average_angle)
@@ -67,7 +80,7 @@ def main():
 
             pid_controller.regulate(sensor_data, decision_packet)
             print("Pid controller command: ", decision_packet.regulate_base_movement, ", ", decision_packet.regulate_command_y, ", ", decision_packet.regulate_goal_angle);
-            time.sleep(0.5)
+            time.sleep(0.1)
 
             if not receive_queue.empty():
                 packet = receive_queue.get()
@@ -76,6 +89,8 @@ def main():
 
         else:
             # Manual mode
+            os.system('clear')
+            print("Entering manual mode!")
             auto = do_manual_mode_iteration(spi, send_queue, receive_queue)
             time.sleep(0.1)
 
