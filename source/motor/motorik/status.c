@@ -1,5 +1,6 @@
 
 #include "status.h"
+#include <math.h>
 
 #define BIT_OFFSET  127
 #define MAX_16_BIT  65535
@@ -7,7 +8,8 @@
 float uint8_to_float(uint8_t original)
 {
 	//return (float)((int8_t)original - BIT_OFFSET) / BIT_OFFSET;
-	return (((float)original)/255.0) * 2.0 - 1.0;
+	float data_float = (((float)original)/255.0) * 2.0 - 1.0;
+	return roundf(data_float * 100) / 100;
 }
 
 void status_init(CurrentStatus* status) {

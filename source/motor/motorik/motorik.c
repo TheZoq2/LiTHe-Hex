@@ -52,10 +52,7 @@ void test_servo_communication()
 	//Read internal temperature from servo 1
 	ServoReply reply = read_servo_data(1, 0x2B, 1);
 
-	int a= 0;
-
-	while(1)
-		;
+	int a = 0;
 }
 
 int main(void)
@@ -79,7 +76,10 @@ int main(void)
 	
 	init_all_servos();
 
+	_delay_ms(100);
+
 	send_servo_action();
+	_delay_ms(100);
 
 	test_servo_communication();
 
@@ -87,17 +87,18 @@ int main(void)
 	
 	Point2D* current_position = raise_to_default_position();
 
-//	for(uint8_t i = 0; i < 1; ++i)
-//	{
-//		Point2D goal;
-//		goal.x = 100;
-//		goal.y = 0;
-//
-//		work_towards_goal(0, goal, current_position);
-//	}
-//	
+	for(uint8_t i = 0; i < 20; ++i)
+	{
+		Point2D goal;
+		goal.x = -100;
+		goal.y = 0;
+
+		work_towards_goal(0, goal, current_position);
+	}
+	
 	while(1)
 	{
+	/*
         if (current_status->return_to_neutral) {
 
             current_status->return_to_neutral = false;
@@ -123,6 +124,7 @@ int main(void)
                 rotate_set_angle(rotation * (M_PI / 2), current_position);
             }
         }
+	*/
 	}
 
 	free(current_position);
@@ -154,7 +156,7 @@ void build_spi_reply_frame(Frame *frame_trans) {
 }
 
 void handle_spi_frame(Frame *frame_recv) {
-
+/*
 	switch(get_id(frame_recv)){
 		case TOGGLE_OBSTACLE :
 			// Toggle obstacle
@@ -182,5 +184,6 @@ void handle_spi_frame(Frame *frame_recv) {
             current_status->return_to_neutral = true;
 			break;
 	}
+	*/
 }
 #endif

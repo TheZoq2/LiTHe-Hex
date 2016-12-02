@@ -239,6 +239,7 @@ void execute_position(Point2D * target, float * z){
 void execute_step(Point2D * current, Point2D * target, bool lrlRaised){
     float z[NUM_LEGS];
 
+	//TODO: Remove 'not'
     if(lrlRaised){
         z[LF] = GROUNDED + HIGH;
         z[RM] = GROUNDED + HIGH;
@@ -256,6 +257,11 @@ void execute_step(Point2D * current, Point2D * target, bool lrlRaised){
         z[RB] = GROUNDED + HIGH;
     }
 
+	execute_position(current, z);
+	execute_position(target, z);
+
+
+	/*
     Point2D transition[NUM_LEGS];
     Point2D diff[NUM_LEGS];
     for (size_t leg = 0; leg < NUM_LEGS; ++leg) {
@@ -272,6 +278,7 @@ void execute_step(Point2D * current, Point2D * target, bool lrlRaised){
 
         execute_position(transition, z);
     }
+	*/
 
     z[LF] = GROUNDED;
     z[RM] = GROUNDED;
