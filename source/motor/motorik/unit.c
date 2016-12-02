@@ -56,6 +56,9 @@ START_TEST (meta_test)
 END_TEST
 
 START_TEST (status_tests) {
+
+	printf("%f \n", uint8_to_float(127));
+	
 	ck_assert(float_is_almost(uint8_to_float(127), 0));
 	ck_assert(float_is_almost(uint8_to_float(255), 1));
 	ck_assert(float_is_almost(uint8_to_float(0), -1));
@@ -71,6 +74,7 @@ START_TEST (status_tests) {
     ck_assert(float_is_almost(status.x_speed, 1.0));
     ck_assert(float_is_almost(status.y_speed, 0.0));
     ck_assert(float_is_almost(status.rotation, -1.0));
+	ck_assert(float_is_almost(status.servo_speed, 1.0));
     
 } 
 END_TEST
