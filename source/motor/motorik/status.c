@@ -18,6 +18,7 @@ void status_init(CurrentStatus* status) {
     status->rotation = 0.0;
     status->servo_speed = 0.0;
     status->return_to_neutral = false;
+    status->manual_rot = NONE;
 }
 
 void status_set_speed(CurrentStatus* status, uint8_t x_speed, uint8_t y_speed) {

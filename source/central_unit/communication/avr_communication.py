@@ -43,7 +43,7 @@ SET_SERVO_SPEED = 0x20
 SET_SERVO_SPEED_LENGTH = 2
 
 WALK = 0x21
-WALK_LENGTH = 3
+WALK_LENGTH = 4
 
 RETURN_TO_NEUTRAL = 0x05
 
@@ -230,15 +230,16 @@ def set_servo_speed(spi, speed):
     _check_response(response)
 
 
-def walk(spi, x_speed, y_speed, turn_speed):
+def walk(spi, x_speed, y_speed, turn_speed, auto_mode):
     """
     Commands the motor unit to walk in the direction and speed 
     given by x_speed, y_speed and turn_speed
     """
     _select_device(spi, MOTOR_ADDR)
-    total_msg = _get_total_msg(WALK_LENGTH, x_speed, y_speed, turn_speed)
+    auto = 0x01 if auto_mode else 0x00
+    total_msg = _get_total_msg(WALK_LENGTH, x_speed, y_speed, turn_speed, auto)
     response = _send_bytes(spi, _add_parity(WALK, total_msg),
-                           WALK_LENGTH, x_speed, y_speed, turn_speed)
+                           WALK_LENGTH, x_speed, y_speed, turn_speed, auto)
     _check_response(response)
 
 

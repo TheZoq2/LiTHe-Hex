@@ -108,9 +108,10 @@ int main(void)
             float x_speed = current_status->x_speed;
             float y_speed = current_status->y_speed;
             float rotation = current_status->rotation;
+            enum ManualRotation manual_rot = current_status->manual_rot;
             float servo_speed = current_status->servo_speed;
 
-            if (x_speed != 0.0 || y_speed != 0.0) {
+            if (x_speed != 0.0 || y_speed != 0.0 || manual_rot != NONE) {
                 Point2D goal;
 
                 goal.x = x_speed;
@@ -118,8 +119,8 @@ int main(void)
 
                 work_towards_goal(rotation, p, current_position);
 
-            } else if (rotation != 0.0) {
-                
+            } else if (rotation != 0) {
+                rotate_set_angle(rotation * (M_PI / 2), current_position);
             }
         }
 	}
@@ -168,9 +169,15 @@ void handle_spi_frame(Frame *frame_recv) {
 			// Go command 
 			uint8_t x_speed = frame_recv->msg[0];
 			uint8_t y_speed = frame_recv->msg[1];
-			uint8_t turn_speed = frame_recv->msg[2];
+			uint8_t rotation = frame_recv->msg[2];
             status_set_speed(current_status, x_speed, y_speed);
-            status_set_rotation(current_status, turn_speed);
+            if (rotation < 0) {
+                current_status->manual_rot = LEFT;
+            } else if (rotation > 0) {
+                current_status->manual_rot = RIGHT;
+            } else {
+                current_status->manual_rot = NONE;
+            }
 			break;
 		case RETURN_TO_NEUTRAL :
             current_status->return_to_neutral = true;

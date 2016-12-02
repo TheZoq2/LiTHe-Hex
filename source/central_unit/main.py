@@ -134,7 +134,7 @@ def do_manual_mode_iteration(spi, send_queue, receive_queue):
             y_speed = no_negative_byte(packet.y)
             rotation = no_negative_byte(packet.rotation)
 
-            avr_communication.walk(spi, x_speed, y_speed, rotation)
+            avr_communication.walk(spi, x_speed, y_speed, rotation, False)
     
     return auto
 
@@ -167,7 +167,7 @@ def send_decision_avr(spi, decision_packet):
         y_speed = no_negative_byte(0)
         rotation = no_negative_byte(0)
             
-    avr_communication.walk(spi, x_speed, y_speed, rotation)
+    avr_communication.walk(spi, x_speed, y_speed, rotation, True)
 
 # Malcolm conversion for no no negative numbers, other name?
 def no_negative_byte(byte):
