@@ -43,6 +43,7 @@ class DecisionPacket():
     def __init__(self):
         self.decision = GO_FORWARD
         self.previous_decision = GO_FORWARD
+        self.speed = 1 
         self.turn_timer = 0
         self.regulate_base_movement = 0;
         self.regulate_command_y = 0;
