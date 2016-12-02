@@ -73,44 +73,6 @@ float maxf(float a, float b){
     return b;
 }
 
-
-/**
- * @brief alt_ik identical in functionality as ik.h:s leg_ik (only, at time of writing, actually functional).
- * @param x foot position distance from leg mount, measured from first joint, straight outward.
- * @param y foot position distance from leg mount, measured from first joint, straight upward.
- * @param z foot position distance from leg mount, measured from first joint, along the cross product of x and z axes.
- * @return struct Leg containing angles for each joint, numbered from closest to farthest from robot. angle1 measured
- * counter-clockwise, seen from above. angle2 and angle3 measured counter clockwise when seen facing z.
- */
-struct Leg alt_ik(float x, float y, float z){
-    struct Leg res;
-
-
-    while (sqrt(powf(sqrtf(powf(x, 2) + powf(z, 2)) - JOINT_1_LENGTH, 2) + powf(y, 2)) >
-           (JOINT_2_LENGTH + JOINT_3_LENGTH)){
-        x = x * 0.9;
-        z = z * 0.9;
-    }
-
-        res.angle1 = -atanf(z/x);
-
-        float j2ToFoot = sqrt(powf(sqrtf(powf(x, 2) + powf(z, 2)) - JOINT_1_LENGTH, 2) + powf(y, 2));
-        float gamma = asin(y / j2ToFoot);
-        float alpha = acos((powf(JOINT_2_LENGTH, 2) + powf(j2ToFoot, 2) - powf(JOINT_3_LENGTH, 2))//no n/0 since diffLength & currLength > 0 if statement is entered
-                           / (2 * JOINT_2_LENGTH * j2ToFoot));    // a = acos ((B2 + C2 - A2)/2BC), cosine trig formula
-        res.angle2 = gamma + alpha + JOINT_2_OFFSET;
-        res.angle3 =  - M_PI + asin(j2ToFoot * sin(alpha)/JOINT_3_LENGTH)  - JOINT_2_OFFSET + JOINT_3_OFFSET;
-    res.angle1 = minf(JOINT_1_MAX, res.angle1);
-    res.angle1 = maxf(JOINT_1_MIN, res.angle1);
-    res.angle2 = minf(JOINT_2_MAX, res.angle2);
-    res.angle2 = maxf(JOINT_2_MIN, res.angle2);
-    res.angle3 = minf(JOINT_3_MAX, res.angle3);
-    res.angle3 = maxf(JOINT_3_MIN, res.angle3);
-
-    return res;
-}
-
-
 Point2D rotate_point_by_angle(Point2D original, float angle)
 {
 	Point2D result;
