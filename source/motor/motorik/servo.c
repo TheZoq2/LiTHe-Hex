@@ -140,7 +140,7 @@ ServoReply receive_servo_reply()
 	servo_reply.parameter_amount = servo_reply.length - 2; //See ax12 datasheet
 	servo_reply.error = usart_receive();
 
-	malloc(sizeof(uint8_t) * servo_reply.parameter_amount);
+	servo_reply.parameters = (uint8_t*) malloc(sizeof(uint8_t) * servo_reply.parameter_amount);
 
 	for(uint8_t i = 0; i < servo_reply.parameter_amount; ++i)
 	{

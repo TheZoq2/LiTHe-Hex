@@ -79,4 +79,17 @@
 	{
 		printf("Delaying for %i ms \n", ms);
 	}
+
+	void usart_set_direction(enum UsartDirection direction)
+	{
+		switch (direction)
+		{
+		case RX:
+			printf("Setting usart direction to RX\n");
+			break;
+		case TX:
+			printf("Setting usart direction to TX\n");
+			break;
+		}
+	}
 #endif
