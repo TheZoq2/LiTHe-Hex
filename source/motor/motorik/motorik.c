@@ -49,8 +49,13 @@ ISR(SPI_STC_vect) {
 
 void test_servo_communication()
 {
-	//Read model number from servo 1
-	ServoReply reply = read_servo_data(1, 0);
+	//Read internal temperature from servo 1
+	ServoReply reply = read_servo_data(1, 0x2B, 1);
+
+	int a= 0;
+
+	while(1)
+		;
 }
 
 int main(void)

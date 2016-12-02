@@ -78,7 +78,7 @@ void free_servo_reply(ServoReply reply);
 		server. The length of that data should be data_amount
  */
 void send_servo_command(
-		uint8_t id, uint8_t instruction, const void* data, uint8_t data_amount);
+		uint8_t id, uint8_t instruction, void* data, uint8_t data_amount);
 
 /*
 	Writes data to the servo control table. This is done using the WRITE_REG
@@ -136,7 +136,7 @@ void set_leg_angles(enum LegIds leg_index, uint16_t* angles);
 /*
 	Sends a read request to a servo and returns the response
 */
-ServoReply read_servo_data(uint8_t id, uint8_t address);
+ServoReply read_servo_data(uint8_t id, uint8_t address, uint8_t length);
 
 
 
