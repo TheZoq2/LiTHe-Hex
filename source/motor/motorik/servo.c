@@ -20,6 +20,7 @@ const uint8_t GOAL_POSITION_ADDRESS = 0x1E;
 const uint8_t ROTATION_SPEED_ADDRESS = 0x20;
 const uint8_t RETURN_LEVEL_ADDRESS = 0x10;
 const uint8_t MOVING_ADDRESS = 0x2E;
+const uint8_t CCW_COMPLIANCE_SLOPE_ADDRESS = 0x1D;
 
 const uint8_t TORQUE_ON = 0x01;
 const uint8_t TORQUE_OFF = 0x00;
@@ -121,6 +122,7 @@ void write_servo_single_byte(uint8_t id, uint8_t address, uint8_t value)
 
 ServoReply receive_servo_reply()
 {
+	usart_set_direction(RX);
 	//Switch the direction of the tri-state gate
 	set_bit(PORTD, PIN_RX_TOGGLE);
 
@@ -130,16 +132,17 @@ ServoReply receive_servo_reply()
 
 	//Receive the 2 start bytes. These are ignored for now
 	//TODO: Ensure that they are 0xff
-	usart_receive(); 
+	usart_receive();
 	usart_receive();
 
 	servo_reply.id = usart_receive();
 	servo_reply.length = usart_receive();
+	servo_reply.parameter_amount = servo_reply.length - 2; //See ax12 datasheet
 	servo_reply.error = usart_receive();
 
-	malloc(sizeof(ServoReply) * servo_reply.length);
+	malloc(sizeof(uint8_t) * servo_reply.parameter_amount);
 
-	for(uint8_t i = 0; i < servo_reply.length; ++i)
+	for(uint8_t i = 0; i < servo_reply.parameter_amount; ++i)
 	{
 		servo_reply.parameters[i] = usart_receive();
 	}
@@ -149,7 +152,9 @@ ServoReply receive_servo_reply()
 
 	//Reset the tri-state gate
 	clear_bit(PORTD, PIN_RX_TOGGLE);
+	usart_set_direction(TX);
 
+	_delay_ms(5);
 	return servo_reply;
 }
 void free_servo_reply(ServoReply reply)
@@ -189,6 +194,13 @@ void set_servo_rotation_speed(uint8_t id, uint16_t angle)
 	write_servo_data(id, ROTATION_SPEED_ADDRESS, command, 2);
 }
 
+void set_servo_compliance_thresholds(uint8_t id)
+{
+	uint8_t data[4] = {0x40, 0x01, 0x01, 0x40};
+
+	write_servo_data(id, CCW_COMPLIANCE_SLOPE_ADDRESS, data, 4);
+}
+
 void init_all_servos()
 {
 	//Tell servos to only reply to read_data instructions
@@ -202,8 +214,11 @@ void init_all_servos()
 		_delay_ms(1);
 		set_servo_rotation_speed(i, 0x006f);
 		_delay_ms(1);
+		set_servo_compliance_thresholds(i);
+		_delay_ms(1);
 	}
 }
+
 
 
 void set_leg_angles(enum LegIds leg_index, uint16_t* angles)
@@ -222,11 +237,11 @@ bool check_servo_done_rotating(uint8_t id)
 {
 	ServoReply reply = read_servo_data(id, MOVING_ADDRESS, 1);
 
-	return reply.parameters[0] == 1;
+	return reply.parameters[0] == 0;
 }
 bool servos_are_done_rotating()
 {
-	for(uint8_t i = 0; i < 18; i++)
+	for(uint8_t i = 1; i <= 18; i++)
 	{
 		if(check_servo_done_rotating(i) == false)
 		{

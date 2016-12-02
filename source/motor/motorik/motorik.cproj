@@ -147,6 +147,12 @@
     <Compile Include="spi.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="status.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="status.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="uart_lib.c">
       <SubType>compile</SubType>
     </Compile>

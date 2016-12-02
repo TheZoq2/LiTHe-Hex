@@ -7,9 +7,22 @@
 		UBRR0L = 0;
 
 		//Enable receive + transmit
-		UCSR0B = (1<<RXEN0) | (1<<TXEN0);
+		UCSR0B = (1<<TXEN0);
 		//Set frame format (1 start bit, 8 bit frames, no parity bits)
 		UCSR0C = (0<<USBS0)|(3<<UCSZ00);
+	}
+
+	void usart_set_direction(enum UsartDirection direction)
+	{
+		switch (direction)
+		{
+		case RX:
+			UCSR0B = (1<<RXEN0);
+			break;
+		case TX:
+			UCSR0B = (1<<TXEN0);
+			break;
+		}
 	}
 
 	void uart_wait()
