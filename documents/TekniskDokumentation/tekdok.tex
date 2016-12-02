@@ -233,7 +233,8 @@
 		\textbf{Centralenhet $ \to $ motorikenhet}\\ \midrule
 		Sätt hindergång & 03 & på/av \\ \midrule
 		Sätt servohastighet & 20 & 8 LSD, 8 MSD \\ \midrule
-		Gåkommando &  21 & len, x- och y-hastighet, svänghastighet \\ \midrule
+		Gåkommando &  21 & len, x- och y-hastighet, svänghastighet,
+        autonom-läge \\ \midrule
 		Return to neutral & 05 & -- \\ \midrule
 		\\
 		\textbf{Centralenhet $ \gets $ motorikenhet}\\ \midrule
@@ -518,53 +519,51 @@
     centralenheten. 
 
     \subsubsection{Avbrott}
-	Följade avbrott kommer att vara aktiva:
+	Följade avbrott är aktiva:
     \begin{itemize}
-        \item Avbrott 25 genereras när den interna A/D-omvandlaren är klar 
-            vilket används för IR-sensorerna och gyro. När A/D-omvandlingen är klar 
-            sparas värdet i en lista som behandlas vid ett senare tillfälle.
         \item Avbrott 20 genereras när någon bit i registret för SPI-kommunikationen
-            ändras. Det kommer att användas för kommunikationen över SPI. Avbrottskoden för 
-            SPI kommer att vara ganska stor eftersom den ska kunna skicka och ta emot data 
-			mellan sensorenheten och centralenheten. 
-        \item Avbrott 27 genereras när någon bit i registret för \itc{}-kommunikationen 
-            ändras. Data skickas och tas emot med LIDAR. 
-		\item Avbrott 14 genereras när Counter1 blir lika med ett specifikt värde. 
-			Kommer att användas när för att veta när IR-sensorer kan mäta. 
+            ändras. Det användas för kommunikationen över SPI med centralenheten. 
+            Avbrottsrutinen för SPI genereras vid första byte från centralenheten 
+            sedan sköts läsning av resterande byte samt evenetuellt svar i samma 
+            avbrott. 
+		\item Avbrott 16 genereras när Counter1 blir sitt maxvärde (overflow). 
+			Det användas för att räkna upp antal overflow vilket gör att vi hela tiden 
+			vet hur lång tid det passerat sedan start. 
+		\item Avbrott 19 genereras när Counter0 blir sitt maxvärde (overflow). 
+			Det användas för att räkna upp antal overflow vilket gör att vi hela tiden 
+			vet hur lång tid det passerat sedan start. 
     \end{itemize}
-
-	\subsection{Gyro}
-
-	Sensorenheten ska använda ett gyro för att mäta vridning i det horisontella
-	planet. Detta är användbart för att roboten ska veta hur mycket
-	den ska rotera när den svänger. En MLX90609 kommer att användas som gyro. Signalen från 
-	gyrot läses analogt in till den interna A/D-omvandlaren på ATmega1284 som konverterar 
-	den analoga signalen till ett digitalt värde med 10-bitars upplösning. 
 	
-	\subsection{Avståndssensorer fram}
-	
-	Sensorenheten ska använda avståndssensorer på framsidan, en sensor för att
-	upptäcka väggar och en sensor som är snett vinklat ner mot golvet för hinderdetektion. 
+    \subsection{Avståndssensorer fram}
 
-	Avståndssensorn som mäter framåt ska utgöras av en LIDAR-sensor, som har
-    ett mycket brett mätspann (0-40 m) med 1 centimeters upplösning.
+        Sensorenheten använder avståndssensorer på framsidan, en sensor för att
+        upptäcka väggar och en sensor som är snett vinklad ner mot golvet för
+        hinderdetektion.
 
-	Sensorn som ska upptäcka hinder ska utgöras av IR-sensorn GP2D120 som kan mäta mellan 
-	4 och 30 cm. Denna IR-sensor ska vara riktad ned och avståndet till marken kommer 
-	att vara mellan 4 och 30 cm. IR-sensorer har fördelen att använda samma analoga gränssnitt 
-	som de andra IR-sensorerna som roboten ska använda. 
+        Avståndssensorn som mäter framåt ska utgöras av en LIDAR-sensor, som har
+    ett mycket brett mätspann (0-40 m) med 1 centimeters upplösning. LIDAR-sensorn
+    är ansluten med PWM och längden av varje puls motsvarar den uppmätta distansen.
+    Alltså för att beräkna värdet från lidar beräknar vi tiden så signalen går
+    hög, när pulsen går låg beräknas tiden och vi vet hur långa pulsen var.
+
+        Sensorn som upptäcker hinder utgöras av IR-sensorn GP2D120 som kan mäta
+        mellan 4 och 30 cm. Denna IR-sensor är riktad ned och avståndet till marken
+        är mellan 4 och 30 cm. Denna IR-sensor har fördelen att använda samma
+        analoga gränssnitt som de andra IR-sensorerna som roboten använder.
 
     Monteringen av dessa sensorer illustreras i Figur \ref{fig:sensor_mount}.
 
-	\subsection{Avståndssensorer åt sidorna}
-	Roboten ska ha avståndssensorer på vardera långsida av roboten, för
-	detektion av väggar och återvändsgränder. Dessa sensorer utgörs av två 
-    IR-sensorer på varje sida där båda pekar ut från samma sida och
-	är placerade på varsin ända av plattformen. IR-sensorerna som ska vara placerade 
-	på sidan ska vara av typen GP2Y0A02YK som kan mästa avtånd mellan 20 och 150 cm. 
-	Detta spann gör det möjligt att navigera i korridorer och upptäcka 
-	återvändsgränder. Med två IR-sensorer på varje sida möjliggörs mätning av hur 
-	roboten är vriden i en rak korridor och detta kan användas som felkontroll av gyrot.
+        \subsection{Avståndssensorer åt sidorna}
+        Roboten har avståndssensorer på vardera långsida av roboten, för
+        detektion av väggar och återvändsgränder. Dessa sensorer utgörs av två
+        IR-sensorer på varje sida där båda pekar ut från samma sida och
+        är placerade på varsin ända av plattformen. IR-sensorerna som är placerade
+        på sidan är typen GP2Y0A02YK som kan mästa avtånd mellan 20 och 150 cm.
+        Detta spann gör det möjligt att navigera i korridorer och upptäcka
+        återvändsgränder. Med två IR-sensorer på varje sida möjliggörs mätning av hur
+        roboten är vriden i en rak korridor, vinkeln roboten har jämfört med
+        korridoren användas av regleralgoritmen i centalenheten.
+
 
     Monteringen av dessa sensorer illustreras i Figur \ref{fig:sensor_mount}.
 
@@ -580,18 +579,13 @@
         \includegraphics[width=15cm]{images/schematic_sensor.png}
         \caption{Kretschema över sensorenheten\label{fig:schem_sensor}}
     \end{figure}
-    
-    Ett antal lågpass-filter används för filtrering av brus från IR-sensorerna,
-    och utgörs av en kondenstator på 10nF och en 18kOhm-resistor för varje
-    sensor, kopplad mellan sensorerna och de analoga PA-ingångarna på
-    processorn. Till strömingångarna (Vcc) för varje IR-sensor är en av
-    PD-ingångarna kopplade (PD0 upp till PD4), för att möjliggöra avstängning
-    av enskilda sensorer, ifall de stör ut varandra.
 
-    LIDAR-sensorn är ansluten via I2C med SDA- och SCL-portarna till PC0 och
-    PC1 på processorn. PC0 och PC1 har inbyggda pull-up-resistorer, därför
-    behövs inga externa resistorer. Mellan GND- och Vcc-portarna för sensorn
-    finns en elektrolytkondensator på 680$\mu$F.
+    Ett antal lågpass-filter används för filtrering av brus från IR-sensorerna
+    och utgörs av en kondenstator på 10nF och en 18kOhm-resistor för varje
+    sensor. Filtret är kopplad mellan sensorerna och de analoga PA-ingångarna på
+    processorn.
+
+    LIDAR-sensorn är ansluten via PWM till ???VILKEN\_PORT??? på processorn.
 
     PC2 upp till PC5 används som anslutning till JTAG, för programmering av
     processorn, och PB4 upp till PB7 är anslutna via SPI till centralenheten.
@@ -637,9 +631,43 @@
     också finnas en eller flera grafer som beskriver några av de olika sensorernas data.
     Man ska också kunna ändra styrparametrarna till regleralgoritmen.
 
+    \subsection{Kommunikation}
+
+	\begin{longtable}[c]{l l l }
+        \textbf{Data} & \textbf{Nyckel} & \textbf{Typ} \\ \midrule
+        IR-sensor ned & "ir\_down" & float \\
+        IR-sensor fram vänster & "ir\_fl" & float \\
+        IR-sensor fram höger & "ir\_fr" & float \\
+        IR-sensor bak vänster & "ir\_bl" & float \\
+        IR-sensor bak höger & "ir\_br" & float \\
+        LIDAR & "lidar" & float \\
+        Vinkel till vänster vägg & "angle\_l" & float \\
+        Vinkel till höger vägg & "angle\_r" & float \\
+        Genomsnittlig vinkel & "angle\_avg" & float \\
+        Självgående läge & "auto" & bool \\
+        Debugsträng & "debug" & string \\
+
+		\caption{Format på JSON-strängen från
+        centralenheten\label{table:guimessagesfromcentral}}
+	\end{longtable}
+
+	\begin{longtable}[c]{l l l }
+        \textbf{Data} & \textbf{Nyckel} & \textbf{Typ} \\ \midrule
+        X-hastighet & "x" & float \\
+        Y-hastighet & "y" & float \\
+        Rotation & "rotation" & float \\
+        Thrust & "thrust" & float \\
+        Självgående läge & "auto" & bool \\
+
+		\caption{Format på JSON-strängen till
+        centralenheten\label{table:guimessagestocentral}}
+	\end{longtable}
+    
+
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%						Simuleringar
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    \newpage
 	\section{Simuleringar}
 	För att underlätta utvecklingen av vissa delar av projektet kommer vi att skriva
 	kod för att simulera dessa delar. Simuleringarna ska kunna köra samma kod som ska
