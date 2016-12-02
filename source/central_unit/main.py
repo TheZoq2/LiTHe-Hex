@@ -28,7 +28,10 @@ import pdb
 import math
 import os
 import constants
-import RPi.GPIO as GPIO
+try:
+    import RPi.GPIO as GPIO
+except ImportError:
+    pass
 
 def main():
     
@@ -63,7 +66,7 @@ def main():
             if (button_temp != button_input):
                 auto = not auto
                 button_temp = 1
-                # send_queue.put(web.ServerSendPacket(None, auto))
+                send_queue.put(web.ServerSendPacket(auto_mode = auto))
         else:
             button_temp = 0
 
@@ -78,14 +81,13 @@ def main():
                 packet = receive_queue.get()
                 if packet.auto is not None:
                     auto = packet.auto_mode 
-                """ Regulate algorithm parameters
+                #Regulate algorithm parameters
                 if packet.angle_scaledown is not None:
                     regulate_angle_scaledown(packet.angle_scaledown)
                 if packet.movement_scaledown is not None:
                     regulate_set_movement_scaledown(packet.movement_scaledown)
                 if packet.angle_adjustment_border is not None:
                     regulate_angle_adjustment_border(packet.angle_adjustment_border)
-                """
 
         else:
             # Manual mode
@@ -111,7 +113,7 @@ def do_auto_mode_iteration(spi, decision_packet):
     #send_decision_avr(spi, decision_packet)
 
     # Send decision to server
-    # send_queue.put(web.ServerSendPacket(decision_packet.decision))
+    send_queue.put(web.ServerSendPacket(debug_string=int_to_string_command(decision_packet.decision)))
  
 def do_manual_mode_iteration(spi, send_queue, receive_queue):
     sensor_data = avr_communication.get_sensor_data(spi)
@@ -130,7 +132,7 @@ def do_manual_mode_iteration(spi, send_queue, receive_queue):
 
             x_speed = no_negative_byte(packet.x)
             y_speed = no_negative_byte(packet.y)
-            rotation = no_negative_byte(packer.rotation)
+            rotation = no_negative_byte(packet.rotation)
 
             avr_communication.walk(spi, x_speed, y_speed, rotation)
     
@@ -169,7 +171,7 @@ def send_decision_avr(spi, decision_packet):
 
 # Malcolm conversion for no no negative numbers, other name?
 def no_negative_byte(byte):
-    retrun (int)(((byte + 1) / 2) * constants.MAX_BYTE_SIZE)
+    return (int)(((byte + 1) / 2) * constants.MAX_BYTE_SIZE)
 
 if __name__ == '__main__':
     main()
