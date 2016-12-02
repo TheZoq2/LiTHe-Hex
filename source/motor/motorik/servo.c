@@ -94,7 +94,7 @@ ServoReply read_servo_data(uint8_t id, uint8_t address)
 
 	new_data[0] = address;
 
-	send_servo_command(id, WRITE_REG_INSTRUCTION, (void*)&address, 1);
+	send_servo_command(id, WRITE_DATA_INSTRUCTION, (void*)&address, 1);
 
 	free(new_data);
 

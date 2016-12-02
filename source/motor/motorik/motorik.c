@@ -44,6 +44,13 @@ ISR(SPI_STC_vect) {
 }
 #endif
 
+
+void test_servo_communication()
+{
+	//Read model number from servo 1
+	ServoReply reply = read_servo_data(1, 0);
+}
+
 int main(void)
 {
 	// Enable global interrupts and init spi communication
@@ -61,6 +68,8 @@ int main(void)
 	init_all_servos();
 
 	send_servo_action();
+
+	test_servo_communication();
 
 	//Initialize all legs
 	
