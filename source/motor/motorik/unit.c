@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include "gangstil.h"
 #include <stdbool.h>
+#include "status.h"
 
 
 /*
@@ -52,6 +53,26 @@ START_TEST (meta_test)
 	ck_assert(float_is_almost(4.99999, 5) == true);
 	ck_assert(float_is_almost(-5, 5) == false);
 }
+END_TEST
+
+START_TEST (status_tests) {
+	ck_assert(float_is_almost(uint8_to_float(127), 0));
+	ck_assert(float_is_almost(uint8_to_float(255), 1));
+	ck_assert(float_is_almost(uint8_to_float(0), -1));
+
+    CurrentStatus status;
+
+    status_set_speed(&status, 255, 127);
+    status_set_rotation(&status, 0);
+    status_set_servo_speed(&status, 255, 255);
+
+	printf("%f, %f, %f", status.x_speed, status.y_speed, status.rotation);
+
+    ck_assert(float_is_almost(status.x_speed, 1.0));
+    ck_assert(float_is_almost(status.y_speed, 0.0));
+    ck_assert(float_is_almost(status.rotation, -1.0));
+    
+} 
 END_TEST
 
 START_TEST (ik_tests)
@@ -138,6 +159,7 @@ Suite * motor_suite(void)
     tc_core = tcase_create("Core");
 
 	//ADD TESTS HERE
+    tcase_add_test(tc_core, status_tests);
     tcase_add_test(tc_core, meta_test);
     tcase_add_test(tc_core, ik_tests);
     tcase_add_test(tc_core, coordinate_conversion_tests);

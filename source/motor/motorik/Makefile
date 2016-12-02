@@ -1,5 +1,6 @@
 SOURCES=uart_lib.c servo.c  \
-		../../IK/ik.c gangstil.c
+		../../IK/ik.c gangstil.c \
+		status.c
 
 SOURCES_AVR=../../communication/spi.c ../../communication/communication.c
 
