@@ -36,10 +36,10 @@ const uint8_t SERVO_MAP[6][3] = {
 	{8,10,12},
 };
 
-void send_servo_command(uint8_t id, uint8_t instruction, const void* data, uint8_t data_amount)
+void send_servo_command(uint8_t id, uint8_t instruction, void* data, uint8_t data_amount)
 {
-	//Set the direction of the trirstate gate
-	clear_bit(PORTD, PIN_RX_TOGGLE);
+	//Set the direction of the tristate gate
+	//clear_bit(PORTD, PIN_RX_TOGGLE);
 
 	uint8_t length = data_amount + 2;
 	//PORTD = PORTD & 0b11111011;
@@ -82,19 +82,20 @@ void write_servo_data(uint8_t id, uint8_t address, const uint8_t* data, uint8_t 
 		new_data[i+1] = data[i];
 	}
 
-	send_servo_command(id, WRITE_REG_INSTRUCTION, (void*)new_data, new_data_amount);
+	send_servo_command(id, WRITE_DATA_INSTRUCTION, (void*)new_data, new_data_amount);
 
 	free(new_data);
 }
 
-ServoReply read_servo_data(uint8_t id, uint8_t address)
+ServoReply read_servo_data(uint8_t id, uint8_t address, uint8_t length)
 {
 	//Send datarequest instruction
-	uint8_t* new_data = (uint8_t*)malloc(1);
+	uint8_t* new_data = (uint8_t*)malloc(2);
 
 	new_data[0] = address;
+	new_data[1] = length;
 
-	send_servo_command(id, WRITE_DATA_INSTRUCTION, (void*)&address, 1);
+	send_servo_command(id, READ_DATA_INSTRUCTION, (void*)new_data, 2);
 
 	free(new_data);
 
@@ -119,6 +120,8 @@ ServoReply receive_servo_reply()
 {
 	//Switch the direction of the tri-state gate
 	set_bit(PORTD, PIN_RX_TOGGLE);
+
+	//send_servo_command(1, 0, 0, 0);
 	
 	ServoReply servo_reply;
 
