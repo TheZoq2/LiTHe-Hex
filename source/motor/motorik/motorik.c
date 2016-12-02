@@ -104,15 +104,15 @@ int main(void)
             assume_standarized_stance(current_msg);
 
         } else {
+            Point2D goal;
 
             float x_speed = current_status->x_speed;
             float y_speed = current_status->y_speed;
             float rotation = current_status->rotation;
-            enum ManualRotation manual_rot = current_status->manual_rot;
             float servo_speed = current_status->servo_speed;
+            bool auto_mode = current_status->auto_mode;
 
-            if (x_speed != 0.0 || y_speed != 0.0 || manual_rot != NONE) {
-                Point2D goal;
+            if (x_speed != 0.0 || y_speed != 0.0 || !auto_mode) {
 
                 goal.x = x_speed;
                 goal.y = y_speed;
@@ -170,14 +170,13 @@ void handle_spi_frame(Frame *frame_recv) {
 			uint8_t x_speed = frame_recv->msg[0];
 			uint8_t y_speed = frame_recv->msg[1];
 			uint8_t rotation = frame_recv->msg[2];
+            uint8_t auto_mode = frame_recv->msg[3];
+
             status_set_speed(current_status, x_speed, y_speed);
-            if (rotation < 0) {
-                current_status->manual_rot = LEFT;
-            } else if (rotation > 0) {
-                current_status->manual_rot = RIGHT;
-            } else {
-                current_status->manual_rot = NONE;
-            }
+            status_set_rotation(current_status, rotation);
+
+            current_status->auto_mode = (bool)auto_mode;
+
 			break;
 		case RETURN_TO_NEUTRAL :
             current_status->return_to_neutral = true;

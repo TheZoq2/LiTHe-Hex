@@ -21,8 +21,6 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-enum ManualRotation {LEFT, RIGHT, NONE};
-
 typedef struct {
 
     float x_speed;
@@ -31,11 +29,11 @@ typedef struct {
 
     float rotation;
 
-    enum ManualRotation manual_rot;
-
     float servo_speed;
 
     bool return_to_neutral;
+
+    bool auto_mode;
 
 } CurrentStatus;
 
