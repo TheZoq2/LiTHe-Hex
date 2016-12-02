@@ -113,7 +113,7 @@ def do_auto_mode_iteration(spi, decision_packet):
     #send_decision_avr(spi, decision_packet)
 
     # Send decision to server
-    send_queue.put(web.ServerSendPacket(debug_string=int_to_command(decision_packet.decision)))
+    send_queue.put(web.ServerSendPacket(debug_string=int_to_string_command(decision_packet.decision)))
  
 def do_manual_mode_iteration(spi, send_queue, receive_queue):
     sensor_data = avr_communication.get_sensor_data(spi)

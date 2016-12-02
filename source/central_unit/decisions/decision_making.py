@@ -211,7 +211,7 @@ def get_decision(sensor_data, decision_packet):
         if (_is_inside_corridor(sensor_data)):
             decision_packet.previous_decision = GO_FORWARD
 
-def int_to_command(command):
+def int_to_string_command(command):
     if (command == GO_FORWARD):
         return "GO_FORWARD"
     elif (command == TURN_LEFT):
