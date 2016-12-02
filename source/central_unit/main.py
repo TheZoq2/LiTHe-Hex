@@ -28,7 +28,10 @@ import pdb
 import math
 import os
 import constants
-import RPi.GPIO as GPIO
+try:
+    import RPi.GPIO as GPIO
+except ImportError:
+    pass
 
 def main():
     
@@ -130,7 +133,7 @@ def do_manual_mode_iteration(spi, send_queue, receive_queue):
 
             x_speed = no_negative_byte(packet.x)
             y_speed = no_negative_byte(packet.y)
-            rotation = no_negative_byte(packer.rotation)
+            rotation = no_negative_byte(packet.rotation)
 
             avr_communication.walk(spi, x_speed, y_speed, rotation)
     
@@ -169,7 +172,7 @@ def send_decision_avr(spi, decision_packet):
 
 # Malcolm conversion for no no negative numbers, other name?
 def no_negative_byte(byte):
-    retrun (int)(((byte + 1) / 2) * constants.MAX_BYTE_SIZE)
+    return (int)(((byte + 1) / 2) * constants.MAX_BYTE_SIZE)
 
 if __name__ == '__main__':
     main()
