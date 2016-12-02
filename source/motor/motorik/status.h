@@ -19,7 +19,7 @@
 #define STATUS_H 
 
 #include <stdint.h>
-
+#include <stdbool.h>
 
 typedef struct {
 
@@ -31,8 +31,11 @@ typedef struct {
 
     float servo_speed;
 
+    bool return_to_neutral;
+
 } CurrentStatus;
 
+void status_init(CurrentStatus* status);
 void status_set_speed(CurrentStatus* status, uint8_t x_speed, uint8_t y_speed);
 void status_set_rotation(CurrentStatus* status, uint8_t rotation);
 void status_set_servo_speed(CurrentStatus* status, uint8_t speed_lsb, uint8_t speed_msb);

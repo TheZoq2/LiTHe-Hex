@@ -15,11 +15,13 @@
 
 #include "uart_lib.h"
 #include "servo.h"
+#include "status.h"
 #include "gangstil.h"
 
 #include <stdint.h>
 #include <stdlib.h>
 
+CurrentStatus* current_status;
 
 #ifndef IS_X86
 void build_spi_reply_frame(Frame *frame_trans);
@@ -53,6 +55,11 @@ void test_servo_communication()
 
 int main(void)
 {
+    CurrentStatus status;
+    current_status = &status;
+
+    status_init(current_status);
+
 	// Enable global interrupts and init spi communication
 #ifndef IS_X86
 	spi_init();
@@ -124,18 +131,20 @@ void handle_spi_frame(Frame *frame_recv) {
 			//uint8_t on_off = frame_recv->msg[0];
 			break;
 		case SET_SERVO_SPEED :
-			// Set speed
-			//uint16_t servo_speed = ((uint16_t) frame_recv->msg[1] << 8) | (uint16_t) frame_recv->msg[0];
+			uint8_t speed_lsb = frame_recv->msg[0];
+            uint8_t speed_msb = frame_recv->msg[1];
+            status_set_servo_speed(current_status, speed_lsb, speed_msb);
 			break;
 		case WALK_COMMAMD :
 			// Go command 
-			//uint8_t len = frame_recv->msg[0];
-			//uint8_t x_speed = frame_recv->msg[1];
-			//uint8_t y_speed = frame_recv->msg[2];
-			//uint8_t turn_speed = frame_recv->msg[3];
+			uint8_t x_speed = frame_recv->msg[0];
+			uint8_t y_speed = frame_recv->msg[1];
+			uint8_t turn_speed = frame_recv->msg[2];
+            status_set_speed(current_status, x_speed, y_speed);
+            status_set_rotation(current_status, turn_speed);
 			break;
 		case RETURN_TO_NEUTRAL :
-			// Return to neutral
+            status->return_to_neutral = true;
 			break;
 	}
 }
