@@ -210,3 +210,17 @@ def get_decision(sensor_data, decision_packet):
 
         if (_is_inside_corridor(sensor_data)):
             decision_packet.previous_decision = GO_FORWARD
+
+def int_to_command(command):
+    if (command == GO_FORWARD):
+        return "GO_FORWARD"
+    elif (command == TURN_LEFT):
+        return "TURN_LEFT"    
+    elif (command == TURN_RIGHT):
+        return "TURN_RIGHT"
+    elif (command == STOP):
+        return "STOP"
+    elif (command == COMPLETE_TURN):
+        return "COMPLETE_TURN"
+    elif (command == MAZE_TOO_COMPLICATED):
+        return "MAZE_TOO_COMPLICATED"
