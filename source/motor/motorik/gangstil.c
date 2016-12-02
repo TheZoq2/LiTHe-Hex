@@ -34,10 +34,10 @@ const float FRONT_LEG_JOINT_X           = 0.12;
 const float FRONT_LEG_JOINT_Y           = 0.06;
 const float MID_LEG_JOINT_Y             = 0.1;
 const float HIGH                        = 0.05;
-const float GROUNDED                    = -0.1;
-const float MIN_DIST                    = 0.06;
-const float MAX_DIST                    = 0.25;
-const float VERT_MID_LEG_BORDER_OFFSET  = 0.18;
+const float GROUNDED                    = -0.14;
+//const float MIN_DIST                    = 0.06;
+const float MAX_DIST                    = 0.11;
+const float VERT_MID_LEG_BORDER_OFFSET  = 0.06;
 const float VERT_HEAD_LEG_BORDER_OFFSET = -0.03;
 const float HORIZ_BORDER_TILT           = 0;
 const float DIAG_DIVISIVE_BORDER_TILT   = 1.3333333;
@@ -45,6 +45,7 @@ const float CLOSE_BORDER_OFFSET         = 0.085;
 const float DIAG_DIVISIVE_BORDER_OFFSET = 0.045;
 const float CLOSE_BORDER_TILT           = -1;
 const size_t NUM_LEGS = 6;
+const float DEFAULT_LEG_DISTANCE = 0.09;
 
 /**
  * @brief minf returns the smaller of two float values.
@@ -275,7 +276,7 @@ void execute_step(Point2D * current, Point2D * target, bool lrlRaised){
  * @return a standardised leg position, relative to joint.
  */
 Point2D get_default_leg_position(size_t leg){
-	const float distance_from_body = 0.18;
+	float distance_from_body = DEFAULT_LEG_DISTANCE;
 	
     Point2D res;
     if (leg < 2){   //front
@@ -286,10 +287,10 @@ Point2D get_default_leg_position(size_t leg){
         res.x = 0;
         res.y = distance_from_body;
     }
-    else{
-        res.x = distance_from_body / sqrt(2);
+    else{//back
+        res.x = -distance_from_body / sqrt(2);
         res.y = distance_from_body / sqrt(2);
-    }    //back
+    }    
 
     if (leg % 2 == 1)  //right
         res.y = -res.y ;

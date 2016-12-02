@@ -106,7 +106,7 @@ void send_servo_action()
 {
 	send_servo_command(BROADCAST_ID, ACTION_INSTRUCTION, 0, 0);
 	//TODO: Olavs fel
-	_delay_ms(2000);
+	_delay_ms(1200);
 }
 
 void write_servo_single_byte(uint8_t id, uint8_t address, uint8_t value)
@@ -194,7 +194,7 @@ void init_all_servos()
 		_delay_ms(1);
 		reset_servo_bounds(i);
 		_delay_ms(1);
-		set_servo_rotation_speed(i, 0x003f);
+		set_servo_rotation_speed(i, 0x006f);
 		_delay_ms(1);
 	}
 }

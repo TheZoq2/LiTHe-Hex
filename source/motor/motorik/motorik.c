@@ -66,14 +66,17 @@ int main(void)
 	
 	Point2D* current_position = raise_to_default_position();
 
-	for(uint8_t i = 0; i < 1; ++i)
+	for(uint8_t i = 0; i < 3; ++i)
 	{
 		Point2D goal;
 		goal.x = 100;
 		goal.y = 0;
 
 		work_towards_goal(0, goal, current_position);
+		//rotate_set_angle(M_PI/4, current_position);
 	}
+
+	//assume_standardized_stance(current_position);
 	
 	while(1)
 	{
