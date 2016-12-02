@@ -20,8 +20,6 @@
 
 #include <stdint.h>
 
-#define BIT_OFFSET  127
-#define MAX_16_BIT  65535
 
 typedef struct {
 
@@ -38,5 +36,9 @@ typedef struct {
 void status_set_speed(CurrentStatus* status, uint8_t x_speed, uint8_t y_speed);
 void status_set_rotation(CurrentStatus* status, uint8_t rotation);
 void status_set_servo_speed(CurrentStatus* status, uint8_t speed_lsb, uint8_t speed_msb);
+
+#ifdef IS_UNIT_TEST
+float uint8_to_float(uint8_t original);
+#endif
 
 #endif /* ifndef STATUS_H */
