@@ -80,11 +80,11 @@ def main():
                     auto = packet.auto_mode 
                 """ Regulate algorithm parameters
                 if packet.angle_scaledown is not None:
-                    regulate_set_angle_scaledown = packet.angle_scaledown
+                    regulate_angle_scaledown(packet.angle_scaledown)
                 if packet.movement_scaledown is not None:
-                    regulate_set_movement_scaledown = packet.movement_scaledown
+                    regulate_set_movement_scaledown(packet.movement_scaledown)
                 if packet.angle_adjustment_border is not None:
-                    regulate_angle_adjustment_border = packet.angle_adjustment_border
+                    regulate_angle_adjustment_border(packet.angle_adjustment_border)
                 """
 
         else:

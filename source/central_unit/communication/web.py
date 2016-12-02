@@ -46,6 +46,11 @@ class ServerReceivedPacket(object):
         self.rotation = data.get('rotation', None)
         self.thrust = data.get('thrust', None)
         self.auto = data.get('auto', None)
+        """
+        self.angle_scaledown = data.get('angle_scaledown' None)
+        self.movement_scaledown = data.get('movement_scaledown' None)
+        self.angle_adjustment_border = data.get('angle_adjustment_border' None)
+        """
 
         # if we got x, then we should have gotten everything else
         if self.x is not None:
