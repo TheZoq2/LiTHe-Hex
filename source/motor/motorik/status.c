@@ -7,7 +7,7 @@
 float uint8_to_float(uint8_t original)
 {
 	//return (float)((int8_t)original - BIT_OFFSET) / BIT_OFFSET;
-	return ((float)(original/255.0) * (2.0))-1;
+	return (((float)original)/255.0) * 2.0 - 1.0;
 }
 
 void status_set_speed(CurrentStatus* status, uint8_t x_speed, uint8_t y_speed) {
