@@ -82,17 +82,41 @@ int main(void)
 	
 	Point2D* current_position = raise_to_default_position();
 
-	for(uint8_t i = 0; i < 1; ++i)
-	{
-		Point2D goal;
-		goal.x = 100;
-		goal.y = 0;
-
-		work_towards_goal(0, goal, current_position);
-	}
-	
+//	for(uint8_t i = 0; i < 1; ++i)
+//	{
+//		Point2D goal;
+//		goal.x = 100;
+//		goal.y = 0;
+//
+//		work_towards_goal(0, goal, current_position);
+//	}
+//	
 	while(1)
 	{
+        if (current_status->return_to_neutral) {
+
+            current_status->return_to_neutral = false;
+            assume_standarized_stance(current_msg);
+
+        } else {
+
+            float x_speed = current_status->x_speed;
+            float y_speed = current_status->y_speed;
+            float rotation = current_status->rotation;
+            float servo_speed = current_status->servo_speed;
+
+            if (x_speed != 0.0 || y_speed != 0.0) {
+                Point2D goal;
+
+                goal.x = x_speed;
+                goal.y = y_speed;
+
+                work_towards_goal(rotation, p, current_position);
+
+            } else if (rotation != 0.0) {
+                
+            }
+        }
 	}
 
 	free(current_position);
@@ -144,7 +168,7 @@ void handle_spi_frame(Frame *frame_recv) {
             status_set_rotation(current_status, turn_speed);
 			break;
 		case RETURN_TO_NEUTRAL :
-            status->return_to_neutral = true;
+            current_status->return_to_neutral = true;
 			break;
 	}
 }
