@@ -98,6 +98,7 @@ int main(void)
 //	
 	while(1)
 	{
+	/*
         if (current_status->return_to_neutral) {
 
             current_status->return_to_neutral = false;
@@ -123,6 +124,7 @@ int main(void)
                 rotate_set_angle(rotation * (M_PI / 2), current_position);
             }
         }
+	*/
 	}
 
 	free(current_position);

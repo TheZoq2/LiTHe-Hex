@@ -19,6 +19,7 @@ const uint8_t TORQUE_ENABLE_ADDRESS = 0x18;
 const uint8_t GOAL_POSITION_ADDRESS = 0x1E;
 const uint8_t ROTATION_SPEED_ADDRESS = 0x20;
 const uint8_t RETURN_LEVEL_ADDRESS = 0x10;
+const uint8_t MOVING_ADDRESS = 0x2E;
 
 const uint8_t TORQUE_ON = 0x01;
 const uint8_t TORQUE_OFF = 0x00;
@@ -107,7 +108,9 @@ void send_servo_action()
 {
 	send_servo_command(BROADCAST_ID, ACTION_INSTRUCTION, 0, 0);
 	//TODO: Olavs fel
-	_delay_ms(1200);
+	//_delay_ms(1200);
+	while(!servos_are_done_rotating())
+		;
 }
 
 void write_servo_single_byte(uint8_t id, uint8_t address, uint8_t value)
@@ -215,4 +218,21 @@ void set_leg_angles(enum LegIds leg_index, uint16_t* angles)
 	}
 }
 
+bool check_servo_done_rotating(uint8_t id)
+{
+	ServoReply reply = read_servo_data(id, MOVING_ADDRESS, 1);
+
+	return reply.parameters[0] == 1;
+}
+bool servos_are_done_rotating()
+{
+	for(uint8_t i = 0; i < 18; i++)
+	{
+		if(check_servo_done_rotating(i) == false)
+		{
+			return false;
+		}
+	}
+	return true;
+}
 
