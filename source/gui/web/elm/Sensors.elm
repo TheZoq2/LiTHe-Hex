@@ -59,17 +59,17 @@ type alias SensorData =
     }
 
 
-sensorNames : List ( SensorData -> Float, String )
+sensorNames : List ( SensorData -> Float, String, ( Float, Float ))
 sensorNames =
-    [ ( .irDown, "IR Down" )
-    , ( .irFl, "IR Front left" )
-    , ( .irFr, "IR Front right" )
-    , ( .irBl, "IR Back left" )
-    , ( .irBr, "IR Back right" )
-    , ( .lidar, "LIDAR" )
-    , ( .angleL, "Angle left" )
-    , ( .angleR, "Angle right" )
-    , ( .angleAvg, "Average angle" )
+    [ ( .irDown, "IR Down", ( 0, 30 ))
+    , ( .irFl, "IR Front left", ( 0, 150 ) )
+    , ( .irFr, "IR Front right", ( 0, 150 ) )
+    , ( .irBl, "IR Back left", ( 0, 150 ) )
+    , ( .irBr, "IR Back right", ( 0, 150 ) )
+    , ( .lidar, "LIDAR", ( 0, 20 ))
+    , ( .angleL, "Angle left", ( -180, 180 ) )
+    , ( .angleR, "Angle right", ( -180, 180 ) )
+    , ( .angleAvg, "Average angle", ( -180, 180 ) )
     ]
 
 
@@ -87,17 +87,17 @@ timestamps =
 viewSensors : List SensorData -> Html msg
 viewSensors sensors =
     let
-        getSensorData ( accessorFun, name ) =
+        getSensorData ( accessorFun, name, range ) =
             List.map accessorFun sensors
                 |> List.map2 (,) timestamps
-                |> viewSensor name
+                |> viewSensor name range
     in
         List.map getSensorData sensorNames
             |> Html.div []
 
 
-viewSensor : String -> List ( Float, Float ) -> Svg msg
-viewSensor name data =
+viewSensor : String -> ( Float, Float ) -> List ( Float, Float ) -> Svg msg
+viewSensor name range data =
     let
         xScale : ContinuousScale
         xScale =
@@ -105,7 +105,7 @@ viewSensor name data =
 
         yScale : ContinuousScale
         yScale =
-            Scale.linear ( 0, 5 ) ( h - 2 * padding, 0 )
+            Scale.linear range ( h - 2 * padding, 0 )
 
         opts : Axis.Options a
         opts =
@@ -118,7 +118,7 @@ viewSensor name data =
 
         yAxis : Svg msg
         yAxis =
-            Axis.axis { opts | orientation = Axis.Left, tickCount = 5 } yScale
+            Axis.axis { opts | orientation = Axis.Left, tickCount = 6 } yScale
 
         areaGenerator : ( Float, Float ) -> Maybe ( ( Float, Float ), ( Float, Float ) )
         areaGenerator ( x, y ) =

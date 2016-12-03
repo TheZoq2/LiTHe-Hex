@@ -20803,83 +20803,92 @@ var _user$project$Sensors$timestamps = A2(
 var _user$project$Sensors$sensorNames = {
 	ctor: '::',
 	_0: {
-		ctor: '_Tuple2',
+		ctor: '_Tuple3',
 		_0: function (_) {
 			return _.irDown;
 		},
-		_1: 'IR Down'
+		_1: 'IR Down',
+		_2: {ctor: '_Tuple2', _0: 0, _1: 30}
 	},
 	_1: {
 		ctor: '::',
 		_0: {
-			ctor: '_Tuple2',
+			ctor: '_Tuple3',
 			_0: function (_) {
 				return _.irFl;
 			},
-			_1: 'IR Front left'
+			_1: 'IR Front left',
+			_2: {ctor: '_Tuple2', _0: 0, _1: 150}
 		},
 		_1: {
 			ctor: '::',
 			_0: {
-				ctor: '_Tuple2',
+				ctor: '_Tuple3',
 				_0: function (_) {
 					return _.irFr;
 				},
-				_1: 'IR Front right'
+				_1: 'IR Front right',
+				_2: {ctor: '_Tuple2', _0: 0, _1: 150}
 			},
 			_1: {
 				ctor: '::',
 				_0: {
-					ctor: '_Tuple2',
+					ctor: '_Tuple3',
 					_0: function (_) {
 						return _.irBl;
 					},
-					_1: 'IR Back left'
+					_1: 'IR Back left',
+					_2: {ctor: '_Tuple2', _0: 0, _1: 150}
 				},
 				_1: {
 					ctor: '::',
 					_0: {
-						ctor: '_Tuple2',
+						ctor: '_Tuple3',
 						_0: function (_) {
 							return _.irBr;
 						},
-						_1: 'IR Back right'
+						_1: 'IR Back right',
+						_2: {ctor: '_Tuple2', _0: 0, _1: 150}
 					},
 					_1: {
 						ctor: '::',
 						_0: {
-							ctor: '_Tuple2',
+							ctor: '_Tuple3',
 							_0: function (_) {
 								return _.lidar;
 							},
-							_1: 'LIDAR'
+							_1: 'LIDAR',
+							_2: {ctor: '_Tuple2', _0: 0, _1: 20}
 						},
 						_1: {
 							ctor: '::',
 							_0: {
-								ctor: '_Tuple2',
+								ctor: '_Tuple3',
 								_0: function (_) {
 									return _.angleL;
 								},
-								_1: 'Angle left'
+								_1: 'Angle left',
+								_2: {ctor: '_Tuple2', _0: -180, _1: 180}
 							},
 							_1: {
 								ctor: '::',
 								_0: {
-									ctor: '_Tuple2',
+									ctor: '_Tuple3',
 									_0: function (_) {
 										return _.angleR;
 									},
-									_1: 'Angle right'
+									_1: 'Angle right',
+									_2: {ctor: '_Tuple2', _0: -180, _1: 180}
 								},
 								_1: {
 									ctor: '::',
 									_0: {
-										ctor: '_Tuple2',
+										ctor: '_Tuple3',
 										_0: function (_) {
 											return _.angleAvg;
 										},
-										_1: 'Average angle'
+										_1: 'Average angle',
+										_2: {ctor: '_Tuple2', _0: -180, _1: 180}
 									},
 									_1: {ctor: '[]'}
 								}
@@ -20894,18 +20903,18 @@ var _user$project$Sensors$sensorNames = {
 var _user$project$Sensors$padding = 30;
 var _user$project$Sensors$h = 200;
 var _user$project$Sensors$w = 200;
-var _user$project$Sensors$viewSensor = F2(
-	function (name, data) {
+var _user$project$Sensors$viewSensor = F3(
+	function (name, range, data) {
 		var opts = _gampleman$elm_visualization$Visualization_Axis$defaultOptions;
 		var yScale = A2(
 			_gampleman$elm_visualization$Visualization_Scale$linear,
-			{ctor: '_Tuple2', _0: 0, _1: 5},
+			range,
 			{ctor: '_Tuple2', _0: _user$project$Sensors$h - (2 * _user$project$Sensors$padding), _1: 0});
 		var yAxis = A2(
 			_gampleman$elm_visualization$Visualization_Axis$axis,
 			_elm_lang$core$Native_Utils.update(
 				opts,
-				{orientation: _gampleman$elm_visualization$Visualization_Axis$Left, tickCount: 5}),
+				{orientation: _gampleman$elm_visualization$Visualization_Axis$Left, tickCount: 6}),
 			yScale);
 		var xScale = A2(
 			_gampleman$elm_visualization$Visualization_Scale$linear,
@@ -21126,9 +21135,10 @@ var _user$project$Sensors$viewSensor = F2(
 var _user$project$Sensors$viewSensors = function (sensors) {
 	var getSensorData = function (_p5) {
 		var _p6 = _p5;
-		return A2(
+		return A3(
 			_user$project$Sensors$viewSensor,
 			_p6._1,
+			_p6._2,
 			A3(
 				_elm_lang$core$List$map2,
 				F2(
