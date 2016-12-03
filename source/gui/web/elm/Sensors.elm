@@ -1,12 +1,14 @@
-module Sensors exposing (viewSensor)
+module Sensors exposing (viewSensors, SensorData)
 
 import Visualization.Scale as Scale exposing (ContinuousScale, ContinuousTimeScale)
 import Visualization.Axis as Axis
-import Visualization.List as List
+import Visualization.List as VisList
 import Visualization.Shape as Shape
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
+import Html exposing (Html)
 import String
+import Debug
 
 
 {-
@@ -44,8 +46,58 @@ padding =
     30
 
 
-viewSensor : List ( Float, Float ) -> Svg msg
-viewSensor model =
+type alias SensorData =
+    { irDown : Float
+    , irFl : Float
+    , irFr : Float
+    , irBl : Float
+    , irBr : Float
+    , lidar : Float
+    , angleL : Float
+    , angleR : Float
+    , angleAvg : Float
+    }
+
+
+sensorNames : List ( SensorData -> Float, String )
+sensorNames =
+    [ ( .irDown, "IR Down" )
+    , ( .irFl, "IR Front left" )
+    , ( .irFr, "IR Front right" )
+    , ( .irBl, "IR Back left" )
+    , ( .irBr, "IR Back right" )
+    , ( .lidar, "LIDAR" )
+    , ( .angleL, "Angle left" )
+    , ( .angleR, "Angle right" )
+    , ( .angleAvg, "Average angle" )
+    ]
+
+
+sensorMessagesPerSecond : Float
+sensorMessagesPerSecond =
+    10.0
+
+
+timestamps : List Float
+timestamps =
+    List.range 0 (floor sensorMessagesPerSecond * 5)
+        |> List.map (\x -> toFloat x * -1)
+
+
+viewSensors : List SensorData -> Html msg
+viewSensors sensors =
+    let
+        getSensorData ( accessorFun, name ) =
+            List.map accessorFun sensors
+                |> List.map2 (,) timestamps
+                |> viewSensor name
+    in
+        List.map getSensorData sensorNames
+            |> Html.div []
+
+
+viewSensor : String -> List ( Float, Float ) -> Svg msg
+viewSensor name data =
     let
         xScale : ContinuousScale
         xScale =
@@ -61,7 +113,8 @@ viewSensor model =
 
         xAxis : Svg msg
         xAxis =
-            Axis.axis { opts | orientation = Axis.Bottom, tickCount = List.length model } xScale
+            Axis.axis { opts | orientation = Axis.Bottom, tickCount = 5 }
+                xScale
 
         yAxis : Svg msg
         yAxis =
@@ -69,7 +122,10 @@ viewSensor model =
 
         areaGenerator : ( Float, Float ) -> Maybe ( ( Float, Float ), ( Float, Float ) )
         areaGenerator ( x, y ) =
-            Just ( ( Scale.convert xScale x, Tuple.first (Scale.rangeExtent yScale) ), ( Scale.convert xScale x, Scale.convert yScale y ) )
+            Just
+                ( ( Scale.convert xScale x, Tuple.first (Scale.rangeExtent yScale) )
+                , ( Scale.convert xScale x, Scale.convert yScale y )
+                )
 
         lineGenerator : ( Float, Float ) -> Maybe ( Float, Float )
         lineGenerator ( x, y ) =
@@ -77,12 +133,12 @@ viewSensor model =
 
         area : String
         area =
-            List.map areaGenerator model
+            List.map areaGenerator data
                 |> Shape.area Shape.monotoneInXCurve
 
         line : String
         line =
-            List.map lineGenerator model
+            List.map lineGenerator data
                 |> Shape.line Shape.monotoneInXCurve
     in
         svg [ width (toString w ++ "px"), height (toString h ++ "px") ]
@@ -94,4 +150,5 @@ viewSensor model =
                 [ Svg.path [ d area, stroke "none", strokeWidth "3px", fill "rgba(255, 0, 0, 0.54)" ] []
                 , Svg.path [ d line, stroke "red", strokeWidth "3px", fill "none" ] []
                 ]
+            , text_ [ x "50", y "35" ] [ text name ]
             ]
