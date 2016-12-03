@@ -87,7 +87,7 @@ int main(void)
 	
 	Point2D* current_position = raise_to_default_position();
 
-	for(uint8_t i = 0; i < 20; ++i)
+	for(uint8_t i = 0; i < 40; ++i)
 	{
 		Point2D goal;
 		goal.x = -100;
@@ -96,7 +96,7 @@ int main(void)
 		work_towards_goal(0, goal, current_position);
 	}
 	
-	while(1)
+	while(0)
 	{
 	/*
         if (current_status->return_to_neutral) {

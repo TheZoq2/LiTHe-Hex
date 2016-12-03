@@ -2,6 +2,8 @@ SOURCES=uart_lib.c servo.c  \
 		../../IK/ik.c gangstil.c \
 		status.c
 
+SOURCES_X86=gangstil_x86.c
+
 SOURCES_AVR=../../communication/spi.c ../../communication/communication.c
 
 SOURCES_MAIN=motorik.c
@@ -13,7 +15,7 @@ build:
 		${SOURCES} ${SOURCES_AVR} ${SOURCES_MAIN} -DF_CPU=16000000
 
 x86:
-	gcc ${SOURCES} ${SOURCES_MAIN} -DIS_X86 -Wall -lm -g
+	gcc ${SOURCES} ${SOURCES_MAIN} ${SOURCES_X86} -DIS_X86 -Wall -lm -g
 
 test:
 	make x86

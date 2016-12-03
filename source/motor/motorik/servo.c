@@ -105,6 +105,7 @@ ServoReply read_servo_data(uint8_t id, uint8_t address, uint8_t length)
 	return receive_servo_reply();
 }
 
+#ifdef IS_X86
 void send_servo_action()
 {
 	send_servo_command(BROADCAST_ID, ACTION_INSTRUCTION, 0, 0);
@@ -113,6 +114,11 @@ void send_servo_action()
 	while(!servos_are_done_rotating())
 		;
 }
+#else
+void send_servo_action()
+{
+}
+#endif
 
 void write_servo_single_byte(uint8_t id, uint8_t address, uint8_t value)
 {
@@ -236,6 +242,8 @@ void set_leg_angles(enum LegIds leg_index, uint16_t* angles)
 bool check_servo_done_rotating(uint8_t id)
 {
 	ServoReply reply = read_servo_data(id, MOVING_ADDRESS, 1);
+
+	free_servo_reply(reply);
 
 	return reply.parameters[0] == 0;
 }
