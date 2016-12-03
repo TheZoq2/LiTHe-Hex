@@ -20790,117 +20790,198 @@ var _user$project$Joystick$JoystickData = F4(
 		return {x: a, y: b, rotation: c, thrust: d};
 	});
 
+var _user$project$Sensors$sensorMessagesPerSecond = 10.0;
+var _user$project$Sensors$timestamps = A2(
+	_elm_lang$core$List$map,
+	function (x) {
+		return _elm_lang$core$Basics$toFloat(x) * -1;
+	},
+	A2(
+		_elm_lang$core$List$range,
+		0,
+		_elm_lang$core$Basics$floor(_user$project$Sensors$sensorMessagesPerSecond) * 5));
+var _user$project$Sensors$sensorNames = {
+	ctor: '::',
+	_0: {
+		ctor: '_Tuple3',
+		_0: function (_) {
+			return _.irDown;
+		},
+		_1: 'IR Down',
+		_2: {ctor: '_Tuple2', _0: 0, _1: 30}
+	},
+	_1: {
+		ctor: '::',
+		_0: {
+			ctor: '_Tuple3',
+			_0: function (_) {
+				return _.irFl;
+			},
+			_1: 'IR Front left',
+			_2: {ctor: '_Tuple2', _0: 0, _1: 150}
+		},
+		_1: {
+			ctor: '::',
+			_0: {
+				ctor: '_Tuple3',
+				_0: function (_) {
+					return _.irFr;
+				},
+				_1: 'IR Front right',
+				_2: {ctor: '_Tuple2', _0: 0, _1: 150}
+			},
+			_1: {
+				ctor: '::',
+				_0: {
+					ctor: '_Tuple3',
+					_0: function (_) {
+						return _.irBl;
+					},
+					_1: 'IR Back left',
+					_2: {ctor: '_Tuple2', _0: 0, _1: 150}
+				},
+				_1: {
+					ctor: '::',
+					_0: {
+						ctor: '_Tuple3',
+						_0: function (_) {
+							return _.irBr;
+						},
+						_1: 'IR Back right',
+						_2: {ctor: '_Tuple2', _0: 0, _1: 150}
+					},
+					_1: {
+						ctor: '::',
+						_0: {
+							ctor: '_Tuple3',
+							_0: function (_) {
+								return _.lidar;
+							},
+							_1: 'LIDAR',
+							_2: {ctor: '_Tuple2', _0: 0, _1: 20}
+						},
+						_1: {
+							ctor: '::',
+							_0: {
+								ctor: '_Tuple3',
+								_0: function (_) {
+									return _.angleL;
+								},
+								_1: 'Angle left',
+								_2: {ctor: '_Tuple2', _0: -180, _1: 180}
+							},
+							_1: {
+								ctor: '::',
+								_0: {
+									ctor: '_Tuple3',
+									_0: function (_) {
+										return _.angleR;
+									},
+									_1: 'Angle right',
+									_2: {ctor: '_Tuple2', _0: -180, _1: 180}
+								},
+								_1: {
+									ctor: '::',
+									_0: {
+										ctor: '_Tuple3',
+										_0: function (_) {
+											return _.angleAvg;
+										},
+										_1: 'Average angle',
+										_2: {ctor: '_Tuple2', _0: -180, _1: 180}
+									},
+									_1: {ctor: '[]'}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+};
 var _user$project$Sensors$padding = 30;
 var _user$project$Sensors$h = 200;
 var _user$project$Sensors$w = 200;
-var _user$project$Sensors$viewSensor = function (model) {
-	var opts = _gampleman$elm_visualization$Visualization_Axis$defaultOptions;
-	var yScale = A2(
-		_gampleman$elm_visualization$Visualization_Scale$linear,
-		{ctor: '_Tuple2', _0: 0, _1: 5},
-		{ctor: '_Tuple2', _0: _user$project$Sensors$h - (2 * _user$project$Sensors$padding), _1: 0});
-	var yAxis = A2(
-		_gampleman$elm_visualization$Visualization_Axis$axis,
-		_elm_lang$core$Native_Utils.update(
-			opts,
-			{orientation: _gampleman$elm_visualization$Visualization_Axis$Left, tickCount: 5}),
-		yScale);
-	var xScale = A2(
-		_gampleman$elm_visualization$Visualization_Scale$linear,
-		{ctor: '_Tuple2', _0: -5, _1: 0},
-		{ctor: '_Tuple2', _0: 0, _1: _user$project$Sensors$w - (2 * _user$project$Sensors$padding)});
-	var xAxis = A2(
-		_gampleman$elm_visualization$Visualization_Axis$axis,
-		_elm_lang$core$Native_Utils.update(
-			opts,
-			{
-				orientation: _gampleman$elm_visualization$Visualization_Axis$Bottom,
-				tickCount: _elm_lang$core$List$length(model)
-			}),
-		xScale);
-	var areaGenerator = function (_p0) {
-		var _p1 = _p0;
-		var _p2 = _p1._0;
-		return _elm_lang$core$Maybe$Just(
-			{
-				ctor: '_Tuple2',
-				_0: {
+var _user$project$Sensors$viewSensor = F3(
+	function (name, range, data) {
+		var opts = _gampleman$elm_visualization$Visualization_Axis$defaultOptions;
+		var yScale = A2(
+			_gampleman$elm_visualization$Visualization_Scale$linear,
+			range,
+			{ctor: '_Tuple2', _0: _user$project$Sensors$h - (2 * _user$project$Sensors$padding), _1: 0});
+		var yAxis = A2(
+			_gampleman$elm_visualization$Visualization_Axis$axis,
+			_elm_lang$core$Native_Utils.update(
+				opts,
+				{orientation: _gampleman$elm_visualization$Visualization_Axis$Left, tickCount: 6}),
+			yScale);
+		var xScale = A2(
+			_gampleman$elm_visualization$Visualization_Scale$linear,
+			{ctor: '_Tuple2', _0: -5, _1: 0},
+			{ctor: '_Tuple2', _0: 0, _1: _user$project$Sensors$w - (2 * _user$project$Sensors$padding)});
+		var xAxis = A2(
+			_gampleman$elm_visualization$Visualization_Axis$axis,
+			_elm_lang$core$Native_Utils.update(
+				opts,
+				{orientation: _gampleman$elm_visualization$Visualization_Axis$Bottom, tickCount: 5}),
+			xScale);
+		var areaGenerator = function (_p0) {
+			var _p1 = _p0;
+			var _p2 = _p1._0;
+			return _elm_lang$core$Maybe$Just(
+				{
 					ctor: '_Tuple2',
-					_0: A2(_gampleman$elm_visualization$Visualization_Scale$convert, xScale, _p2),
-					_1: _elm_lang$core$Tuple$first(
-						_gampleman$elm_visualization$Visualization_Scale$rangeExtent(yScale))
-				},
-				_1: {
+					_0: {
+						ctor: '_Tuple2',
+						_0: A2(_gampleman$elm_visualization$Visualization_Scale$convert, xScale, _p2),
+						_1: _elm_lang$core$Tuple$first(
+							_gampleman$elm_visualization$Visualization_Scale$rangeExtent(yScale))
+					},
+					_1: {
+						ctor: '_Tuple2',
+						_0: A2(_gampleman$elm_visualization$Visualization_Scale$convert, xScale, _p2),
+						_1: A2(_gampleman$elm_visualization$Visualization_Scale$convert, yScale, _p1._1)
+					}
+				});
+		};
+		var area = A2(
+			_gampleman$elm_visualization$Visualization_Shape$area,
+			_gampleman$elm_visualization$Visualization_Shape$monotoneInXCurve,
+			A2(_elm_lang$core$List$map, areaGenerator, data));
+		var lineGenerator = function (_p3) {
+			var _p4 = _p3;
+			return _elm_lang$core$Maybe$Just(
+				{
 					ctor: '_Tuple2',
-					_0: A2(_gampleman$elm_visualization$Visualization_Scale$convert, xScale, _p2),
-					_1: A2(_gampleman$elm_visualization$Visualization_Scale$convert, yScale, _p1._1)
-				}
-			});
-	};
-	var area = A2(
-		_gampleman$elm_visualization$Visualization_Shape$area,
-		_gampleman$elm_visualization$Visualization_Shape$monotoneInXCurve,
-		A2(_elm_lang$core$List$map, areaGenerator, model));
-	var lineGenerator = function (_p3) {
-		var _p4 = _p3;
-		return _elm_lang$core$Maybe$Just(
+					_0: A2(_gampleman$elm_visualization$Visualization_Scale$convert, xScale, _p4._0),
+					_1: A2(_gampleman$elm_visualization$Visualization_Scale$convert, yScale, _p4._1)
+				});
+		};
+		var line = A2(
+			_gampleman$elm_visualization$Visualization_Shape$line,
+			_gampleman$elm_visualization$Visualization_Shape$monotoneInXCurve,
+			A2(_elm_lang$core$List$map, lineGenerator, data));
+		return A2(
+			_elm_lang$svg$Svg$svg,
 			{
-				ctor: '_Tuple2',
-				_0: A2(_gampleman$elm_visualization$Visualization_Scale$convert, xScale, _p4._0),
-				_1: A2(_gampleman$elm_visualization$Visualization_Scale$convert, yScale, _p4._1)
-			});
-	};
-	var line = A2(
-		_gampleman$elm_visualization$Visualization_Shape$line,
-		_gampleman$elm_visualization$Visualization_Shape$monotoneInXCurve,
-		A2(_elm_lang$core$List$map, lineGenerator, model));
-	return A2(
-		_elm_lang$svg$Svg$svg,
-		{
-			ctor: '::',
-			_0: _elm_lang$svg$Svg_Attributes$width(
-				A2(
-					_elm_lang$core$Basics_ops['++'],
-					_elm_lang$core$Basics$toString(_user$project$Sensors$w),
-					'px')),
-			_1: {
 				ctor: '::',
-				_0: _elm_lang$svg$Svg_Attributes$height(
+				_0: _elm_lang$svg$Svg_Attributes$width(
 					A2(
 						_elm_lang$core$Basics_ops['++'],
-						_elm_lang$core$Basics$toString(_user$project$Sensors$h),
+						_elm_lang$core$Basics$toString(_user$project$Sensors$w),
 						'px')),
-				_1: {ctor: '[]'}
-			}
-		},
-		{
-			ctor: '::',
-			_0: A2(
-				_elm_lang$svg$Svg$g,
-				{
+				_1: {
 					ctor: '::',
-					_0: _elm_lang$svg$Svg_Attributes$transform(
+					_0: _elm_lang$svg$Svg_Attributes$height(
 						A2(
 							_elm_lang$core$Basics_ops['++'],
-							'translate(',
-							A2(
-								_elm_lang$core$Basics_ops['++'],
-								_elm_lang$core$Basics$toString(_user$project$Sensors$padding - 1),
-								A2(
-									_elm_lang$core$Basics_ops['++'],
-									', ',
-									A2(
-										_elm_lang$core$Basics_ops['++'],
-										_elm_lang$core$Basics$toString(_user$project$Sensors$h - _user$project$Sensors$padding),
-										')'))))),
+							_elm_lang$core$Basics$toString(_user$project$Sensors$h),
+							'px')),
 					_1: {ctor: '[]'}
-				},
-				{
-					ctor: '::',
-					_0: xAxis,
-					_1: {ctor: '[]'}
-				}),
-			_1: {
+				}
+			},
+			{
 				ctor: '::',
 				_0: A2(
 					_elm_lang$svg$Svg$g,
@@ -20918,13 +20999,13 @@ var _user$project$Sensors$viewSensor = function (model) {
 										', ',
 										A2(
 											_elm_lang$core$Basics_ops['++'],
-											_elm_lang$core$Basics$toString(_user$project$Sensors$padding),
+											_elm_lang$core$Basics$toString(_user$project$Sensors$h - _user$project$Sensors$padding),
 											')'))))),
 						_1: {ctor: '[]'}
 					},
 					{
 						ctor: '::',
-						_0: yAxis,
+						_0: xAxis,
 						_1: {ctor: '[]'}
 					}),
 				_1: {
@@ -20939,7 +21020,7 @@ var _user$project$Sensors$viewSensor = function (model) {
 									'translate(',
 									A2(
 										_elm_lang$core$Basics_ops['++'],
-										_elm_lang$core$Basics$toString(_user$project$Sensors$padding),
+										_elm_lang$core$Basics$toString(_user$project$Sensors$padding - 1),
 										A2(
 											_elm_lang$core$Basics_ops['++'],
 											', ',
@@ -20947,64 +21028,135 @@ var _user$project$Sensors$viewSensor = function (model) {
 												_elm_lang$core$Basics_ops['++'],
 												_elm_lang$core$Basics$toString(_user$project$Sensors$padding),
 												')'))))),
-							_1: {
-								ctor: '::',
-								_0: _elm_lang$svg$Svg_Attributes$class('series'),
-								_1: {ctor: '[]'}
-							}
+							_1: {ctor: '[]'}
 						},
 						{
 							ctor: '::',
-							_0: A2(
-								_elm_lang$svg$Svg$path,
-								{
+							_0: yAxis,
+							_1: {ctor: '[]'}
+						}),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_elm_lang$svg$Svg$g,
+							{
+								ctor: '::',
+								_0: _elm_lang$svg$Svg_Attributes$transform(
+									A2(
+										_elm_lang$core$Basics_ops['++'],
+										'translate(',
+										A2(
+											_elm_lang$core$Basics_ops['++'],
+											_elm_lang$core$Basics$toString(_user$project$Sensors$padding),
+											A2(
+												_elm_lang$core$Basics_ops['++'],
+												', ',
+												A2(
+													_elm_lang$core$Basics_ops['++'],
+													_elm_lang$core$Basics$toString(_user$project$Sensors$padding),
+													')'))))),
+								_1: {
 									ctor: '::',
-									_0: _elm_lang$svg$Svg_Attributes$d(area),
-									_1: {
-										ctor: '::',
-										_0: _elm_lang$svg$Svg_Attributes$stroke('none'),
-										_1: {
-											ctor: '::',
-											_0: _elm_lang$svg$Svg_Attributes$strokeWidth('3px'),
-											_1: {
-												ctor: '::',
-												_0: _elm_lang$svg$Svg_Attributes$fill('rgba(255, 0, 0, 0.54)'),
-												_1: {ctor: '[]'}
-											}
-										}
-									}
-								},
-								{ctor: '[]'}),
-							_1: {
+									_0: _elm_lang$svg$Svg_Attributes$class('series'),
+									_1: {ctor: '[]'}
+								}
+							},
+							{
 								ctor: '::',
 								_0: A2(
 									_elm_lang$svg$Svg$path,
 									{
 										ctor: '::',
-										_0: _elm_lang$svg$Svg_Attributes$d(line),
+										_0: _elm_lang$svg$Svg_Attributes$d(area),
 										_1: {
 											ctor: '::',
-											_0: _elm_lang$svg$Svg_Attributes$stroke('red'),
+											_0: _elm_lang$svg$Svg_Attributes$stroke('none'),
 											_1: {
 												ctor: '::',
 												_0: _elm_lang$svg$Svg_Attributes$strokeWidth('3px'),
 												_1: {
 													ctor: '::',
-													_0: _elm_lang$svg$Svg_Attributes$fill('none'),
+													_0: _elm_lang$svg$Svg_Attributes$fill('rgba(255, 0, 0, 0.54)'),
 													_1: {ctor: '[]'}
 												}
 											}
 										}
 									},
 									{ctor: '[]'}),
-								_1: {ctor: '[]'}
-							}
-						}),
-					_1: {ctor: '[]'}
+								_1: {
+									ctor: '::',
+									_0: A2(
+										_elm_lang$svg$Svg$path,
+										{
+											ctor: '::',
+											_0: _elm_lang$svg$Svg_Attributes$d(line),
+											_1: {
+												ctor: '::',
+												_0: _elm_lang$svg$Svg_Attributes$stroke('red'),
+												_1: {
+													ctor: '::',
+													_0: _elm_lang$svg$Svg_Attributes$strokeWidth('3px'),
+													_1: {
+														ctor: '::',
+														_0: _elm_lang$svg$Svg_Attributes$fill('none'),
+														_1: {ctor: '[]'}
+													}
+												}
+											}
+										},
+										{ctor: '[]'}),
+									_1: {ctor: '[]'}
+								}
+							}),
+						_1: {
+							ctor: '::',
+							_0: A2(
+								_elm_lang$svg$Svg$text_,
+								{
+									ctor: '::',
+									_0: _elm_lang$svg$Svg_Attributes$x('50'),
+									_1: {
+										ctor: '::',
+										_0: _elm_lang$svg$Svg_Attributes$y('35'),
+										_1: {ctor: '[]'}
+									}
+								},
+								{
+									ctor: '::',
+									_0: _elm_lang$svg$Svg$text(name),
+									_1: {ctor: '[]'}
+								}),
+							_1: {ctor: '[]'}
+						}
+					}
 				}
-			}
-		});
+			});
+	});
+var _user$project$Sensors$viewSensors = function (sensors) {
+	var getSensorData = function (_p5) {
+		var _p6 = _p5;
+		return A3(
+			_user$project$Sensors$viewSensor,
+			_p6._1,
+			_p6._2,
+			A3(
+				_elm_lang$core$List$map2,
+				F2(
+					function (v0, v1) {
+						return {ctor: '_Tuple2', _0: v0, _1: v1};
+					}),
+				_user$project$Sensors$timestamps,
+				A2(_elm_lang$core$List$map, _p6._0, sensors)));
+	};
+	return A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		A2(_elm_lang$core$List$map, getSensorData, _user$project$Sensors$sensorNames));
 };
+var _user$project$Sensors$SensorData = F9(
+	function (a, b, c, d, e, f, g, h, i) {
+		return {irDown: a, irFl: b, irFr: c, irBl: d, irBr: e, lidar: f, angleL: g, angleR: h, angleAvg: i};
+	});
 
 var _user$project$App$viewControl = function (model) {
 	return A2(
@@ -21052,10 +21204,6 @@ var _user$project$App$Model = F9(
 	function (a, b, c, d, e, f, g, h, i) {
 		return {phxSocket: a, currentMessage: b, messages: c, joystick: d, joystickIndex: e, sensorData: f, autoMode: g, selectedTab: h, mdl: i};
 	});
-var _user$project$App$SensorData = F9(
-	function (a, b, c, d, e, f, g, h, i) {
-		return {irDown: a, irFl: b, irFr: c, irBl: d, irBr: e, lidar: f, angleL: g, angleR: h, angleAvg: i};
-	});
 var _user$project$App$Flags = function (a) {
 	return {host: a};
 };
@@ -21102,7 +21250,7 @@ var _user$project$App$viewDebug = function (model) {
 		},
 		{
 			ctor: '::',
-			_0: A2(_elm_lang$html$Html_Lazy$lazy, _user$project$Sensors$viewSensor, model.sensorData),
+			_0: A2(_elm_lang$html$Html_Lazy$lazy, _user$project$Sensors$viewSensors, model.sensorData),
 			_1: {
 				ctor: '::',
 				_0: A2(
@@ -21257,25 +21405,9 @@ var _user$project$App$init = function (_p0) {
 			messages: {ctor: '[]'},
 			joystick: {x: 0, y: 0, rotation: 0, thrust: 0},
 			joystickIndex: _elm_lang$core$Maybe$Nothing,
-			sensorData: {
-				ctor: '::',
-				_0: {ctor: '_Tuple2', _0: -5, _1: 1.7},
-				_1: {
-					ctor: '::',
-					_0: {ctor: '_Tuple2', _0: -4, _1: 2},
-					_1: {
-						ctor: '::',
-						_0: {ctor: '_Tuple2', _0: -2.5, _1: 4},
-						_1: {
-							ctor: '::',
-							_0: {ctor: '_Tuple2', _0: 0, _1: 1},
-							_1: {ctor: '[]'}
-						}
-					}
-				}
-			},
+			sensorData: {ctor: '[]'},
 			autoMode: false,
-			selectedTab: 0,
+			selectedTab: 1,
 			mdl: _MichaelCombs28$elm_mdl$Material$model
 		},
 		{
@@ -21354,7 +21486,7 @@ var _user$project$App$sensorMessageDecoder = A2(
 										_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
 										'ir_down',
 										_elm_lang$core$Json_Decode$float,
-										_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(_user$project$App$SensorData)))))))))));
+										_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(_user$project$Sensors$SensorData)))))))))));
 var _user$project$App$AutoMessage = function (a) {
 	return {ctor: 'AutoMessage', _0: a};
 };

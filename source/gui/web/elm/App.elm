@@ -59,30 +59,17 @@ type alias Model =
     , messages : List String
     , joystick : Joystick.JoystickData
     , joystickIndex : Maybe Int
-    , sensorData : List ( Float, Float )
+    , sensorData : List Sensors.SensorData
     , autoMode : Bool
     , selectedTab : Int
     , mdl : Material.Model
     }
 
 
-type alias SensorData =
-    { irDown : Float
-    , irFl : Float
-    , irFr : Float
-    , irBl : Float
-    , irBr : Float
-    , lidar : Float
-    , angleL : Float
-    , angleR : Float
-    , angleAvg : Float
-    }
-
-
 type BotMessage
     = DebugMessage String
     | AutoMessage Bool
-    | SensorMessage SensorData
+    | SensorMessage Sensors.SensorData
 
 
 type alias Flags =
@@ -103,14 +90,9 @@ init { host } =
         , messages = []
         , joystick = { x = 0, y = 0, rotation = 0, thrust = 0 }
         , joystickIndex = Nothing
-        , sensorData =
-            [ ( -5, 1.7 )
-            , ( -4, 2 )
-            , ( -2.5, 4 )
-            , ( 0, 1 )
-            ]
+        , sensorData = []
         , autoMode = False
-        , selectedTab = 0
+        , selectedTab = 1
         , mdl = Material.model
         }
             ! [ Cmd.map PhoenixMsg phxCmd ]
@@ -130,7 +112,7 @@ autoMessageDecoder =
 
 sensorMessageDecoder : JD.Decoder BotMessage
 sensorMessageDecoder =
-    decode (SensorData)
+    decode (Sensors.SensorData)
         |> required "ir_down" JD.float
         |> required "ir_fl" JD.float
         |> required "ir_fr" JD.float
@@ -180,7 +162,8 @@ update msg model =
                         )
 
                 Ok (SensorMessage sensorData) ->
-                    ( model -- TODO: Make it set proper sensor data
+                    ( model
+                      -- TODO: Make it set proper sensor data
                     , Cmd.none
                     )
 
@@ -310,7 +293,7 @@ viewControl model =
 viewDebug : Model -> Html Msg
 viewDebug model =
     div [ Html.Attributes.style [ ( "padding", "2rem" ) ] ]
-        [ lazy Sensors.viewSensor model.sensorData
+        [ lazy Sensors.viewSensors model.sensorData
         , form [ onSubmit SendMessage ]
             [ Textfield.render Mdl
                 [ 0 ]
