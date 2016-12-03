@@ -52,10 +52,7 @@ void test_servo_communication()
 	//Read internal temperature from servo 1
 	ServoReply reply = read_servo_data(1, 0x2B, 1);
 
-	int a= 0;
-
-	while(1)
-		;
+	int a = 0;
 }
 
 int main(void)
@@ -79,7 +76,10 @@ int main(void)
 	
 	init_all_servos();
 
+	_delay_ms(100);
+
 	send_servo_action();
+	_delay_ms(100);
 
 	test_servo_communication();
 
@@ -87,15 +87,15 @@ int main(void)
 	
 	Point2D* current_position = raise_to_default_position();
 
-//	for(uint8_t i = 0; i < 1; ++i)
-//	{
-//		Point2D goal;
-//		goal.x = 100;
-//		goal.y = 0;
-//
-//		work_towards_goal(0, goal, current_position);
-//	}
-//	
+	for(uint8_t i = 0; i < 20; ++i)
+	{
+		Point2D goal;
+		goal.x = -100;
+		goal.y = 0;
+
+		work_towards_goal(0, goal, current_position);
+	}
+	
 	while(1)
 	{
 	/*
@@ -105,15 +105,15 @@ int main(void)
             assume_standarized_stance(current_msg);
 
         } else {
+            Point2D goal;
 
             float x_speed = current_status->x_speed;
             float y_speed = current_status->y_speed;
             float rotation = current_status->rotation;
-            enum ManualRotation manual_rot = current_status->manual_rot;
             float servo_speed = current_status->servo_speed;
+            bool auto_mode = current_status->auto_mode;
 
-            if (x_speed != 0.0 || y_speed != 0.0 || manual_rot != NONE) {
-                Point2D goal;
+            if (x_speed != 0.0 || y_speed != 0.0 || !auto_mode) {
 
                 goal.x = x_speed;
                 goal.y = y_speed;
@@ -156,7 +156,7 @@ void build_spi_reply_frame(Frame *frame_trans) {
 }
 
 void handle_spi_frame(Frame *frame_recv) {
-
+/*
 	switch(get_id(frame_recv)){
 		case TOGGLE_OBSTACLE :
 			// Toggle obstacle
@@ -172,18 +172,18 @@ void handle_spi_frame(Frame *frame_recv) {
 			uint8_t x_speed = frame_recv->msg[0];
 			uint8_t y_speed = frame_recv->msg[1];
 			uint8_t rotation = frame_recv->msg[2];
+            uint8_t auto_mode = frame_recv->msg[3];
+
             status_set_speed(current_status, x_speed, y_speed);
-            if (rotation < 0) {
-                current_status->manual_rot = LEFT;
-            } else if (rotation > 0) {
-                current_status->manual_rot = RIGHT;
-            } else {
-                current_status->manual_rot = NONE;
-            }
+            status_set_rotation(current_status, rotation);
+
+            current_status->auto_mode = (bool)auto_mode;
+
 			break;
 		case RETURN_TO_NEUTRAL :
             current_status->return_to_neutral = true;
 			break;
 	}
+	*/
 }
 #endif
