@@ -43,10 +43,14 @@ class DecisionPacket():
     def __init__(self):
         self.decision = GO_FORWARD
         self.previous_decision = GO_FORWARD
+        self.speed = 1 
         self.turn_timer = 0
         self.regulate_base_movement = 0;
         self.regulate_command_y = 0;
         self.regulate_goal_angle = 0;
+        self.regulate_angle_scaledown = 0.5
+        self.regulate_movement_scaledown = 0.1
+        self.regulate_angle_adjustment_border = 0.1
 
 
 # Returns the dead ends and corridors detected in the maze
@@ -206,3 +210,17 @@ def get_decision(sensor_data, decision_packet):
 
         if (_is_inside_corridor(sensor_data)):
             decision_packet.previous_decision = GO_FORWARD
+
+def int_to_string_command(command):
+    if (command == GO_FORWARD):
+        return "GO_FORWARD"
+    elif (command == TURN_LEFT):
+        return "TURN_LEFT"    
+    elif (command == TURN_RIGHT):
+        return "TURN_RIGHT"
+    elif (command == STOP):
+        return "STOP"
+    elif (command == COMPLETE_TURN):
+        return "COMPLETE_TURN"
+    elif (command == MAZE_TOO_COMPLICATED):
+        return "MAZE_TOO_COMPLICATED"

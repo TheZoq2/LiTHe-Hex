@@ -152,10 +152,10 @@ def _add_servo_speed_and_walk(spi):
         0xFF, 0xFF, # servo speed
 
         avr_communication.GARBAGE,
-        (avr_communication.WALK << 2) | 0x03, # type
+        (avr_communication.WALK << 2) | 0x00, # type
         
-        3, # length
-        255, 0, 127 # x, y, r
+        4, # length
+        255, 0, 127, 0 # x, y, r
     ]
     spi.data_sequence += [avr_communication.ACK, avr_communication.ACK]
 

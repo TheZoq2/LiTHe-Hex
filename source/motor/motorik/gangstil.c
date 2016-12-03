@@ -34,17 +34,19 @@ const float FRONT_LEG_JOINT_X           = 0.12;
 const float FRONT_LEG_JOINT_Y           = 0.06;
 const float MID_LEG_JOINT_Y             = 0.1;
 const float HIGH                        = 0.05;
-const float GROUNDED                    = -0.1;
-const float MIN_DIST                    = 0.06;
-const float MAX_DIST                    = 0.25;
-const float VERT_MID_LEG_BORDER_OFFSET  = 0.18;
+const float GROUNDED                    = -0.14;
+//const float MIN_DIST                    = 0.06;
+const float MAX_DIST                    = 0.11;
+const float VERT_MID_LEG_BORDER_OFFSET  = 0.06;
 const float VERT_HEAD_LEG_BORDER_OFFSET = -0.03;
 const float HORIZ_BORDER_TILT           = 0;
 const float DIAG_DIVISIVE_BORDER_TILT   = 1.3333333;
 const float CLOSE_BORDER_OFFSET         = 0.085;
 const float DIAG_DIVISIVE_BORDER_OFFSET = 0.045;
 const float CLOSE_BORDER_TILT           = -1;
-const size_t NUM_LEGS = 6;
+const size_t NUM_LEGS                   = 6;
+const int   SMOOTH_STEP_ITERATIONS      = 5;
+const float DEFAULT_LEG_DISTANCE = 0.09;
 
 /**
  * @brief minf returns the smaller of two float values.
@@ -118,35 +120,33 @@ Point2D rotate_point_by_angle(Point2D original, float angle)
 	return result;
 }
 
-Point2D robot_to_ik_coords(Point2D original, int leg)
+Point2D robot_to_ik_coords(Point2D original, size_t leg)
 {
 	Point2D result = original;
-	
-	if(leg % 2 == 1)
-	{
-		result.x = -result.x;
-		result.y = -result.y;
-	}
 
-	if(leg == LF)
-	{
-		return rotate_point_by_angle(result, -M_PI / 4);
-	}
-	else if(leg == RF)
+	if(leg == RF)
 	{
 		return rotate_point_by_angle(result, M_PI / 4);
 	}
-	else if(leg == LB)
+	else if(leg == RM)
 	{
-		return rotate_point_by_angle(result, M_PI / 4);
+		return rotate_point_by_angle(result, M_PI / 2);
 	}
 	else if(leg == RB)
 	{
+		return rotate_point_by_angle(result, 3 * M_PI / 4);
+	}
+	else if(leg == LF)
+	{
 		return rotate_point_by_angle(result, -M_PI / 4);
 	}
-	else
+	else if(leg == LM)
 	{
-		return result;
+		return rotate_point_by_angle(result, -M_PI / 2);
+	}
+	else if(leg == LB)
+	{
+		return rotate_point_by_angle(result, -3 * M_PI / 4);
 	}
 }
 
@@ -170,16 +170,17 @@ struct Leg* get_angle_set(Point2D * target, float * height){
 
 
 //for debug without motor''''''
-//void set_leg_angles(uint8_t id, uint16_t * angle){
-//    //printf("set leg %" PRIu8" to angles ", id);
-//    //printf("%" PRIu16, angle[0]);
-//    //printf(", %" PRIu16, angle[1]);
-//    //printf(",%" PRIu16"\n", angle[2]);
-//}
+/*
+void set_leg_angles(uint8_t id, uint16_t * angle){
+    //printf("set leg %" PRIu8" to angles ", id);
+    //printf("%" PRIu16, angle[0]);
+    //printf(", %" PRIu16, angle[1]);
+    //printf(",%" PRIu16"\n", angle[2]);
+}
 
-//void send_servo_action(){
-//    //printf("execute angles\n\n");
-//}
+void send_servo_action(){
+    //printf("execute angles\n\n");
+}*/
 
 
 /**
@@ -238,6 +239,7 @@ void execute_position(Point2D * target, float * z){
 void execute_step(Point2D * current, Point2D * target, bool lrlRaised){
     float z[NUM_LEGS];
 
+	//TODO: Remove 'not'
     if(lrlRaised){
         z[LF] = GROUNDED + HIGH;
         z[RM] = GROUNDED + HIGH;
@@ -254,8 +256,30 @@ void execute_step(Point2D * current, Point2D * target, bool lrlRaised){
         z[LM] = GROUNDED + HIGH;
         z[RB] = GROUNDED + HIGH;
     }
-    execute_position(current, z);
-    execute_position(target, z);
+
+	execute_position(current, z);
+	execute_position(target, z);
+
+
+	/*
+    Point2D transition[NUM_LEGS];
+    Point2D diff[NUM_LEGS];
+    for (size_t leg = 0; leg < NUM_LEGS; ++leg) {
+        diff[leg].x = target[leg].x - current[leg].x;
+        diff[leg].y = target[leg].y - current[leg].y;
+    }
+
+    for (int i = 0; i <= SMOOTH_STEP_ITERATIONS; ++i) {     //smooth transition when stepping
+
+        for (size_t leg = 0; leg < NUM_LEGS; ++leg) {
+            transition[leg].x = current[leg].x + (transition[leg].x * i / SMOOTH_STEP_ITERATIONS);
+            transition[leg].y = current[leg].y + (transition[leg].y * i / SMOOTH_STEP_ITERATIONS);
+        }
+
+        execute_position(transition, z);
+    }
+	*/
+
     z[LF] = GROUNDED;
     z[RM] = GROUNDED;
     z[LB] = GROUNDED;
@@ -277,7 +301,7 @@ void execute_step(Point2D * current, Point2D * target, bool lrlRaised){
  * @return a standardised leg position, relative to joint.
  */
 Point2D get_default_leg_position(size_t leg){
-	const float distance_from_body = 0.18;
+	float distance_from_body = DEFAULT_LEG_DISTANCE;
 	
     Point2D res;
     if (leg < 2){   //front
@@ -288,10 +312,10 @@ Point2D get_default_leg_position(size_t leg){
         res.x = 0;
         res.y = distance_from_body;
     }
-    else{
-        res.x = distance_from_body / sqrt(2);
+    else{//back
+        res.x = -distance_from_body / sqrt(2);
         res.y = distance_from_body / sqrt(2);
-    }    //back
+    }    
 
     if (leg % 2 == 1)  //right
         res.y = -res.y ;
@@ -737,31 +761,27 @@ void rotate_set_angle(float angle, Point2D * current){
  * @param argv unused
  * @return 0
  */
-//int main(int argc, char *argv[]){
-//    //testing variables
-//    Point2D * current   = (Point2D *)calloc(NUM_LEGS, sizeof(Point2D));
-//    Point2D * target    = (Point2D *)calloc(NUM_LEGS, sizeof(Point2D));
-//    Point2D * command   = (Point2D *)malloc(sizeof(Point2D));
-//    Point2D * diff      = (Point2D *)calloc(NUM_LEGS, sizeof(Point2D));
-//    float scale[NUM_LEGS];
-//    float rotation = 0;
-//    for (int var = 0; var < 6; ++var) {
-//        Point2D * temp = get_default_leg_position(var);
-//        current[var].x = temp->x;
-//        current[var].y = temp->y;
-//    }
-//    bool lrlRaised = false;
-//    command->x = 1;
-//    command->y = 0;
+/*int main(int argc, char *argv[]){
+    //testing variables
+    Point2D * current   = (Point2D *)calloc(NUM_LEGS, sizeof(Point2D));
+    Point2D * target    = (Point2D *)calloc(NUM_LEGS, sizeof(Point2D));
+    Point2D command;
+    Point2D * diff      = (Point2D *)calloc(NUM_LEGS, sizeof(Point2D));
+    float scale[NUM_LEGS];
+    float rotation = 0;
+    for (int var = 0; var < 6; ++var) {
+        Point2D  temp = get_default_leg_position(var);
+        current[var].x = temp.x;
+        current[var].y = temp.y;
+    }
+    bool lrlRaised = false;
+    command.x = 1;
+    command.y = 0;
 
 
-//    work_towards_goal(rotation, command, current);
+    work_towards_goal(rotation, command, current);
 
-//    /*
-//    directLegs(rotation, target, current, & command, lrlRaised);
-//    scaleLegs(target, current, scale, lrlRaised);
-
-
+*/
 //    for (int index = 0; index < NUM_LEGS; ++index) {
 //        current[index].x = target[index].x;
 //        current[index].y = target[index].y;
