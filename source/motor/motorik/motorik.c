@@ -93,6 +93,8 @@ int main(void)
 		goal.x = -100;
 		goal.y = 0;
 
+		//printf("Walking one step")
+
 		work_towards_goal(0, goal, current_position);
 	}
 	

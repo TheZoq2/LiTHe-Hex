@@ -246,13 +246,21 @@ bool check_servo_done_rotating(uint8_t id)
 	free_servo_reply(reply);
 
 #ifdef IS_X86
-	return read_simulator_servo_state(id);
+	//Run the regular code but don't return it. This is to be able to check for memory leaks
+	//using valgrind
+	reply.parameters[0] == 0;
+	return read_simulator_servo_state(id) == '0';
 #else
 	return reply.parameters[0] == 0;
 #endif
 }
 bool servos_are_done_rotating()
 {
+#ifdef IS_X86
+	//We need to wait for the simulator to process the command before checking this
+	//Sleep for 0.1 seconds
+	usleep(100000);
+#endif
 	for(uint8_t i = 1; i <= 18; i++)
 	{
 		if(check_servo_done_rotating(i) == false)

@@ -7,3 +7,4 @@ authors = ["TheZoq2 <frans.skarman@gmail.com>"]
 kiss3d = "*"
 nalgebra = "0.9.*"
 time = "*"
+rustc-serialize = "*"
