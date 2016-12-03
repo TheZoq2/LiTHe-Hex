@@ -245,7 +245,11 @@ bool check_servo_done_rotating(uint8_t id)
 
 	free_servo_reply(reply);
 
+#ifdef IS_X86
+	return read_simulator_servo_state(id);
+#else
 	return reply.parameters[0] == 0;
+#endif
 }
 bool servos_are_done_rotating()
 {

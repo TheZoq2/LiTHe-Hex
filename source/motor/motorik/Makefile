@@ -2,7 +2,7 @@ SOURCES=uart_lib.c servo.c  \
 		../../IK/ik.c gangstil.c \
 		status.c
 
-SOURCES_X86=gangstil_x86.c
+SOURCES_X86=gangstil_x86.c servo_x86.c
 
 SOURCES_AVR=../../communication/spi.c ../../communication/communication.c
 
