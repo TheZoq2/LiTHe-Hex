@@ -49,6 +49,25 @@ const int   SMOOTH_STEP_ITERATIONS      = 5;
 const float DEFAULT_LEG_DISTANCE = 0.09;
 
 /**
+ * @brief absf returns the absolute value of a given float.
+ * @param a float to be treated.
+ * @return a if a > 0, else -a.
+ */
+float absf(float a){
+    if(a < 0)
+        return -a;
+    return a;
+}
+
+
+bool closef(float a, float b){
+    float aa = absf(a);
+    float ab = absf(b);
+    return (((a > 0.0001) != (absf(b) < -0.0001)) && aa*0.99 <= ab && aa*1.01 >= ab);
+}
+
+
+/**
  * @brief minf returns the smaller of two float values.
  * @param a first float value, see @brief.
  * @param b second float value, see @brief.
@@ -131,18 +150,13 @@ struct Leg* get_angle_set(Point2D * target, float * height){
 }
 
 
-//for debug without motor''''''
-/*
-void set_leg_angles(uint8_t id, uint16_t * angle){
-    //printf("set leg %" PRIu8" to angles ", id);
-    //printf("%" PRIu16, angle[0]);
-    //printf(", %" PRIu16, angle[1]);
-    //printf(",%" PRIu16"\n", angle[2]);
-}
+//for debug without motor
 
-void send_servo_action(){
-    //printf("execute angles\n\n");
-}*/
+//void set_leg_angles(uint8_t id, uint16_t * angle){
+//}
+
+//void send_servo_action(){
+//}
 
 
 /**
@@ -321,16 +335,6 @@ Point2D joint_position(size_t leg){
 }
 
 
-/**
- * @brief absf returns the absolute value of a given float.
- * @param a float to be treated.
- * @return a if a > 0, else -a.
- */
-float absf(float a){
-    if(a < 0)
-        return -a;
-    return a;
-}
 
 
 /**
@@ -434,10 +438,10 @@ float update_targ_by_scale(Point2D * targ, Point2D * curr, Point2D * diff, float
  */
 float boundry_intersect(Point2D * curr, Point2D * targ, float k, float m, bool upperLimit){
 
-    if((targ->y - m> k * targ->x) != upperLimit)
+    if((targ->y - m> k * targ->x) != upperLimit){
         return 1; //no scaling needed; targ is within boundry
-
-    if (targ->x == curr->x){    //vertical leg movement
+    }
+    if (absf(targ->x) * 1.01 >= absf(curr->x) && absf(targ->x) * 0.99 <= absf(curr->x)){    //vertical leg movement
         float diff = (curr->x * k) + m - curr->y;
         float scale =absf(diff/(targ->y - curr->y));
         return scale;//no div by zero; that would mean legs do not move
@@ -471,6 +475,7 @@ void scale_to_straight_bounds(float * scale, Point2D * targ, Point2D * curr){
     scale[RF] = minf(boundry_intersect(& curr[RF], & targ[RF], HORIZ_BORDER_TILT, -VERT_HEAD_LEG_BORDER_OFFSET, true),
                 minf(boundry_intersect(& curr[RF], & targ[RF], -DIAG_DIVISIVE_BORDER_TILT, -DIAG_DIVISIVE_BORDER_OFFSET, false),
                      boundry_intersect(& curr[RF], & targ[RF], -CLOSE_BORDER_TILT, -CLOSE_BORDER_OFFSET, true)));
+
 
     scale[LM] = minf(boundry_intersect(& curr[LM], & targ[LM], DIAG_DIVISIVE_BORDER_TILT, -DIAG_DIVISIVE_BORDER_OFFSET, false),
                 minf(boundry_intersect(& curr[LM], & targ[LM], HORIZ_BORDER_TILT, VERT_MID_LEG_BORDER_OFFSET, false),
@@ -516,7 +521,6 @@ float scale_legs(Point2D * targ, Point2D * curr, float * scale, bool lrlRaised){
 
     float res = update_targ_by_scale(targ, curr, diff, scale, lrlRaised);
 
-
     scale_to_straight_bounds(scale, targ, curr);
 
     res = res * update_targ_by_scale(targ, curr, diff, scale, lrlRaised);
@@ -546,6 +550,7 @@ void direct_legs(float rot, Point2D * targ, Point2D * current, Point2D req, bool
         attention.x = current[leg].x + joint.x;
         attention.y = current[leg].y + joint.y;
 
+
         if (lrlRaised == (leg == 0 || leg == 3 || leg == 4)){ //move legs "away" from position (body towards)
             absTarg.x =  req.x + cos(rot) * attention.x - sin(rot) * attention.y;
             absTarg.y =  req.y + sin(rot) * attention.x + cos(rot) * attention.y;
@@ -557,6 +562,7 @@ void direct_legs(float rot, Point2D * targ, Point2D * current, Point2D req, bool
         targ[leg].x = absTarg.x - joint.x;
         targ[leg].y = absTarg.y - joint.y;
     }
+
 }
 
 
@@ -723,6 +729,3 @@ void rotate_set_angle(float angle, Point2D * current){
     if (remaining > 0.1)
         rotate_set_small_angle(remaining, current);
 }
-
-
-
