@@ -1,7 +1,7 @@
 module App exposing (..)
 
 import Html exposing (Html, h1, img, text, div, input, br, form)
-import Html.Attributes exposing (style, value, src)
+import Html.Attributes exposing (style, value, src, placeholder)
 import Html.Events exposing (onInput, onSubmit)
 import Html.Lazy exposing (lazy)
 import Json.Encode as JE
@@ -50,7 +50,17 @@ type Msg
     | UpdateControlDisplay Time
     | SendControlToServer Time
     | SelectTab Int
+    | ChangeParameter PIDParameter String
     | Mdl (Material.Msg Msg)
+
+
+type PIDParameter
+    = BaseMovement
+    | CommandY
+    | GoalAngle
+    | AngleScaledown
+    | MovementScaledown
+    | AngleAdjustmentBorder
 
 
 type alias Model =
@@ -92,7 +102,7 @@ init { host } =
         , joystickIndex = Nothing
         , sensorData = []
         , autoMode = False
-        , selectedTab = 1
+        , selectedTab = 0
         , mdl = Material.model
         }
             ! [ Cmd.map PhoenixMsg phxCmd ]
@@ -162,10 +172,14 @@ update msg model =
                         )
 
                 Ok (SensorMessage sensorData) ->
-                    ( model
-                      -- TODO: Make it set proper sensor data
-                    , Cmd.none
-                    )
+                    let
+                        newData =
+                            (sensorData :: model.sensorData)
+                                |> List.take (5 * Sensors.sensorMessagesPerSecond)
+                    in
+                        ( { model | sensorData = newData }
+                        , Cmd.none
+                        )
 
                 Err error ->
                     ( model, Cmd.none )
@@ -236,6 +250,9 @@ update msg model =
         SelectTab num ->
             ( { model | selectedTab = num }, Cmd.none )
 
+        ChangeParameter par value ->
+            ( model, Cmd.none )
+
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
@@ -283,34 +300,41 @@ view model =
         }
 
 
-viewControl : Model -> Html Msg
+viewControl : Model -> List (Html Msg)
 viewControl model =
-    div [ Html.Attributes.style [ ( "padding", "2rem" ) ] ]
-        [ Joystick.joystickDisplay model.joystick
-        ]
+    [ Joystick.joystickDisplay model.joystick
+    ]
+        ++ List.map
+            (\( desc, field ) ->
+                input
+                    [ placeholder desc
+                    , onInput (ChangeParameter field)
+                    ]
+                    []
+            )
+            [ ( "Base movement", BaseMovement ) ]
 
 
-viewDebug : Model -> Html Msg
+viewDebug : Model -> List (Html Msg)
 viewDebug model =
-    div [ Html.Attributes.style [ ( "padding", "2rem" ) ] ]
-        [ lazy Sensors.viewSensors model.sensorData
-        , form [ onSubmit SendMessage ]
-            [ Textfield.render Mdl
-                [ 0 ]
-                model.mdl
-                [ Textfield.onInput SetNewMessage, Textfield.value model.currentMessage ]
-            ]
-        , div []
-            [ (messageList model.messages) ]
+    [ lazy Sensors.viewSensors model.sensorData
+    , form [ onSubmit SendMessage ]
+        [ Textfield.render Mdl
+            [ 0 ]
+            model.mdl
+            [ Textfield.onInput SetNewMessage, Textfield.value model.currentMessage ]
         ]
+    , div []
+        [ (messageList model.messages) ]
+    ]
 
 
 viewBody : Model -> Html Msg
 viewBody model =
     if model.selectedTab == 0 then
-        viewControl model
+        div [ Html.Attributes.style [ ( "padding", "2rem" ) ] ] (viewControl model)
     else
-        viewDebug model
+        div [ Html.Attributes.style [ ( "padding", "2rem" ) ] ] (viewDebug model)
 
 
 main : Program Flags Model Msg
