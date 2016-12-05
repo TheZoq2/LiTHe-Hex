@@ -11,16 +11,23 @@ use std::f32::consts::PI;
 use std::path::Path;
 use std::vec::Vec;
 
-const LIMB1_LENGTH: f32 = 5.5 / 4.;
-const LIMB2_LENGTH: f32 = 6.5 / 4.;
-const LIMB3_LENGTH: f32 = 13.5 / 4.;
+use constants::UNIT_SCALE;
 
+
+const LIMB1_LENGTH: f32 = 5.5 * UNIT_SCALE;
+const LIMB2_LENGTH: f32 = 6.5 * UNIT_SCALE;
+const LIMB3_LENGTH: f32 = 13.5 * UNIT_SCALE;
+
+const JOINT2_ANGLE_OFFSET: f32 = 0.349;
+const JOINT3_ANGLE_OFFSET: f32 = 0.873;
+
+#[derive(Clone)]
 pub struct Limb
 {
     pub target_angle: f32,
     pub turn_speed: f32,
 
-    node: SceneNode,
+    node: SceneNode, //The node that contains the legs
     base_rotation: Vector3<f32>,
     current_angle: f32,
     turn_axis: Vector3<f32>,
@@ -65,6 +72,8 @@ impl Limb
             self.current_angle -= self.turn_speed * delta_time;
         }
 
+        //println!("{:?}", self.turn_axis);
+
         self.node.set_local_rotation(
                     self.base_rotation + self.turn_axis * self.current_angle);
     }
@@ -73,11 +82,21 @@ impl Limb
     {
         self.current_angle
     }
+
+    pub fn is_done_rotating(&self) -> bool
+    {
+        self.current_angle == self.target_angle
+    }
 }
 
 pub struct Leg
 {
     limbs: Vec<Limb>,
+    position: Vector3<f32>,
+
+    //Keeping track and visualising the current target
+    target_node: SceneNode,
+    target_point: Vector3<f32>,
 }
 
 impl Leg
@@ -85,10 +104,14 @@ impl Leg
     pub fn new(window: &mut Window, angle: f32, position: Vector3<f32>) -> Leg
     {
         let mut leg_group = window.add_group();
-        leg_group.set_local_rotation(Vector3::new(0., angle, 0.));
+        leg_group.set_local_rotation(Vector3::new(0., angle - PI/2., 0.));
         leg_group.set_local_translation(position);
 
-        let mut node1 = leg_group.add_obj(
+        //Group that rotates the legs into the propper plane
+        let mut inner_leg_group = leg_group.add_group();
+        inner_leg_group.set_local_rotation(Vector3::new(-PI/2., 0., 0.));
+
+        let mut node1 = inner_leg_group.add_obj(
                     &Path::new("media/cube.obj"),
                     &Path::new("media/cube.mtl"),
                     Vector3::new(1., LIMB1_LENGTH,1.)
@@ -96,17 +119,19 @@ impl Leg
         let mut node2 = node1.add_obj(
                     &Path::new("media/cube.obj"),
                     &Path::new("media/cube.mtl"),
-                    Vector3::new(1., LIMB2_LENGTH,1.)
+                    Vector3::new(1., LIMB2_LENGTH / LIMB1_LENGTH, 1.)
                 );
         let mut node3 = node2.add_obj(
                     &Path::new("media/cube.obj"),
                     &Path::new("media/cube.mtl"),
-                    Vector3::new(1., LIMB3_LENGTH,1.)
+                    Vector3::new(1., LIMB3_LENGTH / (LIMB2_LENGTH / LIMB1_LENGTH),1.)
                 );
 
         node1.set_color(1., 0., 0.);
         node2.set_color(0., 1., 0.);
         node3.set_color(0., 0., 1.);
+
+        println!("{}", LIMB2_LENGTH);
 
         node2.set_local_translation(Vector3::new(0.0, LIMB1_LENGTH, 0.0));
         node3.set_local_translation(Vector3::new(0.0, LIMB2_LENGTH, 0.0));
@@ -114,25 +139,31 @@ impl Leg
         let turn_speed = 0.5;
         let limb1 = Limb::new(
                                 node1, 
-                                Vector3::new(PI/2., 0., 0.), 
+                                Vector3::new(0., 0., 0.), 
                                 turn_speed, 
                                 Vector3::new(0.,0.,1.)
                             );
         let limb2 = Limb::new(
                                 node2, 
-                                Vector3::new(-PI/3., 0., 0.), 
+                                Vector3::new(-JOINT2_ANGLE_OFFSET, 0., 0.), 
                                 turn_speed, 
                                 Vector3::new(1.,0.,0.)
                             );
         let limb3 = Limb::new(
                                 node3, 
-                                Vector3::new(2. * PI/3., 0., 0.), 
+                                Vector3::new(-JOINT3_ANGLE_OFFSET, 0., 0.), 
                                 turn_speed, 
                                 Vector3::new(1.,0.,0.)
                             );
 
+        //Node for visualising the legs current target
+        let target_node = window.add_sphere(0.1);
+
         Leg {
             limbs: vec!(limb1, limb2, limb3),
+            position: position,
+            target_node: target_node,
+            target_point: na::zero(),
         }
     }
 
@@ -154,6 +185,13 @@ impl Leg
         }
     }
 
+    pub fn set_target_point(&mut self, target: &Vector3<f32>)
+    {
+        self.target_point = *target;
+
+        self.target_node.set_local_translation(*target / UNIT_SCALE + self.position);
+    }
+
     pub fn get_angles(&self) -> Vec<f32>
     {
         let mut result = vec!();
@@ -163,5 +201,10 @@ impl Leg
         }
 
         result
+    }
+
+    pub fn is_still_moving(&self) -> Vec<bool>
+    {
+        self.limbs.clone().into_iter().map(|x|{x.is_done_rotating() == false}).collect()
     }
 }

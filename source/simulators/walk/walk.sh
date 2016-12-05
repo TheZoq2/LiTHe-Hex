@@ -3,45 +3,12 @@
 filename=/tmp/hexsim/leg_input
 
 while true; do
-	echo 5,0,0 > $filename
-	echo 5,0,0 >> $filename
-	echo 5,0,0 >> $filename
-	echo 5,0,0 >> $filename
-	echo 5,0,0 >> $filename
-	echo 5,-5,-25 >> $filename
-	sleep 0.5
-	echo 0,-5,-25 > $filename
-	echo 0,-5,-25 >> $filename
-	echo 0,-5,-25 >> $filename
-	echo 0,-5,-25 >> $filename
-	echo 0,-5,-25 >> $filename
-	echo 0,10,-30 >> $filename
-	sleep 0.5
-	echo -5,10,-30 > $filename
-	echo -5,10,-30 >> $filename
-	echo -5,10,-30 >> $filename
-	echo -5,10,-30 >> $filename
-	echo -5,10,-30 >> $filename
-	echo -5,10,-15 >> $filename
-	sleep 0.5
-	echo 0,10,-15 > $filename
-	echo 0,10,-15 >> $filename
-	echo 0,10,-15 >> $filename
-	echo 0,10,-15 >> $filename
-	echo 0,10,-15 >> $filename
-	echo 0,10,10 >> $filename
-	sleep 0.5
-	echo 5,10,10 > $filename
-	echo 5,10,10 >> $filename
-	echo 5,10,10 >> $filename
-	echo 5,10,10 >> $filename
-	echo 5,10,10 >> $filename
-	echo 5,0,0 >> $filename
-	sleep 0.5
-	echo 0,0,0 > $filename
-	echo 0,0,0 >> $filename
-	echo 0,0,0 >> $filename
-	echo 0,0,0 >> $filename
-	echo 0,0,0 >> $filename
-	echo 0,0,0 >> $filename
+	echo '[
+	{"angles": [-0.461567, 0.122174, -0.859606], "point": {"x": 0.021360, "y": 0.063640, "z": -0.140000}},
+	{"angles": [-0.244365, 0.273521, -0.594479], "point": {"x": 0.105919, "y": -0.063640, "z": -0.140000}},
+	{"angles": [0.439171, 0.251432, -0.750761], "point": {"x": 0.042279, "y": 0.090000, "z": -0.140000}},
+	{"angles": [0.439171, 0.251432, -0.750761], "point": {"x": -0.042279, "y": -0.090000, "z": -0.140000}},
+	{"angles": [-0.244365, 0.273521, -0.594479], "point": {"x": -0.105919, "y": 0.063640, "z": -0.140000}},
+	{"angles": [-0.461568, 0.122174, -0.859606], "point": {"x": -0.021360, "y": -0.063640, "z": -0.140000}}
+	]' > $filename
 done

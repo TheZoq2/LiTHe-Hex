@@ -147,4 +147,8 @@ bool servos_are_done_rotating();
 
 
 
+#ifdef IS_X86
+//bool read_simulator_servo_state(uint8_t id);
+#endif
+
 #endif

@@ -22,16 +22,16 @@ FRONT = 0
 LEFT = 1
 RIGHT = 2
 
-# Angle 
+# Angle
 ANGLE_10_DEGREE = 10
+
+TILE_SIZE = 0.8
 
 # Distances to different objects in meters
 DEAD_END_DISTANCE = 1.2
 LIDAR_STOP_DISTANCE = 0.30
 DISTANCE_TO_OBSTACLE = 0.0
 DISTANCE_TO_WALL_IN_CORRIDOR = 0.5
-TILE_SIZE = 0.8
-
 # Distance between the sensors in the mount on same side
 DISTANCE_BETWEEN_SENSORS = 0.16
 
@@ -43,7 +43,7 @@ class DecisionPacket():
     def __init__(self):
         self.decision = GO_FORWARD
         self.previous_decision = GO_FORWARD
-        self.speed = 1 
+        self.speed = 1
         self.turn_timer = 0
         self.regulate_base_movement = 0;
         self.regulate_command_y = 0;
@@ -112,7 +112,6 @@ def _expected_path(corridors_and_dead_ends, front, left, right):
 
 
 # Checks if all the sidesensors give small values
-# TODO: Tweak this and remove magic constant!
 def _is_inside_corridor(sensor_data):
     if (sensor_data.ir_front_left <= DISTANCE_TO_WALL_IN_CORRIDOR and
         sensor_data.ir_back_left <= DISTANCE_TO_WALL_IN_CORRIDOR and
@@ -177,6 +176,7 @@ def get_decision(sensor_data, decision_packet):
     if (decision_packet.previous_decision == TURN_LEFT):
         #print("Robot is turning left!")
 
+        #TODO: Fix so that it is not dependant on time it takes for a turn to complete
         if (decision_packet.turn_timer == 0):
             decision_packet.turn_timer = time.time()
 
@@ -215,7 +215,7 @@ def int_to_string_command(command):
     if (command == GO_FORWARD):
         return "GO_FORWARD"
     elif (command == TURN_LEFT):
-        return "TURN_LEFT"    
+        return "TURN_LEFT"
     elif (command == TURN_RIGHT):
         return "TURN_RIGHT"
     elif (command == STOP):

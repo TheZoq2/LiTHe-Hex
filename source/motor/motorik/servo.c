@@ -105,6 +105,7 @@ ServoReply read_servo_data(uint8_t id, uint8_t address, uint8_t length)
 	return receive_servo_reply();
 }
 
+#ifdef IS_X86
 void send_servo_action()
 {
 	send_servo_command(BROADCAST_ID, ACTION_INSTRUCTION, 0, 0);
@@ -113,6 +114,11 @@ void send_servo_action()
 	while(!servos_are_done_rotating())
 		;
 }
+#else
+void send_servo_action()
+{
+}
+#endif
 
 void write_servo_single_byte(uint8_t id, uint8_t address, uint8_t value)
 {
@@ -237,10 +243,24 @@ bool check_servo_done_rotating(uint8_t id)
 {
 	ServoReply reply = read_servo_data(id, MOVING_ADDRESS, 1);
 
+	free_servo_reply(reply);
+
+#ifdef IS_X86
+	//Run the regular code but don't return it. This is to be able to check for memory leaks
+	//using valgrind
+	reply.parameters[0] == 0;
+	return read_simulator_servo_state(id) == '0';
+#else
 	return reply.parameters[0] == 0;
+#endif
 }
 bool servos_are_done_rotating()
 {
+#ifdef IS_X86
+	//We need to wait for the simulator to process the command before checking this
+	//Sleep for 0.1 seconds
+	usleep(100000);
+#endif
 	for(uint8_t i = 1; i <= 18; i++)
 	{
 		if(check_servo_done_rotating(i) == false)

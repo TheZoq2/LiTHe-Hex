@@ -33,6 +33,8 @@ try:
 except ImportError:
     pass
 
+AUTO_BUTTON_PIN = 40
+
 def main():
     
     test_mode = False
@@ -47,7 +49,7 @@ def main():
     auto = False
     button_temp = 0
     GPIO.setmode(GPIO.BOARD)
-    GPIO.setup(40, GPIO.IN, GPIO.PUD_DOWN)
+    GPIO.setup(AUTO_BUTTON_PIN, GPIO.IN, GPIO.PUD_DOWN)
 
     decision_packet = decision_making.DecisionPacket()
 
@@ -61,7 +63,7 @@ def main():
         #pdb.set_trace()
         # Button toggle auto/manual mode and send mode to server
         button_auto_manaul(auto)
-        button_input = GPIO.input(40)
+        button_input = GPIO.input(AUTO_BUTTON_PIN)
         if (button_input == 1):
             if (button_temp != button_input):
                 auto = not auto
@@ -130,9 +132,9 @@ def do_manual_mode_iteration(spi, send_queue, receive_queue):
             servo_speed = (int)(packet.thrust * constants.MAX_16BIT_SIZE)
             avr_communication.set_servo_speed(spi, servo_speed)
 
-            x_speed = no_negative_byte(packet.x)
-            y_speed = no_negative_byte(packet.y)
-            rotation = no_negative_byte(packet.rotation)
+            x_speed = convert_to_sendable_byte(packet.x)
+            y_speed = convert_to_sendable_byte(packet.y)
+            rotation = convert_to_sendable_byte(packet.rotation)
 
             avr_communication.walk(spi, x_speed, y_speed, rotation, False)
     
@@ -140,37 +142,37 @@ def do_manual_mode_iteration(spi, send_queue, receive_queue):
 
 def send_decision_avr(spi, decision_packet):
     
-    x_speed = no_negative_byte(0)
-    y_speed = no_negative_byte(0)
-    rotation = no_negative_byte(0)
+    x_speed = convert_to_sendable_byte(0)
+    y_speed = convert_to_sendable_byte(0)
+    rotation = convert_to_sendable_byte(0)
     
     avr_communication.set_servo_speed(spi, decision_packet.speed)
     
     # TODO set the x_speed, y_speed, rotaton for each decision
     if decision_packet.decision == GO_FORWARD:
-        x_speed = no_negative_byte(0)
-        y_speed = no_negative_byte(0)
-        rotation = no_negative_byte(0)
+        x_speed = convert_to_sendable_byte(0)
+        y_speed = convert_to_sendable_byte(0)
+        rotation = convert_to_sendable_byte(0)
         
     elif decision_packet.decision == TURN_LEFT:
-        x_speed = no_negative_byte(0)
-        y_speed = no_negative_byte(0)
-        rotation = no_negative_byte(0)
+        x_speed = convert_to_sendable_byte(0)
+        y_speed = convert_to_sendable_byte(0)
+        rotation = convert_to_sendable_byte(0)
         
     elif decision_packet.decision == TURN_RIGHT:
-        x_speed = no_negative_byte(0)
-        y_speed = no_negative_byte(0)
-        rotation = no_negative_byte(0)
+        x_speed = convert_to_sendable_byte(0)
+        y_speed = convert_to_sendable_byte(0)
+        rotation = convert_to_sendable_byte(0)
         
     elif decision_packet.decision == STOP:
-        x_speed = no_negative_byte(0)
-        y_speed = no_negative_byte(0)
-        rotation = no_negative_byte(0)
+        x_speed = convert_to_sendable_byte(0)
+        y_speed = convert_to_sendable_byte(0)
+        rotation = convert_to_sendable_byte(0)
             
     avr_communication.walk(spi, x_speed, y_speed, rotation, True)
 
 # Malcolm conversion for no no negative numbers, other name?
-def no_negative_byte(byte):
+def convert_to_sendable_byte(byte):
     return (int)(((byte + 1) / 2) * constants.MAX_BYTE_SIZE)
 
 if __name__ == '__main__':

@@ -374,6 +374,9 @@
     den att vrida sig mot mitten.
 
     \todo{Lägg till pseudokod för korridorreglering}%
+    \begin{lstlisting}
+    def regulate(sensor_data, decision_packet):
+    \end{lstlisting}
 
     Förutom de fyra IR-sensorerna på sidorna används även LIDAR och en femte
     IR-sensor när beslut ska fattas. LIDAR-sensorn som är riktad framåt används
@@ -381,9 +384,67 @@
     eller återvändsgränd fattas används sidosensorerna för att detektera och
     bekräfta det som detekterats. Inget beslut fattas innan båda sidosensorerna
     har detekterat samma sak så att risken för felbeslut minskar. Den femte
-    IR-sensorn är riktad nedåt för att detektera hinder i labyrinten. 
+    IR-sensorn är riktad nedåt för att detektera hinder i labyrinten.
+
+    När ett beslut om vändning har tagits väntar koden tills att en hel vändning
+    har skett. Detta görs genom att vänta tills roboten står rakt framåt m.h.a.
+    den uträknade vinkeln men även genom att vänta tills tiden det tar för en
+    hel vändning har passerat. När en hel vändning har skett går roboten framåt
+    tills den har kommit in i den nya korridoren innan den börjar fatta beslut
+    med sensordatan den får in. Detta för att ignorera korridoren som roboten
+    kom från. 
     
-    \todo{Lägg till pseudokod för beslutsfattning}%
+    \todo{Fix the turn, should not be dependant on time it takes for the turn to
+    complete}%
+    \begin{lstlisting}
+    def get_decision(sesor_data, decision_packet):
+        corridors_and_dead_angles = get_corridors_and_dead_angles(sensor_data)
+
+        for value in corridors_and_dead_ends:
+            if 3 corridors detected:
+                decision = TURN_LEFT
+            
+            elif 2 corridors detected:
+                if distance forward is greater than DEAD_END_DISTANCE:
+                    decision = GO_FORWARD
+                else:
+                    if left corridor detected:
+                        decision = TURN_LEFT
+                    else:
+                        decision = TURN_RIGHT
+            
+            elif 1 corridor detected:
+                if distance forward smaller than one tile 
+                   and greater than LIDAR_STOP_DISTANCE:
+                   decision = GO_FORWARD
+                elif left corridor detected:
+                    decision = TURN_LEFT
+                elif right corridor detected:
+                    decision = TURN_RIGHT
+                else:
+                    decision = GO_FORWARD
+
+            elif 0 corridors detected:
+                if distance forward is greater than LIDAR_STOP_DISTANCE:
+                    decision = GO_FORWARD
+                else:
+                    decision = TURN_LEFT
+    
+    if previous decision is TURN_LEFT:
+        # A complete turn has been made
+        if absolute value of the average angle is less than 10 degrees:
+            decision = GO_FORWARD
+            previous_decision = COMPLETE_TURN
+
+    elif previous decision is COMPLETE_TURN:
+        decision = GO_FORWARD
+        previous_decision = COMPLETE_TURN
+        
+        # if the robot has entered the new corridor
+        if robot is inside a corridor:
+            previous_decision = GO_FORWARD
+        
+    \end{lstlisting}
     
     \subsubsection{Manuell navigation}
     För den manuella navigationen kommer sockets att användas mellan webbservern
@@ -599,10 +660,11 @@
 
     \newpage
 	\section{Grafiskt användargränssnitt}
-	På centralenheten ska en webbserver köras som tillhandahåller ett gränssnitt
+	På centralenheten körs en webbserver som tillhandahåller ett gränssnitt
 	för användaren där man kan läsa sensordata eller kontrollera roboten i
-	manuellt läge. Front-end-delen ska skrivas i Elm och back-end-delen i Elixir
-    och webbramverket Phoenix.
+	manuellt läge. Front-end-delen är skriven i Elm och back-end-delen samt webbramverket Phoenix
+	är skrivet i Elixir. På webbservern körs också RabbitMQ som används som en kommunikationsserver
+	mellan centralenheten och webbservern/gui:t. Se Kommunikation nedan %TODO: add reference to the subsection
 
 	I det manuella läget ska roboten styras med en joystick som är kopplad till användarens
     dator eller med knappar på gränssnittet. Figur \ref{fig:gui-overview} visar en illustration av
@@ -632,6 +694,7 @@
     Man ska också kunna ändra styrparametrarna till regleralgoritmen.
 
     \subsection{Kommunikation}
+	
 
 	\begin{longtable}[c]{l l l }
         \textbf{Data} & \textbf{Nyckel} & \textbf{Typ} \\ \midrule

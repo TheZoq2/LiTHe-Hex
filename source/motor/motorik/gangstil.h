@@ -52,7 +52,10 @@ extern const float DIAG_DIVISIVE_BORDER_TILT   ;
 extern const float CLOSE_BORDER_OFFSET         ;
 extern const float DIAG_DIVISIVE_BORDER_OFFSET ;
 extern const float CLOSE_BORDER_TILT           ;
-extern const size_t NUM_LEGS                   ;
+//extern const size_t NUM_LEGS                   ;
+
+//Defined as a #define because you can not allocate an array of a const variable size
+#define NUM_LEGS 6
 
 
 /**
@@ -115,6 +118,21 @@ Point2D* raise_to_default_position();
 Point2D rotate_point_by_angle(Point2D original, float angle);
 Point2D robot_to_ik_coords(Point2D original, size_t leg);
 float absf(float a);
+#endif
+
+
+#ifdef IS_X86
+struct CurrentServoState
+{
+	Point2D points[NUM_LEGS];
+	float heights[NUM_LEGS];
+	struct Leg angles[NUM_LEGS];
+};
+
+struct CurrentServoState current_servo_state;
+
+void write_current_state();
+
 #endif
 
 

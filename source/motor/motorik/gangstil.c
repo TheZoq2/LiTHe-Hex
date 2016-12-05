@@ -44,7 +44,7 @@ const float DIAG_DIVISIVE_BORDER_TILT   = 1.3333333;
 const float CLOSE_BORDER_OFFSET         = 0.085;
 const float DIAG_DIVISIVE_BORDER_OFFSET = 0.045;
 const float CLOSE_BORDER_TILT           = -1;
-const size_t NUM_LEGS                   = 6;
+//const size_t NUM_LEGS                   = 6;
 const int   SMOOTH_STEP_ITERATIONS      = 5;
 const float DEFAULT_LEG_DISTANCE = 0.09;
 
@@ -72,44 +72,6 @@ float maxf(float a, float b){
         return a;
     return b;
 }
-
-
-/**
- * @brief alt_ik identical in functionality as ik.h:s leg_ik (only, at time of writing, actually functional).
- * @param x foot position distance from leg mount, measured from first joint, straight outward.
- * @param y foot position distance from leg mount, measured from first joint, straight upward.
- * @param z foot position distance from leg mount, measured from first joint, along the cross product of x and z axes.
- * @return struct Leg containing angles for each joint, numbered from closest to farthest from robot. angle1 measured
- * counter-clockwise, seen from above. angle2 and angle3 measured counter clockwise when seen facing z.
- */
-struct Leg alt_ik(float x, float y, float z){
-    struct Leg res;
-
-
-    while (sqrt(powf(sqrtf(powf(x, 2) + powf(z, 2)) - JOINT_1_LENGTH, 2) + powf(y, 2)) >
-           (JOINT_2_LENGTH + JOINT_3_LENGTH)){
-        x = x * 0.9;
-        z = z * 0.9;
-    }
-
-        res.angle1 = -atanf(z/x);
-
-        float j2ToFoot = sqrt(powf(sqrtf(powf(x, 2) + powf(z, 2)) - JOINT_1_LENGTH, 2) + powf(y, 2));
-        float gamma = asin(y / j2ToFoot);
-        float alpha = acos((powf(JOINT_2_LENGTH, 2) + powf(j2ToFoot, 2) - powf(JOINT_3_LENGTH, 2))//no n/0 since diffLength & currLength > 0 if statement is entered
-                           / (2 * JOINT_2_LENGTH * j2ToFoot));    // a = acos ((B2 + C2 - A2)/2BC), cosine trig formula
-        res.angle2 = gamma + alpha + JOINT_2_OFFSET;
-        res.angle3 =  - M_PI + asin(j2ToFoot * sin(alpha)/JOINT_3_LENGTH)  - JOINT_2_OFFSET + JOINT_3_OFFSET;
-    res.angle1 = minf(JOINT_1_MAX, res.angle1);
-    res.angle1 = maxf(JOINT_1_MIN, res.angle1);
-    res.angle2 = minf(JOINT_2_MAX, res.angle2);
-    res.angle2 = maxf(JOINT_2_MIN, res.angle2);
-    res.angle3 = minf(JOINT_3_MAX, res.angle3);
-    res.angle3 = maxf(JOINT_3_MIN, res.angle3);
-
-    return res;
-}
-
 
 Point2D rotate_point_by_angle(Point2D original, float angle)
 {
@@ -158,7 +120,7 @@ Point2D robot_to_ik_coords(Point2D original, size_t leg)
  * angles for the legs.
  */
 struct Leg* get_angle_set(Point2D * target, float * height){
-    struct Leg* res = (struct Leg *)calloc(NUM_LEGS, sizeof(struct Leg));
+    struct Leg* res = (struct Leg *)malloc(NUM_LEGS * sizeof(struct Leg));
     for (size_t leg = 0; leg < NUM_LEGS; ++leg){
 		Point2D target_robot_coords = robot_to_ik_coords(target[leg], leg);
 
@@ -217,11 +179,20 @@ void execute_position(Point2D * target, float * z){
             angles[2] = (uint16_t)(0x1ff + radian_to_servo(ik[leg].angle3));
             legId = (uint8_t)(leg/2 + 3);
         }
-		
+
+#ifdef IS_X86
+		current_servo_state.points[legId] = target[legId];
+		current_servo_state.heights[legId] = z[legId];
+		current_servo_state.angles[legId] = ik[legId];
+#endif
 		set_leg_angles(legId, angles);
     }
 
     send_servo_action();
+
+#ifdef IS_X86
+	write_current_state();
+#endif
 
 	free(ik);
 }
@@ -239,7 +210,6 @@ void execute_position(Point2D * target, float * z){
 void execute_step(Point2D * current, Point2D * target, bool lrlRaised){
     float z[NUM_LEGS];
 
-	//TODO: Remove 'not'
     if(lrlRaised){
         z[LF] = GROUNDED + HIGH;
         z[RM] = GROUNDED + HIGH;
@@ -755,71 +725,4 @@ void rotate_set_angle(float angle, Point2D * current){
 }
 
 
-/**
- * @brief main currently used for testing.
- * @param argc unused
- * @param argv unused
- * @return 0
- */
-/*int main(int argc, char *argv[]){
-    //testing variables
-    Point2D * current   = (Point2D *)calloc(NUM_LEGS, sizeof(Point2D));
-    Point2D * target    = (Point2D *)calloc(NUM_LEGS, sizeof(Point2D));
-    Point2D command;
-    Point2D * diff      = (Point2D *)calloc(NUM_LEGS, sizeof(Point2D));
-    float scale[NUM_LEGS];
-    float rotation = 0;
-    for (int var = 0; var < 6; ++var) {
-        Point2D  temp = get_default_leg_position(var);
-        current[var].x = temp.x;
-        current[var].y = temp.y;
-    }
-    bool lrlRaised = false;
-    command.x = 1;
-    command.y = 0;
 
-
-    work_towards_goal(rotation, command, current);
-
-*/
-//    for (int index = 0; index < NUM_LEGS; ++index) {
-//        current[index].x = target[index].x;
-//        current[index].y = target[index].y;
-//    }
-
-//    for (int var = 0; var < 6; ++var) {
-//        printf("diff x: %f y: %f, abs: %f \n", diff[var].x ,diff[var].y, dist(& diff[var]) );
-//    }
-
-//    printf("\nnew run starts here \n\n");
-
-//    lrlRaised = true;
-
-//    directLegs(rotation, target, current, & command, lrlRaised);
-//    scaleLegs(target, current, scale, lrlRaised);
-
-
-//    for (int var = 0; var < 6; ++var) {
-//        printf("diff x: %f y: %f, abs: %f \n", diff[var].x ,diff[var].y, dist(& diff[var]) );
-//    }*/
-
-//    free(current);
-//    free(target);
-//    free(command);
-//    free(diff);
-//    current = NULL;
-//    target  = NULL;
-//    command = NULL;
-//    diff    = NULL;
-
-
-//    float x = 0.18;
-//    float y = -0.1;
-//    float z = 0.05;
-//    struct Leg leg = alt_ik(x, y, z);
-//    printf("returned angles %f, %f, %f\n", leg.angle1, leg.angle2, leg.angle3);
-//    printf("As degrees: %f, %f, %f\n", leg.angle1 * 180 / M_PI, leg.angle2 * 180 / M_PI, leg.angle3 * 180 / M_PI);
-
-
-//    return 0;
-//}
