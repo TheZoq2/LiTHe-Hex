@@ -599,10 +599,11 @@
 
     \newpage
 	\section{Grafiskt användargränssnitt}
-	På centralenheten ska en webbserver köras som tillhandahåller ett gränssnitt
+	På centralenheten körs en webbserver som tillhandahåller ett gränssnitt
 	för användaren där man kan läsa sensordata eller kontrollera roboten i
-	manuellt läge. Front-end-delen ska skrivas i Elm och back-end-delen i Elixir
-    och webbramverket Phoenix.
+	manuellt läge. Front-end-delen är skriven i Elm och back-end-delen samt webbramverket Phoenix
+	är skrivet i Elixir. På webbservern körs också RabbitMQ som används som en kommunikationsserver
+	mellan centralenheten och webbservern/gui:t. Se Kommunikation nedan %TODO: add reference to the subsection
 
 	I det manuella läget ska roboten styras med en joystick som är kopplad till användarens
     dator eller med knappar på gränssnittet. Figur \ref{fig:gui-overview} visar en illustration av
@@ -632,6 +633,7 @@
     Man ska också kunna ändra styrparametrarna till regleralgoritmen.
 
     \subsection{Kommunikation}
+	
 
 	\begin{longtable}[c]{l l l }
         \textbf{Data} & \textbf{Nyckel} & \textbf{Typ} \\ \midrule
