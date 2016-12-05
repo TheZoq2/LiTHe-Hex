@@ -383,7 +383,57 @@
     har detekterat samma sak så att risken för felbeslut minskar. Den femte
     IR-sensorn är riktad nedåt för att detektera hinder i labyrinten. 
     
-    \todo{Lägg till pseudokod för beslutsfattning}%
+    \todo{Fix the turn, should not be dependant on time it takes for the turn to
+    complete}%
+    \begin{lstlisting}
+    def get_decision(sesor_data, decision_packet):
+        corridors_and_dead_angles = get_corridors_and_dead_angles(sensor_data)
+
+        for value in corridors_and_dead_ends:
+            if 3 corridors detected:
+                decision = TURN_LEFT
+            
+            elif 2 corridors detected:
+                if distance forward is greater than DEAD_END_DISTANCE:
+                    decision = GO_FORWARD
+                else:
+                    if left corridor detected:
+                        decision = TURN_LEFT
+                    else:
+                        decision = TURN_RIGHT
+            
+            elif 1 corridor detected:
+                if distance forward smaller than one tile 
+                   and greater than LIDAR_STOP_DISTANCE:
+                   decision = GO_FORWARD
+                elif left corridor detected:
+                    decision = TURN_LEFT
+                elif right corridor detected:
+                    decision = TURN_RIGHT
+                else:
+                    decision = GO_FORWARD
+
+            elif 0 corridors detected:
+                if distance forward is greater than LIDAR_STOP_DISTANCE:
+                    decision = GO_FORWARD
+                else:
+                    decision = TURN_LEFT
+    
+    if previous decision is TURN_LEFT:
+        # A complete turn has been made
+        if absolute value of the average angle is less than 10 degrees:
+            decision = GO_FORWARD
+            previous_decision = COMPLETE_TURN
+
+    elif previous decision is COMPLETE_TURN:
+        decision = GO_FORWARD
+        previous_decision = COMPLETE_TURN
+        
+        # if the robot has entered the new corridor
+        if robot is inside a corridor:
+            previous_decision = GO_FORWARD
+        
+    \end{lstlisting}
     
     \subsubsection{Manuell navigation}
     För den manuella navigationen kommer sockets att användas mellan webbservern
