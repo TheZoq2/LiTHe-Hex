@@ -374,6 +374,9 @@
     den att vrida sig mot mitten.
 
     \todo{Lägg till pseudokod för korridorreglering}%
+    \begin{lstlisting}
+    def regulate(sensor_data, decision_packet):
+    \end{lstlisting}
 
     Förutom de fyra IR-sensorerna på sidorna används även LIDAR och en femte
     IR-sensor när beslut ska fattas. LIDAR-sensorn som är riktad framåt används
@@ -381,7 +384,15 @@
     eller återvändsgränd fattas används sidosensorerna för att detektera och
     bekräfta det som detekterats. Inget beslut fattas innan båda sidosensorerna
     har detekterat samma sak så att risken för felbeslut minskar. Den femte
-    IR-sensorn är riktad nedåt för att detektera hinder i labyrinten. 
+    IR-sensorn är riktad nedåt för att detektera hinder i labyrinten.
+
+    När ett beslut om vändning har tagits väntar koden tills att en hel vändning
+    har skett. Detta görs genom att vänta tills roboten står rakt framåt m.h.a.
+    den uträknade vinkeln men även genom att vänta tills tiden det tar för en
+    hel vändning har passerat. När en hel vändning har skett går roboten framåt
+    tills den har kommit in i den nya korridoren innan den börjar fatta beslut
+    med sensordatan den får in. Detta för att ignorera korridoren som roboten
+    kom från. 
     
     \todo{Fix the turn, should not be dependant on time it takes for the turn to
     complete}%
