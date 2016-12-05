@@ -1,5 +1,5 @@
 #include "gangstil.h"
-//#include <inttypes.h>
+#include <inttypes.h>
 
 #ifndef M_PI
     #define M_PI 3.14159265358979323846
@@ -35,7 +35,6 @@ const float FRONT_LEG_JOINT_Y           = 0.06;
 const float MID_LEG_JOINT_Y             = 0.1;
 const float HIGH                        = 0.05;
 const float GROUNDED                    = -0.14;
-//const float MIN_DIST                    = 0.06;
 const float MAX_DIST                    = 0.11;
 const float VERT_MID_LEG_BORDER_OFFSET  = 0.06;
 const float VERT_HEAD_LEG_BORDER_OFFSET = -0.03;
@@ -44,7 +43,6 @@ const float DIAG_DIVISIVE_BORDER_TILT   = 1.3333333;
 const float CLOSE_BORDER_OFFSET         = 0.085;
 const float DIAG_DIVISIVE_BORDER_OFFSET = 0.045;
 const float CLOSE_BORDER_TILT           = -1;
-//const size_t NUM_LEGS                   = 6;
 const int   SMOOTH_STEP_ITERATIONS      = 5;
 const float DEFAULT_LEG_DISTANCE = 0.09;
 
@@ -61,9 +59,7 @@ float absf(float a){
 
 
 bool closef(float a, float b){
-    float aa = absf(a);
-    float ab = absf(b);
-    return (((a > 0.0001) != (absf(b) < -0.0001)) && aa*0.99 <= ab && aa*1.01 >= ab);
+    return (a + 0.001 > b && b + 0.001 > a);
 }
 
 
@@ -441,7 +437,8 @@ float boundry_intersect(Point2D * curr, Point2D * targ, float k, float m, bool u
     if((targ->y - m> k * targ->x) != upperLimit){
         return 1; //no scaling needed; targ is within boundry
     }
-    if (absf(targ->x) * 1.01 >= absf(curr->x) && absf(targ->x) * 0.99 <= absf(curr->x)){    //vertical leg movement
+
+    if (closef(targ->x, curr->x)){//vertical leg movement
         float diff = (curr->x * k) + m - curr->y;
         float scale =absf(diff/(targ->y - curr->y));
         return scale;//no div by zero; that would mean legs do not move
@@ -450,7 +447,7 @@ float boundry_intersect(Point2D * curr, Point2D * targ, float k, float m, bool u
     float k2 = (targ->y - curr->y)/(targ->x - curr->x); //no div by zero; see preceeding if statement
     float m2 = curr->y - (k2 * curr->x);
 
-    if (k == k2)
+    if (closef(k, k2))
         return 1;   //parallel lines; no scaling. Should not realistically happen.
 
     float newX = (m - m2)/(k2 - k); //no div by zero; see preceeding if statement
@@ -679,10 +676,20 @@ float work_towards_goal(float rot, Point2D goal, Point2D * current){
 
 
     if (scaledown0 > scaledown1){
+
+        for (int var = 0; var < 6; ++var) {
+            printf("lrl raised, leg %d diff: %f, %f.\n", var, targ0[var].x - current[var].x, targ0[var].y - current[var].y);
+        }
+
         execute_step(current, targ0, true);
         return scaledown0;
     }
     else{
+
+        for (int var = 0; var < 6; ++var) {
+            printf("rlr raised, leg %d diff: %f, %f.\n", var, targ1[var].x - current[var].x, targ1[var].y - current[var].y);
+        }
+
         execute_step(current, targ1, false);
         return scaledown1;
     }
