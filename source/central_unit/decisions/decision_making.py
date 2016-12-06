@@ -32,8 +32,6 @@ DEAD_END_DISTANCE = 1.2
 LIDAR_STOP_DISTANCE = 0.30
 DISTANCE_TO_OBSTACLE = 0.0
 DISTANCE_TO_WALL_IN_CORRIDOR = 0.5
-# Distance between the sensors in the mount on same side
-DISTANCE_BETWEEN_SENSORS = 0.16
 
 # Time it takes for the robot to turn
 TIME_NEEDED_TO_TURN = 5

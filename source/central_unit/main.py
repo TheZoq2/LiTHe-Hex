@@ -36,7 +36,7 @@ except ImportError:
 AUTO_BUTTON_PIN = 40
 
 def main():
-    
+
     test_mode = False
 
     if len(sys.argv) > 0 and sys.argv[0] == "--test":
@@ -45,7 +45,7 @@ def main():
     spi = avr_communication.communication_init()
     res = []
 
-    # Setup auto/manual mode and button for it 
+    # Setup auto/manual mode and button for it
     auto = False
     button_temp = 0
     GPIO.setmode(GPIO.BOARD)
@@ -123,7 +123,7 @@ def do_auto_mode_iteration(spi, send_queue, receive_queue, decision_packet):
 
     return auto
 
- 
+
 def do_manual_mode_iteration(spi, send_queue, receive_queue):
     sensor_data = avr_communication.get_sensor_data(spi)
 
@@ -144,40 +144,40 @@ def do_manual_mode_iteration(spi, send_queue, receive_queue):
             rotation = convert_to_sendable_byte(packet.rotation)
 
             avr_communication.walk(spi, x_speed, y_speed, rotation, False)
-    
+
     return auto
 
 
 def send_decision_avr(spi, decision_packet):
-    
+
     x_speed = convert_to_sendable_byte(0)
     y_speed = convert_to_sendable_byte(0)
     rotation = convert_to_sendable_byte(0)
-    
+
     avr_communication.set_servo_speed(spi, decision_packet.speed)
-    
+
     # TODO set the x_speed, y_speed, rotaton for each decision
     if decision_packet.decision == GO_FORWARD:
-        x_speed = convert_to_sendable_byte(0)
+        x_speed = convert_to_sendable_byte(1)
         y_speed = convert_to_sendable_byte(0)
         rotation = convert_to_sendable_byte(0)
-        
+
     elif decision_packet.decision == TURN_LEFT:
         x_speed = convert_to_sendable_byte(0)
         y_speed = convert_to_sendable_byte(0)
-        rotation = convert_to_sendable_byte(0)
-        
+        rotation = convert_to_sendable_byte(1)
+
     elif decision_packet.decision == TURN_RIGHT:
         x_speed = convert_to_sendable_byte(0)
         y_speed = convert_to_sendable_byte(0)
-        rotation = convert_to_sendable_byte(0)
-        
+        rotation = convert_to_sendable_byte(-1)
+
     elif decision_packet.decision == STOP:
         x_speed = convert_to_sendable_byte(0)
         y_speed = convert_to_sendable_byte(0)
         rotation = convert_to_sendable_byte(0)
-            
-    avr_communication.walk(spi, x_speed, y_speed, rotation, True)
+
+    avr_communication.walk(spi, x_speed, y_speed, rotation, auto_mode=True)
 
 # Malcolm conversion for no no negative numbers, other name?
 def convert_to_sendable_byte(byte):
@@ -185,4 +185,3 @@ def convert_to_sendable_byte(byte):
 
 if __name__ == '__main__':
     main()
-
