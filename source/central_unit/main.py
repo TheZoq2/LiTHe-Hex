@@ -63,6 +63,7 @@ def main():
         #pdb.set_trace()
         # Button toggle auto/manual mode and send mode to server
         button_input = GPIO.input(AUTO_BUTTON_PIN)
+        print(button_input)
         if (button_input == 1):
             if (button_temp != button_input):
                 auto = not auto
@@ -80,8 +81,8 @@ def main():
 
         else:
             # Manual mode
-            os.system('clear')
-            print("Entering manual mode!")
+            # os.system('clear')
+            # print("Entering manual mode!")
             auto = do_manual_mode_iteration(spi, send_queue, receive_queue)
             time.sleep(0.1)
 
