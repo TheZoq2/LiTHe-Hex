@@ -561,8 +561,8 @@ void direct_legs(float rot, Point2D * targ, Point2D * current, Point2D req, bool
 
 
 /**
- * @brief assume_standardized_stance Positions the robot in a reliable, standardized
- * hard-coded stance.
+ * @brief assume_standardized_stance Positions the robot in the default position by moving
+ * 3 legs at a time.
  * @param current current position of the legs.
  */
 void assume_standardized_stance(Point2D * current){
