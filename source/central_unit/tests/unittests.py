@@ -223,7 +223,7 @@ class MainLoopTestCase(unittest.TestCase):
 
         self.assertTrue(auto)
 
-    def test_auto_sent_but_not_changed(self):
+    def test_auto_sent_but_not_changed_manual(self):
         """
         Makes sure the auto mode does not change if a value for auto mode
         is sent but set to false when in manual mode.
@@ -273,6 +273,7 @@ class MainLoopTestCase(unittest.TestCase):
         self.assertFalse(auto)
 
     def test_auto_mode_no_input(self):
+
         send_queue = queue.Queue()
         receive_queue = queue.Queue()
         decision_packet = decision_making.DecisionPacket()
@@ -299,28 +300,53 @@ class MainLoopTestCase(unittest.TestCase):
         self.assertEqual(0.01, sensor_data.ir_front_right)
         self.assertEqual(0.01, sensor_data.ir_back_right)
         self.assertEqual(2.58, sensor_data.lidar)
-    
 
-#     def test_auto_to_manual(self):
-#         """
-#         Tests whether auto mode is changed to true if such
-#         a command is sent from the server, when in manual mode.
-#         """
-#         send_queue = queue.Queue()
-#         receive_queue = queue.Queue()
-#         spi = fake_spi.SpiDev()
-#         _set_sensor_data_sequence(spi)
-# 
-#         packet = web.ServerReceivedPacket("{\"auto\": true}")
-# 
-#         receive_queue.put(packet)
-# 
-#         try:
-#             auto = main.do_manual_mode_iteration(spi, send_queue, receive_queue)
-#         except fake_spi.UnexpectedDataException as e:
-#             self.fail(
-#                 "Something went wrong when reading sensor data: Expected {}, got {}"
-#                 .format(e.expected, e.actual))
-# 
-#         self.assertTrue(auto)
+    def test_auto_to_manual(self):
+        """
+        Tests whether auto mode is changed to true if such
+        a command is sent from the server, when in auto mode.
+        """
+        send_queue = queue.Queue()
+        receive_queue = queue.Queue()
+        spi = fake_spi.SpiDev()
+        decision_packet = decision_making.DecisionPacket()
+        _set_sensor_data_sequence(spi)
+
+        packet = web.ServerReceivedPacket("{\"auto\": false}")
+
+        receive_queue.put(packet)
+
+        try:
+            auto = main.do_auto_mode_iteration(spi, send_queue, 
+                                               receive_queue, decision_packet)
+        except fake_spi.UnexpectedDataException as e:
+            self.fail(
+                 "Something went wrong when reading sensor data: Expected {}, got {}"
+                 .format(e.expected, e.actual))
+
+        self.assertFalse(auto)
+
+    def test_auto_sent_but_not_changed_auto(self):
+        """
+        Makes sure the auto mode does not change if a value for auto mode
+        is sent but set to true when in auto mode.
+        """
+        send_queue = queue.Queue()
+        receive_queue = queue.Queue()
+        spi = fake_spi.SpiDev()
+        decision_packet = decision_making.DecisionPacket()
+        _set_sensor_data_sequence(spi)
+
+        packet = web.ServerReceivedPacket("{\"auto\": true}")
+
+        receive_queue.put(packet)
+
+        try:
+            auto = main.do_auto_mode_iteration(spi, send_queue, receive_queue, decision_packet)
+        except fake_spi.UnexpectedDataException as e:
+            self.fail(
+                "Something went wrong when reading sensor data: Expected {}, got {}"
+                .format(e.expected, e.actual))
+
+        self.assertTrue(auto)
 
