@@ -20794,7 +20794,7 @@ var _user$project$Sensors$sensorMessagesPerSecond = 10;
 var _user$project$Sensors$timestamps = A2(
 	_elm_lang$core$List$map,
 	function (x) {
-		return _elm_lang$core$Basics$toFloat(x) * -1;
+		return (_elm_lang$core$Basics$toFloat(x) * -1) / _user$project$Sensors$sensorMessagesPerSecond;
 	},
 	A2(
 		_elm_lang$core$List$range,
@@ -20808,7 +20808,7 @@ var _user$project$Sensors$sensorNames = {
 			return _.irDown;
 		},
 		_1: 'IR Down',
-		_2: {ctor: '_Tuple2', _0: 0, _1: 30}
+		_2: {ctor: '_Tuple2', _0: 0, _1: 0.3}
 	},
 	_1: {
 		ctor: '::',
@@ -20818,7 +20818,7 @@ var _user$project$Sensors$sensorNames = {
 				return _.irFl;
 			},
 			_1: 'IR Front left',
-			_2: {ctor: '_Tuple2', _0: 0, _1: 150}
+			_2: {ctor: '_Tuple2', _0: 0, _1: 1.5}
 		},
 		_1: {
 			ctor: '::',
@@ -20828,7 +20828,7 @@ var _user$project$Sensors$sensorNames = {
 					return _.irFr;
 				},
 				_1: 'IR Front right',
-				_2: {ctor: '_Tuple2', _0: 0, _1: 150}
+				_2: {ctor: '_Tuple2', _0: 0, _1: 1.5}
 			},
 			_1: {
 				ctor: '::',
@@ -20838,7 +20838,7 @@ var _user$project$Sensors$sensorNames = {
 						return _.irBl;
 					},
 					_1: 'IR Back left',
-					_2: {ctor: '_Tuple2', _0: 0, _1: 150}
+					_2: {ctor: '_Tuple2', _0: 0, _1: 1.5}
 				},
 				_1: {
 					ctor: '::',
@@ -20848,7 +20848,7 @@ var _user$project$Sensors$sensorNames = {
 							return _.irBr;
 						},
 						_1: 'IR Back right',
-						_2: {ctor: '_Tuple2', _0: 0, _1: 150}
+						_2: {ctor: '_Tuple2', _0: 0, _1: 1.5}
 					},
 					_1: {
 						ctor: '::',
