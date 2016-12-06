@@ -111,14 +111,14 @@ def do_auto_mode_iteration(spi, send_queue, receive_queue, decision_packet):
     if not receive_queue.empty():
         packet = receive_queue.get()
         if packet.auto is not None:
-            auto = packet.auto_mode 
+            auto = packet.auto_mode
         # Regulate algorithm parameters
         if packet.angle_scaledown is not None:
-            regulate_angle_scaledown(packet.angle_scaledown)
+            decision_packet.regulate_angle_scaledown = packet.angle_scaledown
         if packet.movement_scaledown is not None:
-            regulate_set_movement_scaledown(packet.movement_scaledown)
+            decision_packet.regulate_set_movement_scaledown = packet.movement_scaledown
         if packet.angle_adjustment_border is not None:
-            regulate_angle_adjustment_border(packet.angle_adjustment_border)
+            decision_packet.regulate_angle_adjustment_border = packet.angle_adjustment_border
 
     return auto
 
