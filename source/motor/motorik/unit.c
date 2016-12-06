@@ -40,6 +40,10 @@ bool test_robot_to_ik(size_t leg, float x, float y, float expected_x, float expe
 
 	return (float_is_almost(result.x, expected_x)) && (float_is_almost(result.y, expected_y));
 }
+bool test_servo_bound_check(uint16_t target, uint16_t current, bool expected)
+{
+	return is_servo_position_in_bounds(target, current) == expected;
+}
 
 /**
  * Tests functions that are used to test other functions
@@ -57,8 +61,6 @@ END_TEST
 
 START_TEST (status_tests) {
 
-	printf("%f \n", uint8_to_float(127));
-	
 	ck_assert(float_is_almost(uint8_to_float(127), 0));
 	ck_assert(float_is_almost(uint8_to_float(255), 1));
 	ck_assert(float_is_almost(uint8_to_float(0), -1));
@@ -79,8 +81,14 @@ START_TEST (status_tests) {
 } 
 END_TEST
 
-START_TEST (ik_tests)
+START_TEST (servo_tests)
 {
+	ck_assert(test_servo_bound_check(0x1ff, 0x1ff, true));
+	ck_assert(test_servo_bound_check(0x1ff, 0, false));
+	ck_assert(test_servo_bound_check(0x0, 0x1ff, false));
+	ck_assert(test_servo_bound_check(150, 153, true));
+	ck_assert(test_servo_bound_check(153, 150, true));
+
 }
 END_TEST
 
@@ -165,7 +173,7 @@ Suite * motor_suite(void)
 	//ADD TESTS HERE
     tcase_add_test(tc_core, status_tests);
     tcase_add_test(tc_core, meta_test);
-    tcase_add_test(tc_core, ik_tests);
+    tcase_add_test(tc_core, servo_tests);
     tcase_add_test(tc_core, coordinate_conversion_tests);
 
     suite_add_tcase(s, tc_core);

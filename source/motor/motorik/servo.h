@@ -40,6 +40,10 @@ extern const uint8_t SERVO_MAP[6][3];
 
 extern const uint8_t BROADCAST_ID;
 
+extern const uint8_t NUM_SERVOS;
+
+extern const uint16_t SERVO_TARGET_COMPLIANCE_MARGIN;
+
 /*
 	Struct that contains a response from a servo. 
 
@@ -148,7 +152,8 @@ bool servos_are_done_rotating();
 
 
 #ifdef IS_X86
-//bool read_simulator_servo_state(uint8_t id);
+char read_simulator_servo_state(uint8_t id);
+bool is_servo_position_in_bounds(uint16_t target_position, uint16_t current_position);
 #endif
 
 #endif

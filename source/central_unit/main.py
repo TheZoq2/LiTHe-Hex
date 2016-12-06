@@ -105,7 +105,8 @@ def do_auto_mode_iteration(spi, send_queue, receive_queue, decision_packet):
 
     # Send decision to server
     send_queue.put(web.ServerSendPacket(debug_string=
-        decision_making.int_to_string_command(decision_packet.decision)))
+        decision_making.int_to_string_command(decision_packet.decision),
+                                        sensor_data_packet=sensor_data))
 
     auto = True
 
