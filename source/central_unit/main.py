@@ -36,7 +36,7 @@ except ImportError:
 AUTO_BUTTON_PIN = 40
 
 def main():
-    
+
     test_mode = False
 
     if len(sys.argv) > 0 and sys.argv[0] == "--test":
@@ -45,7 +45,7 @@ def main():
     spi = avr_communication.communication_init()
     res = []
 
-    # Setup auto/manual mode and button for it 
+    # Setup auto/manual mode and button for it
     auto = False
     button_temp = 0
     GPIO.setmode(GPIO.BOARD)
@@ -62,13 +62,12 @@ def main():
     while True:
         #pdb.set_trace()
         # Button toggle auto/manual mode and send mode to server
-        button_auto_manaul(auto)
         button_input = GPIO.input(AUTO_BUTTON_PIN)
         if (button_input == 1):
             if (button_temp != button_input):
                 auto = not auto
                 button_temp = 1
-                send_queue.put(web.ServerSendPacket(auto_mode = auto))
+                send_queue.put(web.ServerSendPacket(auto_mode=auto))
         else:
             button_temp = 0
 
@@ -76,20 +75,8 @@ def main():
             # Auto mode
             os.system('clear')
             print("Auto mode!")
-            do_auto_mode_iteration(spi, decision_packet);
+            auto = do_auto_mode_iteration(spi, send_queue, receive_queue, decision_packet);
             time.sleep(0.5)
-
-            if not receive_queue.empty():
-                packet = receive_queue.get()
-                if packet.auto is not None:
-                    auto = packet.auto_mode 
-                #Regulate algorithm parameters
-                if packet.angle_scaledown is not None:
-                    regulate_angle_scaledown(packet.angle_scaledown)
-                if packet.movement_scaledown is not None:
-                    regulate_set_movement_scaledown(packet.movement_scaledown)
-                if packet.angle_adjustment_border is not None:
-                    regulate_angle_adjustment_border(packet.angle_adjustment_border)
 
         else:
             # Manual mode
@@ -98,7 +85,8 @@ def main():
             auto = do_manual_mode_iteration(spi, send_queue, receive_queue)
             time.sleep(0.1)
 
-def do_auto_mode_iteration(spi, decision_packet):
+
+def do_auto_mode_iteration(spi, send_queue, receive_queue, decision_packet):
     sensor_data = avr_communication.get_sensor_data(spi)
     print("sensor_data:", sensor_data)
 
@@ -111,12 +99,31 @@ def do_auto_mode_iteration(spi, decision_packet):
     print("Decision: ", decision_packet.decision)
 
     pid_controller.regulate(sensor_data, decision_packet)
-    print("Pid controller command: ", decision_packet.regulate_base_movement, ", ", decision_packet.regulate_command_y, ", ", decision_packet.regulate_goal_angle);
+    print("Pid controller command: ", decision_packet.regulate_base_movement,
+          ", ", decision_packet.regulate_command_y, ", ", decision_packet.regulate_goal_angle)
     #send_decision_avr(spi, decision_packet)
 
     # Send decision to server
-    send_queue.put(web.ServerSendPacket(debug_string=int_to_string_command(decision_packet.decision)))
- 
+    send_queue.put(web.ServerSendPacket(debug_string=
+        decision_making.int_to_string_command(decision_packet.decision)))
+
+    auto = True
+
+    if not receive_queue.empty():
+        packet = receive_queue.get()
+        if packet.auto is not None:
+            auto = packet.auto_mode 
+        # Regulate algorithm parameters
+        if packet.angle_scaledown is not None:
+            regulate_angle_scaledown(packet.angle_scaledown)
+        if packet.movement_scaledown is not None:
+            regulate_set_movement_scaledown(packet.movement_scaledown)
+        if packet.angle_adjustment_border is not None:
+            regulate_angle_adjustment_border(packet.angle_adjustment_border)
+
+    return auto
+
+
 def do_manual_mode_iteration(spi, send_queue, receive_queue):
     sensor_data = avr_communication.get_sensor_data(spi)
 
@@ -137,39 +144,40 @@ def do_manual_mode_iteration(spi, send_queue, receive_queue):
             rotation = convert_to_sendable_byte(packet.rotation)
 
             avr_communication.walk(spi, x_speed, y_speed, rotation, False)
-    
+
     return auto
 
+
 def send_decision_avr(spi, decision_packet):
-    
+
     x_speed = convert_to_sendable_byte(0)
     y_speed = convert_to_sendable_byte(0)
     rotation = convert_to_sendable_byte(0)
-    
+
     avr_communication.set_servo_speed(spi, decision_packet.speed)
-    
+
     # TODO set the x_speed, y_speed, rotaton for each decision
     if decision_packet.decision == GO_FORWARD:
-        x_speed = convert_to_sendable_byte(0)
+        x_speed = convert_to_sendable_byte(1)
         y_speed = convert_to_sendable_byte(0)
         rotation = convert_to_sendable_byte(0)
-        
+
     elif decision_packet.decision == TURN_LEFT:
         x_speed = convert_to_sendable_byte(0)
         y_speed = convert_to_sendable_byte(0)
-        rotation = convert_to_sendable_byte(0)
-        
+        rotation = convert_to_sendable_byte(1)
+
     elif decision_packet.decision == TURN_RIGHT:
         x_speed = convert_to_sendable_byte(0)
         y_speed = convert_to_sendable_byte(0)
-        rotation = convert_to_sendable_byte(0)
-        
+        rotation = convert_to_sendable_byte(-1)
+
     elif decision_packet.decision == STOP:
         x_speed = convert_to_sendable_byte(0)
         y_speed = convert_to_sendable_byte(0)
         rotation = convert_to_sendable_byte(0)
-            
-    avr_communication.walk(spi, x_speed, y_speed, rotation, True)
+
+    avr_communication.walk(spi, x_speed, y_speed, rotation, auto_mode=True)
 
 # Malcolm conversion for no no negative numbers, other name?
 def convert_to_sendable_byte(byte):
@@ -177,4 +185,3 @@ def convert_to_sendable_byte(byte):
 
 if __name__ == '__main__':
     main()
-
