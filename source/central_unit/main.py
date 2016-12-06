@@ -63,7 +63,6 @@ def main():
         #pdb.set_trace()
         # Button toggle auto/manual mode and send mode to server
         button_input = GPIO.input(AUTO_BUTTON_PIN)
-        print(button_input)
         if (button_input == 1):
             if (button_temp != button_input):
                 auto = not auto
@@ -138,6 +137,7 @@ def do_manual_mode_iteration(spi, send_queue, receive_queue):
         if packet.auto is not None:
             auto = packet.auto
         if packet.has_motion_command():
+            print(packet.raw)
             servo_speed = (int)(packet.thrust * constants.MAX_16BIT_SIZE)
             avr_communication.set_servo_speed(spi, servo_speed)
 
@@ -145,6 +145,14 @@ def do_manual_mode_iteration(spi, send_queue, receive_queue):
             y_speed = convert_to_sendable_byte(packet.y)
             rotation = convert_to_sendable_byte(packet.rotation)
 
+            print(x_speed)
+            print(y_speed)
+            print(rotation)
+            print("")
+            print(packet.x)
+            print(packet.y)
+            print("")
+            
             avr_communication.walk(spi, x_speed, y_speed, rotation, False)
 
     return auto
