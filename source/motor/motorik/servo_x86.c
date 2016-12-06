@@ -13,7 +13,7 @@ char read_simulator_servo_state(uint8_t id)
 	if(in_file == NULL)
 	{
 		printf("Failed to open servo state file, assuming done rotating");
-		return true;
+		return '0';
 	}
 
 	//Read the first 18 bytes of the file
@@ -27,7 +27,7 @@ char read_simulator_servo_state(uint8_t id)
 	if(target_index > read_amount - 1)
 	{
 		printf("Servo state file does not contain enough information, assuming done rotating");
-		return true;
+		return '0';
 	}
 
 	fclose(in_file);

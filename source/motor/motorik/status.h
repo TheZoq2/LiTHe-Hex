@@ -46,4 +46,5 @@ void status_set_servo_speed(CurrentStatus* status, uint8_t speed_lsb, uint8_t sp
 float uint8_to_float(uint8_t original);
 #endif
 
+
 #endif /* ifndef STATUS_H */

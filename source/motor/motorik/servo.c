@@ -21,12 +21,17 @@ const uint8_t ROTATION_SPEED_ADDRESS = 0x20;
 const uint8_t RETURN_LEVEL_ADDRESS = 0x10;
 const uint8_t MOVING_ADDRESS = 0x2E;
 const uint8_t CCW_COMPLIANCE_SLOPE_ADDRESS = 0x1D;
+const uint8_t PRESENT_POSITION_ADDRESS = 0x24;
 
 const uint8_t TORQUE_ON = 0x01;
 const uint8_t TORQUE_OFF = 0x00;
 const uint8_t ONLY_REPLY_TO_READ = 0x01;
 
 const uint8_t BROADCAST_ID = 0xFE;
+
+const uint8_t NUM_SERVOS = 18;
+
+const uint16_t SERVO_TARGET_COMPLIANCE_MARGIN = 5;
 
 
 const uint8_t SERVO_MAP[6][3] = {
@@ -103,6 +108,17 @@ ServoReply read_servo_data(uint8_t id, uint8_t address, uint8_t length)
 
 	//Read the data
 	return receive_servo_reply();
+}
+
+uint16_t read_uint16_from_servo(uint8_t id, uint8_t address)
+{
+	ServoReply reply = read_servo_data(id, address, 2);
+
+	uint16_t result = (reply.parameters[1] << 8) + reply.parameters[0];
+
+	free_servo_reply(reply);
+
+	return result;
 }
 
 #ifdef IS_X86
@@ -239,19 +255,35 @@ void set_leg_angles(enum LegIds leg_index, uint16_t* angles)
 	}
 }
 
-bool check_servo_done_rotating(uint8_t id)
+/*
+	Reads the target positions for all the servos. Buffer must be a preallocated 
+	pointer that fits NUM_SERVOS uints 
+*/
+void read_servo_target_positions(uint16_t* buffer)
 {
-	ServoReply reply = read_servo_data(id, MOVING_ADDRESS, 1);
+	for (uint8_t i = 0; i < NUM_SERVOS; ++i) 
+	{
+		buffer[i] = read_uint16_from_servo(i, GOAL_POSITION_ADDRESS);
+	}
+}
 
-	free_servo_reply(reply);
+bool is_servo_position_in_bounds(uint16_t target_position, uint16_t current_position)
+{
+	return abs(target_position - current_position) < SERVO_TARGET_COMPLIANCE_MARGIN;
+}
 
+bool check_servo_done_rotating(uint8_t id, uint16_t target_position)
+{
+	uint16_t current_position = read_uint16_from_servo(id, PRESENT_POSITION_ADDRESS);
+
+	bool result = is_servo_position_in_bounds(target_position, current_position);
 #ifdef IS_X86
-	//Run the regular code but don't return it. This is to be able to check for memory leaks
+	//Run the regular code but don't return it. 
+	//This is to be able to check for memory leaks
 	//using valgrind
-	reply.parameters[0] == 0;
 	return read_simulator_servo_state(id) == '0';
 #else
-	return reply.parameters[0] == 0;
+	return result;
 #endif
 }
 bool servos_are_done_rotating()
@@ -261,9 +293,14 @@ bool servos_are_done_rotating()
 	//Sleep for 0.1 seconds
 	usleep(100000);
 #endif
-	for(uint8_t i = 1; i <= 18; i++)
+
+	uint16_t servo_targets[NUM_SERVOS];
+
+	read_servo_target_positions(servo_targets);
+
+	for(uint8_t i = 1; i <= NUM_SERVOS; i++)
 	{
-		if(check_servo_done_rotating(i) == false)
+		if(check_servo_done_rotating(i, servo_targets[i]) == false)
 		{
 			return false;
 		}
