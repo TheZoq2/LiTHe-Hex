@@ -21803,11 +21803,20 @@ var _user$project$App$update = F2(
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'ChangeParameter':
+				var _p15 = _p5._0;
 				var _p13 = _elm_lang$core$String$toFloat(_p5._1);
 				if (_p13.ctor === 'Err') {
-					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+					var newParameters = A2(_elm_lang$core$Dict$remove, _p15, model.parameters);
+					var _p14 = A2(_elm_lang$core$Debug$log, 'ERROR Could not parse text field value as float: ', _p13._0);
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{parameters: newParameters}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
 				} else {
-					var newParameters = A3(_elm_lang$core$Dict$insert, _p5._0, _p13._0, model.parameters);
+					var newParameters = A3(_elm_lang$core$Dict$insert, _p15, _p13._0, model.parameters);
 					return {
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
@@ -21820,12 +21829,12 @@ var _user$project$App$update = F2(
 				var payload = _elm_lang$core$Json_Encode$object(
 					A2(
 						_elm_lang$core$List$map,
-						function (_p14) {
-							var _p15 = _p14;
+						function (_p16) {
+							var _p17 = _p16;
 							return {
 								ctor: '_Tuple2',
-								_0: _p15._0,
-								_1: _elm_lang$core$Json_Encode$float(_p15._1)
+								_0: _p17._0,
+								_1: _elm_lang$core$Json_Encode$float(_p17._1)
 							};
 						},
 						_elm_lang$core$Dict$toList(model.parameters)));
@@ -21833,9 +21842,9 @@ var _user$project$App$update = F2(
 					_fbonetti$elm_phoenix_socket$Phoenix_Push$withPayload,
 					payload,
 					A2(_fbonetti$elm_phoenix_socket$Phoenix_Push$init, 'joystick', 'client'));
-				var _p16 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$push, push, model.phxSocket);
-				var phxSocket = _p16._0;
-				var phxCmd = _p16._1;
+				var _p18 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$push, push, model.phxSocket);
+				var phxSocket = _p18._0;
+				var phxCmd = _p18._1;
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(

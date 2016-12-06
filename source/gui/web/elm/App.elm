@@ -254,8 +254,16 @@ update msg model =
 
         ChangeParameter par value ->
             case String.toFloat value of
-                Err _ ->
-                    ( model, Cmd.none )
+                Err msg ->
+                    let
+                        _ =
+                            Debug.log "ERROR Could not parse text field value as float: "
+                                msg
+
+                        newParameters =
+                            Dict.remove par model.parameters
+                    in
+                        ( { model | parameters = newParameters }, Cmd.none )
 
                 Ok res ->
                     let
