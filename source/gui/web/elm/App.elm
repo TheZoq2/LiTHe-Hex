@@ -10,6 +10,7 @@ import Json.Decode.Pipeline exposing (decode, required)
 import Time exposing (Time, millisecond)
 import Dict exposing (Dict)
 import String
+import Debug
 import Phoenix.Socket exposing (Socket)
 import Phoenix.Channel
 import Phoenix.Push
@@ -253,13 +254,25 @@ update msg model =
 
         ChangeParameter par value ->
             case String.toFloat value of
-                Err _ ->
-                    ( model, Cmd.none )
+                Err msg ->
+                    let
+                        _ =
+                            Debug.log "ERROR Could not parse text field value as float: "
+                                msg
+
+                        newParameters =
+                            Dict.remove par model.parameters
+                    in
+                        ( { model | parameters = newParameters }, Cmd.none )
 
                 Ok res ->
-                    ( { model | parameters = Dict.insert par res model.parameters }
-                    , Cmd.none
-                    )
+                    let
+                        newParameters =
+                            Dict.insert par res model.parameters
+                    in
+                        ( { model | parameters = newParameters }
+                        , Cmd.none
+                        )
 
         SendParameters ->
             let
@@ -332,25 +345,15 @@ view model =
 createInputField : Model -> Int -> ( String, PIDParameter ) -> Html Msg
 createInputField model idx ( desc, field ) =
     let
-        currentValue =
-            case Dict.get field model.parameters of
-                Nothing ->
-                    []
-
-                Just current ->
-                    [ Textfield.value (toString current) ]
-
         indexOffset =
             1
     in
         Textfield.render Mdl
             [ idx + indexOffset ]
             model.mdl
-            ([ Textfield.onInput SetNewMessage
-             , Textfield.label desc
-             ]
-                ++ currentValue
-            )
+            [ Textfield.onInput (ChangeParameter field)
+            , Textfield.label desc
+            ]
 
 
 viewControl : Model -> List (Html Msg)

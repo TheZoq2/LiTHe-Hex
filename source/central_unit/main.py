@@ -157,7 +157,6 @@ def send_decision_avr(spi, decision_packet):
 
     avr_communication.set_servo_speed(spi, decision_packet.speed)
 
-    # TODO set the x_speed, y_speed, rotaton for each decision
     if decision_packet.decision == GO_FORWARD:
         x_speed = convert_to_sendable_byte(1)
         y_speed = convert_to_sendable_byte(0)

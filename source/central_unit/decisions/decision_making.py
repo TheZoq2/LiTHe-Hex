@@ -1,6 +1,6 @@
 import sys
 import math
-import communication
+import communication.avr_communication as avr_communication
 import time
 
 # Types of corridors
@@ -42,7 +42,6 @@ class DecisionPacket():
         self.decision = GO_FORWARD
         self.previous_decision = GO_FORWARD
         self.speed = 1
-        self.turn_timer = 0
         self.regulate_base_movement = 0;
         self.regulate_command_y = 0;
         self.regulate_goal_angle = 0;
@@ -174,31 +173,22 @@ def get_decision(sensor_data, decision_packet):
     if (decision_packet.previous_decision == TURN_LEFT):
         #print("Robot is turning left!")
 
-        #TODO: Fix so that it is not dependant on time it takes for a turn to complete
-        if (decision_packet.turn_timer == 0):
-            decision_packet.turn_timer = time.time()
-
         # After the robot has started turning the angle will be
         # larger than 5 (0 ideally), so we don't make new decisions until
-        # the robot is back at straight angle.
+        # the robot is back at straight angle and robot has stopped rotating.
         if (abs(sensor_data.average_angle) <= ANGLE_10_DEGREE and
-            time.time() - decision_packet.turn_timer >= TIME_NEEDED_TO_TURN): #TODO: test and tweak this
+            not avr_communication.is_busy_rotating()):
             decision_packet.decision = GO_FORWARD
             decision_packet.previous_decision = COMPLETE_TURN
-            decision_packet.turn_timer = 0
             #print("Turning left complete.")
 
     elif (decision_packet.previous_decision == TURN_RIGHT):
         #print("Robot is turning left!")
 
-        if (decision_packet.turn_timer == 0):
-            decision_packet.turn_timer = time.time()
-
         if ((sensor_data.average_angle) <= ANGLE_10_DEGREE and
-            time.time() - decision_packet.turn_timer >= TIME_NEEDED_TO_TURN): #TODO: test and tweak this
+            not avr_communication.is_busy_rotating()):
             decision_packet.decision = GO_FORWARD
             decision_packet.previous_decision = COMPLETE_TURN
-            decision_packet.turn_timer = 0
             #print("Turning right complete.")
 
     # When the robot has rotated but yet not entered the new corridor
