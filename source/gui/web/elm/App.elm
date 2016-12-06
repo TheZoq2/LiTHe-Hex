@@ -8,12 +8,15 @@ import Json.Encode as JE
 import Json.Decode as JD
 import Json.Decode.Pipeline exposing (decode, required)
 import Time exposing (Time, millisecond)
+import Dict exposing (Dict)
+import String
 import Phoenix.Socket exposing (Socket)
 import Phoenix.Channel
 import Phoenix.Push
 import Material
 import Material.Textfield as Textfield
 import Material.List as Lists
+import Material.Button as Button
 import Material.Layout as Layout
 import Joystick
 import Sensors
@@ -39,6 +42,10 @@ import Sensors
 -}
 
 
+type alias PIDParameter =
+    String
+
+
 type Msg
     = PhoenixMsg (Phoenix.Socket.Msg Msg)
     | SetNewMessage String
@@ -51,16 +58,8 @@ type Msg
     | SendControlToServer Time
     | SelectTab Int
     | ChangeParameter PIDParameter String
+    | SendParameters
     | Mdl (Material.Msg Msg)
-
-
-type PIDParameter
-    = BaseMovement
-    | CommandY
-    | GoalAngle
-    | AngleScaledown
-    | MovementScaledown
-    | AngleAdjustmentBorder
 
 
 type alias Model =
@@ -72,6 +71,7 @@ type alias Model =
     , sensorData : List Sensors.SensorData
     , autoMode : Bool
     , selectedTab : Int
+    , parameters : Dict String Float
     , mdl : Material.Model
     }
 
@@ -103,6 +103,7 @@ init { host } =
         , sensorData = []
         , autoMode = False
         , selectedTab = 0
+        , parameters = Dict.empty
         , mdl = Material.model
         }
             ! [ Cmd.map PhoenixMsg phxCmd ]
@@ -251,7 +252,35 @@ update msg model =
             ( { model | selectedTab = num }, Cmd.none )
 
         ChangeParameter par value ->
-            ( model, Cmd.none )
+            case String.toFloat value of
+                Err _ ->
+                    ( model, Cmd.none )
+
+                Ok res ->
+                    ( { model | parameters = Dict.insert par res model.parameters }
+                    , Cmd.none
+                    )
+
+        SendParameters ->
+            let
+                payload =
+                    Dict.toList model.parameters
+                        |> List.map (\( par, v ) -> ( par, JE.float v ))
+                        |> JE.object
+
+                push =
+                    Phoenix.Push.init "joystick" "client"
+                        |> Phoenix.Push.withPayload payload
+
+                ( phxSocket, phxCmd ) =
+                    Phoenix.Socket.push push model.phxSocket
+            in
+                ( { model
+                    | parameters = Dict.empty
+                    , phxSocket = phxSocket
+                  }
+                , Cmd.map PhoenixMsg phxCmd
+                )
 
 
 subscriptions : Model -> Sub Msg
@@ -300,19 +329,48 @@ view model =
         }
 
 
+createInputField : Model -> Int -> ( String, PIDParameter ) -> Html Msg
+createInputField model idx ( desc, field ) =
+    let
+        currentValue =
+            case Dict.get field model.parameters of
+                Nothing ->
+                    []
+
+                Just current ->
+                    [ Textfield.value (toString current) ]
+
+        indexOffset =
+            1
+    in
+        Textfield.render Mdl
+            [ idx + indexOffset ]
+            model.mdl
+            ([ Textfield.onInput SetNewMessage
+             , Textfield.label desc
+             ]
+                ++ currentValue
+            )
+
+
 viewControl : Model -> List (Html Msg)
 viewControl model =
     [ Joystick.joystickDisplay model.joystick
     ]
-        ++ List.map
-            (\( desc, field ) ->
-                input
-                    [ placeholder desc
-                    , onInput (ChangeParameter field)
-                    ]
-                    []
-            )
-            [ ( "Base movement", BaseMovement ) ]
+        ++ List.indexedMap (createInputField model)
+            [ ( "Base movement", "base_movement" )
+            , ( "Command Y", "command_y" )
+            , ( "Goal angle", "goal_angle" )
+            , ( "Angle scaledown", "angle_scaledown" )
+            , ( "Movement scaledown", "movement_scaledown" )
+            , ( "Angle adjustment", "angle_adjustment_border" )
+            ]
+        ++ [ Button.render Mdl
+                [ 0 ]
+                model.mdl
+                [ Button.onClick SendParameters ]
+                [ text "duck" ]
+           ]
 
 
 viewDebug : Model -> List (Html Msg)
