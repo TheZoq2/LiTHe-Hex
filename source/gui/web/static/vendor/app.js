@@ -14574,6 +14574,599 @@ var _MichaelCombs28$elm_mdl$Material$Model = F8(
 		return {button: a, textfield: b, menu: c, snackbar: d, layout: e, toggles: f, tooltip: g, tabs: h};
 	});
 
+var _MichaelCombs28$elm_mdl$Material_Card$stopClick = _MichaelCombs28$elm_mdl$Material_Options_Internal$attribute(
+	A2(_elm_lang$html$Html_Attributes$attribute, 'onclick', 'var event = arguments[0] || window.event; event.stopPropagation();'));
+var _MichaelCombs28$elm_mdl$Material_Card$block = function (block) {
+	var _p0 = block;
+	switch (_p0.ctor) {
+		case 'Title':
+			return A2(
+				_MichaelCombs28$elm_mdl$Material_Options$div,
+				{
+					ctor: '::',
+					_0: _MichaelCombs28$elm_mdl$Material_Options$cs('mdl-card__title'),
+					_1: _p0._0
+				},
+				_p0._1);
+		case 'Media':
+			return A2(
+				_MichaelCombs28$elm_mdl$Material_Options$div,
+				{
+					ctor: '::',
+					_0: _MichaelCombs28$elm_mdl$Material_Options$cs('mdl-card__media'),
+					_1: _p0._0
+				},
+				_p0._1);
+		case 'SupportingText':
+			return A2(
+				_MichaelCombs28$elm_mdl$Material_Options$div,
+				{
+					ctor: '::',
+					_0: _MichaelCombs28$elm_mdl$Material_Options$cs('mdl-card__supporting-text'),
+					_1: _p0._0
+				},
+				_p0._1);
+		case 'Actions':
+			return A2(
+				_MichaelCombs28$elm_mdl$Material_Options$div,
+				{
+					ctor: '::',
+					_0: _MichaelCombs28$elm_mdl$Material_Options$cs('mdl-card__actions'),
+					_1: {ctor: '::', _0: _MichaelCombs28$elm_mdl$Material_Card$stopClick, _1: _p0._0}
+				},
+				_p0._1);
+		default:
+			return A2(
+				_MichaelCombs28$elm_mdl$Material_Options$div,
+				{
+					ctor: '::',
+					_0: _MichaelCombs28$elm_mdl$Material_Options$cs('mdl-card__menu'),
+					_1: {ctor: '::', _0: _MichaelCombs28$elm_mdl$Material_Card$stopClick, _1: _p0._0}
+				},
+				_p0._1);
+	}
+};
+var _MichaelCombs28$elm_mdl$Material_Card$view = F2(
+	function (styling, views) {
+		return A2(
+			_MichaelCombs28$elm_mdl$Material_Options$div,
+			A2(
+				_elm_lang$core$List$append,
+				styling,
+				{
+					ctor: '::',
+					_0: _MichaelCombs28$elm_mdl$Material_Options$cs('mdl-card'),
+					_1: {
+						ctor: '::',
+						_0: A2(_MichaelCombs28$elm_mdl$Material_Options$css, 'min-height', '0px'),
+						_1: {ctor: '[]'}
+					}
+				}),
+			A2(_elm_lang$core$List$map, _MichaelCombs28$elm_mdl$Material_Card$block, views));
+	});
+var _MichaelCombs28$elm_mdl$Material_Card$subhead = function (styling) {
+	return _MichaelCombs28$elm_mdl$Material_Options$span(
+		{
+			ctor: '::',
+			_0: _MichaelCombs28$elm_mdl$Material_Options$cs('mdl-card__subtitle-text'),
+			_1: {
+				ctor: '::',
+				_0: A2(_MichaelCombs28$elm_mdl$Material_Options$css, 'padding-top', '8px'),
+				_1: styling
+			}
+		});
+};
+var _MichaelCombs28$elm_mdl$Material_Card$head = function (styling) {
+	return A2(
+		_MichaelCombs28$elm_mdl$Material_Options$styled,
+		_elm_lang$html$Html$h1,
+		{
+			ctor: '::',
+			_0: _MichaelCombs28$elm_mdl$Material_Options$cs('mdl-card__title-text'),
+			_1: {
+				ctor: '::',
+				_0: A2(_MichaelCombs28$elm_mdl$Material_Options$css, 'align-self', 'flex-start'),
+				_1: styling
+			}
+		});
+};
+var _MichaelCombs28$elm_mdl$Material_Card$expand = _MichaelCombs28$elm_mdl$Material_Options$cs('mdl-card--expand');
+var _MichaelCombs28$elm_mdl$Material_Card$border = _MichaelCombs28$elm_mdl$Material_Options$cs('mdl-card--border');
+var _MichaelCombs28$elm_mdl$Material_Card$Actions = F2(
+	function (a, b) {
+		return {ctor: 'Actions', _0: a, _1: b};
+	});
+var _MichaelCombs28$elm_mdl$Material_Card$actions = _MichaelCombs28$elm_mdl$Material_Card$Actions;
+var _MichaelCombs28$elm_mdl$Material_Card$SupportingText = F2(
+	function (a, b) {
+		return {ctor: 'SupportingText', _0: a, _1: b};
+	});
+var _MichaelCombs28$elm_mdl$Material_Card$text = _MichaelCombs28$elm_mdl$Material_Card$SupportingText;
+var _MichaelCombs28$elm_mdl$Material_Card$Media = F2(
+	function (a, b) {
+		return {ctor: 'Media', _0: a, _1: b};
+	});
+var _MichaelCombs28$elm_mdl$Material_Card$media = _MichaelCombs28$elm_mdl$Material_Card$Media;
+var _MichaelCombs28$elm_mdl$Material_Card$Menu = F2(
+	function (a, b) {
+		return {ctor: 'Menu', _0: a, _1: b};
+	});
+var _MichaelCombs28$elm_mdl$Material_Card$menu = F2(
+	function (styling, block) {
+		return A2(_MichaelCombs28$elm_mdl$Material_Card$Menu, styling, block);
+	});
+var _MichaelCombs28$elm_mdl$Material_Card$Title = F2(
+	function (a, b) {
+		return {ctor: 'Title', _0: a, _1: b};
+	});
+var _MichaelCombs28$elm_mdl$Material_Card$title = F2(
+	function (styling, block) {
+		return A2(
+			_MichaelCombs28$elm_mdl$Material_Card$Title,
+			A2(
+				_elm_lang$core$List$append,
+				styling,
+				{
+					ctor: '::',
+					_0: A2(_MichaelCombs28$elm_mdl$Material_Options$css, 'justify-content', 'flex-end'),
+					_1: {
+						ctor: '::',
+						_0: A2(_MichaelCombs28$elm_mdl$Material_Options$css, 'flex-direction', 'column'),
+						_1: {
+							ctor: '::',
+							_0: A2(_MichaelCombs28$elm_mdl$Material_Options$css, 'align-items', 'flex-start'),
+							_1: {ctor: '[]'}
+						}
+					}
+				}),
+			block);
+	});
+
+var _MichaelCombs28$elm_mdl$Material_Color$text = function (_p0) {
+	var _p1 = _p0;
+	return _MichaelCombs28$elm_mdl$Material_Options$cs(
+		A2(_elm_lang$core$Basics_ops['++'], 'mdl-color-text--', _p1._0));
+};
+var _MichaelCombs28$elm_mdl$Material_Color$background = function (_p2) {
+	var _p3 = _p2;
+	return _MichaelCombs28$elm_mdl$Material_Options$cs(
+		A2(_elm_lang$core$Basics_ops['++'], 'mdl-color--', _p3._0));
+};
+var _MichaelCombs28$elm_mdl$Material_Color$shadeName = function (shade) {
+	var _p4 = shade;
+	switch (_p4.ctor) {
+		case 'S50':
+			return '50';
+		case 'S100':
+			return '100';
+		case 'S200':
+			return '200';
+		case 'S300':
+			return '300';
+		case 'S400':
+			return '400';
+		case 'S500':
+			return '500';
+		case 'S600':
+			return '600';
+		case 'S700':
+			return '700';
+		case 'S800':
+			return '800';
+		case 'S900':
+			return '900';
+		case 'A100':
+			return 'A100';
+		case 'A200':
+			return 'A200';
+		case 'A400':
+			return 'A400';
+		default:
+			return 'A700';
+	}
+};
+var _MichaelCombs28$elm_mdl$Material_Color$hueName = function (color) {
+	var _p5 = color;
+	switch (_p5.ctor) {
+		case 'Indigo':
+			return 'indigo';
+		case 'Blue':
+			return 'blue';
+		case 'LightBlue':
+			return 'light-blue';
+		case 'Cyan':
+			return 'cyan';
+		case 'Teal':
+			return 'teal';
+		case 'Green':
+			return 'green';
+		case 'LightGreen':
+			return 'light-green';
+		case 'Lime':
+			return 'lime';
+		case 'Yellow':
+			return 'yellow';
+		case 'Amber':
+			return 'amber';
+		case 'Orange':
+			return 'orange';
+		case 'Brown':
+			return 'brown';
+		case 'BlueGrey':
+			return 'blue-grey';
+		case 'Grey':
+			return 'grey';
+		case 'DeepOrange':
+			return 'deep-orange';
+		case 'Red':
+			return 'red';
+		case 'Pink':
+			return 'pink';
+		case 'Purple':
+			return 'purple';
+		default:
+			return 'deep-purple';
+	}
+};
+var _MichaelCombs28$elm_mdl$Material_Color$scheme = F2(
+	function (primary, accent) {
+		var q = _elm_lang$core$String$map(
+			function (x) {
+				return _elm_lang$core$Native_Utils.eq(
+					x,
+					_elm_lang$core$Native_Utils.chr('-')) ? _elm_lang$core$Native_Utils.chr('_') : x;
+			});
+		var cssFile = function () {
+			var _p6 = accent;
+			switch (_p6.ctor) {
+				case 'Grey':
+					return '';
+				case 'Brown':
+					return '';
+				case 'BlueGrey':
+					return '';
+				default:
+					return A2(
+						_elm_lang$core$Basics_ops['++'],
+						'.',
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							q(
+								_MichaelCombs28$elm_mdl$Material_Color$hueName(primary)),
+							A2(
+								_elm_lang$core$Basics_ops['++'],
+								'-',
+								q(
+									_MichaelCombs28$elm_mdl$Material_Color$hueName(accent)))));
+			}
+		}();
+		return A2(
+			_elm_lang$core$Basics_ops['++'],
+			'material',
+			A2(_elm_lang$core$Basics_ops['++'], cssFile, '.min.css'));
+	});
+var _MichaelCombs28$elm_mdl$Material_Color$DeepPurple = {ctor: 'DeepPurple'};
+var _MichaelCombs28$elm_mdl$Material_Color$Purple = {ctor: 'Purple'};
+var _MichaelCombs28$elm_mdl$Material_Color$Pink = {ctor: 'Pink'};
+var _MichaelCombs28$elm_mdl$Material_Color$Red = {ctor: 'Red'};
+var _MichaelCombs28$elm_mdl$Material_Color$DeepOrange = {ctor: 'DeepOrange'};
+var _MichaelCombs28$elm_mdl$Material_Color$Grey = {ctor: 'Grey'};
+var _MichaelCombs28$elm_mdl$Material_Color$BlueGrey = {ctor: 'BlueGrey'};
+var _MichaelCombs28$elm_mdl$Material_Color$Brown = {ctor: 'Brown'};
+var _MichaelCombs28$elm_mdl$Material_Color$Orange = {ctor: 'Orange'};
+var _MichaelCombs28$elm_mdl$Material_Color$Amber = {ctor: 'Amber'};
+var _MichaelCombs28$elm_mdl$Material_Color$Yellow = {ctor: 'Yellow'};
+var _MichaelCombs28$elm_mdl$Material_Color$Lime = {ctor: 'Lime'};
+var _MichaelCombs28$elm_mdl$Material_Color$LightGreen = {ctor: 'LightGreen'};
+var _MichaelCombs28$elm_mdl$Material_Color$Green = {ctor: 'Green'};
+var _MichaelCombs28$elm_mdl$Material_Color$Teal = {ctor: 'Teal'};
+var _MichaelCombs28$elm_mdl$Material_Color$Cyan = {ctor: 'Cyan'};
+var _MichaelCombs28$elm_mdl$Material_Color$LightBlue = {ctor: 'LightBlue'};
+var _MichaelCombs28$elm_mdl$Material_Color$Blue = {ctor: 'Blue'};
+var _MichaelCombs28$elm_mdl$Material_Color$Indigo = {ctor: 'Indigo'};
+var _MichaelCombs28$elm_mdl$Material_Color$hues = _elm_lang$core$Array$fromList(
+	{
+		ctor: '::',
+		_0: _MichaelCombs28$elm_mdl$Material_Color$Indigo,
+		_1: {
+			ctor: '::',
+			_0: _MichaelCombs28$elm_mdl$Material_Color$Blue,
+			_1: {
+				ctor: '::',
+				_0: _MichaelCombs28$elm_mdl$Material_Color$LightBlue,
+				_1: {
+					ctor: '::',
+					_0: _MichaelCombs28$elm_mdl$Material_Color$Cyan,
+					_1: {
+						ctor: '::',
+						_0: _MichaelCombs28$elm_mdl$Material_Color$Teal,
+						_1: {
+							ctor: '::',
+							_0: _MichaelCombs28$elm_mdl$Material_Color$Green,
+							_1: {
+								ctor: '::',
+								_0: _MichaelCombs28$elm_mdl$Material_Color$LightGreen,
+								_1: {
+									ctor: '::',
+									_0: _MichaelCombs28$elm_mdl$Material_Color$Lime,
+									_1: {
+										ctor: '::',
+										_0: _MichaelCombs28$elm_mdl$Material_Color$Yellow,
+										_1: {
+											ctor: '::',
+											_0: _MichaelCombs28$elm_mdl$Material_Color$Amber,
+											_1: {
+												ctor: '::',
+												_0: _MichaelCombs28$elm_mdl$Material_Color$Orange,
+												_1: {
+													ctor: '::',
+													_0: _MichaelCombs28$elm_mdl$Material_Color$Brown,
+													_1: {
+														ctor: '::',
+														_0: _MichaelCombs28$elm_mdl$Material_Color$BlueGrey,
+														_1: {
+															ctor: '::',
+															_0: _MichaelCombs28$elm_mdl$Material_Color$Grey,
+															_1: {
+																ctor: '::',
+																_0: _MichaelCombs28$elm_mdl$Material_Color$DeepOrange,
+																_1: {
+																	ctor: '::',
+																	_0: _MichaelCombs28$elm_mdl$Material_Color$Red,
+																	_1: {
+																		ctor: '::',
+																		_0: _MichaelCombs28$elm_mdl$Material_Color$Pink,
+																		_1: {
+																			ctor: '::',
+																			_0: _MichaelCombs28$elm_mdl$Material_Color$Purple,
+																			_1: {
+																				ctor: '::',
+																				_0: _MichaelCombs28$elm_mdl$Material_Color$DeepPurple,
+																				_1: {ctor: '[]'}
+																			}
+																		}
+																	}
+																}
+															}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	});
+var _MichaelCombs28$elm_mdl$Material_Color$accentHues = _elm_lang$core$Array$fromList(
+	{
+		ctor: '::',
+		_0: _MichaelCombs28$elm_mdl$Material_Color$Indigo,
+		_1: {
+			ctor: '::',
+			_0: _MichaelCombs28$elm_mdl$Material_Color$Blue,
+			_1: {
+				ctor: '::',
+				_0: _MichaelCombs28$elm_mdl$Material_Color$LightBlue,
+				_1: {
+					ctor: '::',
+					_0: _MichaelCombs28$elm_mdl$Material_Color$Cyan,
+					_1: {
+						ctor: '::',
+						_0: _MichaelCombs28$elm_mdl$Material_Color$Teal,
+						_1: {
+							ctor: '::',
+							_0: _MichaelCombs28$elm_mdl$Material_Color$Green,
+							_1: {
+								ctor: '::',
+								_0: _MichaelCombs28$elm_mdl$Material_Color$LightGreen,
+								_1: {
+									ctor: '::',
+									_0: _MichaelCombs28$elm_mdl$Material_Color$Lime,
+									_1: {
+										ctor: '::',
+										_0: _MichaelCombs28$elm_mdl$Material_Color$Yellow,
+										_1: {
+											ctor: '::',
+											_0: _MichaelCombs28$elm_mdl$Material_Color$Amber,
+											_1: {
+												ctor: '::',
+												_0: _MichaelCombs28$elm_mdl$Material_Color$Orange,
+												_1: {
+													ctor: '::',
+													_0: _MichaelCombs28$elm_mdl$Material_Color$DeepOrange,
+													_1: {
+														ctor: '::',
+														_0: _MichaelCombs28$elm_mdl$Material_Color$Red,
+														_1: {
+															ctor: '::',
+															_0: _MichaelCombs28$elm_mdl$Material_Color$Pink,
+															_1: {
+																ctor: '::',
+																_0: _MichaelCombs28$elm_mdl$Material_Color$Purple,
+																_1: {
+																	ctor: '::',
+																	_0: _MichaelCombs28$elm_mdl$Material_Color$DeepPurple,
+																	_1: {ctor: '[]'}
+																}
+															}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	});
+var _MichaelCombs28$elm_mdl$Material_Color$A700 = {ctor: 'A700'};
+var _MichaelCombs28$elm_mdl$Material_Color$A400 = {ctor: 'A400'};
+var _MichaelCombs28$elm_mdl$Material_Color$A200 = {ctor: 'A200'};
+var _MichaelCombs28$elm_mdl$Material_Color$A100 = {ctor: 'A100'};
+var _MichaelCombs28$elm_mdl$Material_Color$S900 = {ctor: 'S900'};
+var _MichaelCombs28$elm_mdl$Material_Color$S800 = {ctor: 'S800'};
+var _MichaelCombs28$elm_mdl$Material_Color$S700 = {ctor: 'S700'};
+var _MichaelCombs28$elm_mdl$Material_Color$S600 = {ctor: 'S600'};
+var _MichaelCombs28$elm_mdl$Material_Color$S500 = {ctor: 'S500'};
+var _MichaelCombs28$elm_mdl$Material_Color$S400 = {ctor: 'S400'};
+var _MichaelCombs28$elm_mdl$Material_Color$S300 = {ctor: 'S300'};
+var _MichaelCombs28$elm_mdl$Material_Color$S200 = {ctor: 'S200'};
+var _MichaelCombs28$elm_mdl$Material_Color$S100 = {ctor: 'S100'};
+var _MichaelCombs28$elm_mdl$Material_Color$S50 = {ctor: 'S50'};
+var _MichaelCombs28$elm_mdl$Material_Color$shades = _elm_lang$core$Array$fromList(
+	{
+		ctor: '::',
+		_0: _MichaelCombs28$elm_mdl$Material_Color$S50,
+		_1: {
+			ctor: '::',
+			_0: _MichaelCombs28$elm_mdl$Material_Color$S100,
+			_1: {
+				ctor: '::',
+				_0: _MichaelCombs28$elm_mdl$Material_Color$S200,
+				_1: {
+					ctor: '::',
+					_0: _MichaelCombs28$elm_mdl$Material_Color$S300,
+					_1: {
+						ctor: '::',
+						_0: _MichaelCombs28$elm_mdl$Material_Color$S400,
+						_1: {
+							ctor: '::',
+							_0: _MichaelCombs28$elm_mdl$Material_Color$S500,
+							_1: {
+								ctor: '::',
+								_0: _MichaelCombs28$elm_mdl$Material_Color$S600,
+								_1: {
+									ctor: '::',
+									_0: _MichaelCombs28$elm_mdl$Material_Color$S700,
+									_1: {
+										ctor: '::',
+										_0: _MichaelCombs28$elm_mdl$Material_Color$S800,
+										_1: {
+											ctor: '::',
+											_0: _MichaelCombs28$elm_mdl$Material_Color$S900,
+											_1: {
+												ctor: '::',
+												_0: _MichaelCombs28$elm_mdl$Material_Color$A100,
+												_1: {
+													ctor: '::',
+													_0: _MichaelCombs28$elm_mdl$Material_Color$A200,
+													_1: {
+														ctor: '::',
+														_0: _MichaelCombs28$elm_mdl$Material_Color$A400,
+														_1: {
+															ctor: '::',
+															_0: _MichaelCombs28$elm_mdl$Material_Color$A700,
+															_1: {ctor: '[]'}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	});
+var _MichaelCombs28$elm_mdl$Material_Color$C = function (a) {
+	return {ctor: 'C', _0: a};
+};
+var _MichaelCombs28$elm_mdl$Material_Color$color = F2(
+	function (hue, shade) {
+		return _MichaelCombs28$elm_mdl$Material_Color$C(
+			A2(
+				_elm_lang$core$Basics_ops['++'],
+				_MichaelCombs28$elm_mdl$Material_Color$hueName(hue),
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					'-',
+					_MichaelCombs28$elm_mdl$Material_Color$shadeName(shade))));
+	});
+var _MichaelCombs28$elm_mdl$Material_Color$white = _MichaelCombs28$elm_mdl$Material_Color$C('white');
+var _MichaelCombs28$elm_mdl$Material_Color$black = _MichaelCombs28$elm_mdl$Material_Color$C('black');
+var _MichaelCombs28$elm_mdl$Material_Color$primary = _MichaelCombs28$elm_mdl$Material_Color$C('primary');
+var _MichaelCombs28$elm_mdl$Material_Color$primaryDark = _MichaelCombs28$elm_mdl$Material_Color$C('primary-dark');
+var _MichaelCombs28$elm_mdl$Material_Color$primaryContrast = _MichaelCombs28$elm_mdl$Material_Color$C('primary-contrast');
+var _MichaelCombs28$elm_mdl$Material_Color$accent = _MichaelCombs28$elm_mdl$Material_Color$C('accent');
+var _MichaelCombs28$elm_mdl$Material_Color$accentContrast = _MichaelCombs28$elm_mdl$Material_Color$C('accent-contrast');
+
+var _MichaelCombs28$elm_mdl$Material_Elevation$transition = function (duration) {
+	return A2(
+		_MichaelCombs28$elm_mdl$Material_Options$css,
+		'transition',
+		A2(
+			_elm_lang$core$Basics_ops['++'],
+			'box-shadow ',
+			A2(
+				_elm_lang$core$Basics_ops['++'],
+				_elm_lang$core$Basics$toString(duration),
+				'ms ease-in-out 0s')));
+};
+var _MichaelCombs28$elm_mdl$Material_Elevation$e0 = _MichaelCombs28$elm_mdl$Material_Options$nop;
+var _MichaelCombs28$elm_mdl$Material_Elevation$shadow = function (z) {
+	return _MichaelCombs28$elm_mdl$Material_Options$cs(
+		A2(
+			_elm_lang$core$Basics_ops['++'],
+			'mdl-shadow--',
+			A2(
+				_elm_lang$core$Basics_ops['++'],
+				_elm_lang$core$Basics$toString(z),
+				'dp')));
+};
+var _MichaelCombs28$elm_mdl$Material_Elevation$e2 = _MichaelCombs28$elm_mdl$Material_Elevation$shadow(2);
+var _MichaelCombs28$elm_mdl$Material_Elevation$e3 = _MichaelCombs28$elm_mdl$Material_Elevation$shadow(3);
+var _MichaelCombs28$elm_mdl$Material_Elevation$e4 = _MichaelCombs28$elm_mdl$Material_Elevation$shadow(4);
+var _MichaelCombs28$elm_mdl$Material_Elevation$e6 = _MichaelCombs28$elm_mdl$Material_Elevation$shadow(6);
+var _MichaelCombs28$elm_mdl$Material_Elevation$e8 = _MichaelCombs28$elm_mdl$Material_Elevation$shadow(8);
+var _MichaelCombs28$elm_mdl$Material_Elevation$e16 = _MichaelCombs28$elm_mdl$Material_Elevation$shadow(16);
+var _MichaelCombs28$elm_mdl$Material_Elevation$e24 = _MichaelCombs28$elm_mdl$Material_Elevation$shadow(24);
+var _MichaelCombs28$elm_mdl$Material_Elevation$elevations = _elm_lang$core$Array$fromList(
+	{
+		ctor: '::',
+		_0: {ctor: '_Tuple2', _0: _MichaelCombs28$elm_mdl$Material_Elevation$e0, _1: 0},
+		_1: {
+			ctor: '::',
+			_0: {ctor: '_Tuple2', _0: _MichaelCombs28$elm_mdl$Material_Elevation$e2, _1: 2},
+			_1: {
+				ctor: '::',
+				_0: {ctor: '_Tuple2', _0: _MichaelCombs28$elm_mdl$Material_Elevation$e3, _1: 3},
+				_1: {
+					ctor: '::',
+					_0: {ctor: '_Tuple2', _0: _MichaelCombs28$elm_mdl$Material_Elevation$e4, _1: 4},
+					_1: {
+						ctor: '::',
+						_0: {ctor: '_Tuple2', _0: _MichaelCombs28$elm_mdl$Material_Elevation$e6, _1: 6},
+						_1: {
+							ctor: '::',
+							_0: {ctor: '_Tuple2', _0: _MichaelCombs28$elm_mdl$Material_Elevation$e8, _1: 8},
+							_1: {
+								ctor: '::',
+								_0: {ctor: '_Tuple2', _0: _MichaelCombs28$elm_mdl$Material_Elevation$e16, _1: 16},
+								_1: {
+									ctor: '::',
+									_0: {ctor: '_Tuple2', _0: _MichaelCombs28$elm_mdl$Material_Elevation$e24, _1: 24},
+									_1: {ctor: '[]'}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	});
+
 //import Maybe, Native.List //
 
 var _elm_lang$core$Native_Regex = function() {
@@ -21158,6 +21751,7 @@ var _user$project$Sensors$SensorData = F9(
 		return {irDown: a, irFl: b, irFr: c, irBl: d, irBr: e, lidar: f, angleL: g, angleR: h, angleAvg: i};
 	});
 
+var _user$project$App$white = _MichaelCombs28$elm_mdl$Material_Color$text(_MichaelCombs28$elm_mdl$Material_Color$white);
 var _user$project$App$showMessage = function (str) {
 	return A2(
 		_MichaelCombs28$elm_mdl$Material_List$li,
@@ -21238,66 +21832,103 @@ var _user$project$App$createInputField = F3(
 			});
 	});
 var _user$project$App$viewControl = function (model) {
-	return A2(
-		_elm_lang$core$Basics_ops['++'],
-		{
+	return {
+		ctor: '::',
+		_0: _user$project$Joystick$joystickDisplay(model.joystick),
+		_1: {
 			ctor: '::',
-			_0: _user$project$Joystick$joystickDisplay(model.joystick),
-			_1: {ctor: '[]'}
-		},
-		A2(
-			_elm_lang$core$Basics_ops['++'],
-			A2(
-				_elm_lang$core$List$indexedMap,
-				_user$project$App$createInputField(model),
+			_0: A2(
+				_MichaelCombs28$elm_mdl$Material_Card$view,
 				{
 					ctor: '::',
-					_0: {ctor: '_Tuple2', _0: 'Base movement', _1: 'base_movement'},
+					_0: _MichaelCombs28$elm_mdl$Material_Elevation$e2,
+					_1: {ctor: '[]'}
+				},
+				{
+					ctor: '::',
+					_0: A2(
+						_MichaelCombs28$elm_mdl$Material_Card$title,
+						{ctor: '[]'},
+						{
+							ctor: '::',
+							_0: A2(
+								_MichaelCombs28$elm_mdl$Material_Card$head,
+								{ctor: '[]'},
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html$text('PID parameters'),
+									_1: {ctor: '[]'}
+								}),
+							_1: {ctor: '[]'}
+						}),
 					_1: {
 						ctor: '::',
-						_0: {ctor: '_Tuple2', _0: 'Command Y', _1: 'command_y'},
-						_1: {
-							ctor: '::',
-							_0: {ctor: '_Tuple2', _0: 'Goal angle', _1: 'goal_angle'},
-							_1: {
+						_0: A2(
+							_MichaelCombs28$elm_mdl$Material_Card$actions,
+							{
 								ctor: '::',
-								_0: {ctor: '_Tuple2', _0: 'Angle scaledown', _1: 'angle_scaledown'},
-								_1: {
-									ctor: '::',
-									_0: {ctor: '_Tuple2', _0: 'Movement scaledown', _1: 'movement_scaledown'},
-									_1: {
+								_0: _MichaelCombs28$elm_mdl$Material_Card$border,
+								_1: {ctor: '[]'}
+							},
+							A2(
+								_elm_lang$core$Basics_ops['++'],
+								A2(
+									_elm_lang$core$List$indexedMap,
+									_user$project$App$createInputField(model),
+									{
 										ctor: '::',
-										_0: {ctor: '_Tuple2', _0: 'Angle adjustment', _1: 'angle_adjustment_border'},
-										_1: {ctor: '[]'}
-									}
-								}
-							}
-						}
+										_0: {ctor: '_Tuple2', _0: 'Base movement', _1: 'base_movement'},
+										_1: {
+											ctor: '::',
+											_0: {ctor: '_Tuple2', _0: 'Command Y', _1: 'command_y'},
+											_1: {
+												ctor: '::',
+												_0: {ctor: '_Tuple2', _0: 'Goal angle', _1: 'goal_angle'},
+												_1: {
+													ctor: '::',
+													_0: {ctor: '_Tuple2', _0: 'Angle scaledown', _1: 'angle_scaledown'},
+													_1: {
+														ctor: '::',
+														_0: {ctor: '_Tuple2', _0: 'Movement scaledown', _1: 'movement_scaledown'},
+														_1: {
+															ctor: '::',
+															_0: {ctor: '_Tuple2', _0: 'Angle adjustment', _1: 'angle_adjustment_border'},
+															_1: {ctor: '[]'}
+														}
+													}
+												}
+											}
+										}
+									}),
+								{
+									ctor: '::',
+									_0: A5(
+										_MichaelCombs28$elm_mdl$Material_Button$render,
+										_user$project$App$Mdl,
+										{
+											ctor: '::',
+											_0: 0,
+											_1: {ctor: '[]'}
+										},
+										model.mdl,
+										{
+											ctor: '::',
+											_0: _MichaelCombs28$elm_mdl$Material_Button$onClick(_user$project$App$SendParameters),
+											_1: {ctor: '[]'}
+										},
+										{
+											ctor: '::',
+											_0: _elm_lang$html$Html$text('duck'),
+											_1: {ctor: '[]'}
+										}),
+									_1: {ctor: '[]'}
+								})),
+						_1: {ctor: '[]'}
 					}
 				}),
-			{
-				ctor: '::',
-				_0: A5(
-					_MichaelCombs28$elm_mdl$Material_Button$render,
-					_user$project$App$Mdl,
-					{
-						ctor: '::',
-						_0: 0,
-						_1: {ctor: '[]'}
-					},
-					model.mdl,
-					{
-						ctor: '::',
-						_0: _MichaelCombs28$elm_mdl$Material_Button$onClick(_user$project$App$SendParameters),
-						_1: {ctor: '[]'}
-					},
-					{
-						ctor: '::',
-						_0: _elm_lang$html$Html$text('duck'),
-						_1: {ctor: '[]'}
-					}),
-				_1: {ctor: '[]'}
-			}));
+			_1: {ctor: '[]'}
+		}
+	};
 };
 var _user$project$App$SelectTab = function (a) {
 	return {ctor: 'SelectTab', _0: a};

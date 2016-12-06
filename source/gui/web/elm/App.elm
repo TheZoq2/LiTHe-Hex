@@ -15,9 +15,13 @@ import Phoenix.Socket exposing (Socket)
 import Phoenix.Channel
 import Phoenix.Push
 import Material
+import Material.Elevation as Elevation
+import Material.Color as Color
+import Material.Options as Options
 import Material.Textfield as Textfield
 import Material.List as Lists
 import Material.Button as Button
+import Material.Card as Card
 import Material.Layout as Layout
 import Joystick
 import Sensors
@@ -321,6 +325,11 @@ messageList messages =
     Lists.ul [] <| List.map showMessage messages
 
 
+white : Options.Property c m
+white =
+    Color.text Color.white
+
+
 view : Model -> Html Msg
 view model =
     Layout.render Mdl
@@ -359,21 +368,26 @@ createInputField model idx ( desc, field ) =
 viewControl : Model -> List (Html Msg)
 viewControl model =
     [ Joystick.joystickDisplay model.joystick
+    , Card.view [ Elevation.e2 ]
+        [ Card.title [] [ Card.head [] [ text "PID parameters" ] ]
+        , Card.actions [ Card.border ]
+            (List.indexedMap (createInputField model)
+                [ ( "Base movement", "base_movement" )
+                , ( "Command Y", "command_y" )
+                , ( "Goal angle", "goal_angle" )
+                , ( "Angle scaledown", "angle_scaledown" )
+                , ( "Movement scaledown", "movement_scaledown" )
+                , ( "Angle adjustment", "angle_adjustment_border" )
+                ]
+                ++ [ Button.render Mdl
+                        [ 0 ]
+                        model.mdl
+                        [ Button.onClick SendParameters ]
+                        [ text "duck" ]
+                   ]
+            )
+        ]
     ]
-        ++ List.indexedMap (createInputField model)
-            [ ( "Base movement", "base_movement" )
-            , ( "Command Y", "command_y" )
-            , ( "Goal angle", "goal_angle" )
-            , ( "Angle scaledown", "angle_scaledown" )
-            , ( "Movement scaledown", "movement_scaledown" )
-            , ( "Angle adjustment", "angle_adjustment_border" )
-            ]
-        ++ [ Button.render Mdl
-                [ 0 ]
-                model.mdl
-                [ Button.onClick SendParameters ]
-                [ text "duck" ]
-           ]
 
 
 viewDebug : Model -> List (Html Msg)
