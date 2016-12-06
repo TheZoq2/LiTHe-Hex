@@ -21802,6 +21802,81 @@ var _user$project$App$Flags = function (a) {
 var _user$project$App$Mdl = function (a) {
 	return {ctor: 'Mdl', _0: a};
 };
+var _user$project$App$viewButtons = function (model) {
+	return A2(
+		_MichaelCombs28$elm_mdl$Material_Card$view,
+		{
+			ctor: '::',
+			_0: _MichaelCombs28$elm_mdl$Material_Elevation$e2,
+			_1: {ctor: '[]'}
+		},
+		{
+			ctor: '::',
+			_0: A2(
+				_MichaelCombs28$elm_mdl$Material_Card$title,
+				{ctor: '[]'},
+				{
+					ctor: '::',
+					_0: A2(
+						_MichaelCombs28$elm_mdl$Material_Card$head,
+						{ctor: '[]'},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text('No joystick connected'),
+							_1: {ctor: '[]'}
+						}),
+					_1: {ctor: '[]'}
+				}),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_MichaelCombs28$elm_mdl$Material_Card$actions,
+					{
+						ctor: '::',
+						_0: _MichaelCombs28$elm_mdl$Material_Card$border,
+						_1: {ctor: '[]'}
+					},
+					{
+						ctor: '::',
+						_0: A5(
+							_MichaelCombs28$elm_mdl$Material_Button$render,
+							_user$project$App$Mdl,
+							{
+								ctor: '::',
+								_0: 20,
+								_1: {ctor: '[]'}
+							},
+							model.mdl,
+							{ctor: '[]'},
+							{
+								ctor: '::',
+								_0: _MichaelCombs28$elm_mdl$Material_Icon$i('keyboard_arrow_left'),
+								_1: {ctor: '[]'}
+							}),
+						_1: {
+							ctor: '::',
+							_0: A5(
+								_MichaelCombs28$elm_mdl$Material_Button$render,
+								_user$project$App$Mdl,
+								{
+									ctor: '::',
+									_0: 21,
+									_1: {ctor: '[]'}
+								},
+								model.mdl,
+								{ctor: '[]'},
+								{
+									ctor: '::',
+									_0: _MichaelCombs28$elm_mdl$Material_Icon$i('stop'),
+									_1: {ctor: '[]'}
+								}),
+							_1: {ctor: '[]'}
+						}
+					}),
+				_1: {ctor: '[]'}
+			}
+		});
+};
 var _user$project$App$SendParameters = {ctor: 'SendParameters'};
 var _user$project$App$ChangeParameter = F2(
 	function (a, b) {
@@ -21834,7 +21909,7 @@ var _user$project$App$createInputField = F3(
 var _user$project$App$viewControl = function (model) {
 	return {
 		ctor: '::',
-		_0: _user$project$Joystick$joystickDisplay(model.joystick),
+		_0: (!_elm_lang$core$Native_Utils.eq(model.joystickIndex, _elm_lang$core$Maybe$Nothing)) ? _user$project$Joystick$joystickDisplay(model.joystick) : _user$project$App$viewButtons(model),
 		_1: {
 			ctor: '::',
 			_0: A2(

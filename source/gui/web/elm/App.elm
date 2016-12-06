@@ -16,6 +16,7 @@ import Phoenix.Channel
 import Phoenix.Push
 import Material
 import Material.Elevation as Elevation
+import Material.Icon as Icon
 import Material.Color as Color
 import Material.Options as Options
 import Material.Textfield as Textfield
@@ -365,9 +366,31 @@ createInputField model idx ( desc, field ) =
             ]
 
 
+viewButtons : Model -> Html Msg
+viewButtons model =
+    Card.view [ Elevation.e2 ]
+        [ Card.title [] [ Card.head [] [ text "No joystick connected" ] ]
+        , Card.actions [ Card.border ]
+            [ Button.render Mdl
+                  [ 20 ] -- TODO: Find out how indexes work
+                  model.mdl
+                  [ ]
+                  [ Icon.i "keyboard_arrow_left" ]
+            , Button.render Mdl
+                  [ 21 ]
+                  model.mdl
+                  [ ]
+                  [ Icon.i "stop" ]
+            ]
+        ]
+
+
 viewControl : Model -> List (Html Msg)
 viewControl model =
-    [ Joystick.joystickDisplay model.joystick
+    [ if model.joystickIndex /= Nothing then
+          Joystick.joystickDisplay model.joystick
+      else
+          viewButtons model
     , Card.view [ Elevation.e2 ]
         [ Card.title [] [ Card.head [] [ text "PID parameters" ] ]
         , Card.actions [ Card.border ]
