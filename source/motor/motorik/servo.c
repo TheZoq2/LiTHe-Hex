@@ -31,7 +31,7 @@ const uint8_t BROADCAST_ID = 0xFE;
 
 const uint8_t NUM_SERVOS = 18;
 
-const uint16_t SERVO_TARGET_COMPLIANCE_MARGIN = 5;
+const uint16_t SERVO_TARGET_COMPLIANCE_MARGIN = 20;
 
 
 const uint8_t SERVO_MAP[6][3] = {
@@ -102,6 +102,8 @@ ServoReply read_servo_data(uint8_t id, uint8_t address, uint8_t length)
 	new_data[0] = address;
 	new_data[1] = length;
 
+	//_delay_us(25);
+
 	send_servo_command(id, READ_DATA_INSTRUCTION, (void*)new_data, 2);
 
 	free(new_data);
@@ -124,15 +126,15 @@ uint16_t read_uint16_from_servo(uint8_t id, uint8_t address)
 #ifdef IS_X86
 void send_servo_action()
 {
+}
+#else
+void send_servo_action()
+{
 	send_servo_command(BROADCAST_ID, ACTION_INSTRUCTION, 0, 0);
 	//TODO: Olavs fel
 	//_delay_ms(1200);
 	while(!servos_are_done_rotating())
 		;
-}
-#else
-void send_servo_action()
-{
 }
 #endif
 
@@ -144,9 +146,9 @@ void write_servo_single_byte(uint8_t id, uint8_t address, uint8_t value)
 
 ServoReply receive_servo_reply()
 {
-	usart_set_direction(RX);
 	//Switch the direction of the tri-state gate
 	set_bit(PORTD, PIN_RX_TOGGLE);
+	usart_set_direction(RX);
 
 	//send_servo_command(1, 0, 0, 0);
 	
@@ -263,7 +265,7 @@ void read_servo_target_positions(uint16_t* buffer)
 {
 	for (uint8_t i = 0; i < NUM_SERVOS; ++i) 
 	{
-		buffer[i] = read_uint16_from_servo(i, GOAL_POSITION_ADDRESS);
+		buffer[i] = read_uint16_from_servo(i + 1, GOAL_POSITION_ADDRESS);
 	}
 }
 
@@ -274,7 +276,7 @@ bool is_servo_position_in_bounds(uint16_t target_position, uint16_t current_posi
 
 bool check_servo_done_rotating(uint8_t id, uint16_t target_position)
 {
-	uint16_t current_position = read_uint16_from_servo(id, PRESENT_POSITION_ADDRESS);
+	uint16_t current_position = read_uint16_from_servo(id + 1, PRESENT_POSITION_ADDRESS);
 
 	bool result = is_servo_position_in_bounds(target_position, current_position);
 #ifdef IS_X86
@@ -295,10 +297,11 @@ bool servos_are_done_rotating()
 #endif
 
 	uint16_t servo_targets[NUM_SERVOS];
+	uint16_t* targ_ptr = servo_targets;
 
 	read_servo_target_positions(servo_targets);
 
-	for(uint8_t i = 1; i <= NUM_SERVOS; i++)
+	for(uint8_t i = 0; i < NUM_SERVOS; i++)
 	{
 		if(check_servo_done_rotating(i, servo_targets[i]) == false)
 		{
