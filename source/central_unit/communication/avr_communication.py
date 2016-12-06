@@ -265,6 +265,10 @@ def get_motor_debug(spi):
     return _request_data(spi, MOTOR_DEBUG)
 
 
+def is_busy_rotating(spi):
+    pass
+
+
 def get_sensor_data(spi):
     """
     Gets the values of all sensors in the sensor unit,

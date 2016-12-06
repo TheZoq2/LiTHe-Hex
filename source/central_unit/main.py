@@ -105,21 +105,22 @@ def do_auto_mode_iteration(spi, send_queue, receive_queue, decision_packet):
 
     # Send decision to server
     send_queue.put(web.ServerSendPacket(debug_string=
-        decision_making.int_to_string_command(decision_packet.decision)))
+        decision_making.int_to_string_command(decision_packet.decision),
+                                        sensor_data_packet=sensor_data))
 
     auto = True
 
     if not receive_queue.empty():
         packet = receive_queue.get()
         if packet.auto is not None:
-            auto = packet.auto_mode 
+            auto = packet.auto
         # Regulate algorithm parameters
         if packet.angle_scaledown is not None:
-            regulate_angle_scaledown(packet.angle_scaledown)
+            decision_packet.regulate_angle_scaledown = packet.angle_scaledown
         if packet.movement_scaledown is not None:
-            regulate_set_movement_scaledown(packet.movement_scaledown)
+            decision_packet.regulate_set_movement_scaledown = packet.movement_scaledown
         if packet.angle_adjustment_border is not None:
-            regulate_angle_adjustment_border(packet.angle_adjustment_border)
+            decision_packet.regulate_angle_adjustment_border = packet.angle_adjustment_border
 
     return auto
 
@@ -156,7 +157,6 @@ def send_decision_avr(spi, decision_packet):
 
     avr_communication.set_servo_speed(spi, decision_packet.speed)
 
-    # TODO set the x_speed, y_speed, rotaton for each decision
     if decision_packet.decision == GO_FORWARD:
         x_speed = convert_to_sendable_byte(1)
         y_speed = convert_to_sendable_byte(0)
