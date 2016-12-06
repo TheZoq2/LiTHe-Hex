@@ -99,7 +99,8 @@ def do_auto_mode_iteration(spi, send_queue, receive_queue, decision_packet):
     print("Decision: ", decision_packet.decision)
 
     pid_controller.regulate(sensor_data, decision_packet)
-    print("Pid controller command: ", decision_packet.regulate_base_movement, ", ", decision_packet.regulate_command_y, ", ", decision_packet.regulate_goal_angle);
+    print("Pid controller command: ", decision_packet.regulate_base_movement,
+          ", ", decision_packet.regulate_command_y, ", ", decision_packet.regulate_goal_angle)
     #send_decision_avr(spi, decision_packet)
 
     # Send decision to server
