@@ -287,7 +287,7 @@ class MainLoopTestCase(unittest.TestCase):
         except fake_spi.UnexpectedDataException as e:
             self.fail("Expected {}, got {}".format(e.expected, e.actual))
 
-        self.assertFalse(auto)
+        self.assertTrue(auto)
         self.assertFalse(send_queue.empty())
         packet = send_queue.get()
         self.assertTrue(send_queue.empty())
