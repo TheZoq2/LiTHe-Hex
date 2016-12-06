@@ -19,7 +19,7 @@ defmodule GUI.RabbitMQ do
     receive do
       {:basic_deliver, payload, _meta} ->
         IO.puts payload
-        GUI.Endpoint.broadcast("client", "new_msg", payload)
+        GUI.Endpoint.broadcast("client", "new_msg", Poison.decode!(payload))
         receive_message
     end
   end
