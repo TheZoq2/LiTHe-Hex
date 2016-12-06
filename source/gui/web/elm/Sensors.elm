@@ -1,4 +1,4 @@
-module Sensors exposing (viewSensors, SensorData)
+module Sensors exposing (viewSensors, SensorData, sensorMessagesPerSecond)
 
 import Visualization.Scale as Scale exposing (ContinuousScale, ContinuousTimeScale)
 import Visualization.Axis as Axis
@@ -73,9 +73,9 @@ sensorNames =
     ]
 
 
-sensorMessagesPerSecond : Float
+sensorMessagesPerSecond : number
 sensorMessagesPerSecond =
-    10.0
+    10
 
 
 timestamps : List Float
