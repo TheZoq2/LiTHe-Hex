@@ -67,7 +67,7 @@ def main():
             if (button_temp != button_input):
                 auto = not auto
                 button_temp = 1
-                send_queue.put(web.ServerSendPacket(auto_mode = auto))
+                send_queue.put(web.ServerSendPacket(auto_mode=auto))
         else:
             button_temp = 0
 
@@ -75,20 +75,8 @@ def main():
             # Auto mode
             os.system('clear')
             print("Auto mode!")
-            do_auto_mode_iteration(spi, decision_packet);
+            auto = do_auto_mode_iteration(spi, send_queue, receive_queue, decision_packet);
             time.sleep(0.5)
-
-            if not receive_queue.empty():
-                packet = receive_queue.get()
-                if packet.auto is not None:
-                    auto = packet.auto_mode
-                #Regulate algorithm parameters
-                if packet.angle_scaledown is not None:
-                    regulate_angle_scaledown(packet.angle_scaledown)
-                if packet.movement_scaledown is not None:
-                    regulate_set_movement_scaledown(packet.movement_scaledown)
-                if packet.angle_adjustment_border is not None:
-                    regulate_angle_adjustment_border(packet.angle_adjustment_border)
 
         else:
             # Manual mode
@@ -97,7 +85,8 @@ def main():
             auto = do_manual_mode_iteration(spi, send_queue, receive_queue)
             time.sleep(0.1)
 
-def do_auto_mode_iteration(spi, decision_packet):
+
+def do_auto_mode_iteration(spi, send_queue, receive_queue, decision_packet):
     sensor_data = avr_communication.get_sensor_data(spi)
     print("sensor_data:", sensor_data)
 
@@ -116,6 +105,23 @@ def do_auto_mode_iteration(spi, decision_packet):
     # Send decision to server
     send_queue.put(web.ServerSendPacket(debug_string=
         decision_making.int_to_string_command(decision_packet.decision)))
+
+    auto = True
+
+    if not receive_queue.empty():
+        packet = receive_queue.get()
+        if packet.auto is not None:
+            auto = packet.auto_mode 
+        # Regulate algorithm parameters
+        if packet.angle_scaledown is not None:
+            regulate_angle_scaledown(packet.angle_scaledown)
+        if packet.movement_scaledown is not None:
+            regulate_set_movement_scaledown(packet.movement_scaledown)
+        if packet.angle_adjustment_border is not None:
+            regulate_angle_adjustment_border(packet.angle_adjustment_border)
+
+    return auto
+
 
 def do_manual_mode_iteration(spi, send_queue, receive_queue):
     sensor_data = avr_communication.get_sensor_data(spi)
@@ -139,6 +145,7 @@ def do_manual_mode_iteration(spi, send_queue, receive_queue):
             avr_communication.walk(spi, x_speed, y_speed, rotation, False)
 
     return auto
+
 
 def send_decision_avr(spi, decision_packet):
 
