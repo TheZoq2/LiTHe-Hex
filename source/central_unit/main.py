@@ -82,6 +82,7 @@ def main():
             # Manual mode
             # os.system('clear')
             # print("Entering manual mode!")
+            print("hello")
             auto = do_manual_mode_iteration(spi, send_queue, receive_queue)
             time.sleep(0.1)
 
@@ -126,20 +127,32 @@ def do_auto_mode_iteration(spi, send_queue, receive_queue, decision_packet):
 
 
 def do_manual_mode_iteration(spi, send_queue, receive_queue):
-    sensor_data = avr_communication.get_sensor_data(spi)
+    try:
+        sensor_data = avr_communication.get_sensor_data(spi)
 
-    send_queue.put(web.ServerSendPacket(sensor_data))
+        send_queue.put(web.ServerSendPacket(sensor_data))
+    except avr_communication.CommunicationError:
+        pass
 
     auto = False
 
     if not receive_queue.empty():
-        packet = receive_queue.get()
+        packet = None 
+        while not receive_queue.empty():
+            packet = receive_queue.get()
+
         if packet.auto is not None:
             auto = packet.auto
         if packet.has_motion_command():
             print(packet.raw)
             servo_speed = (int)(packet.thrust * constants.MAX_16BIT_SIZE)
-            avr_communication.set_servo_speed(spi, servo_speed)
+            while True:
+                time.sleep(0.01)
+                try:
+                    avr_communication.set_servo_speed(spi, servo_speed)
+                    break
+                except avr_communication.CommunicationError:
+                    pass
 
             x_speed = convert_to_sendable_byte(packet.x)
             y_speed = convert_to_sendable_byte(packet.y)
@@ -153,7 +166,14 @@ def do_manual_mode_iteration(spi, send_queue, receive_queue):
             print(packet.y)
             print("")
             
-            avr_communication.walk(spi, x_speed, y_speed, rotation, False)
+            while True:
+                time.sleep(0.01)
+                try:
+                    avr_communication.walk(spi, x_speed, y_speed, rotation, False)
+                    print("Walk sent x: {}, y: {}, r: {}".format(x_speed, y_speed, rotation))
+                    break
+                except avr_communication.CommunicationError:
+                    pass
 
     return auto
 
