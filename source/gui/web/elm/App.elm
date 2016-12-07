@@ -10,13 +10,19 @@ import Json.Decode.Pipeline exposing (decode, required)
 import Time exposing (Time, millisecond)
 import Dict exposing (Dict)
 import String
+import Debug
 import Phoenix.Socket exposing (Socket)
 import Phoenix.Channel
 import Phoenix.Push
 import Material
+import Material.Elevation as Elevation
+import Material.Icon as Icon
+import Material.Color as Color
+import Material.Options as Options
 import Material.Textfield as Textfield
 import Material.List as Lists
 import Material.Button as Button
+import Material.Card as Card
 import Material.Layout as Layout
 import Joystick
 import Sensors
@@ -253,13 +259,25 @@ update msg model =
 
         ChangeParameter par value ->
             case String.toFloat value of
-                Err _ ->
-                    ( model, Cmd.none )
+                Err msg ->
+                    let
+                        _ =
+                            Debug.log "ERROR Could not parse text field value as float: "
+                                msg
+
+                        newParameters =
+                            Dict.remove par model.parameters
+                    in
+                        ( { model | parameters = newParameters }, Cmd.none )
 
                 Ok res ->
-                    ( { model | parameters = Dict.insert par res model.parameters }
-                    , Cmd.none
-                    )
+                    let
+                        newParameters =
+                            Dict.insert par res model.parameters
+                    in
+                        ( { model | parameters = newParameters }
+                        , Cmd.none
+                        )
 
         SendParameters ->
             let
@@ -308,6 +326,11 @@ messageList messages =
     Lists.ul [] <| List.map showMessage messages
 
 
+white : Options.Property c m
+white =
+    Color.text Color.white
+
+
 view : Model -> Html Msg
 view model =
     Layout.render Mdl
@@ -332,45 +355,62 @@ view model =
 createInputField : Model -> Int -> ( String, PIDParameter ) -> Html Msg
 createInputField model idx ( desc, field ) =
     let
-        currentValue =
-            case Dict.get field model.parameters of
-                Nothing ->
-                    []
-
-                Just current ->
-                    [ Textfield.value (toString current) ]
-
         indexOffset =
             1
     in
         Textfield.render Mdl
             [ idx + indexOffset ]
             model.mdl
-            ([ Textfield.onInput SetNewMessage
-             , Textfield.label desc
-             ]
-                ++ currentValue
-            )
+            [ Textfield.onInput (ChangeParameter field)
+            , Textfield.label desc
+            ]
+
+
+viewButtons : Model -> Html Msg
+viewButtons model =
+    Card.view [ Elevation.e2 ]
+        [ Card.title [] [ Card.head [] [ text "No joystick connected" ] ]
+        , Card.actions [ Card.border ]
+            [ Button.render Mdl
+                  [ 20 ] -- TODO: Find out how indexes work
+                  model.mdl
+                  [ ]
+                  [ Icon.i "keyboard_arrow_left" ]
+            , Button.render Mdl
+                  [ 21 ]
+                  model.mdl
+                  [ ]
+                  [ Icon.i "stop" ]
+            ]
+        ]
 
 
 viewControl : Model -> List (Html Msg)
 viewControl model =
-    [ Joystick.joystickDisplay model.joystick
+    [ if model.joystickIndex /= Nothing then
+          Joystick.joystickDisplay model.joystick
+      else
+          viewButtons model
+    , Card.view [ Elevation.e2 ]
+        [ Card.title [] [ Card.head [] [ text "PID parameters" ] ]
+        , Card.actions [ Card.border ]
+            (List.indexedMap (createInputField model)
+                [ ( "Base movement", "base_movement" )
+                , ( "Command Y", "command_y" )
+                , ( "Goal angle", "goal_angle" )
+                , ( "Angle scaledown", "angle_scaledown" )
+                , ( "Movement scaledown", "movement_scaledown" )
+                , ( "Angle adjustment", "angle_adjustment_border" )
+                ]
+                ++ [ Button.render Mdl
+                        [ 0 ]
+                        model.mdl
+                        [ Button.onClick SendParameters ]
+                        [ text "duck" ]
+                   ]
+            )
+        ]
     ]
-        ++ List.indexedMap (createInputField model)
-            [ ( "Base movement", "base_movement" )
-            , ( "Command Y", "command_y" )
-            , ( "Goal angle", "goal_angle" )
-            , ( "Angle scaledown", "angle_scaledown" )
-            , ( "Movement scaledown", "movement_scaledown" )
-            , ( "Angle adjustment", "angle_adjustment_border" )
-            ]
-        ++ [ Button.render Mdl
-                [ 0 ]
-                model.mdl
-                [ Button.onClick SendParameters ]
-                [ text "duck" ]
-           ]
 
 
 viewDebug : Model -> List (Html Msg)

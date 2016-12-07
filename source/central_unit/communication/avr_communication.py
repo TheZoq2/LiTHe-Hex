@@ -37,7 +37,7 @@ SEND_FAIL   = 0x1F
 ACK         = 0x0F
 GARBAGE     = 0x00
 
-SET_OBSTACLE = 0x03
+BUSY_ROTATING = 0x03
 
 SET_SERVO_SPEED = 0x20
 SET_SERVO_SPEED_LENGTH = 2
@@ -193,7 +193,7 @@ def _get_total_msg(*data):
     res = ""
     for d in data:
         res += "{0:08b}".format(d)
-    return int(res)
+    return int(res, 2)
 
 
 def communication_init():
@@ -266,8 +266,11 @@ def get_motor_debug(spi):
 
 
 def is_busy_rotating(spi):
-    pass
-
+    """Asks the motor unit whether it's busy rotating"""
+    _select_device(spi, MOTOR_ADDR)
+    raw_data = _request_data(spi, BUSY_ROTATING)
+    return True if raw_data[0] else False
+    
 
 def get_sensor_data(spi):
     """

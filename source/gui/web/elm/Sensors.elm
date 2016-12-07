@@ -61,11 +61,11 @@ type alias SensorData =
 
 sensorNames : List ( SensorData -> Float, String, ( Float, Float ))
 sensorNames =
-    [ ( .irDown, "IR Down", ( 0, 30 ))
-    , ( .irFl, "IR Front left", ( 0, 150 ) )
-    , ( .irFr, "IR Front right", ( 0, 150 ) )
-    , ( .irBl, "IR Back left", ( 0, 150 ) )
-    , ( .irBr, "IR Back right", ( 0, 150 ) )
+    [ ( .irDown, "IR Down", ( 0, 0.3 ))
+    , ( .irFl, "IR Front left", ( 0, 1.5 ) )
+    , ( .irFr, "IR Front right", ( 0, 1.5 ) )
+    , ( .irBl, "IR Back left", ( 0, 1.5 ) )
+    , ( .irBr, "IR Back right", ( 0, 1.5 ) )
     , ( .lidar, "LIDAR", ( 0, 20 ))
     , ( .angleL, "Angle left", ( -180, 180 ) )
     , ( .angleR, "Angle right", ( -180, 180 ) )
@@ -81,7 +81,7 @@ sensorMessagesPerSecond =
 timestamps : List Float
 timestamps =
     List.range 0 (floor sensorMessagesPerSecond * 5)
-        |> List.map (\x -> toFloat x * -1)
+        |> List.map (\x -> toFloat x * -1/sensorMessagesPerSecond)
 
 
 viewSensors : List SensorData -> Html msg

@@ -130,6 +130,58 @@ class SpiTestCase(unittest.TestCase):
         result = avr_communication._recieve_bytes(spi)
         self.assertListEqual(result, msg)
 
+    def test_is_busy_rotating_false(self):
+        """
+        Tests whether is_busy_rotating is compliant to
+        the communication protocol, and that it returns
+        False when the motor unit sends 0x00.
+        """
+        spi = fake_spi.SpiDev()
+        spi.set_expected_write_sequence([
+            avr_communication.GARBAGE,
+            avr_communication._add_parity(avr_communication.DATA_REQ,
+                                         avr_communication.BUSY_ROTATING),
+            avr_communication.BUSY_ROTATING])
+        
+        value = 0x00
+
+        spi.set_fake_read_sequence([avr_communication.ACK,
+                                   avr_communication._add_parity(
+                                       avr_communication.BUSY_ROTATING, value), value])
+        try:
+            result = avr_communication.is_busy_rotating(spi)
+        except fake_spi.UnexpectedDataException as e:
+            self.fail(
+                 "Expected {}, got {}, when writing."
+                 .format(e.expected, e.actual))
+        self.assertFalse(result)
+
+    def test_is_busy_rotating_true(self):
+        """
+        Tests whether is_busy_rotating is compliant to
+        the communication protocol, and that it returns
+        True when the motor unit sends 0x01.
+        """
+        spi = fake_spi.SpiDev()
+        spi.set_expected_write_sequence([
+            avr_communication.GARBAGE,
+            avr_communication._add_parity(avr_communication.DATA_REQ,
+                                         avr_communication.BUSY_ROTATING),
+            avr_communication.BUSY_ROTATING])
+        
+        value = 0x01
+
+        spi.set_fake_read_sequence([avr_communication.ACK,
+                                   avr_communication._add_parity(
+                                       avr_communication.BUSY_ROTATING, value), value])
+        try:
+            result = avr_communication.is_busy_rotating(spi)
+        except fake_spi.UnexpectedDataException as e:
+            self.fail(
+                 "Expected {}, got {}, when writing."
+                 .format(e.expected, e.actual))
+        self.assertTrue(result)
+
 
 def _set_sensor_data_sequence(spi):
     # it should send a data request for the sensor data.
@@ -148,7 +200,7 @@ def _set_sensor_data_sequence(spi):
 def _add_servo_speed_and_walk(spi):
     spi.expected_seq += [
         avr_communication.GARBAGE,
-        (avr_communication.SET_SERVO_SPEED << 2) | 0x01, # type
+        (avr_communication.SET_SERVO_SPEED << 2) | 0x02, # type
         2, # length
         0xFF, 0xFF, # servo speed
 
