@@ -1,5 +1,5 @@
 #include "gangstil.h"
-#include <inttypes.h>
+//#include <inttypes.h>
 
 #ifndef M_PI
     #define M_PI 3.14159265358979323846
@@ -45,6 +45,9 @@ const float DIAG_DIVISIVE_BORDER_OFFSET = 0.045;
 const float CLOSE_BORDER_TILT           = -1;
 const int   SMOOTH_STEP_ITERATIONS      = 5;
 const float DEFAULT_LEG_DISTANCE = 0.09;
+const float RELIABLY_EXECUTABLE_ROTATION = 0.4;
+const float STRICT_ROTATION_MARGIN_OF_ERROR = 0.1;
+
 
 /**
  * @brief absf returns the absolute value of a given float.
@@ -58,6 +61,13 @@ float absf(float a){
 }
 
 
+/**
+ * @brief closef bool assessing wether two float values are close to each
+ * other (within +- 0.001 of eac other)
+ * @param a first float for examination
+ * @param b second float for examination
+ * @return true if a = b +- 0.001, else false.
+ */
 bool closef(float a, float b){
     return (a + 0.001 > b && b + 0.001 > a);
 }
@@ -88,6 +98,13 @@ float maxf(float a, float b){
     return b;
 }
 
+
+/**
+ * @brief rotate_point_by_angle rotates a Point2D in the 2D plane by a passed angle.
+ * @param original Point2D to be rotated.
+ * @param angle float value representing angle of rotation.
+ * @return point after rotation, expressed as a Point2D.
+ */
 Point2D rotate_point_by_angle(Point2D original, float angle)
 {
 	Point2D result;
@@ -97,6 +114,8 @@ Point2D rotate_point_by_angle(Point2D original, float angle)
 	return result;
 }
 
+
+//Frans, please document your code /Olav
 Point2D robot_to_ik_coords(Point2D original, size_t leg)
 {
 	Point2D result = original;
@@ -126,6 +145,7 @@ Point2D robot_to_ik_coords(Point2D original, size_t leg)
 		return rotate_point_by_angle(result, -3 * M_PI / 4);
 	}
 }
+
 
 /**
  * @brief get_angle_set produces an array of the leg angles as calculated by the IK.
@@ -165,6 +185,7 @@ int radian_to_servo(float radian_angle)
 {
 	return (int)(radian_angle * (0x1ff/150*180) / M_PI);
 }
+
 
 /**
  * @brief takes a target set of leg positions and causes the servos to execute them.
@@ -329,8 +350,6 @@ Point2D joint_position(size_t leg){
 	}
     return res;
 }
-
-
 
 
 /**
@@ -622,6 +641,8 @@ void assume_standardized_stance(Point2D * current){
     execute_position(current, z);
 }
 
+
+//Again, Frans, please document your code.
 Point2D* raise_to_default_position()
 {
 	//The position of the foot above the body when spreading the legs
@@ -674,65 +695,50 @@ float work_towards_goal(float rot, Point2D goal, Point2D * current){
     direct_legs(rot, targ1, current, goal, false);
     float scaledown1 = scale_legs(targ1, current, scale, false);
 
+    float bestscale = maxf(scaledown0, scaledown1);
+    bool lrl = scaledown0 > scaledown1;
+    Point2D targopt[NUM_LEGS];
+    Point2D goalopt;
+    goalopt.x = goal.x * bestscale;
+    goalopt.y = goal.y * bestscale;
 
-    if (scaledown0 > scaledown1){
+    direct_legs(rot * bestscale, targopt, current, goalopt, lrl);
 
-        for (int var = 0; var < 6; ++var) {
-            printf("lrl raised, leg %d diff: %f, %f.\n", var, targ0[var].x - current[var].x, targ0[var].y - current[var].y);
-        }
-
-        execute_step(current, targ0, true);
-        return scaledown0;
-    }
-    else{
-
-        for (int var = 0; var < 6; ++var) {
-            printf("rlr raised, leg %d diff: %f, %f.\n", var, targ1[var].x - current[var].x, targ1[var].y - current[var].y);
-        }
-
-        execute_step(current, targ1, false);
-        return scaledown1;
-    }
-}
-
-
-/**
- * @brief rotate_set_small_angle rotates the robot a small angle, assumed to be at
- * sufficiently small that the robot legs should not be crossing across the
- * robot's body. Does not terminate until the full rotation has been achieved.
- * @param angle rotation the robot shall achieve.
- * @param current position the legs currently hold.
- * @return float indicating portion of angle remaining uncompleted.
- */
-float rotate_set_small_angle(float angle, Point2D * current){
-    float remaining = 1;
-    Point2D emptyGoal;
-    emptyGoal.x = 0;
-    emptyGoal.y = 0;
-
-    while (remaining > 0.2) {
-        float remainingAngle = remaining * angle;
-        remaining = remaining - work_towards_goal(remainingAngle, emptyGoal, current);
-    }
-    
-    return remaining;
+    execute_step(current, targopt, lrl);
+    return maxf(scaledown0, scaledown1);
 }
 
 
 /**
  * @brief rotate_set_angle keeps rotating until the robot has fully altered its
- * direction by the requested angle.
+ * direction by the requested angle. standardizes legs before and after rotation.
  * @param angle provides the angle the robot should rotate.
  * @param current position the legs currently hold.
  */
 void rotate_set_angle(float angle, Point2D * current){
+
     assume_standardized_stance(current);
 
-    while(angle > 1){
-        float completion = rotate_set_small_angle(1, current);
-        angle = angle - (1 - completion);
+    Point2D emptyGoal;
+    emptyGoal.x = 0;
+    emptyGoal.y = 0;
+
+    while(angle > RELIABLY_EXECUTABLE_ROTATION){
+        angle = angle - (RELIABLY_EXECUTABLE_ROTATION * work_towards_goal(RELIABLY_EXECUTABLE_ROTATION,emptyGoal, current));
     }
-    float remaining = angle * ( 1 - rotate_set_small_angle(angle, current));
-    if (remaining > 0.1)
-        rotate_set_small_angle(remaining, current);
+
+    while(angle < -RELIABLY_EXECUTABLE_ROTATION){
+        angle = angle + (RELIABLY_EXECUTABLE_ROTATION * work_towards_goal(-RELIABLY_EXECUTABLE_ROTATION,emptyGoal, current));
+    }
+
+    while(angle > STRICT_ROTATION_MARGIN_OF_ERROR){
+        angle = angle - (angle * work_towards_goal(angle, emptyGoal, current));
+    }
+
+
+    while(angle < -STRICT_ROTATION_MARGIN_OF_ERROR){
+        angle = angle - (angle * work_towards_goal(angle, emptyGoal, current));
+    }
+
+    assume_standardized_stance(current);
 }
