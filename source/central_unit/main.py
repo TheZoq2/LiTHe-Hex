@@ -181,22 +181,22 @@ def send_decision_avr(spi, decision_packet):
     y_speed = convert_to_sendable_byte(0)
     rotation = convert_to_sendable_byte(0)
 
-    if decision_packet.decision == GO_FORWARD:
+    if decision_packet.decision == decision_making.GO_FORWARD:
         x_speed = convert_to_sendable_byte(1)
         y_speed = convert_to_sendable_byte(0)
         rotation = convert_to_sendable_byte(0)
 
-    elif decision_packet.decision == TURN_LEFT:
+    elif decision_packet.decision == decision_making.TURN_LEFT:
         x_speed = convert_to_sendable_byte(0)
         y_speed = convert_to_sendable_byte(0)
         rotation = convert_to_sendable_byte(1)
 
-    elif decision_packet.decision == TURN_RIGHT:
+    elif decision_packet.decision == decision_making.TURN_RIGHT:
         x_speed = convert_to_sendable_byte(0)
         y_speed = convert_to_sendable_byte(0)
         rotation = convert_to_sendable_byte(-1)
 
-    elif decision_packet.decision == STOP:
+    elif decision_packet.decision == decision_making.STOP:
         x_speed = convert_to_sendable_byte(0)
         y_speed = convert_to_sendable_byte(0)
         rotation = convert_to_sendable_byte(0)

@@ -15,6 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with LiTHe Hex.  If not, see <http://www.gnu.org/licenses/>.
 
+import pdb
+
 
 class UnexpectedDataException(Exception):
 
@@ -35,6 +37,7 @@ class SpiDev(object):
         self.slave_select = 0
         self.data_sequence = []
         self.expected_seq = []
+        self.enabled = True 
 
     def set_fake_read_sequence(self, data):
         """
@@ -51,6 +54,9 @@ class SpiDev(object):
         """
         self.expected_seq = data 
 
+    def stop_listening(self):
+        self.enabled = False
+
     def open(self, spi_port, slave_select):
         self.spi_port = spi_port
         self.slave_select = slave_select
@@ -59,10 +65,14 @@ class SpiDev(object):
         pass
 
     def writebytes(self, data):
-        for i in range(len(data)):
-            if data[i] != self.expected_seq[i]:
+        if self.enabled:
+            try:
+                for i in range(len(data)):
+                    if data[i] != self.expected_seq[i]:
+                        raise UnexpectedDataException(self.expected_seq, data)
+                self.expected_seq = self.expected_seq[len(data):]
+            except IndexError:
                 raise UnexpectedDataException(self.expected_seq, data)
-        self.expected_seq = self.expected_seq[len(data):]
 
     def readbytes(self, length):
         data = self.data_sequence[:length]
