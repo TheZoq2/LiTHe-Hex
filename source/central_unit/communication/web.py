@@ -41,6 +41,7 @@ class ServerReceivedPacket(object):
         Construct a ServerReceivedPacket from a json string
         """
         data = json.loads(json_string)
+        self.raw = data
         self.x = data.get('x', None)
         self.y = data.get('y', None)
         self.rotation = data.get('rotation', None)

@@ -193,7 +193,7 @@ def _get_total_msg(*data):
     res = ""
     for d in data:
         res += "{0:08b}".format(d)
-    return int(res)
+    return int(res, 2)
 
 
 def communication_init():

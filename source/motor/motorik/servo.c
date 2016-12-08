@@ -6,6 +6,9 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
+#include "spi.h"
+#else
+#include <time.h>
 #endif
 
 const uint8_t READ_DATA_INSTRUCTION = 0x02;
@@ -31,7 +34,7 @@ const uint8_t BROADCAST_ID = 0xFE;
 
 const uint8_t NUM_SERVOS = 18;
 
-const uint16_t SERVO_TARGET_COMPLIANCE_MARGIN = 20;
+const uint16_t SERVO_TARGET_COMPLIANCE_MARGIN = 25;
 
 
 const uint8_t SERVO_MAP[6][3] = {
@@ -45,6 +48,7 @@ const uint8_t SERVO_MAP[6][3] = {
 
 void send_servo_command(uint8_t id, uint8_t instruction, void* data, uint8_t data_amount)
 {
+	//spi_set_interrupts(false);
 	//Set the direction of the tristate gate
 	//clear_bit(PORTD, PIN_RX_TOGGLE);
 
@@ -72,6 +76,8 @@ void send_servo_command(uint8_t id, uint8_t instruction, void* data, uint8_t dat
 	
 	uart_wait();
 	
+	//spi_set_interrupts(true);
+	
 	//Reset the direction of the tristate gate
 	//set_bit(PORTD, PIN_RX_TOGGLE);
 }
@@ -96,6 +102,7 @@ void write_servo_data(uint8_t id, uint8_t address, const uint8_t* data, uint8_t 
 
 ServoReply read_servo_data(uint8_t id, uint8_t address, uint8_t length)
 {
+	spi_set_interrupts(false);
 	//Send datarequest instruction
 	uint8_t* new_data = (uint8_t*)malloc(2);
 
@@ -108,15 +115,31 @@ ServoReply read_servo_data(uint8_t id, uint8_t address, uint8_t length)
 
 	free(new_data);
 
+	ServoReply reply = receive_servo_reply();
+	spi_set_interrupts(true);
 	//Read the data
-	return receive_servo_reply();
+	return reply;
 }
 
-uint16_t read_uint16_from_servo(uint8_t id, uint8_t address)
+uint16_reply read_uint16_from_servo(uint8_t id, uint8_t address)
 {
 	ServoReply reply = read_servo_data(id, address, 2);
 
-	uint16_t result = (reply.parameters[1] << 8) + reply.parameters[0];
+	uint16_reply result;
+
+	//uint16_t result = (reply.parameters[1] << 8) + reply.parameters[0];
+
+	if(reply.error != 0)
+	{
+		result.error = reply.error;
+		result.is_error = true;
+		result.result = 0;
+	}
+	else
+	{
+		result.result = (reply.parameters[1] << 8) + reply.parameters[0];
+		result.is_error = false;
+	}
 
 	free_servo_reply(reply);
 
@@ -126,6 +149,8 @@ uint16_t read_uint16_from_servo(uint8_t id, uint8_t address)
 #ifdef IS_X86
 void send_servo_action()
 {
+	while(!servos_are_done_rotating())
+		;
 }
 #else
 void send_servo_action()
@@ -146,6 +171,7 @@ void write_servo_single_byte(uint8_t id, uint8_t address, uint8_t value)
 
 ServoReply receive_servo_reply()
 {
+	//spi_set_interrupts(false);
 	//Switch the direction of the tri-state gate
 	set_bit(PORTD, PIN_RX_TOGGLE);
 	usart_set_direction(RX);
@@ -164,6 +190,11 @@ ServoReply receive_servo_reply()
 	servo_reply.parameter_amount = servo_reply.length - 2; //See ax12 datasheet
 	servo_reply.error = usart_receive();
 
+	if(servo_reply.error != 0)
+	{
+		goto failiure;
+	}
+
 	servo_reply.parameters = (uint8_t*) malloc(sizeof(uint8_t) * servo_reply.parameter_amount);
 
 	for(uint8_t i = 0; i < servo_reply.parameter_amount; ++i)
@@ -174,11 +205,16 @@ ServoReply receive_servo_reply()
 	//TODO: Check the checksum
 	servo_reply.checksum = usart_receive();
 
+failiure:
 	//Reset the tri-state gate
 	clear_bit(PORTD, PIN_RX_TOGGLE);
 	usart_set_direction(TX);
 
+
 	_delay_ms(5);
+	
+	//spi_set_interrupts(true);
+	
 	return servo_reply;
 }
 void free_servo_reply(ServoReply reply)
@@ -253,7 +289,7 @@ void set_leg_angles(enum LegIds leg_index, uint16_t* angles)
 	{
 		printf("Moving servo %i\n", ids[i]);
 		set_servo_angle(ids[i], angles[i]);
-		_delay_ms(5);
+		_delay_ms(1);
 	}
 }
 
@@ -265,7 +301,7 @@ void read_servo_target_positions(uint16_t* buffer)
 {
 	for (uint8_t i = 0; i < NUM_SERVOS; ++i) 
 	{
-		buffer[i] = read_uint16_from_servo(i + 1, GOAL_POSITION_ADDRESS);
+		buffer[i] = read_uint16_from_servo(i + 1, GOAL_POSITION_ADDRESS).result;
 	}
 }
 
@@ -276,9 +312,12 @@ bool is_servo_position_in_bounds(uint16_t target_position, uint16_t current_posi
 
 bool check_servo_done_rotating(uint8_t id, uint16_t target_position)
 {
-	uint16_t current_position = read_uint16_from_servo(id + 1, PRESENT_POSITION_ADDRESS);
+	uint16_reply current_position = 
+		read_uint16_from_servo(id + 1, PRESENT_POSITION_ADDRESS);
 
-	bool result = is_servo_position_in_bounds(target_position, current_position);
+	bool result = 
+		is_servo_position_in_bounds(target_position, current_position.result) |
+		current_position.is_error;
 #ifdef IS_X86
 	//Run the regular code but don't return it. 
 	//This is to be able to check for memory leaks
@@ -293,6 +332,7 @@ bool servos_are_done_rotating()
 #ifdef IS_X86
 	//We need to wait for the simulator to process the command before checking this
 	//Sleep for 0.1 seconds
+	printf("Sleeping \n\n\n\n");
 	usleep(100000);
 #endif
 

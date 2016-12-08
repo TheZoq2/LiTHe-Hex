@@ -200,7 +200,7 @@ def _set_sensor_data_sequence(spi):
 def _add_servo_speed_and_walk(spi):
     spi.expected_seq += [
         avr_communication.GARBAGE,
-        (avr_communication.SET_SERVO_SPEED << 2) | 0x01, # type
+        (avr_communication.SET_SERVO_SPEED << 2) | 0x02, # type
         2, # length
         0xFF, 0xFF, # servo speed
 

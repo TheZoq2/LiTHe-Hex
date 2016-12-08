@@ -170,7 +170,8 @@ def get_decision(sensor_data, decision_packet):
     # Check if previous decision was to make a turn.
     # If it was we need to let the robot make a full turn before using
     # the sensor data because they will give bad values during a turn.
-    if (decision_packet.previous_decision == TURN_LEFT):
+    if (decision_packet.previous_decision == TURN_LEFT or
+        decision_packet.previous_decision == TURN_RIGHT):
         #print("Robot is turning left!")
 
         # After the robot has started turning the angle will be
@@ -181,15 +182,6 @@ def get_decision(sensor_data, decision_packet):
             decision_packet.decision = GO_FORWARD
             decision_packet.previous_decision = COMPLETE_TURN
             #print("Turning left complete.")
-
-    elif (decision_packet.previous_decision == TURN_RIGHT):
-        #print("Robot is turning left!")
-
-        if ((sensor_data.average_angle) <= ANGLE_10_DEGREE and
-            not avr_communication.is_busy_rotating()):
-            decision_packet.decision = GO_FORWARD
-            decision_packet.previous_decision = COMPLETE_TURN
-            #print("Turning right complete.")
 
     # When the robot has rotated but yet not entered the new corridor
     elif (decision_packet.previous_decision == COMPLETE_TURN):

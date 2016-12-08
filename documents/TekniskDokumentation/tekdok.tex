@@ -240,7 +240,7 @@
 		\textbf{Centralenhet $ \gets $ motorikenhet}\\ \midrule
 		Servostatus & 22 & len, ... data ... \\ \midrule
 		Debugsträng & 23 & len, "debugsträng i utf-8" \\ \midrule
-		Upptagen med rotation? & 03 & ja: 0x01, nej: 0x02 \\ \midrule
+		Upptagen med rotation? & 03 & ja: 0x01, nej: 0x00 \\ \midrule
 		\\
 		\textbf{Centralenhet $\to$ sensorenhet} \\ \midrule
 		Återställ orientering & 03 & -- \\ \midrule
@@ -388,14 +388,12 @@
 
     När ett beslut om vändning har tagits väntar koden tills att en hel vändning
     har skett. Detta görs genom att vänta tills roboten står rakt framåt m.h.a.
-    den uträknade vinkeln men även genom att vänta tills tiden det tar för en
-    hel vändning har passerat. När en hel vändning har skett går roboten framåt
-    tills den har kommit in i den nya korridoren innan den börjar fatta beslut
-    med sensordatan den får in. Detta för att ignorera korridoren som roboten
-    kom från. 
+    den uträknade vinkeln men även genom att vänta tills motorikenheten svarar
+    att en hel vändning har gjorts klart. När en hel vändning har skett går
+    roboten framåt tills den har kommit in i den nya korridoren innan den börjar
+    fatta beslut med sensordatan den får in. Detta för att ignorera korridoren
+    som roboten kom från. 
     
-    \todo{Fix the turn, should not be dependant on time it takes for the turn to
-    complete}%
     \begin{lstlisting}
     def get_decision(sesor_data, decision_packet):
         corridors_and_dead_angles = get_corridors_and_dead_angles(sensor_data)
@@ -430,9 +428,10 @@
                 else:
                     decision = TURN_LEFT
     
-    if previous decision is TURN_LEFT:
+    if previous decision is TURN_LEFT or TURN_RIGHT:
         # A complete turn has been made
-        if absolute value of the average angle is less than 10 degrees:
+        if absolute value of the average angle is less than 10 degrees and
+        turn has completed:
             decision = GO_FORWARD
             previous_decision = COMPLETE_TURN
 
@@ -442,7 +441,7 @@
         
         # if the robot has entered the new corridor
         if robot is inside a corridor:
-            previous_decision = GO_FORWARD
+            prev ious_decision = GO_FORWARD
         
     \end{lstlisting}
     
@@ -461,7 +460,7 @@
 	\subsubsection{Kommunikation med webbserver}
 	Datan som skickas mellan centralenheten och webservern är i JSON-format.
 
-	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%						Motorikenheten
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     \newpage

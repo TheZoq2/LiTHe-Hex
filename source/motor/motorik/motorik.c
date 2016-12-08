@@ -8,8 +8,8 @@
 #include <util/delay.h>
 
 #include "communication.h"
-#include "spi.h"
 #endif
+#include "spi.h"
 
 #include "macros.h"
 
@@ -70,23 +70,66 @@ int main(void)
 
 	set_ddr(DDRD, 0xfE);
 	
+	spi_set_interrupts(false);
+	
 	usart_init();
 	
 	_delay_ms(100);
 	
 	init_all_servos();
+	
+	
+	
 
 	_delay_ms(100);
 
 	send_servo_action();
+
 	_delay_ms(100);
 
-	test_servo_communication();
+	//test_servo_communication();
 
 	//Initialize all legs
 	
 	Point2D* current_position = raise_to_default_position();
 
+	spi_set_interrupts(true);
+	
+	
+#ifndef IS_X86
+	while(1)
+	{
+        if (current_status->return_to_neutral) {
+
+            current_status->return_to_neutral = false;
+            assume_standardized_stance(current_position);
+
+        } else {
+            Point2D goal;
+
+			spi_set_interrupts(false);
+            float x_speed = current_status->x_speed;
+            float y_speed = current_status->y_speed;
+            float rotation = current_status->rotation;
+            float servo_speed = current_status->servo_speed;
+            bool auto_mode = current_status->auto_mode;
+			spi_set_interrupts(true);
+			
+            if (x_speed != 0.0 || y_speed != 0.0 || !auto_mode) {
+
+                goal.x = x_speed;
+                goal.y = y_speed;
+				
+				//spi_set_interrupts(false);
+                work_towards_goal(rotation, goal, current_position);
+				//spi_set_interrupts(true);
+
+            } else if (rotation != 0) {
+                //rotate_set_angle(rotation * (M_PI / 2), current_position);
+            }
+        }
+	}
+#else
 	for(uint8_t i = 0; i < 40; ++i)
 	{
 		Point2D goal;
@@ -97,37 +140,7 @@ int main(void)
 
 		work_towards_goal(0, goal, current_position);
 	}
-	
-	while(0)
-	{
-	/*
-        if (current_status->return_to_neutral) {
-
-            current_status->return_to_neutral = false;
-            assume_standarized_stance(current_msg);
-
-        } else {
-            Point2D goal;
-
-            float x_speed = current_status->x_speed;
-            float y_speed = current_status->y_speed;
-            float rotation = current_status->rotation;
-            float servo_speed = current_status->servo_speed;
-            bool auto_mode = current_status->auto_mode;
-
-            if (x_speed != 0.0 || y_speed != 0.0 || !auto_mode) {
-
-                goal.x = x_speed;
-                goal.y = y_speed;
-
-                work_towards_goal(rotation, p, current_position);
-
-            } else if (rotation != 0) {
-                rotate_set_angle(rotation * (M_PI / 2), current_position);
-            }
-        }
-	*/
-	}
+#endif
 
 	free(current_position);
 }
@@ -158,18 +171,20 @@ void build_spi_reply_frame(Frame *frame_trans) {
 }
 
 void handle_spi_frame(Frame *frame_recv) {
-/*
+
 	switch(get_id(frame_recv)){
-		case TOGGLE_OBSTACLE :
+		case TOGGLE_OBSTACLE : {
 			// Toggle obstacle
 			//uint8_t on_off = frame_recv->msg[0];
 			break;
-		case SET_SERVO_SPEED :
+		}
+		case SET_SERVO_SPEED : {
 			uint8_t speed_lsb = frame_recv->msg[0];
             uint8_t speed_msb = frame_recv->msg[1];
             status_set_servo_speed(current_status, speed_lsb, speed_msb);
 			break;
-		case WALK_COMMAMD :
+		}
+		case WALK_COMMAMD : {
 			// Go command 
 			uint8_t x_speed = frame_recv->msg[0];
 			uint8_t y_speed = frame_recv->msg[1];
@@ -182,10 +197,11 @@ void handle_spi_frame(Frame *frame_recv) {
             current_status->auto_mode = (bool)auto_mode;
 
 			break;
-		case RETURN_TO_NEUTRAL :
+		}
+		case RETURN_TO_NEUTRAL : {
             current_status->return_to_neutral = true;
 			break;
+		}
 	}
-	*/
 }
 #endif
