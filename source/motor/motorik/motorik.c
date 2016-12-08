@@ -77,10 +77,20 @@ int main(void)
 	_delay_ms(100);
 	
 	init_all_servos();
+	
+	
+	
 
 	_delay_ms(100);
+	
+	set_servo_angle(16, 0x01ff);
 
 	send_servo_action();
+	
+	while(1)
+	{
+		
+	}
 	_delay_ms(100);
 
 	//test_servo_communication();

@@ -46,7 +46,7 @@ const uint8_t SERVO_MAP[6][3] = {
 
 void send_servo_command(uint8_t id, uint8_t instruction, void* data, uint8_t data_amount)
 {
-	spi_set_interrupts(false);
+	//spi_set_interrupts(false);
 	//Set the direction of the tristate gate
 	//clear_bit(PORTD, PIN_RX_TOGGLE);
 
@@ -74,7 +74,7 @@ void send_servo_command(uint8_t id, uint8_t instruction, void* data, uint8_t dat
 	
 	uart_wait();
 	
-	spi_set_interrupts(true);
+	//spi_set_interrupts(true);
 	
 	//Reset the direction of the tristate gate
 	//set_bit(PORTD, PIN_RX_TOGGLE);
@@ -100,6 +100,7 @@ void write_servo_data(uint8_t id, uint8_t address, const uint8_t* data, uint8_t 
 
 ServoReply read_servo_data(uint8_t id, uint8_t address, uint8_t length)
 {
+	spi_set_interrupts(false);
 	//Send datarequest instruction
 	uint8_t* new_data = (uint8_t*)malloc(2);
 
@@ -112,8 +113,10 @@ ServoReply read_servo_data(uint8_t id, uint8_t address, uint8_t length)
 
 	free(new_data);
 
+	ServoReply reply = receive_servo_reply();
+	spi_set_interrupts(true);
 	//Read the data
-	return receive_servo_reply();
+	return reply;
 }
 
 uint16_reply read_uint16_from_servo(uint8_t id, uint8_t address)
@@ -159,7 +162,7 @@ void write_servo_single_byte(uint8_t id, uint8_t address, uint8_t value)
 
 ServoReply receive_servo_reply()
 {
-	spi_set_interrupts(false);
+	//spi_set_interrupts(false);
 	//Switch the direction of the tri-state gate
 	set_bit(PORTD, PIN_RX_TOGGLE);
 	usart_set_direction(RX);
@@ -201,7 +204,7 @@ failiure:
 
 	_delay_ms(5);
 	
-	spi_set_interrupts(true);
+	//spi_set_interrupts(true);
 	
 	return servo_reply;
 }
@@ -277,7 +280,7 @@ void set_leg_angles(enum LegIds leg_index, uint16_t* angles)
 	{
 		printf("Moving servo %i\n", ids[i]);
 		set_servo_angle(ids[i], angles[i]);
-		_delay_ms(5);
+		_delay_ms(1);
 	}
 }
 
