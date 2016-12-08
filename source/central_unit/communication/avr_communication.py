@@ -178,6 +178,9 @@ def _request_data(spi, data_id):
 def _select_device(spi, addr):
     spi.open(*addr)
 
+def _deselect_device(spi):
+    spi.close()
+
 
 def _check_response(response):
     if isinstance(response, list):
@@ -215,6 +218,7 @@ def set_obstacle_mode(spi, value):
     _select_device(spi, MOTOR_ADDR)
     response = _send_bytes(spi, _add_parity(SET_OBSTACLE, value), value)
     _check_response(response)
+    _deselect_device(spi)
 
 
 def set_servo_speed(spi, speed):
@@ -228,6 +232,7 @@ def set_servo_speed(spi, speed):
     response = _send_bytes(spi, _add_parity(SET_SERVO_SPEED, total_msg),
                            SET_SERVO_SPEED_LENGTH, least, most)
     _check_response(response)
+    _deselect_device(spi)
 
 
 def walk(spi, x_speed, y_speed, turn_speed, auto_mode):
@@ -241,6 +246,7 @@ def walk(spi, x_speed, y_speed, turn_speed, auto_mode):
     response = _send_bytes(spi, _add_parity(WALK, total_msg),
                            WALK_LENGTH, x_speed, y_speed, turn_speed, auto)
     _check_response(response)
+    _deselect_device(spi)
 
 
 def back_to_neutral(spi):
@@ -249,26 +255,32 @@ def back_to_neutral(spi):
     # we send a zero byte as args
     response = _send_bytes(spi, _add_parity(RETURN_TO_NEUTRAL, 0), 0)
     _check_response(response)
+    _deselect_device(spi)
 
 
 def get_servo_status(spi):
     """Fetches the servo status"""
     # TODO create appropriate data structure
     _select_device(spi, MOTOR_ADDR)
-    return _request_data(spi, SERVO_STATUS)
+    data = _request_data(spi, SERVO_STATUS)
+    _deselect_device(spi)
+    return data
 
 
 def get_motor_debug(spi):
     """Gets a motor unit debug string"""
     # TODO create string
     _select_device(spi, MOTOR_ADDR)
-    return _request_data(spi, MOTOR_DEBUG)
+    data = _request_data(spi, MOTOR_DEBUG)
+    _deselect_device(spi)
+    return data
 
 
 def is_busy_rotating(spi):
     """Asks the motor unit whether it's busy rotating"""
     _select_device(spi, MOTOR_ADDR)
     raw_data = _request_data(spi, BUSY_ROTATING)
+    _deselect_device(spi)
     return True if raw_data[0] else False
     
 
@@ -279,6 +291,8 @@ def get_sensor_data(spi):
     """
     _select_device(spi, SENSOR_ADDR)
     raw_data = _request_data(spi, SENSOR_DATA)
-    return SensorDataPacket(*raw_data)
+    sensor_data = SensorDataPacket(*raw_data)
+    _deselect_device(spi)
+    return sensor_data
 
 

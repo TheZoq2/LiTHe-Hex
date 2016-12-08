@@ -88,20 +88,20 @@ def main():
 
 def do_auto_mode_iteration(spi, send_queue, receive_queue, decision_packet):
     sensor_data = avr_communication.get_sensor_data(spi)
-    print("sensor_data:", sensor_data)
+   # print("sensor_data:", sensor_data)
 
-    print("Right_angle: ",sensor_data.right_angle)
-    print("Left_angle: ",sensor_data.left_angle)
-    print("Average angle: ", sensor_data.average_angle)
+   # print("Right_angle: ",sensor_data.right_angle)
+   # print("Left_angle: ",sensor_data.left_angle)
+   # print("Average angle: ", sensor_data.average_angle)
 
     decision_making.get_decision(sensor_data, decision_packet)
 
-    print("Decision: ", decision_packet.decision)
+   # print("Decision: ", decision_packet.decision)
 
     pid_controller.regulate(sensor_data, decision_packet)
-    print("Pid controller command: ", decision_packet.regulate_base_movement,
-          ", ", decision_packet.regulate_command_y, ", ", decision_packet.regulate_goal_angle)
-    #send_decision_avr(spi, decision_packet)
+   # print("Pid controller command: ", decision_packet.regulate_base_movement,
+   #       ", ", decision_packet.regulate_command_y, ", ", decision_packet.regulate_goal_angle)
+    send_decision_avr(spi, decision_packet)
 
     # Send decision to server
     send_queue.put(web.ServerSendPacket(debug_string=
@@ -181,8 +181,6 @@ def send_decision_avr(spi, decision_packet):
     y_speed = convert_to_sendable_byte(0)
     rotation = convert_to_sendable_byte(0)
 
-    avr_communication.set_servo_speed(spi, decision_packet.speed)
-
     if decision_packet.decision == GO_FORWARD:
         x_speed = convert_to_sendable_byte(1)
         y_speed = convert_to_sendable_byte(0)
@@ -203,7 +201,16 @@ def send_decision_avr(spi, decision_packet):
         y_speed = convert_to_sendable_byte(0)
         rotation = convert_to_sendable_byte(0)
 
-    avr_communication.walk(spi, x_speed, y_speed, rotation, auto_mode=True)
+    count = 0
+    while True:
+        try:    
+            avr_communication.set_servo_speed(spi, decision_packet.speed)
+            avr_communication.walk(spi, x_speed, y_speed, rotation, auto_mode=True)
+            print("Walk sent x: {}, y: {}, r: {}".format(x_speed, y_speed, rotation))
+            break
+        except avr_communication.CommunicationError:
+            count += 1
+            print("Tried sending speed (times): " + str(count), end="\r")
 
 # Malcolm conversion for no no negative numbers, other name?
 def convert_to_sendable_byte(byte):

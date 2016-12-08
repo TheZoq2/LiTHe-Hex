@@ -55,6 +55,9 @@ class SpiDev(object):
         self.spi_port = spi_port
         self.slave_select = slave_select
 
+    def close(self):
+        pass
+
     def writebytes(self, data):
         for i in range(len(data)):
             if data[i] != self.expected_seq[i]:
