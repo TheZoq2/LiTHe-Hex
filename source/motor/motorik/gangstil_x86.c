@@ -2,6 +2,10 @@
 
 #include <stdio.h>
 
+#ifndef SHOULD_PRINT
+	#define printf
+#endif
+
 #define STATE_OUT_FILENAME "/tmp/hexsim/leg_input"
 
 void write_current_state()
