@@ -18,9 +18,12 @@
 #ifndef SPI_H
 #define SPI_H
 
+#ifndef IS_X86
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#endif
 #include <stdbool.h>
+#include <stdint.h>
 
 void spi_init();
 uint8_t spi_receive_byte();

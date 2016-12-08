@@ -8,8 +8,8 @@
 #include <util/delay.h>
 
 #include "communication.h"
-#include "spi.h"
 #endif
+#include "spi.h"
 
 #include "macros.h"
 

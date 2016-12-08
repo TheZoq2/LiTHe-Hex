@@ -123,12 +123,16 @@ uint16_reply read_uint16_from_servo(uint8_t id, uint8_t address)
 	uint16_reply result;
 
 	//uint16_t result = (reply.parameters[1] << 8) + reply.parameters[0];
-	result.result = (reply.parameters[1] << 8) + reply.parameters[0];
 
 	if(reply.error != 0)
 	{
 		result.error = reply.error;
 		result.is_error = true;
+		result.result = 0;
+	}
+	else
+	{
+		result.result = (reply.parameters[1] << 8) + reply.parameters[0];
 	}
 
 	free_servo_reply(reply);
