@@ -82,9 +82,8 @@ def main():
             # Manual mode
             # os.system('clear')
             # print("Entering manual mode!")
-            print("hello")
             auto = do_manual_mode_iteration(spi, send_queue, receive_queue)
-            time.sleep(0.1)
+            # time.sleep(0.1)
 
 
 def do_auto_mode_iteration(spi, send_queue, receive_queue, decision_packet):
@@ -146,26 +145,23 @@ def do_manual_mode_iteration(spi, send_queue, receive_queue):
         if packet.has_motion_command():
             print(packet.raw)
             servo_speed = (int)(packet.thrust * constants.MAX_16BIT_SIZE)
+            count = 0
             while True:
                 time.sleep(0.01)
                 try:
                     avr_communication.set_servo_speed(spi, servo_speed)
+                    print("")
+                    print("Sent speed")
                     break
                 except avr_communication.CommunicationError:
-                    pass
+                    count += 1
+                    print("Tried sending speed (times): " + str(count), end="\r")
 
             x_speed = convert_to_sendable_byte(packet.x)
             y_speed = convert_to_sendable_byte(packet.y)
             rotation = convert_to_sendable_byte(packet.rotation)
-
-            print(x_speed)
-            print(y_speed)
-            print(rotation)
-            print("")
-            print(packet.x)
-            print(packet.y)
-            print("")
             
+            count = 0
             while True:
                 time.sleep(0.01)
                 try:
@@ -173,7 +169,8 @@ def do_manual_mode_iteration(spi, send_queue, receive_queue):
                     print("Walk sent x: {}, y: {}, r: {}".format(x_speed, y_speed, rotation))
                     break
                 except avr_communication.CommunicationError:
-                    pass
+                    count += 1
+                    print("Tried sending walk (times): " + str(count), end="\r")
 
     return auto
 
