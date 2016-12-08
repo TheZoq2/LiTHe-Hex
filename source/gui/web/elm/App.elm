@@ -23,6 +23,7 @@ import Material.Textfield as Textfield
 import Material.List as Lists
 import Material.Button as Button
 import Material.Card as Card
+import Material.Toggles as Toggles
 import Material.Layout as Layout
 import Joystick
 import Sensors
@@ -65,6 +66,7 @@ type Msg
     | SelectTab Int
     | ChangeParameter PIDParameter String
     | SendParameters
+    | ToggleAuto
     | Mdl (Material.Msg Msg)
 
 
@@ -294,7 +296,25 @@ update msg model =
                     Phoenix.Socket.push push model.phxSocket
             in
                 ( { model
-                    | parameters = Dict.empty
+                    | phxSocket = phxSocket
+                  }
+                , Cmd.map PhoenixMsg phxCmd
+                )
+
+        ToggleAuto ->
+            let
+                payload =
+                    JE.object [ ( "auto", JE.bool (not model.autoMode) ) ]
+
+                push =
+                    Phoenix.Push.init "joystick" "client"
+                        |> Phoenix.Push.withPayload payload
+
+                ( phxSocket, phxCmd ) =
+                    Phoenix.Socket.push push model.phxSocket
+            in
+                ( { model
+                    | autoMode = not model.autoMode
                     , phxSocket = phxSocket
                   }
                 , Cmd.map PhoenixMsg phxCmd
@@ -434,29 +454,38 @@ viewButtons model =
 
 viewControl : Model -> List (Html Msg)
 viewControl model =
-    [ if model.joystickIndex /= Nothing then
-        Joystick.joystickDisplay model.joystick
-      else
-        viewButtons model
-    , Card.view [ Elevation.e2 ]
-        [ Card.title [] [ Card.head [] [ text "PID parameters" ] ]
-        , Card.actions [ Card.border ]
-            (List.indexedMap (createInputField model)
-                [ ( "Base movement", "base_movement" )
-                , ( "Command Y", "command_y" )
-                , ( "Goal angle", "goal_angle" )
-                , ( "Angle scaledown", "angle_scaledown" )
-                , ( "Movement scaledown", "movement_scaledown" )
-                , ( "Angle adjustment", "angle_adjustment_border" )
-                ]
-                ++ [ Button.render Mdl
-                        [ 0 ]
-                        model.mdl
-                        [ Button.onClick SendParameters ]
-                        [ text "duck" ]
-                   ]
-            )
+    [ Toggles.switch Mdl
+        [ 0 ]
+        model.mdl
+        [ Toggles.onClick ToggleAuto
+        , Toggles.value model.autoMode
         ]
+        [ text "Autonomous mode" ]
+    , if not model.autoMode then
+        if model.joystickIndex /= Nothing then
+            Joystick.joystickDisplay model.joystick
+        else
+            viewButtons model
+      else
+        Card.view [ Elevation.e2 ]
+            [ Card.title [] [ Card.head [] [ text "PID parameters" ] ]
+            , Card.actions [ Card.border ]
+                (List.indexedMap (createInputField model)
+                    [ ( "Base movement", "base_movement" )
+                    , ( "Command Y", "command_y" )
+                    , ( "Goal angle", "goal_angle" )
+                    , ( "Angle scaledown", "angle_scaledown" )
+                    , ( "Movement scaledown", "movement_scaledown" )
+                    , ( "Angle adjustment", "angle_adjustment_border" )
+                    ]
+                    ++ [ Button.render Mdl
+                            [ 0, 0 ]
+                            model.mdl
+                            [ Button.onClick SendParameters ]
+                            [ text "duck" ]
+                       ]
+                )
+            ]
     ]
 
 

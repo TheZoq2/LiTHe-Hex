@@ -22104,6 +22104,7 @@ var _user$project$App$viewButtons = function (model) {
 			}
 		});
 };
+var _user$project$App$ToggleAuto = {ctor: 'ToggleAuto'};
 var _user$project$App$SendParameters = {ctor: 'SendParameters'};
 var _user$project$App$ChangeParameter = F2(
 	function (a, b) {
@@ -22139,10 +22140,32 @@ var _user$project$App$createInputField = F3(
 var _user$project$App$viewControl = function (model) {
 	return {
 		ctor: '::',
-		_0: (!_elm_lang$core$Native_Utils.eq(model.joystickIndex, _elm_lang$core$Maybe$Nothing)) ? _user$project$Joystick$joystickDisplay(model.joystick) : _user$project$App$viewButtons(model),
+		_0: A5(
+			_MichaelCombs28$elm_mdl$Material_Toggles$switch,
+			_user$project$App$Mdl,
+			{
+				ctor: '::',
+				_0: 0,
+				_1: {ctor: '[]'}
+			},
+			model.mdl,
+			{
+				ctor: '::',
+				_0: _MichaelCombs28$elm_mdl$Material_Toggles$onClick(_user$project$App$ToggleAuto),
+				_1: {
+					ctor: '::',
+					_0: _MichaelCombs28$elm_mdl$Material_Toggles$value(model.autoMode),
+					_1: {ctor: '[]'}
+				}
+			},
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html$text('Autonomous mode'),
+				_1: {ctor: '[]'}
+			}),
 		_1: {
 			ctor: '::',
-			_0: A2(
+			_0: (!model.autoMode) ? ((!_elm_lang$core$Native_Utils.eq(model.joystickIndex, _elm_lang$core$Maybe$Nothing)) ? _user$project$Joystick$joystickDisplay(model.joystick) : _user$project$App$viewButtons(model)) : A2(
 				_MichaelCombs28$elm_mdl$Material_Card$view,
 				{
 					ctor: '::',
@@ -22213,7 +22236,11 @@ var _user$project$App$viewControl = function (model) {
 										{
 											ctor: '::',
 											_0: 0,
-											_1: {ctor: '[]'}
+											_1: {
+												ctor: '::',
+												_0: 0,
+												_1: {ctor: '[]'}
+											}
 										},
 										model.mdl,
 										{
@@ -22764,7 +22791,7 @@ var _user$project$App$update = F2(
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				}
-			default:
+			case 'SendParameters':
 				var payload = _elm_lang$core$Json_Encode$object(
 					A2(
 						_elm_lang$core$List$map,
@@ -22788,7 +22815,32 @@ var _user$project$App$update = F2(
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
-						{parameters: _elm_lang$core$Dict$empty, phxSocket: phxSocket}),
+						{phxSocket: phxSocket}),
+					_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$App$PhoenixMsg, phxCmd)
+				};
+			default:
+				var payload = _elm_lang$core$Json_Encode$object(
+					{
+						ctor: '::',
+						_0: {
+							ctor: '_Tuple2',
+							_0: 'auto',
+							_1: _elm_lang$core$Json_Encode$bool(!model.autoMode)
+						},
+						_1: {ctor: '[]'}
+					});
+				var push = A2(
+					_fbonetti$elm_phoenix_socket$Phoenix_Push$withPayload,
+					payload,
+					A2(_fbonetti$elm_phoenix_socket$Phoenix_Push$init, 'joystick', 'client'));
+				var _p19 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$push, push, model.phxSocket);
+				var phxSocket = _p19._0;
+				var phxCmd = _p19._1;
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{autoMode: !model.autoMode, phxSocket: phxSocket}),
 					_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$App$PhoenixMsg, phxCmd)
 				};
 		}
