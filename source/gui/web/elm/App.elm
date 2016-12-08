@@ -165,7 +165,7 @@ update msg model =
         ReceiveChatMessage raw ->
             case JD.decodeValue chatMessageDecoder raw of
                 Ok (DebugMessage msg) ->
-                    ( { model | messages = msg :: model.messages }
+                    ( { model | messages = List.take 30 (msg :: model.messages) }
                     , Cmd.none
                     )
 
@@ -354,16 +354,12 @@ view model =
 
 createInputField : Model -> Int -> ( String, PIDParameter ) -> Html Msg
 createInputField model idx ( desc, field ) =
-    let
-        indexOffset =
-            1
-    in
-        Textfield.render Mdl
-            [ idx + indexOffset ]
-            model.mdl
-            [ Textfield.onInput (ChangeParameter field)
-            , Textfield.label desc
-            ]
+    Textfield.render Mdl
+        [ 1, idx ]
+        model.mdl
+        [ Textfield.onInput (ChangeParameter field)
+        , Textfield.label desc
+        ]
 
 
 viewButtons : Model -> Html Msg
@@ -371,16 +367,67 @@ viewButtons model =
     Card.view [ Elevation.e2 ]
         [ Card.title [] [ Card.head [] [ text "No joystick connected" ] ]
         , Card.actions [ Card.border ]
-            [ Button.render Mdl
-                  [ 20 ] -- TODO: Find out how indexes work
-                  model.mdl
-                  [ ]
-                  [ Icon.i "keyboard_arrow_left" ]
+            [ Options.div []
+                [ Button.render Mdl
+                    [ 2, 0 ]
+                    model.mdl
+                    []
+                    [ Icon.i "gavel" ]
+                , Button.render Mdl
+                    [ 2, 1 ]
+                    model.mdl
+                    []
+                    [ Icon.i "keyboard_arrow_up" ]
+                , Button.render Mdl
+                    [ 2, 2 ]
+                    model.mdl
+                    []
+                    [ Icon.i "flight_takeoff" ]
+                ]
+            , Options.div []
+                [ Button.render Mdl
+                    [ 2, 3 ]
+                    model.mdl
+                    []
+                    [ Icon.i "keyboard_arrow_left" ]
+                , Button.render Mdl
+                    [ 2, 4 ]
+                    model.mdl
+                    []
+                    [ Icon.i "stop" ]
+                , Button.render Mdl
+                    [ 2, 5 ]
+                    model.mdl
+                    []
+                    [ Icon.i "keyboard_arrow_right" ]
+                ]
+            , Options.div []
+                [ Button.render Mdl
+                    [ 2, 6 ]
+                    model.mdl
+                    []
+                    [ Icon.i "rowing" ]
+                , Button.render Mdl
+                    [ 2, 7 ]
+                    model.mdl
+                    []
+                    [ Icon.i "keyboard_arrow_down" ]
+                , Button.render Mdl
+                    [ 2, 8 ]
+                    model.mdl
+                    []
+                    [ Icon.i "perm_data_setting" ]
+                ]
             , Button.render Mdl
-                  [ 21 ]
-                  model.mdl
-                  [ ]
-                  [ Icon.i "stop" ]
+                [ 2, 9 ]
+                model.mdl
+                []
+                [ Icon.i "subdirectory_arrow_right" ]
+            , Button.render Mdl
+                [ 2, 10 ]
+                model.mdl
+                []
+                [ Icon.i "subdirectory_arrow_left" ]
             ]
         ]
 
@@ -388,9 +435,9 @@ viewButtons model =
 viewControl : Model -> List (Html Msg)
 viewControl model =
     [ if model.joystickIndex /= Nothing then
-          Joystick.joystickDisplay model.joystick
+        Joystick.joystickDisplay model.joystick
       else
-          viewButtons model
+        viewButtons model
     , Card.view [ Elevation.e2 ]
         [ Card.title [] [ Card.head [] [ text "PID parameters" ] ]
         , Card.actions [ Card.border ]

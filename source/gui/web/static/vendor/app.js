@@ -21838,39 +21838,266 @@ var _user$project$App$viewButtons = function (model) {
 					},
 					{
 						ctor: '::',
-						_0: A5(
-							_MichaelCombs28$elm_mdl$Material_Button$render,
-							_user$project$App$Mdl,
-							{
-								ctor: '::',
-								_0: 20,
-								_1: {ctor: '[]'}
-							},
-							model.mdl,
+						_0: A2(
+							_MichaelCombs28$elm_mdl$Material_Options$div,
 							{ctor: '[]'},
 							{
 								ctor: '::',
-								_0: _MichaelCombs28$elm_mdl$Material_Icon$i('keyboard_arrow_left'),
-								_1: {ctor: '[]'}
+								_0: A5(
+									_MichaelCombs28$elm_mdl$Material_Button$render,
+									_user$project$App$Mdl,
+									{
+										ctor: '::',
+										_0: 2,
+										_1: {
+											ctor: '::',
+											_0: 0,
+											_1: {ctor: '[]'}
+										}
+									},
+									model.mdl,
+									{ctor: '[]'},
+									{
+										ctor: '::',
+										_0: _MichaelCombs28$elm_mdl$Material_Icon$i('gavel'),
+										_1: {ctor: '[]'}
+									}),
+								_1: {
+									ctor: '::',
+									_0: A5(
+										_MichaelCombs28$elm_mdl$Material_Button$render,
+										_user$project$App$Mdl,
+										{
+											ctor: '::',
+											_0: 2,
+											_1: {
+												ctor: '::',
+												_0: 1,
+												_1: {ctor: '[]'}
+											}
+										},
+										model.mdl,
+										{ctor: '[]'},
+										{
+											ctor: '::',
+											_0: _MichaelCombs28$elm_mdl$Material_Icon$i('keyboard_arrow_up'),
+											_1: {ctor: '[]'}
+										}),
+									_1: {
+										ctor: '::',
+										_0: A5(
+											_MichaelCombs28$elm_mdl$Material_Button$render,
+											_user$project$App$Mdl,
+											{
+												ctor: '::',
+												_0: 2,
+												_1: {
+													ctor: '::',
+													_0: 2,
+													_1: {ctor: '[]'}
+												}
+											},
+											model.mdl,
+											{ctor: '[]'},
+											{
+												ctor: '::',
+												_0: _MichaelCombs28$elm_mdl$Material_Icon$i('flight_takeoff'),
+												_1: {ctor: '[]'}
+											}),
+										_1: {ctor: '[]'}
+									}
+								}
 							}),
 						_1: {
 							ctor: '::',
-							_0: A5(
-								_MichaelCombs28$elm_mdl$Material_Button$render,
-								_user$project$App$Mdl,
-								{
-									ctor: '::',
-									_0: 21,
-									_1: {ctor: '[]'}
-								},
-								model.mdl,
+							_0: A2(
+								_MichaelCombs28$elm_mdl$Material_Options$div,
 								{ctor: '[]'},
 								{
 									ctor: '::',
-									_0: _MichaelCombs28$elm_mdl$Material_Icon$i('stop'),
-									_1: {ctor: '[]'}
+									_0: A5(
+										_MichaelCombs28$elm_mdl$Material_Button$render,
+										_user$project$App$Mdl,
+										{
+											ctor: '::',
+											_0: 2,
+											_1: {
+												ctor: '::',
+												_0: 3,
+												_1: {ctor: '[]'}
+											}
+										},
+										model.mdl,
+										{ctor: '[]'},
+										{
+											ctor: '::',
+											_0: _MichaelCombs28$elm_mdl$Material_Icon$i('keyboard_arrow_left'),
+											_1: {ctor: '[]'}
+										}),
+									_1: {
+										ctor: '::',
+										_0: A5(
+											_MichaelCombs28$elm_mdl$Material_Button$render,
+											_user$project$App$Mdl,
+											{
+												ctor: '::',
+												_0: 2,
+												_1: {
+													ctor: '::',
+													_0: 4,
+													_1: {ctor: '[]'}
+												}
+											},
+											model.mdl,
+											{ctor: '[]'},
+											{
+												ctor: '::',
+												_0: _MichaelCombs28$elm_mdl$Material_Icon$i('stop'),
+												_1: {ctor: '[]'}
+											}),
+										_1: {
+											ctor: '::',
+											_0: A5(
+												_MichaelCombs28$elm_mdl$Material_Button$render,
+												_user$project$App$Mdl,
+												{
+													ctor: '::',
+													_0: 2,
+													_1: {
+														ctor: '::',
+														_0: 5,
+														_1: {ctor: '[]'}
+													}
+												},
+												model.mdl,
+												{ctor: '[]'},
+												{
+													ctor: '::',
+													_0: _MichaelCombs28$elm_mdl$Material_Icon$i('keyboard_arrow_right'),
+													_1: {ctor: '[]'}
+												}),
+											_1: {ctor: '[]'}
+										}
+									}
 								}),
-							_1: {ctor: '[]'}
+							_1: {
+								ctor: '::',
+								_0: A2(
+									_MichaelCombs28$elm_mdl$Material_Options$div,
+									{ctor: '[]'},
+									{
+										ctor: '::',
+										_0: A5(
+											_MichaelCombs28$elm_mdl$Material_Button$render,
+											_user$project$App$Mdl,
+											{
+												ctor: '::',
+												_0: 2,
+												_1: {
+													ctor: '::',
+													_0: 6,
+													_1: {ctor: '[]'}
+												}
+											},
+											model.mdl,
+											{ctor: '[]'},
+											{
+												ctor: '::',
+												_0: _MichaelCombs28$elm_mdl$Material_Icon$i('rowing'),
+												_1: {ctor: '[]'}
+											}),
+										_1: {
+											ctor: '::',
+											_0: A5(
+												_MichaelCombs28$elm_mdl$Material_Button$render,
+												_user$project$App$Mdl,
+												{
+													ctor: '::',
+													_0: 2,
+													_1: {
+														ctor: '::',
+														_0: 7,
+														_1: {ctor: '[]'}
+													}
+												},
+												model.mdl,
+												{ctor: '[]'},
+												{
+													ctor: '::',
+													_0: _MichaelCombs28$elm_mdl$Material_Icon$i('keyboard_arrow_down'),
+													_1: {ctor: '[]'}
+												}),
+											_1: {
+												ctor: '::',
+												_0: A5(
+													_MichaelCombs28$elm_mdl$Material_Button$render,
+													_user$project$App$Mdl,
+													{
+														ctor: '::',
+														_0: 2,
+														_1: {
+															ctor: '::',
+															_0: 8,
+															_1: {ctor: '[]'}
+														}
+													},
+													model.mdl,
+													{ctor: '[]'},
+													{
+														ctor: '::',
+														_0: _MichaelCombs28$elm_mdl$Material_Icon$i('perm_data_setting'),
+														_1: {ctor: '[]'}
+													}),
+												_1: {ctor: '[]'}
+											}
+										}
+									}),
+								_1: {
+									ctor: '::',
+									_0: A5(
+										_MichaelCombs28$elm_mdl$Material_Button$render,
+										_user$project$App$Mdl,
+										{
+											ctor: '::',
+											_0: 2,
+											_1: {
+												ctor: '::',
+												_0: 9,
+												_1: {ctor: '[]'}
+											}
+										},
+										model.mdl,
+										{ctor: '[]'},
+										{
+											ctor: '::',
+											_0: _MichaelCombs28$elm_mdl$Material_Icon$i('subdirectory_arrow_right'),
+											_1: {ctor: '[]'}
+										}),
+									_1: {
+										ctor: '::',
+										_0: A5(
+											_MichaelCombs28$elm_mdl$Material_Button$render,
+											_user$project$App$Mdl,
+											{
+												ctor: '::',
+												_0: 2,
+												_1: {
+													ctor: '::',
+													_0: 10,
+													_1: {ctor: '[]'}
+												}
+											},
+											model.mdl,
+											{ctor: '[]'},
+											{
+												ctor: '::',
+												_0: _MichaelCombs28$elm_mdl$Material_Icon$i('subdirectory_arrow_left'),
+												_1: {ctor: '[]'}
+											}),
+										_1: {ctor: '[]'}
+									}
+								}
+							}
 						}
 					}),
 				_1: {ctor: '[]'}
@@ -21885,14 +22112,17 @@ var _user$project$App$ChangeParameter = F2(
 var _user$project$App$createInputField = F3(
 	function (model, idx, _p0) {
 		var _p1 = _p0;
-		var indexOffset = 1;
 		return A4(
 			_MichaelCombs28$elm_mdl$Material_Textfield$render,
 			_user$project$App$Mdl,
 			{
 				ctor: '::',
-				_0: idx + indexOffset,
-				_1: {ctor: '[]'}
+				_0: 1,
+				_1: {
+					ctor: '::',
+					_0: idx,
+					_1: {ctor: '[]'}
+				}
 			},
 			model.mdl,
 			{
@@ -22350,7 +22580,10 @@ var _user$project$App$update = F2(
 								_0: _elm_lang$core$Native_Utils.update(
 									model,
 									{
-										messages: {ctor: '::', _0: _p7._0._0, _1: model.messages}
+										messages: A2(
+											_elm_lang$core$List$take,
+											30,
+											{ctor: '::', _0: _p7._0._0, _1: model.messages})
 									}),
 								_1: _elm_lang$core$Platform_Cmd$none
 							};
