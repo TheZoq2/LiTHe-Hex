@@ -112,11 +112,20 @@ ServoReply read_servo_data(uint8_t id, uint8_t address, uint8_t length)
 	return receive_servo_reply();
 }
 
-uint16_t read_uint16_from_servo(uint8_t id, uint8_t address)
+uint16_reply read_uint16_from_servo(uint8_t id, uint8_t address)
 {
 	ServoReply reply = read_servo_data(id, address, 2);
 
-	uint16_t result = (reply.parameters[1] << 8) + reply.parameters[0];
+	uint16_reply result;
+
+	//uint16_t result = (reply.parameters[1] << 8) + reply.parameters[0];
+	result.result = (reply.parameters[1] << 8) + reply.parameters[0];
+
+	if(reply.error != 0)
+	{
+		result.error = reply.error;
+		result.is_error = true;
+	}
 
 	free_servo_reply(reply);
 
@@ -164,6 +173,11 @@ ServoReply receive_servo_reply()
 	servo_reply.parameter_amount = servo_reply.length - 2; //See ax12 datasheet
 	servo_reply.error = usart_receive();
 
+	if(servo_reply.error != 0)
+	{
+		goto failiure;
+	}
+
 	servo_reply.parameters = (uint8_t*) malloc(sizeof(uint8_t) * servo_reply.parameter_amount);
 
 	for(uint8_t i = 0; i < servo_reply.parameter_amount; ++i)
@@ -174,9 +188,11 @@ ServoReply receive_servo_reply()
 	//TODO: Check the checksum
 	servo_reply.checksum = usart_receive();
 
+failiure:
 	//Reset the tri-state gate
 	clear_bit(PORTD, PIN_RX_TOGGLE);
 	usart_set_direction(TX);
+
 
 	_delay_ms(5);
 	return servo_reply;
@@ -265,7 +281,7 @@ void read_servo_target_positions(uint16_t* buffer)
 {
 	for (uint8_t i = 0; i < NUM_SERVOS; ++i) 
 	{
-		buffer[i] = read_uint16_from_servo(i + 1, GOAL_POSITION_ADDRESS);
+		buffer[i] = read_uint16_from_servo(i + 1, GOAL_POSITION_ADDRESS).result;
 	}
 }
 
@@ -276,9 +292,12 @@ bool is_servo_position_in_bounds(uint16_t target_position, uint16_t current_posi
 
 bool check_servo_done_rotating(uint8_t id, uint16_t target_position)
 {
-	uint16_t current_position = read_uint16_from_servo(id + 1, PRESENT_POSITION_ADDRESS);
+	uint16_reply current_position = 
+		read_uint16_from_servo(id + 1, PRESENT_POSITION_ADDRESS);
 
-	bool result = is_servo_position_in_bounds(target_position, current_position);
+	bool result = 
+		is_servo_position_in_bounds(target_position, current_position.result) |
+		current_position.is_error;
 #ifdef IS_X86
 	//Run the regular code but don't return it. 
 	//This is to be able to check for memory leaks

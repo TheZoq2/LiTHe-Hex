@@ -44,6 +44,13 @@ extern const uint8_t NUM_SERVOS;
 
 extern const uint16_t SERVO_TARGET_COMPLIANCE_MARGIN;
 
+typedef struct 
+{
+	bool is_error;
+	uint8_t error;
+	uint16_t result;
+} uint16_reply;
+
 /*
 	Struct that contains a response from a servo. 
 
