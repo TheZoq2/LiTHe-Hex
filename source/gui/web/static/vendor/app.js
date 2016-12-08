@@ -14722,386 +14722,6 @@ var _MichaelCombs28$elm_mdl$Material_Card$title = F2(
 			block);
 	});
 
-var _MichaelCombs28$elm_mdl$Material_Color$text = function (_p0) {
-	var _p1 = _p0;
-	return _MichaelCombs28$elm_mdl$Material_Options$cs(
-		A2(_elm_lang$core$Basics_ops['++'], 'mdl-color-text--', _p1._0));
-};
-var _MichaelCombs28$elm_mdl$Material_Color$background = function (_p2) {
-	var _p3 = _p2;
-	return _MichaelCombs28$elm_mdl$Material_Options$cs(
-		A2(_elm_lang$core$Basics_ops['++'], 'mdl-color--', _p3._0));
-};
-var _MichaelCombs28$elm_mdl$Material_Color$shadeName = function (shade) {
-	var _p4 = shade;
-	switch (_p4.ctor) {
-		case 'S50':
-			return '50';
-		case 'S100':
-			return '100';
-		case 'S200':
-			return '200';
-		case 'S300':
-			return '300';
-		case 'S400':
-			return '400';
-		case 'S500':
-			return '500';
-		case 'S600':
-			return '600';
-		case 'S700':
-			return '700';
-		case 'S800':
-			return '800';
-		case 'S900':
-			return '900';
-		case 'A100':
-			return 'A100';
-		case 'A200':
-			return 'A200';
-		case 'A400':
-			return 'A400';
-		default:
-			return 'A700';
-	}
-};
-var _MichaelCombs28$elm_mdl$Material_Color$hueName = function (color) {
-	var _p5 = color;
-	switch (_p5.ctor) {
-		case 'Indigo':
-			return 'indigo';
-		case 'Blue':
-			return 'blue';
-		case 'LightBlue':
-			return 'light-blue';
-		case 'Cyan':
-			return 'cyan';
-		case 'Teal':
-			return 'teal';
-		case 'Green':
-			return 'green';
-		case 'LightGreen':
-			return 'light-green';
-		case 'Lime':
-			return 'lime';
-		case 'Yellow':
-			return 'yellow';
-		case 'Amber':
-			return 'amber';
-		case 'Orange':
-			return 'orange';
-		case 'Brown':
-			return 'brown';
-		case 'BlueGrey':
-			return 'blue-grey';
-		case 'Grey':
-			return 'grey';
-		case 'DeepOrange':
-			return 'deep-orange';
-		case 'Red':
-			return 'red';
-		case 'Pink':
-			return 'pink';
-		case 'Purple':
-			return 'purple';
-		default:
-			return 'deep-purple';
-	}
-};
-var _MichaelCombs28$elm_mdl$Material_Color$scheme = F2(
-	function (primary, accent) {
-		var q = _elm_lang$core$String$map(
-			function (x) {
-				return _elm_lang$core$Native_Utils.eq(
-					x,
-					_elm_lang$core$Native_Utils.chr('-')) ? _elm_lang$core$Native_Utils.chr('_') : x;
-			});
-		var cssFile = function () {
-			var _p6 = accent;
-			switch (_p6.ctor) {
-				case 'Grey':
-					return '';
-				case 'Brown':
-					return '';
-				case 'BlueGrey':
-					return '';
-				default:
-					return A2(
-						_elm_lang$core$Basics_ops['++'],
-						'.',
-						A2(
-							_elm_lang$core$Basics_ops['++'],
-							q(
-								_MichaelCombs28$elm_mdl$Material_Color$hueName(primary)),
-							A2(
-								_elm_lang$core$Basics_ops['++'],
-								'-',
-								q(
-									_MichaelCombs28$elm_mdl$Material_Color$hueName(accent)))));
-			}
-		}();
-		return A2(
-			_elm_lang$core$Basics_ops['++'],
-			'material',
-			A2(_elm_lang$core$Basics_ops['++'], cssFile, '.min.css'));
-	});
-var _MichaelCombs28$elm_mdl$Material_Color$DeepPurple = {ctor: 'DeepPurple'};
-var _MichaelCombs28$elm_mdl$Material_Color$Purple = {ctor: 'Purple'};
-var _MichaelCombs28$elm_mdl$Material_Color$Pink = {ctor: 'Pink'};
-var _MichaelCombs28$elm_mdl$Material_Color$Red = {ctor: 'Red'};
-var _MichaelCombs28$elm_mdl$Material_Color$DeepOrange = {ctor: 'DeepOrange'};
-var _MichaelCombs28$elm_mdl$Material_Color$Grey = {ctor: 'Grey'};
-var _MichaelCombs28$elm_mdl$Material_Color$BlueGrey = {ctor: 'BlueGrey'};
-var _MichaelCombs28$elm_mdl$Material_Color$Brown = {ctor: 'Brown'};
-var _MichaelCombs28$elm_mdl$Material_Color$Orange = {ctor: 'Orange'};
-var _MichaelCombs28$elm_mdl$Material_Color$Amber = {ctor: 'Amber'};
-var _MichaelCombs28$elm_mdl$Material_Color$Yellow = {ctor: 'Yellow'};
-var _MichaelCombs28$elm_mdl$Material_Color$Lime = {ctor: 'Lime'};
-var _MichaelCombs28$elm_mdl$Material_Color$LightGreen = {ctor: 'LightGreen'};
-var _MichaelCombs28$elm_mdl$Material_Color$Green = {ctor: 'Green'};
-var _MichaelCombs28$elm_mdl$Material_Color$Teal = {ctor: 'Teal'};
-var _MichaelCombs28$elm_mdl$Material_Color$Cyan = {ctor: 'Cyan'};
-var _MichaelCombs28$elm_mdl$Material_Color$LightBlue = {ctor: 'LightBlue'};
-var _MichaelCombs28$elm_mdl$Material_Color$Blue = {ctor: 'Blue'};
-var _MichaelCombs28$elm_mdl$Material_Color$Indigo = {ctor: 'Indigo'};
-var _MichaelCombs28$elm_mdl$Material_Color$hues = _elm_lang$core$Array$fromList(
-	{
-		ctor: '::',
-		_0: _MichaelCombs28$elm_mdl$Material_Color$Indigo,
-		_1: {
-			ctor: '::',
-			_0: _MichaelCombs28$elm_mdl$Material_Color$Blue,
-			_1: {
-				ctor: '::',
-				_0: _MichaelCombs28$elm_mdl$Material_Color$LightBlue,
-				_1: {
-					ctor: '::',
-					_0: _MichaelCombs28$elm_mdl$Material_Color$Cyan,
-					_1: {
-						ctor: '::',
-						_0: _MichaelCombs28$elm_mdl$Material_Color$Teal,
-						_1: {
-							ctor: '::',
-							_0: _MichaelCombs28$elm_mdl$Material_Color$Green,
-							_1: {
-								ctor: '::',
-								_0: _MichaelCombs28$elm_mdl$Material_Color$LightGreen,
-								_1: {
-									ctor: '::',
-									_0: _MichaelCombs28$elm_mdl$Material_Color$Lime,
-									_1: {
-										ctor: '::',
-										_0: _MichaelCombs28$elm_mdl$Material_Color$Yellow,
-										_1: {
-											ctor: '::',
-											_0: _MichaelCombs28$elm_mdl$Material_Color$Amber,
-											_1: {
-												ctor: '::',
-												_0: _MichaelCombs28$elm_mdl$Material_Color$Orange,
-												_1: {
-													ctor: '::',
-													_0: _MichaelCombs28$elm_mdl$Material_Color$Brown,
-													_1: {
-														ctor: '::',
-														_0: _MichaelCombs28$elm_mdl$Material_Color$BlueGrey,
-														_1: {
-															ctor: '::',
-															_0: _MichaelCombs28$elm_mdl$Material_Color$Grey,
-															_1: {
-																ctor: '::',
-																_0: _MichaelCombs28$elm_mdl$Material_Color$DeepOrange,
-																_1: {
-																	ctor: '::',
-																	_0: _MichaelCombs28$elm_mdl$Material_Color$Red,
-																	_1: {
-																		ctor: '::',
-																		_0: _MichaelCombs28$elm_mdl$Material_Color$Pink,
-																		_1: {
-																			ctor: '::',
-																			_0: _MichaelCombs28$elm_mdl$Material_Color$Purple,
-																			_1: {
-																				ctor: '::',
-																				_0: _MichaelCombs28$elm_mdl$Material_Color$DeepPurple,
-																				_1: {ctor: '[]'}
-																			}
-																		}
-																	}
-																}
-															}
-														}
-													}
-												}
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	});
-var _MichaelCombs28$elm_mdl$Material_Color$accentHues = _elm_lang$core$Array$fromList(
-	{
-		ctor: '::',
-		_0: _MichaelCombs28$elm_mdl$Material_Color$Indigo,
-		_1: {
-			ctor: '::',
-			_0: _MichaelCombs28$elm_mdl$Material_Color$Blue,
-			_1: {
-				ctor: '::',
-				_0: _MichaelCombs28$elm_mdl$Material_Color$LightBlue,
-				_1: {
-					ctor: '::',
-					_0: _MichaelCombs28$elm_mdl$Material_Color$Cyan,
-					_1: {
-						ctor: '::',
-						_0: _MichaelCombs28$elm_mdl$Material_Color$Teal,
-						_1: {
-							ctor: '::',
-							_0: _MichaelCombs28$elm_mdl$Material_Color$Green,
-							_1: {
-								ctor: '::',
-								_0: _MichaelCombs28$elm_mdl$Material_Color$LightGreen,
-								_1: {
-									ctor: '::',
-									_0: _MichaelCombs28$elm_mdl$Material_Color$Lime,
-									_1: {
-										ctor: '::',
-										_0: _MichaelCombs28$elm_mdl$Material_Color$Yellow,
-										_1: {
-											ctor: '::',
-											_0: _MichaelCombs28$elm_mdl$Material_Color$Amber,
-											_1: {
-												ctor: '::',
-												_0: _MichaelCombs28$elm_mdl$Material_Color$Orange,
-												_1: {
-													ctor: '::',
-													_0: _MichaelCombs28$elm_mdl$Material_Color$DeepOrange,
-													_1: {
-														ctor: '::',
-														_0: _MichaelCombs28$elm_mdl$Material_Color$Red,
-														_1: {
-															ctor: '::',
-															_0: _MichaelCombs28$elm_mdl$Material_Color$Pink,
-															_1: {
-																ctor: '::',
-																_0: _MichaelCombs28$elm_mdl$Material_Color$Purple,
-																_1: {
-																	ctor: '::',
-																	_0: _MichaelCombs28$elm_mdl$Material_Color$DeepPurple,
-																	_1: {ctor: '[]'}
-																}
-															}
-														}
-													}
-												}
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	});
-var _MichaelCombs28$elm_mdl$Material_Color$A700 = {ctor: 'A700'};
-var _MichaelCombs28$elm_mdl$Material_Color$A400 = {ctor: 'A400'};
-var _MichaelCombs28$elm_mdl$Material_Color$A200 = {ctor: 'A200'};
-var _MichaelCombs28$elm_mdl$Material_Color$A100 = {ctor: 'A100'};
-var _MichaelCombs28$elm_mdl$Material_Color$S900 = {ctor: 'S900'};
-var _MichaelCombs28$elm_mdl$Material_Color$S800 = {ctor: 'S800'};
-var _MichaelCombs28$elm_mdl$Material_Color$S700 = {ctor: 'S700'};
-var _MichaelCombs28$elm_mdl$Material_Color$S600 = {ctor: 'S600'};
-var _MichaelCombs28$elm_mdl$Material_Color$S500 = {ctor: 'S500'};
-var _MichaelCombs28$elm_mdl$Material_Color$S400 = {ctor: 'S400'};
-var _MichaelCombs28$elm_mdl$Material_Color$S300 = {ctor: 'S300'};
-var _MichaelCombs28$elm_mdl$Material_Color$S200 = {ctor: 'S200'};
-var _MichaelCombs28$elm_mdl$Material_Color$S100 = {ctor: 'S100'};
-var _MichaelCombs28$elm_mdl$Material_Color$S50 = {ctor: 'S50'};
-var _MichaelCombs28$elm_mdl$Material_Color$shades = _elm_lang$core$Array$fromList(
-	{
-		ctor: '::',
-		_0: _MichaelCombs28$elm_mdl$Material_Color$S50,
-		_1: {
-			ctor: '::',
-			_0: _MichaelCombs28$elm_mdl$Material_Color$S100,
-			_1: {
-				ctor: '::',
-				_0: _MichaelCombs28$elm_mdl$Material_Color$S200,
-				_1: {
-					ctor: '::',
-					_0: _MichaelCombs28$elm_mdl$Material_Color$S300,
-					_1: {
-						ctor: '::',
-						_0: _MichaelCombs28$elm_mdl$Material_Color$S400,
-						_1: {
-							ctor: '::',
-							_0: _MichaelCombs28$elm_mdl$Material_Color$S500,
-							_1: {
-								ctor: '::',
-								_0: _MichaelCombs28$elm_mdl$Material_Color$S600,
-								_1: {
-									ctor: '::',
-									_0: _MichaelCombs28$elm_mdl$Material_Color$S700,
-									_1: {
-										ctor: '::',
-										_0: _MichaelCombs28$elm_mdl$Material_Color$S800,
-										_1: {
-											ctor: '::',
-											_0: _MichaelCombs28$elm_mdl$Material_Color$S900,
-											_1: {
-												ctor: '::',
-												_0: _MichaelCombs28$elm_mdl$Material_Color$A100,
-												_1: {
-													ctor: '::',
-													_0: _MichaelCombs28$elm_mdl$Material_Color$A200,
-													_1: {
-														ctor: '::',
-														_0: _MichaelCombs28$elm_mdl$Material_Color$A400,
-														_1: {
-															ctor: '::',
-															_0: _MichaelCombs28$elm_mdl$Material_Color$A700,
-															_1: {ctor: '[]'}
-														}
-													}
-												}
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	});
-var _MichaelCombs28$elm_mdl$Material_Color$C = function (a) {
-	return {ctor: 'C', _0: a};
-};
-var _MichaelCombs28$elm_mdl$Material_Color$color = F2(
-	function (hue, shade) {
-		return _MichaelCombs28$elm_mdl$Material_Color$C(
-			A2(
-				_elm_lang$core$Basics_ops['++'],
-				_MichaelCombs28$elm_mdl$Material_Color$hueName(hue),
-				A2(
-					_elm_lang$core$Basics_ops['++'],
-					'-',
-					_MichaelCombs28$elm_mdl$Material_Color$shadeName(shade))));
-	});
-var _MichaelCombs28$elm_mdl$Material_Color$white = _MichaelCombs28$elm_mdl$Material_Color$C('white');
-var _MichaelCombs28$elm_mdl$Material_Color$black = _MichaelCombs28$elm_mdl$Material_Color$C('black');
-var _MichaelCombs28$elm_mdl$Material_Color$primary = _MichaelCombs28$elm_mdl$Material_Color$C('primary');
-var _MichaelCombs28$elm_mdl$Material_Color$primaryDark = _MichaelCombs28$elm_mdl$Material_Color$C('primary-dark');
-var _MichaelCombs28$elm_mdl$Material_Color$primaryContrast = _MichaelCombs28$elm_mdl$Material_Color$C('primary-contrast');
-var _MichaelCombs28$elm_mdl$Material_Color$accent = _MichaelCombs28$elm_mdl$Material_Color$C('accent');
-var _MichaelCombs28$elm_mdl$Material_Color$accentContrast = _MichaelCombs28$elm_mdl$Material_Color$C('accent-contrast');
-
 var _MichaelCombs28$elm_mdl$Material_Elevation$transition = function (duration) {
 	return A2(
 		_MichaelCombs28$elm_mdl$Material_Options$css,
@@ -15416,6 +15036,248 @@ var _MichaelCombs28$elm_mdl$Material_List$ul = function (options) {
 		});
 };
 
+var _MichaelCombs28$elm_mdl$Material_Slider$floatVal = A2(
+	_elm_lang$core$Json_Decode$at,
+	{
+		ctor: '::',
+		_0: 'target',
+		_1: {
+			ctor: '::',
+			_0: 'valueAsNumber',
+			_1: {ctor: '[]'}
+		}
+	},
+	_elm_lang$core$Json_Decode$float);
+var _MichaelCombs28$elm_mdl$Material_Slider$onChange = function (l) {
+	return _MichaelCombs28$elm_mdl$Material_Options$set(
+		function (options) {
+			return _elm_lang$core$Native_Utils.update(
+				options,
+				{
+					listener: _elm_lang$core$Maybe$Just(l)
+				});
+		});
+};
+var _MichaelCombs28$elm_mdl$Material_Slider$disabled = _MichaelCombs28$elm_mdl$Material_Options$set(
+	function (options) {
+		return _elm_lang$core$Native_Utils.update(
+			options,
+			{disabled: true});
+	});
+var _MichaelCombs28$elm_mdl$Material_Slider$step = function (v) {
+	return _MichaelCombs28$elm_mdl$Material_Options$set(
+		function (options) {
+			return _elm_lang$core$Native_Utils.update(
+				options,
+				{step: v});
+		});
+};
+var _MichaelCombs28$elm_mdl$Material_Slider$max = function (v) {
+	return _MichaelCombs28$elm_mdl$Material_Options$set(
+		function (options) {
+			return _elm_lang$core$Native_Utils.update(
+				options,
+				{max: v});
+		});
+};
+var _MichaelCombs28$elm_mdl$Material_Slider$min = function (v) {
+	return _MichaelCombs28$elm_mdl$Material_Options$set(
+		function (options) {
+			return _elm_lang$core$Native_Utils.update(
+				options,
+				{min: v});
+		});
+};
+var _MichaelCombs28$elm_mdl$Material_Slider$value = function (v) {
+	return _MichaelCombs28$elm_mdl$Material_Options$set(
+		function (options) {
+			return _elm_lang$core$Native_Utils.update(
+				options,
+				{value: v});
+		});
+};
+var _MichaelCombs28$elm_mdl$Material_Slider$defaultConfig = {
+	value: 50,
+	min: 0,
+	max: 100,
+	step: 1,
+	listener: _elm_lang$core$Maybe$Nothing,
+	disabled: false,
+	inner: {ctor: '[]'}
+};
+var _MichaelCombs28$elm_mdl$Material_Slider$view = function (options) {
+	var summary = A2(_MichaelCombs28$elm_mdl$Material_Options$collect, _MichaelCombs28$elm_mdl$Material_Slider$defaultConfig, options);
+	var config = summary.config;
+	var fraction = (config.value - config.min) / (config.max - config.min);
+	var lower = A2(
+		_elm_lang$core$Basics_ops['++'],
+		_elm_lang$core$Basics$toString(fraction),
+		' 1 0%');
+	var upper = A2(
+		_elm_lang$core$Basics_ops['++'],
+		_elm_lang$core$Basics$toString(1 - fraction),
+		' 1 0%');
+	var background = A3(
+		_MichaelCombs28$elm_mdl$Material_Options$styled,
+		_elm_lang$html$Html$div,
+		{
+			ctor: '::',
+			_0: _MichaelCombs28$elm_mdl$Material_Options$cs('mdl-slider__background-flex'),
+			_1: {ctor: '[]'}
+		},
+		{
+			ctor: '::',
+			_0: A3(
+				_MichaelCombs28$elm_mdl$Material_Options$styled,
+				_elm_lang$html$Html$div,
+				{
+					ctor: '::',
+					_0: _MichaelCombs28$elm_mdl$Material_Options$cs('mdl-slider__background-lower'),
+					_1: {
+						ctor: '::',
+						_0: A2(_MichaelCombs28$elm_mdl$Material_Options$css, 'flex', lower),
+						_1: {ctor: '[]'}
+					}
+				},
+				{ctor: '[]'}),
+			_1: {
+				ctor: '::',
+				_0: A3(
+					_MichaelCombs28$elm_mdl$Material_Options$styled,
+					_elm_lang$html$Html$div,
+					{
+						ctor: '::',
+						_0: _MichaelCombs28$elm_mdl$Material_Options$cs('mdl-slider__background-upper'),
+						_1: {
+							ctor: '::',
+							_0: A2(_MichaelCombs28$elm_mdl$Material_Options$css, 'flex', upper),
+							_1: {ctor: '[]'}
+						}
+					},
+					{ctor: '[]'}),
+				_1: {ctor: '[]'}
+			}
+		});
+	var listeners = A2(
+		_elm_lang$core$Maybe$withDefault,
+		_MichaelCombs28$elm_mdl$Material_Options$nop,
+		A2(
+			_elm_lang$core$Maybe$map,
+			function (f) {
+				return _MichaelCombs28$elm_mdl$Material_Options$many(
+					A2(
+						_elm_lang$core$List$map,
+						_MichaelCombs28$elm_mdl$Material_Options_Internal$attribute,
+						{
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html_Events$on,
+								'change',
+								A2(_elm_lang$core$Json_Decode$map, f, _MichaelCombs28$elm_mdl$Material_Slider$floatVal)),
+							_1: {
+								ctor: '::',
+								_0: A2(
+									_elm_lang$html$Html_Events$on,
+									'input',
+									A2(_elm_lang$core$Json_Decode$map, f, _MichaelCombs28$elm_mdl$Material_Slider$floatVal)),
+								_1: {ctor: '[]'}
+							}
+						}));
+			},
+			config.listener));
+	return A5(
+		_MichaelCombs28$elm_mdl$Material_Options$apply,
+		summary,
+		_elm_lang$html$Html$div,
+		{
+			ctor: '::',
+			_0: _MichaelCombs28$elm_mdl$Material_Options$cs('mdl-slider__container'),
+			_1: {ctor: '[]'}
+		},
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: A4(
+				_MichaelCombs28$elm_mdl$Material_Options$styled_,
+				_elm_lang$html$Html$input,
+				{
+					ctor: '::',
+					_0: _MichaelCombs28$elm_mdl$Material_Options$cs('mdl-slider'),
+					_1: {
+						ctor: '::',
+						_0: _MichaelCombs28$elm_mdl$Material_Options$cs('mdl-js-slider'),
+						_1: {
+							ctor: '::',
+							_0: _MichaelCombs28$elm_mdl$Material_Options$cs('is-upgraded'),
+							_1: {
+								ctor: '::',
+								_0: A2(
+									_MichaelCombs28$elm_mdl$Material_Options$when,
+									_MichaelCombs28$elm_mdl$Material_Options$cs('is-lowest-value'),
+									_elm_lang$core$Native_Utils.eq(fraction, 0)),
+								_1: {
+									ctor: '::',
+									_0: listeners,
+									_1: {
+										ctor: '::',
+										_0: _MichaelCombs28$elm_mdl$Material_Options$disabled(config.disabled),
+										_1: {
+											ctor: '::',
+											_0: A2(_MichaelCombs28$elm_mdl$Material_Options$css, 'padding', '8px 0'),
+											_1: {
+												ctor: '::',
+												_0: _MichaelCombs28$elm_mdl$Material_Options$many(config.inner),
+												_1: {ctor: '[]'}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$type_('range'),
+					_1: {
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$max(
+							_elm_lang$core$Basics$toString(config.max)),
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$min(
+								_elm_lang$core$Basics$toString(config.min)),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$step(
+									_elm_lang$core$Basics$toString(config.step)),
+								_1: {
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$value(
+										_elm_lang$core$Basics$toString(config.value)),
+									_1: {
+										ctor: '::',
+										_0: _MichaelCombs28$elm_mdl$Material_Helpers$blurOn('mouseup'),
+										_1: {ctor: '[]'}
+									}
+								}
+							}
+						}
+					}
+				},
+				{ctor: '[]'}),
+			_1: {
+				ctor: '::',
+				_0: background,
+				_1: {ctor: '[]'}
+			}
+		});
+};
+var _MichaelCombs28$elm_mdl$Material_Slider$Config = F7(
+	function (a, b, c, d, e, f, g) {
+		return {value: a, min: b, max: c, step: d, listener: e, disabled: f, inner: g};
+	});
+
 var _NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode = _elm_lang$core$Json_Decode$succeed;
 var _NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$resolve = _elm_lang$core$Json_Decode$andThen(_elm_lang$core$Basics$identity);
 var _NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$custom = _elm_lang$core$Json_Decode$map2(
@@ -15565,6 +15427,175 @@ var _elm_lang$core$Date$Jan = {ctor: 'Jan'};
 var _elm_lang$html$Html_Lazy$lazy3 = _elm_lang$virtual_dom$VirtualDom$lazy3;
 var _elm_lang$html$Html_Lazy$lazy2 = _elm_lang$virtual_dom$VirtualDom$lazy2;
 var _elm_lang$html$Html_Lazy$lazy = _elm_lang$virtual_dom$VirtualDom$lazy;
+
+var _elm_lang$keyboard$Keyboard$onSelfMsg = F3(
+	function (router, _p0, state) {
+		var _p1 = _p0;
+		var _p2 = A2(_elm_lang$core$Dict$get, _p1.category, state);
+		if (_p2.ctor === 'Nothing') {
+			return _elm_lang$core$Task$succeed(state);
+		} else {
+			var send = function (tagger) {
+				return A2(
+					_elm_lang$core$Platform$sendToApp,
+					router,
+					tagger(_p1.keyCode));
+			};
+			return A2(
+				_elm_lang$core$Task$andThen,
+				function (_p3) {
+					return _elm_lang$core$Task$succeed(state);
+				},
+				_elm_lang$core$Task$sequence(
+					A2(_elm_lang$core$List$map, send, _p2._0.taggers)));
+		}
+	});
+var _elm_lang$keyboard$Keyboard_ops = _elm_lang$keyboard$Keyboard_ops || {};
+_elm_lang$keyboard$Keyboard_ops['&>'] = F2(
+	function (task1, task2) {
+		return A2(
+			_elm_lang$core$Task$andThen,
+			function (_p4) {
+				return task2;
+			},
+			task1);
+	});
+var _elm_lang$keyboard$Keyboard$init = _elm_lang$core$Task$succeed(_elm_lang$core$Dict$empty);
+var _elm_lang$keyboard$Keyboard$categorizeHelpHelp = F2(
+	function (value, maybeValues) {
+		var _p5 = maybeValues;
+		if (_p5.ctor === 'Nothing') {
+			return _elm_lang$core$Maybe$Just(
+				{
+					ctor: '::',
+					_0: value,
+					_1: {ctor: '[]'}
+				});
+		} else {
+			return _elm_lang$core$Maybe$Just(
+				{ctor: '::', _0: value, _1: _p5._0});
+		}
+	});
+var _elm_lang$keyboard$Keyboard$categorizeHelp = F2(
+	function (subs, subDict) {
+		categorizeHelp:
+		while (true) {
+			var _p6 = subs;
+			if (_p6.ctor === '[]') {
+				return subDict;
+			} else {
+				var _v4 = _p6._1,
+					_v5 = A3(
+					_elm_lang$core$Dict$update,
+					_p6._0._0,
+					_elm_lang$keyboard$Keyboard$categorizeHelpHelp(_p6._0._1),
+					subDict);
+				subs = _v4;
+				subDict = _v5;
+				continue categorizeHelp;
+			}
+		}
+	});
+var _elm_lang$keyboard$Keyboard$categorize = function (subs) {
+	return A2(_elm_lang$keyboard$Keyboard$categorizeHelp, subs, _elm_lang$core$Dict$empty);
+};
+var _elm_lang$keyboard$Keyboard$keyCode = A2(_elm_lang$core$Json_Decode$field, 'keyCode', _elm_lang$core$Json_Decode$int);
+var _elm_lang$keyboard$Keyboard$subscription = _elm_lang$core$Native_Platform.leaf('Keyboard');
+var _elm_lang$keyboard$Keyboard$Watcher = F2(
+	function (a, b) {
+		return {taggers: a, pid: b};
+	});
+var _elm_lang$keyboard$Keyboard$Msg = F2(
+	function (a, b) {
+		return {category: a, keyCode: b};
+	});
+var _elm_lang$keyboard$Keyboard$onEffects = F3(
+	function (router, newSubs, oldState) {
+		var rightStep = F3(
+			function (category, taggers, task) {
+				return A2(
+					_elm_lang$core$Task$andThen,
+					function (state) {
+						return A2(
+							_elm_lang$core$Task$andThen,
+							function (pid) {
+								return _elm_lang$core$Task$succeed(
+									A3(
+										_elm_lang$core$Dict$insert,
+										category,
+										A2(_elm_lang$keyboard$Keyboard$Watcher, taggers, pid),
+										state));
+							},
+							_elm_lang$core$Process$spawn(
+								A3(
+									_elm_lang$dom$Dom_LowLevel$onDocument,
+									category,
+									_elm_lang$keyboard$Keyboard$keyCode,
+									function (_p7) {
+										return A2(
+											_elm_lang$core$Platform$sendToSelf,
+											router,
+											A2(_elm_lang$keyboard$Keyboard$Msg, category, _p7));
+									})));
+					},
+					task);
+			});
+		var bothStep = F4(
+			function (category, _p8, taggers, task) {
+				var _p9 = _p8;
+				return A2(
+					_elm_lang$core$Task$map,
+					A2(
+						_elm_lang$core$Dict$insert,
+						category,
+						A2(_elm_lang$keyboard$Keyboard$Watcher, taggers, _p9.pid)),
+					task);
+			});
+		var leftStep = F3(
+			function (category, _p10, task) {
+				var _p11 = _p10;
+				return A2(
+					_elm_lang$keyboard$Keyboard_ops['&>'],
+					_elm_lang$core$Process$kill(_p11.pid),
+					task);
+			});
+		return A6(
+			_elm_lang$core$Dict$merge,
+			leftStep,
+			bothStep,
+			rightStep,
+			oldState,
+			_elm_lang$keyboard$Keyboard$categorize(newSubs),
+			_elm_lang$core$Task$succeed(_elm_lang$core$Dict$empty));
+	});
+var _elm_lang$keyboard$Keyboard$MySub = F2(
+	function (a, b) {
+		return {ctor: 'MySub', _0: a, _1: b};
+	});
+var _elm_lang$keyboard$Keyboard$presses = function (tagger) {
+	return _elm_lang$keyboard$Keyboard$subscription(
+		A2(_elm_lang$keyboard$Keyboard$MySub, 'keypress', tagger));
+};
+var _elm_lang$keyboard$Keyboard$downs = function (tagger) {
+	return _elm_lang$keyboard$Keyboard$subscription(
+		A2(_elm_lang$keyboard$Keyboard$MySub, 'keydown', tagger));
+};
+var _elm_lang$keyboard$Keyboard$ups = function (tagger) {
+	return _elm_lang$keyboard$Keyboard$subscription(
+		A2(_elm_lang$keyboard$Keyboard$MySub, 'keyup', tagger));
+};
+var _elm_lang$keyboard$Keyboard$subMap = F2(
+	function (func, _p12) {
+		var _p13 = _p12;
+		return A2(
+			_elm_lang$keyboard$Keyboard$MySub,
+			_p13._0,
+			function (_p14) {
+				return func(
+					_p13._1(_p14));
+			});
+	});
+_elm_lang$core$Native_Platform.effectManagers['Keyboard'] = {pkg: 'elm-lang/keyboard', init: _elm_lang$keyboard$Keyboard$init, onEffects: _elm_lang$keyboard$Keyboard$onEffects, onSelfMsg: _elm_lang$keyboard$Keyboard$onSelfMsg, tag: 'sub', subMap: _elm_lang$keyboard$Keyboard$subMap};
 
 var _elm_lang$svg$Svg$map = _elm_lang$virtual_dom$VirtualDom$map;
 var _elm_lang$svg$Svg$text = _elm_lang$virtual_dom$VirtualDom$text;
@@ -21751,7 +21782,15 @@ var _user$project$Sensors$SensorData = F9(
 		return {irDown: a, irFl: b, irFr: c, irBl: d, irBr: e, lidar: f, angleL: g, angleR: h, angleAvg: i};
 	});
 
-var _user$project$App$white = _MichaelCombs28$elm_mdl$Material_Color$text(_MichaelCombs28$elm_mdl$Material_Color$white);
+var _user$project$KeyCode$c = 67;
+var _user$project$KeyCode$r = 82;
+var _user$project$KeyCode$e = 69;
+var _user$project$KeyCode$q = 81;
+var _user$project$KeyCode$d = 68;
+var _user$project$KeyCode$s = 83;
+var _user$project$KeyCode$a = 65;
+var _user$project$KeyCode$w = 87;
+
 var _user$project$App$showMessage = function (str) {
 	return A2(
 		_MichaelCombs28$elm_mdl$Material_List$li,
@@ -21802,307 +21841,8 @@ var _user$project$App$Flags = function (a) {
 var _user$project$App$Mdl = function (a) {
 	return {ctor: 'Mdl', _0: a};
 };
-var _user$project$App$viewButtons = function (model) {
-	return A2(
-		_MichaelCombs28$elm_mdl$Material_Card$view,
-		{
-			ctor: '::',
-			_0: _MichaelCombs28$elm_mdl$Material_Elevation$e2,
-			_1: {ctor: '[]'}
-		},
-		{
-			ctor: '::',
-			_0: A2(
-				_MichaelCombs28$elm_mdl$Material_Card$title,
-				{ctor: '[]'},
-				{
-					ctor: '::',
-					_0: A2(
-						_MichaelCombs28$elm_mdl$Material_Card$head,
-						{ctor: '[]'},
-						{
-							ctor: '::',
-							_0: _elm_lang$html$Html$text('No joystick connected'),
-							_1: {ctor: '[]'}
-						}),
-					_1: {ctor: '[]'}
-				}),
-			_1: {
-				ctor: '::',
-				_0: A2(
-					_MichaelCombs28$elm_mdl$Material_Card$actions,
-					{
-						ctor: '::',
-						_0: _MichaelCombs28$elm_mdl$Material_Card$border,
-						_1: {ctor: '[]'}
-					},
-					{
-						ctor: '::',
-						_0: A2(
-							_MichaelCombs28$elm_mdl$Material_Options$div,
-							{ctor: '[]'},
-							{
-								ctor: '::',
-								_0: A5(
-									_MichaelCombs28$elm_mdl$Material_Button$render,
-									_user$project$App$Mdl,
-									{
-										ctor: '::',
-										_0: 2,
-										_1: {
-											ctor: '::',
-											_0: 0,
-											_1: {ctor: '[]'}
-										}
-									},
-									model.mdl,
-									{ctor: '[]'},
-									{
-										ctor: '::',
-										_0: _MichaelCombs28$elm_mdl$Material_Icon$i('gavel'),
-										_1: {ctor: '[]'}
-									}),
-								_1: {
-									ctor: '::',
-									_0: A5(
-										_MichaelCombs28$elm_mdl$Material_Button$render,
-										_user$project$App$Mdl,
-										{
-											ctor: '::',
-											_0: 2,
-											_1: {
-												ctor: '::',
-												_0: 1,
-												_1: {ctor: '[]'}
-											}
-										},
-										model.mdl,
-										{ctor: '[]'},
-										{
-											ctor: '::',
-											_0: _MichaelCombs28$elm_mdl$Material_Icon$i('keyboard_arrow_up'),
-											_1: {ctor: '[]'}
-										}),
-									_1: {
-										ctor: '::',
-										_0: A5(
-											_MichaelCombs28$elm_mdl$Material_Button$render,
-											_user$project$App$Mdl,
-											{
-												ctor: '::',
-												_0: 2,
-												_1: {
-													ctor: '::',
-													_0: 2,
-													_1: {ctor: '[]'}
-												}
-											},
-											model.mdl,
-											{ctor: '[]'},
-											{
-												ctor: '::',
-												_0: _MichaelCombs28$elm_mdl$Material_Icon$i('flight_takeoff'),
-												_1: {ctor: '[]'}
-											}),
-										_1: {ctor: '[]'}
-									}
-								}
-							}),
-						_1: {
-							ctor: '::',
-							_0: A2(
-								_MichaelCombs28$elm_mdl$Material_Options$div,
-								{ctor: '[]'},
-								{
-									ctor: '::',
-									_0: A5(
-										_MichaelCombs28$elm_mdl$Material_Button$render,
-										_user$project$App$Mdl,
-										{
-											ctor: '::',
-											_0: 2,
-											_1: {
-												ctor: '::',
-												_0: 3,
-												_1: {ctor: '[]'}
-											}
-										},
-										model.mdl,
-										{ctor: '[]'},
-										{
-											ctor: '::',
-											_0: _MichaelCombs28$elm_mdl$Material_Icon$i('keyboard_arrow_left'),
-											_1: {ctor: '[]'}
-										}),
-									_1: {
-										ctor: '::',
-										_0: A5(
-											_MichaelCombs28$elm_mdl$Material_Button$render,
-											_user$project$App$Mdl,
-											{
-												ctor: '::',
-												_0: 2,
-												_1: {
-													ctor: '::',
-													_0: 4,
-													_1: {ctor: '[]'}
-												}
-											},
-											model.mdl,
-											{ctor: '[]'},
-											{
-												ctor: '::',
-												_0: _MichaelCombs28$elm_mdl$Material_Icon$i('stop'),
-												_1: {ctor: '[]'}
-											}),
-										_1: {
-											ctor: '::',
-											_0: A5(
-												_MichaelCombs28$elm_mdl$Material_Button$render,
-												_user$project$App$Mdl,
-												{
-													ctor: '::',
-													_0: 2,
-													_1: {
-														ctor: '::',
-														_0: 5,
-														_1: {ctor: '[]'}
-													}
-												},
-												model.mdl,
-												{ctor: '[]'},
-												{
-													ctor: '::',
-													_0: _MichaelCombs28$elm_mdl$Material_Icon$i('keyboard_arrow_right'),
-													_1: {ctor: '[]'}
-												}),
-											_1: {ctor: '[]'}
-										}
-									}
-								}),
-							_1: {
-								ctor: '::',
-								_0: A2(
-									_MichaelCombs28$elm_mdl$Material_Options$div,
-									{ctor: '[]'},
-									{
-										ctor: '::',
-										_0: A5(
-											_MichaelCombs28$elm_mdl$Material_Button$render,
-											_user$project$App$Mdl,
-											{
-												ctor: '::',
-												_0: 2,
-												_1: {
-													ctor: '::',
-													_0: 6,
-													_1: {ctor: '[]'}
-												}
-											},
-											model.mdl,
-											{ctor: '[]'},
-											{
-												ctor: '::',
-												_0: _MichaelCombs28$elm_mdl$Material_Icon$i('rowing'),
-												_1: {ctor: '[]'}
-											}),
-										_1: {
-											ctor: '::',
-											_0: A5(
-												_MichaelCombs28$elm_mdl$Material_Button$render,
-												_user$project$App$Mdl,
-												{
-													ctor: '::',
-													_0: 2,
-													_1: {
-														ctor: '::',
-														_0: 7,
-														_1: {ctor: '[]'}
-													}
-												},
-												model.mdl,
-												{ctor: '[]'},
-												{
-													ctor: '::',
-													_0: _MichaelCombs28$elm_mdl$Material_Icon$i('keyboard_arrow_down'),
-													_1: {ctor: '[]'}
-												}),
-											_1: {
-												ctor: '::',
-												_0: A5(
-													_MichaelCombs28$elm_mdl$Material_Button$render,
-													_user$project$App$Mdl,
-													{
-														ctor: '::',
-														_0: 2,
-														_1: {
-															ctor: '::',
-															_0: 8,
-															_1: {ctor: '[]'}
-														}
-													},
-													model.mdl,
-													{ctor: '[]'},
-													{
-														ctor: '::',
-														_0: _MichaelCombs28$elm_mdl$Material_Icon$i('perm_data_setting'),
-														_1: {ctor: '[]'}
-													}),
-												_1: {ctor: '[]'}
-											}
-										}
-									}),
-								_1: {
-									ctor: '::',
-									_0: A5(
-										_MichaelCombs28$elm_mdl$Material_Button$render,
-										_user$project$App$Mdl,
-										{
-											ctor: '::',
-											_0: 2,
-											_1: {
-												ctor: '::',
-												_0: 9,
-												_1: {ctor: '[]'}
-											}
-										},
-										model.mdl,
-										{ctor: '[]'},
-										{
-											ctor: '::',
-											_0: _MichaelCombs28$elm_mdl$Material_Icon$i('subdirectory_arrow_right'),
-											_1: {ctor: '[]'}
-										}),
-									_1: {
-										ctor: '::',
-										_0: A5(
-											_MichaelCombs28$elm_mdl$Material_Button$render,
-											_user$project$App$Mdl,
-											{
-												ctor: '::',
-												_0: 2,
-												_1: {
-													ctor: '::',
-													_0: 10,
-													_1: {ctor: '[]'}
-												}
-											},
-											model.mdl,
-											{ctor: '[]'},
-											{
-												ctor: '::',
-												_0: _MichaelCombs28$elm_mdl$Material_Icon$i('subdirectory_arrow_left'),
-												_1: {ctor: '[]'}
-											}),
-										_1: {ctor: '[]'}
-									}
-								}
-							}
-						}
-					}),
-				_1: {ctor: '[]'}
-			}
-		});
+var _user$project$App$MoveSlider = function (a) {
+	return {ctor: 'MoveSlider', _0: a};
 };
 var _user$project$App$ToggleAuto = {ctor: 'ToggleAuto'};
 var _user$project$App$SendParameters = {ctor: 'SendParameters'};
@@ -22137,6 +21877,196 @@ var _user$project$App$createInputField = F3(
 				}
 			});
 	});
+var _user$project$App$SelectTab = function (a) {
+	return {ctor: 'SelectTab', _0: a};
+};
+var _user$project$App$SendControlToServer = function (a) {
+	return {ctor: 'SendControlToServer', _0: a};
+};
+var _user$project$App$UpdateControlDisplay = function (a) {
+	return {ctor: 'UpdateControlDisplay', _0: a};
+};
+var _user$project$App$AxisData = function (a) {
+	return {ctor: 'AxisData', _0: a};
+};
+var _user$project$App$viewButtons = function (model) {
+	var viewSlider = F3(
+		function (_p2, value, setter) {
+			var _p3 = _p2;
+			return _MichaelCombs28$elm_mdl$Material_Slider$view(
+				{
+					ctor: '::',
+					_0: _MichaelCombs28$elm_mdl$Material_Slider$onChange(
+						function (_p4) {
+							return _user$project$App$AxisData(
+								setter(_p4));
+						}),
+					_1: {
+						ctor: '::',
+						_0: _MichaelCombs28$elm_mdl$Material_Slider$value(value * 100),
+						_1: {
+							ctor: '::',
+							_0: _MichaelCombs28$elm_mdl$Material_Slider$min(_p3._0),
+							_1: {
+								ctor: '::',
+								_0: _MichaelCombs28$elm_mdl$Material_Slider$max(_p3._1),
+								_1: {ctor: '[]'}
+							}
+						}
+					}
+				});
+		});
+	var joy = model.joystick;
+	var setX = function (x) {
+		return _elm_lang$core$Native_Utils.update(
+			joy,
+			{x: x / 100});
+	};
+	var setY = function (y) {
+		return _elm_lang$core$Native_Utils.update(
+			joy,
+			{y: y / 100});
+	};
+	var setRot = function (rot) {
+		return _elm_lang$core$Native_Utils.update(
+			joy,
+			{rotation: rot / 100});
+	};
+	var setThrust = function (thrust) {
+		return _elm_lang$core$Native_Utils.update(
+			joy,
+			{thrust: thrust / 100});
+	};
+	return A2(
+		_MichaelCombs28$elm_mdl$Material_Card$view,
+		{
+			ctor: '::',
+			_0: _MichaelCombs28$elm_mdl$Material_Elevation$e2,
+			_1: {ctor: '[]'}
+		},
+		{
+			ctor: '::',
+			_0: A2(
+				_MichaelCombs28$elm_mdl$Material_Card$title,
+				{ctor: '[]'},
+				{
+					ctor: '::',
+					_0: A2(
+						_MichaelCombs28$elm_mdl$Material_Card$head,
+						{ctor: '[]'},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text('No joystick connected'),
+							_1: {ctor: '[]'}
+						}),
+					_1: {
+						ctor: '::',
+						_0: _elm_lang$html$Html$text('Set control values manually below'),
+						_1: {ctor: '[]'}
+					}
+				}),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_MichaelCombs28$elm_mdl$Material_Card$actions,
+					{
+						ctor: '::',
+						_0: _MichaelCombs28$elm_mdl$Material_Card$border,
+						_1: {ctor: '[]'}
+					},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html$text(
+							A2(
+								_elm_lang$core$Basics_ops['++'],
+								'X [A/D] ',
+								_elm_lang$core$Basics$toString(joy.x))),
+						_1: {
+							ctor: '::',
+							_0: A3(
+								viewSlider,
+								{ctor: '_Tuple2', _0: -100, _1: 100},
+								joy.x,
+								setX),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$html$Html$text(
+									A2(
+										_elm_lang$core$Basics_ops['++'],
+										'Y [W/S] ',
+										_elm_lang$core$Basics$toString(joy.y))),
+								_1: {
+									ctor: '::',
+									_0: A3(
+										viewSlider,
+										{ctor: '_Tuple2', _0: -100, _1: 100},
+										joy.y,
+										setY),
+									_1: {
+										ctor: '::',
+										_0: _elm_lang$html$Html$text(
+											A2(
+												_elm_lang$core$Basics_ops['++'],
+												'Rotation [Q/E] ',
+												_elm_lang$core$Basics$toString(joy.rotation))),
+										_1: {
+											ctor: '::',
+											_0: A3(
+												viewSlider,
+												{ctor: '_Tuple2', _0: -100, _1: 100},
+												joy.rotation,
+												setRot),
+											_1: {
+												ctor: '::',
+												_0: _elm_lang$html$Html$text(
+													A2(
+														_elm_lang$core$Basics_ops['++'],
+														'Thrust [R/C] ',
+														_elm_lang$core$Basics$toString(joy.thrust))),
+												_1: {
+													ctor: '::',
+													_0: A3(
+														viewSlider,
+														{ctor: '_Tuple2', _0: 0, _1: 100},
+														joy.thrust,
+														setThrust),
+													_1: {
+														ctor: '::',
+														_0: A5(
+															_MichaelCombs28$elm_mdl$Material_Button$render,
+															_user$project$App$Mdl,
+															{
+																ctor: '::',
+																_0: 0,
+																_1: {ctor: '[]'}
+															},
+															model.mdl,
+															{
+																ctor: '::',
+																_0: _MichaelCombs28$elm_mdl$Material_Button$onClick(
+																	_user$project$App$AxisData(
+																		A4(_user$project$Joystick$JoystickData, 0, 0, 0, 0))),
+																_1: {ctor: '[]'}
+															},
+															{
+																ctor: '::',
+																_0: _elm_lang$html$Html$text('Stop'),
+																_1: {ctor: '[]'}
+															}),
+														_1: {ctor: '[]'}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}),
+				_1: {ctor: '[]'}
+			}
+		});
+};
 var _user$project$App$viewControl = function (model) {
 	return {
 		ctor: '::',
@@ -22146,7 +22076,11 @@ var _user$project$App$viewControl = function (model) {
 			{
 				ctor: '::',
 				_0: 0,
-				_1: {ctor: '[]'}
+				_1: {
+					ctor: '::',
+					_0: 1,
+					_1: {ctor: '[]'}
+				}
 			},
 			model.mdl,
 			{
@@ -22261,18 +22195,6 @@ var _user$project$App$viewControl = function (model) {
 			_1: {ctor: '[]'}
 		}
 	};
-};
-var _user$project$App$SelectTab = function (a) {
-	return {ctor: 'SelectTab', _0: a};
-};
-var _user$project$App$SendControlToServer = function (a) {
-	return {ctor: 'SendControlToServer', _0: a};
-};
-var _user$project$App$UpdateControlDisplay = function (a) {
-	return {ctor: 'UpdateControlDisplay', _0: a};
-};
-var _user$project$App$AxisData = function (a) {
-	return {ctor: 'AxisData', _0: a};
 };
 var _user$project$App$GamepadDisconnected = function (a) {
 	return {ctor: 'GamepadDisconnected', _0: a};
@@ -22443,9 +22365,9 @@ var _user$project$App$view = function (model) {
 var _user$project$App$PhoenixMsg = function (a) {
 	return {ctor: 'PhoenixMsg', _0: a};
 };
-var _user$project$App$init = function (_p2) {
-	var _p3 = _p2;
-	var _p4 = A2(
+var _user$project$App$init = function (_p5) {
+	var _p6 = _p5;
+	var _p7 = A2(
 		_fbonetti$elm_phoenix_socket$Phoenix_Socket$join,
 		_fbonetti$elm_phoenix_socket$Phoenix_Channel$init('client'),
 		A4(
@@ -22458,9 +22380,9 @@ var _user$project$App$init = function (_p2) {
 					A2(
 						_elm_lang$core$Basics_ops['++'],
 						'ws://',
-						A2(_elm_lang$core$Basics_ops['++'], _p3.host, '/socket/websocket'))))));
-	var phxSocket = _p4._0;
-	var phxCmd = _p4._1;
+						A2(_elm_lang$core$Basics_ops['++'], _p6.host, '/socket/websocket'))))));
+	var phxSocket = _p7._0;
+	var phxCmd = _p7._1;
 	return A2(
 		_elm_lang$core$Platform_Cmd_ops['!'],
 		{
@@ -22501,7 +22423,11 @@ var _user$project$App$subscriptions = function (model) {
 							_1: {
 								ctor: '::',
 								_0: A2(_elm_lang$core$Time$every, _elm_lang$core$Time$millisecond * 500, _user$project$App$SendControlToServer),
-								_1: {ctor: '[]'}
+								_1: {
+									ctor: '::',
+									_0: _elm_lang$keyboard$Keyboard$downs(_user$project$App$MoveSlider),
+									_1: {ctor: '[]'}
+								}
 							}
 						}
 					}
@@ -22582,12 +22508,12 @@ var _user$project$App$chatMessageDecoder = _elm_lang$core$Json_Decode$oneOf(
 	});
 var _user$project$App$update = F2(
 	function (msg, model) {
-		var _p5 = msg;
-		switch (_p5.ctor) {
+		var _p8 = msg;
+		switch (_p8.ctor) {
 			case 'PhoenixMsg':
-				var _p6 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$update, _p5._0, model.phxSocket);
-				var phxSocket = _p6._0;
-				var phxCmd = _p6._1;
+				var _p9 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$update, _p8._0, model.phxSocket);
+				var phxSocket = _p9._0;
+				var phxCmd = _p9._1;
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
@@ -22596,11 +22522,11 @@ var _user$project$App$update = F2(
 					_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$App$PhoenixMsg, phxCmd)
 				};
 			case 'Mdl':
-				return A2(_MichaelCombs28$elm_mdl$Material$update, _p5._0, model);
+				return A2(_MichaelCombs28$elm_mdl$Material$update, _p8._0, model);
 			case 'ReceiveChatMessage':
-				var _p7 = A2(_elm_lang$core$Json_Decode$decodeValue, _user$project$App$chatMessageDecoder, _p5._0);
-				if (_p7.ctor === 'Ok') {
-					switch (_p7._0.ctor) {
+				var _p10 = A2(_elm_lang$core$Json_Decode$decodeValue, _user$project$App$chatMessageDecoder, _p8._0);
+				if (_p10.ctor === 'Ok') {
+					switch (_p10._0.ctor) {
 						case 'DebugMessage':
 							return {
 								ctor: '_Tuple2',
@@ -22610,25 +22536,25 @@ var _user$project$App$update = F2(
 										messages: A2(
 											_elm_lang$core$List$take,
 											30,
-											{ctor: '::', _0: _p7._0._0, _1: model.messages})
+											{ctor: '::', _0: _p10._0._0, _1: model.messages})
 									}),
 								_1: _elm_lang$core$Platform_Cmd$none
 							};
 						case 'AutoMessage':
-							var _p9 = _p7._0._0;
-							var _p8 = A2(_elm_lang$core$Debug$log, 'Auto mode set to ', _p9);
+							var _p12 = _p10._0._0;
+							var _p11 = A2(_elm_lang$core$Debug$log, 'Auto mode set to ', _p12);
 							return {
 								ctor: '_Tuple2',
 								_0: _elm_lang$core$Native_Utils.update(
 									model,
-									{autoMode: _p9}),
+									{autoMode: _p12}),
 								_1: _elm_lang$core$Platform_Cmd$none
 							};
 						default:
 							var newData = A2(
 								_elm_lang$core$List$take,
 								5 * _user$project$Sensors$sensorMessagesPerSecond,
-								{ctor: '::', _0: _p7._0._0, _1: model.sensorData});
+								{ctor: '::', _0: _p10._0._0, _1: model.sensorData});
 							return {
 								ctor: '_Tuple2',
 								_0: _elm_lang$core$Native_Utils.update(
@@ -22645,17 +22571,17 @@ var _user$project$App$update = F2(
 					_elm_lang$core$Platform_Cmd_ops['!'],
 					_elm_lang$core$Native_Utils.update(
 						model,
-						{currentMessage: _p5._0}),
+						{currentMessage: _p8._0}),
 					{ctor: '[]'});
 			case 'UpdateControlDisplay':
-				var _p10 = model.joystickIndex;
-				if (_p10.ctor === 'Nothing') {
+				var _p13 = model.joystickIndex;
+				if (_p13.ctor === 'Nothing') {
 					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 				} else {
 					return {
 						ctor: '_Tuple2',
 						_0: model,
-						_1: _user$project$Joystick$poll(_p10._0)
+						_1: _user$project$Joystick$poll(_p13._0)
 					};
 				}
 			case 'SendControlToServer':
@@ -22697,9 +22623,9 @@ var _user$project$App$update = F2(
 					_fbonetti$elm_phoenix_socket$Phoenix_Push$withPayload,
 					payload,
 					A2(_fbonetti$elm_phoenix_socket$Phoenix_Push$init, 'joystick', 'client'));
-				var _p11 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$push, push, model.phxSocket);
-				var phxSocket = _p11._0;
-				var phxCmd = _p11._1;
+				var _p14 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$push, push, model.phxSocket);
+				var phxSocket = _p14._0;
+				var phxCmd = _p14._1;
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
@@ -22713,13 +22639,13 @@ var _user$project$App$update = F2(
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
 						{
-							joystickIndex: _elm_lang$core$Maybe$Just(_p5._0)
+							joystickIndex: _elm_lang$core$Maybe$Just(_p8._0)
 						}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'GamepadDisconnected':
 				return _elm_lang$core$Native_Utils.eq(
-					_elm_lang$core$Maybe$Just(_p5._0),
+					_elm_lang$core$Maybe$Just(_p8._0),
 					model.joystickIndex) ? {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
@@ -22732,7 +22658,7 @@ var _user$project$App$update = F2(
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
-						{joystick: _p5._0}),
+						{joystick: _p8._0}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'SendMessage':
@@ -22750,9 +22676,9 @@ var _user$project$App$update = F2(
 					_fbonetti$elm_phoenix_socket$Phoenix_Push$withPayload,
 					payload,
 					A2(_fbonetti$elm_phoenix_socket$Phoenix_Push$init, 'new_msg', 'client'));
-				var _p12 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$push, push, model.phxSocket);
-				var phxSocket = _p12._0;
-				var phxCmd = _p12._1;
+				var _p15 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$push, push, model.phxSocket);
+				var phxSocket = _p15._0;
+				var phxCmd = _p15._1;
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
@@ -22765,15 +22691,15 @@ var _user$project$App$update = F2(
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
-						{selectedTab: _p5._0}),
+						{selectedTab: _p8._0}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'ChangeParameter':
-				var _p15 = _p5._0;
-				var _p13 = _elm_lang$core$String$toFloat(_p5._1);
-				if (_p13.ctor === 'Err') {
-					var newParameters = A2(_elm_lang$core$Dict$remove, _p15, model.parameters);
-					var _p14 = A2(_elm_lang$core$Debug$log, 'ERROR Could not parse text field value as float: ', _p13._0);
+				var _p18 = _p8._0;
+				var _p16 = _elm_lang$core$String$toFloat(_p8._1);
+				if (_p16.ctor === 'Err') {
+					var newParameters = A2(_elm_lang$core$Dict$remove, _p18, model.parameters);
+					var _p17 = A2(_elm_lang$core$Debug$log, 'ERROR Could not parse text field value as float: ', _p16._0);
 					return {
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
@@ -22782,7 +22708,7 @@ var _user$project$App$update = F2(
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				} else {
-					var newParameters = A3(_elm_lang$core$Dict$insert, _p15, _p13._0, model.parameters);
+					var newParameters = A3(_elm_lang$core$Dict$insert, _p18, _p16._0, model.parameters);
 					return {
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
@@ -22795,12 +22721,12 @@ var _user$project$App$update = F2(
 				var payload = _elm_lang$core$Json_Encode$object(
 					A2(
 						_elm_lang$core$List$map,
-						function (_p16) {
-							var _p17 = _p16;
+						function (_p19) {
+							var _p20 = _p19;
 							return {
 								ctor: '_Tuple2',
-								_0: _p17._0,
-								_1: _elm_lang$core$Json_Encode$float(_p17._1)
+								_0: _p20._0,
+								_1: _elm_lang$core$Json_Encode$float(_p20._1)
 							};
 						},
 						_elm_lang$core$Dict$toList(model.parameters)));
@@ -22808,9 +22734,9 @@ var _user$project$App$update = F2(
 					_fbonetti$elm_phoenix_socket$Phoenix_Push$withPayload,
 					payload,
 					A2(_fbonetti$elm_phoenix_socket$Phoenix_Push$init, 'joystick', 'client'));
-				var _p18 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$push, push, model.phxSocket);
-				var phxSocket = _p18._0;
-				var phxCmd = _p18._1;
+				var _p21 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$push, push, model.phxSocket);
+				var phxSocket = _p21._0;
+				var phxCmd = _p21._1;
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
@@ -22818,7 +22744,7 @@ var _user$project$App$update = F2(
 						{phxSocket: phxSocket}),
 					_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$App$PhoenixMsg, phxCmd)
 				};
-			default:
+			case 'ToggleAuto':
 				var payload = _elm_lang$core$Json_Encode$object(
 					{
 						ctor: '::',
@@ -22833,15 +22759,67 @@ var _user$project$App$update = F2(
 					_fbonetti$elm_phoenix_socket$Phoenix_Push$withPayload,
 					payload,
 					A2(_fbonetti$elm_phoenix_socket$Phoenix_Push$init, 'joystick', 'client'));
-				var _p19 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$push, push, model.phxSocket);
-				var phxSocket = _p19._0;
-				var phxCmd = _p19._1;
+				var _p22 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$push, push, model.phxSocket);
+				var phxSocket = _p22._0;
+				var phxCmd = _p22._1;
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
 						{autoMode: !model.autoMode, phxSocket: phxSocket}),
 					_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$App$PhoenixMsg, phxCmd)
+				};
+			default:
+				var _p27 = _p8._0;
+				var joy = model.joystick;
+				var keyDiff = F2(
+					function (decKey, incKey) {
+						return _elm_lang$core$Native_Utils.eq(_p27, decKey) ? -10 : (_elm_lang$core$Native_Utils.eq(_p27, incKey) ? 10 : 0);
+					});
+				var slide = F3(
+					function (_p24, oldv, _p23) {
+						var _p25 = _p24;
+						var _p26 = _p23;
+						return function (v) {
+							return v / 100;
+						}(
+							A3(
+								_elm_lang$core$Basics$clamp,
+								_p25._0 * 100,
+								_p25._1 * 100,
+								(oldv * 100) + A2(keyDiff, _p26._0, _p26._1)));
+					});
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							joystick: _elm_lang$core$Native_Utils.update(
+								joy,
+								{
+									x: A3(
+										slide,
+										{ctor: '_Tuple2', _0: -1, _1: 1},
+										joy.x,
+										{ctor: '_Tuple2', _0: _user$project$KeyCode$a, _1: _user$project$KeyCode$d}),
+									y: A3(
+										slide,
+										{ctor: '_Tuple2', _0: -1, _1: 1},
+										joy.y,
+										{ctor: '_Tuple2', _0: _user$project$KeyCode$s, _1: _user$project$KeyCode$w}),
+									rotation: A3(
+										slide,
+										{ctor: '_Tuple2', _0: -1, _1: 1},
+										joy.rotation,
+										{ctor: '_Tuple2', _0: _user$project$KeyCode$q, _1: _user$project$KeyCode$e}),
+									thrust: A3(
+										slide,
+										{ctor: '_Tuple2', _0: 0, _1: 1},
+										joy.thrust,
+										{ctor: '_Tuple2', _0: _user$project$KeyCode$c, _1: _user$project$KeyCode$r})
+								})
+						}),
+					_1: _elm_lang$core$Platform_Cmd$none
 				};
 		}
 	});

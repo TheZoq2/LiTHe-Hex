@@ -11,22 +11,22 @@ import Time exposing (Time, millisecond)
 import Dict exposing (Dict)
 import String
 import Debug
+import Keyboard
 import Phoenix.Socket exposing (Socket)
 import Phoenix.Channel
 import Phoenix.Push
 import Material
 import Material.Elevation as Elevation
-import Material.Icon as Icon
-import Material.Color as Color
-import Material.Options as Options
 import Material.Textfield as Textfield
 import Material.List as Lists
 import Material.Button as Button
 import Material.Card as Card
 import Material.Toggles as Toggles
+import Material.Slider as Slider
 import Material.Layout as Layout
 import Joystick
 import Sensors
+import KeyCode as KC
 
 
 {-
@@ -67,6 +67,7 @@ type Msg
     | ChangeParameter PIDParameter String
     | SendParameters
     | ToggleAuto
+    | MoveSlider Keyboard.KeyCode
     | Mdl (Material.Msg Msg)
 
 
@@ -320,6 +321,36 @@ update msg model =
                 , Cmd.map PhoenixMsg phxCmd
                 )
 
+        MoveSlider keyCode ->
+            let
+                keyDiff decKey incKey =
+                    if keyCode == decKey then
+                        -10
+                    else if keyCode == incKey then
+                        10
+                    else
+                        0
+
+                joy =
+                    model.joystick
+
+                slide ( minv, maxv ) oldv ( decKey, incKey ) =
+                    (oldv * 100) + keyDiff decKey incKey
+                        |> clamp (minv * 100) (maxv * 100)
+                        |> \v -> v / 100
+            in
+                ( { model
+                    | joystick =
+                        { joy
+                            | x = slide ( -1, 1 ) joy.x ( KC.a, KC.d )
+                            , y = slide ( -1, 1 ) joy.y ( KC.s, KC.w )
+                            , rotation = slide ( -1, 1 ) joy.rotation ( KC.q, KC.e )
+                            , thrust = slide ( 0, 1 ) joy.thrust ( KC.c, KC.r )
+                        }
+                  }
+                , Cmd.none
+                )
+
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
@@ -329,6 +360,7 @@ subscriptions model =
     , Joystick.disconnected GamepadDisconnected
     , Time.every (millisecond * 10) UpdateControlDisplay
     , Time.every (millisecond * 500) SendControlToServer
+    , Keyboard.downs MoveSlider
     ]
         |> Sub.batch
 
@@ -344,11 +376,6 @@ showMessage str =
 messageList : List String -> Html a
 messageList messages =
     Lists.ul [] <| List.map showMessage messages
-
-
-white : Options.Property c m
-white =
-    Color.text Color.white
 
 
 view : Model -> Html Msg
@@ -384,78 +411,60 @@ createInputField model idx ( desc, field ) =
 
 viewButtons : Model -> Html Msg
 viewButtons model =
-    Card.view [ Elevation.e2 ]
-        [ Card.title [] [ Card.head [] [ text "No joystick connected" ] ]
-        , Card.actions [ Card.border ]
-            [ Options.div []
-                [ Button.render Mdl
-                    [ 2, 0 ]
-                    model.mdl
-                    []
-                    [ Icon.i "gavel" ]
-                , Button.render Mdl
-                    [ 2, 1 ]
-                    model.mdl
-                    []
-                    [ Icon.i "keyboard_arrow_up" ]
-                , Button.render Mdl
-                    [ 2, 2 ]
-                    model.mdl
-                    []
-                    [ Icon.i "flight_takeoff" ]
+    let
+        joy =
+            model.joystick
+
+        setX x =
+            { joy | x = x / 100 }
+
+        setY y =
+            { joy | y = y / 100 }
+
+        setRot rot =
+            { joy | rotation = rot / 100 }
+
+        setThrust thrust =
+            { joy | thrust = thrust / 100 }
+
+        viewSlider ( min, max ) value setter =
+            Slider.view
+                [ Slider.onChange (setter >> AxisData)
+                , Slider.value (value * 100)
+                , Slider.min min
+                , Slider.max max
                 ]
-            , Options.div []
-                [ Button.render Mdl
-                    [ 2, 3 ]
-                    model.mdl
-                    []
-                    [ Icon.i "keyboard_arrow_left" ]
-                , Button.render Mdl
-                    [ 2, 4 ]
-                    model.mdl
-                    []
-                    [ Icon.i "stop" ]
-                , Button.render Mdl
-                    [ 2, 5 ]
-                    model.mdl
-                    []
-                    [ Icon.i "keyboard_arrow_right" ]
+    in
+        Card.view [ Elevation.e2 ]
+            [ Card.title []
+                [ Card.head [] [ text "No joystick connected" ]
+                , text "Set control values manually below"
                 ]
-            , Options.div []
-                [ Button.render Mdl
-                    [ 2, 6 ]
-                    model.mdl
-                    []
-                    [ Icon.i "rowing" ]
+            , Card.actions [ Card.border ]
+                [ text ("X [A/D] " ++ toString joy.x)
+                , viewSlider ( -100, 100 ) joy.x setX
+                , text ("Y [W/S] " ++ toString joy.y)
+                , viewSlider ( -100, 100 ) joy.y setY
+                , text ("Rotation [Q/E] " ++ toString joy.rotation)
+                , viewSlider ( -100, 100 ) joy.rotation setRot
+                , text ("Thrust [R/C] " ++ toString joy.thrust)
+                , viewSlider ( 0, 100 ) joy.thrust setThrust
                 , Button.render Mdl
-                    [ 2, 7 ]
+                    [ 0 ]
                     model.mdl
-                    []
-                    [ Icon.i "keyboard_arrow_down" ]
-                , Button.render Mdl
-                    [ 2, 8 ]
-                    model.mdl
-                    []
-                    [ Icon.i "perm_data_setting" ]
+                    [ Joystick.JoystickData 0 0 0 0
+                        |> AxisData
+                        |> Button.onClick
+                    ]
+                    [ text "Stop" ]
                 ]
-            , Button.render Mdl
-                [ 2, 9 ]
-                model.mdl
-                []
-                [ Icon.i "subdirectory_arrow_right" ]
-            , Button.render Mdl
-                [ 2, 10 ]
-                model.mdl
-                []
-                [ Icon.i "subdirectory_arrow_left" ]
             ]
-        ]
 
 
 viewControl : Model -> List (Html Msg)
 viewControl model =
     [ Toggles.switch Mdl
-        [ 0 ]
+        [ 0, 1 ]
         model.mdl
         [ Toggles.onClick ToggleAuto
         , Toggles.value model.autoMode
