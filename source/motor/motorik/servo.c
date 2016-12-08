@@ -104,7 +104,7 @@ ServoReply read_servo_data(uint8_t id, uint8_t address, uint8_t length)
 {
 	spi_set_interrupts(false);
 	//Send datarequest instruction
-	uint8_t* new_data = (uint8_t*)malloc(2);
+	uint8_t new_data[2];
 
 	new_data[0] = address;
 	new_data[1] = length;
@@ -112,8 +112,6 @@ ServoReply read_servo_data(uint8_t id, uint8_t address, uint8_t length)
 	//_delay_us(25);
 
 	send_servo_command(id, READ_DATA_INSTRUCTION, (void*)new_data, 2);
-
-	free(new_data);
 
 	ServoReply reply = receive_servo_reply();
 	spi_set_interrupts(true);
@@ -192,7 +190,7 @@ ServoReply receive_servo_reply()
 
 	if(servo_reply.error != 0)
 	{
-		goto failiure;
+		goto failure;
 	}
 
 	servo_reply.parameters = (uint8_t*) malloc(sizeof(uint8_t) * servo_reply.parameter_amount);
@@ -205,7 +203,7 @@ ServoReply receive_servo_reply()
 	//TODO: Check the checksum
 	servo_reply.checksum = usart_receive();
 
-failiure:
+failure:
 	//Reset the tri-state gate
 	clear_bit(PORTD, PIN_RX_TOGGLE);
 	usart_set_direction(TX);

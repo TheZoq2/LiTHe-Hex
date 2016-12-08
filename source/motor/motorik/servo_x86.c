@@ -2,6 +2,10 @@
 
 #include <stdio.h>
 
+#ifndef SHOULD_PRINT
+	#define printf
+#endif
+
 #define STATE_IN_FILENAME "/tmp/hexsim/servo_states"
 
 char read_simulator_servo_state(uint8_t id)
