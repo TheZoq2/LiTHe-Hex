@@ -1,10 +1,6 @@
 #include "spi.h"
 #include <stdio.h>
 
-#ifndef SHOULD_PRINT
-	#define printf
-#endif
-
 void spi_init()
 {
 

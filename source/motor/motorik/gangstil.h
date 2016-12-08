@@ -112,7 +112,7 @@ void assume_standardized_stance(Point2D * current);
 /**
 	Raises the body into the default position as defined by get_default_leg_postion()
 */
-void raise_to_default_position(Point2D* current_position);
+Point2D* raise_to_default_position();
 
 Point2D get_leg_position_from_radius
 			(size_t leg, float distance_from_body, float outer_leg_x_offset);

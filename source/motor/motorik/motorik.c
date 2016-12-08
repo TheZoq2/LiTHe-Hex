@@ -91,12 +91,9 @@ int main(void)
 
 	//Initialize all legs
 	
-	Point2D current_position[NUM_LEGS];
-	raise_to_default_position(current_position);
+	Point2D* current_position = raise_to_default_position();
 
 	spi_set_interrupts(true);
-
-
 	
 	
 #ifndef IS_X86
@@ -138,6 +135,8 @@ int main(void)
 		Point2D goal;
 		goal.x = 1;
 		goal.y = 0;
+
+		printf("Walking one step\n\n\n\n");
 
 		work_towards_goal(0, goal, current_position);
 	}

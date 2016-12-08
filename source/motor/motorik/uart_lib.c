@@ -1,9 +1,4 @@
 #include "uart_lib.h"
-
-#ifndef SHOULD_PRINT
-	#define printf
-#endif
-
 #ifndef IS_X86
 	void usart_init()
 	{

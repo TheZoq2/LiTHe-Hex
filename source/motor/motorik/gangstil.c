@@ -155,7 +155,8 @@ Point2D robot_to_ik_coords(Point2D original, size_t leg)
  * @return array ordered LF RF LM RM LB RB (left/right - front/mid/back) of calculated 
  * angles for the legs.
  */
-void get_angle_set(Point2D * target, float * height, struct Leg* res){
+struct Leg* get_angle_set(Point2D * target, float * height){
+    struct Leg* res = (struct Leg *)malloc(NUM_LEGS * sizeof(struct Leg));
     for (size_t leg = 0; leg < NUM_LEGS; ++leg){
 		Point2D target_robot_coords = robot_to_ik_coords(target[leg], leg);
 
@@ -184,8 +185,7 @@ int radian_to_servo(float radian_angle)
  * intended final placement of feet relative to the mounts of their joints.
  */
 void execute_position(Point2D * target, float * z){
-	struct Leg ik[NUM_LEGS];
-    get_angle_set(target, z, ik);
+    struct Leg* ik = get_angle_set(target, z);
 
     uint16_t angles[3];
     uint8_t legId;
@@ -216,6 +216,8 @@ void execute_position(Point2D * target, float * z){
 #ifdef IS_X86
 	write_current_state();
 #endif
+
+	free(ik);
 }
 
 
@@ -673,12 +675,13 @@ void assume_standardized_stance(Point2D * current){
 
 //Again, Frans, please document your code. 
 //no u
-void raise_to_default_position(Point2D* current_leg_positions)
+Point2D* raise_to_default_position()
 {
 	//The position of the foot above the body when spreading the legs
 	const float HEIGHT_ABOVE_BODY = 0.03;
 	
 	//Allocate memory for current positions
+	Point2D* current_leg_positions = malloc(NUM_LEGS * sizeof(Point2D));
 
 	//The current height above the body for all the legs
 	float height[NUM_LEGS];
@@ -701,6 +704,8 @@ void raise_to_default_position(Point2D* current_leg_positions)
 	}
 
 	assume_standardized_stance(current_leg_positions);
+
+	return current_leg_positions;
 }
 
 /**
@@ -720,6 +725,8 @@ void raise_to_default_position(Point2D* current_leg_positions)
 float work_towards_goal(float rot, Point2D goal, Point2D * current){
     Point2D targ0[NUM_LEGS];
     Point2D targ1[NUM_LEGS];
+
+	printf("Working towards goal \n");
 
     float scale[NUM_LEGS];
     direct_legs(rot, targ0, current, goal, true);
