@@ -6,6 +6,7 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
+#include "spi.h"
 #endif
 
 const uint8_t READ_DATA_INSTRUCTION = 0x02;
@@ -45,6 +46,7 @@ const uint8_t SERVO_MAP[6][3] = {
 
 void send_servo_command(uint8_t id, uint8_t instruction, void* data, uint8_t data_amount)
 {
+	spi_set_interrupts(false);
 	//Set the direction of the tristate gate
 	//clear_bit(PORTD, PIN_RX_TOGGLE);
 
@@ -71,6 +73,8 @@ void send_servo_command(uint8_t id, uint8_t instruction, void* data, uint8_t dat
 	usart_transmit(checksum);
 	
 	uart_wait();
+	
+	spi_set_interrupts(true);
 	
 	//Reset the direction of the tristate gate
 	//set_bit(PORTD, PIN_RX_TOGGLE);
@@ -155,6 +159,7 @@ void write_servo_single_byte(uint8_t id, uint8_t address, uint8_t value)
 
 ServoReply receive_servo_reply()
 {
+	spi_set_interrupts(false);
 	//Switch the direction of the tri-state gate
 	set_bit(PORTD, PIN_RX_TOGGLE);
 	usart_set_direction(RX);
@@ -195,6 +200,9 @@ failiure:
 
 
 	_delay_ms(5);
+	
+	spi_set_interrupts(true);
+	
 	return servo_reply;
 }
 void free_servo_reply(ServoReply reply)
