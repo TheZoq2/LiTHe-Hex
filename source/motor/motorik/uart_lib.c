@@ -9,7 +9,7 @@
 		//Enable receive + transmit
 		UCSR0B = (1<<TXEN0);
 		//Set frame format (1 start bit, 8 bit frames, no parity bits)
-		UCSR0C = (0<<USBS0)|(3<<UCSZ00);
+		UCSR0C = (3<<UCSZ00);
 	}
 
 	void usart_set_direction(enum UsartDirection direction)

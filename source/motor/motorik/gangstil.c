@@ -640,7 +640,8 @@ void assume_standardized_stance(Point2D * current){
 }
 
 
-//Again, Frans, please document your code.
+//Again, Frans, please document your code. 
+//no u
 Point2D* raise_to_default_position()
 {
 	//The position of the foot above the body when spreading the legs
@@ -664,11 +665,10 @@ Point2D* raise_to_default_position()
 	{
 		for(size_t leg_id = 0; leg_id < NUM_LEGS; ++leg_id)
 		{
-			height[leg_id] = heights[leg_id];
+			height[leg_id] = heights[i];
 		}
 		execute_position(current_leg_positions, height);
 	}
-	execute_position(current_leg_positions, height);
 
 	assume_standardized_stance(current_leg_positions);
 
