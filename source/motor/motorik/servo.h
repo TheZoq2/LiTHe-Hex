@@ -49,7 +49,7 @@ typedef struct
 	bool is_error;
 	uint8_t error;
 	uint16_t result;
-} uint16_reply;
+} Uint16Result;
 
 /*
 	Struct that contains a response from a servo. 

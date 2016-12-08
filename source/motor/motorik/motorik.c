@@ -46,15 +46,6 @@ ISR(SPI_STC_vect) {
 }
 #endif
 
-
-void test_servo_communication()
-{
-	//Read internal temperature from servo 1
-	ServoReply reply = read_servo_data(1, 0x2B, 1);
-
-	int a = 0;
-}
-
 int main(void)
 {
     CurrentStatus status;

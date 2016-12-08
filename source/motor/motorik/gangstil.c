@@ -145,6 +145,9 @@ Point2D robot_to_ik_coords(Point2D original, size_t leg)
 	{
 		return rotate_point_by_angle(result, -3 * M_PI / 4);
 	}
+
+	printf("robot_to_ik coords got an invalid leg %u\n", leg);
+	return original;
 }
 
 
