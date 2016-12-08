@@ -159,6 +159,26 @@ START_TEST (coordinate_conversion_tests)
 }
 END_TEST
 
+START_TEST (gangstil_test)
+{
+	Point2D test_point;
+	test_point.x = 1;
+	test_point.y = 1;
+	Point2D test_point2;
+	test_point2.x = 2;
+	test_point2.y = 1;
+
+	Point2D result = vector_between_points(test_point, test_point2);
+
+	ck_assert(float_is_almost(result.x, 1));
+	ck_assert(float_is_almost(result.y, 0));
+
+	result = divide_point2D(test_point, 3);
+	ck_assert(float_is_almost(result.x, 0.33333));
+	ck_assert(float_is_almost(result.y, 0.33333));
+}
+END_TEST
+
 
 Suite * motor_suite(void)
 {

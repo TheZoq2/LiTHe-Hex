@@ -220,6 +220,37 @@ void execute_position(Point2D * target, float * z){
 
 
 /**
+	Returns a vector of the distance between 2 point2d objects
+ */
+Point2D vector_between_points(Point2D current, Point2D target)
+{
+	Point2D result;
+
+	result.x = target.x - current.x;
+	result.y = target.y - current.y;
+
+	return result;
+}
+
+Point2D divide_point2D(Point2D vector, float divisor)
+{
+	Point2D result;
+	result.x = vector.x/divisor;
+	result.y = vector.y/divisor;
+
+	return result;
+}
+
+Point2D add_point2D(Point2D point1, Point2D point2)
+{
+	Point2D result;
+	result.x = point1.x + point2.x;
+	result.y = point1.y + point2.y;
+	return result;
+}
+
+
+/**
  * @brief execute_step adjusts legs as appropriate to transition from one position to
  * another, as executable in a single step.
  * @param current position legs are in at start of function call. Is set to passed
@@ -248,28 +279,30 @@ void execute_step(Point2D * current, Point2D * target, bool lrlRaised){
         z[RB] = GROUNDED + HIGH;
     }
 
-	//execute_position(current, z);
-	execute_position(target, z);
+	const uint8_t STEP_AMOUNT = 3;
+
+	Point2D intermediate_positions[NUM_LEGS];
+	Point2D step_lengths[NUM_LEGS];
+    for (size_t leg = 0; leg < NUM_LEGS; ++leg) 
+	{
+		intermediate_positions[leg] = current[leg];
+
+		Point2D difference = vector_between_points(current[leg], target[leg]);
+		step_lengths[leg] = divide_point2D(difference, STEP_AMOUNT);
+	}
+	
+
+	for(uint8_t step = 0; step < STEP_AMOUNT; step++)
+	{
+		for (size_t leg = 0; leg < NUM_LEGS; ++leg) 
+		{
+			intermediate_positions[leg] = 
+				add_point2D(intermediate_positions[leg], step_lengths[leg]);
+		}
+		execute_position(intermediate_positions, z);
+	}
 
 
-	/*
-    Point2D transition[NUM_LEGS];
-    Point2D diff[NUM_LEGS];
-    for (size_t leg = 0; leg < NUM_LEGS; ++leg) {
-        diff[leg].x = target[leg].x - current[leg].x;
-        diff[leg].y = target[leg].y - current[leg].y;
-    }
-
-    for (int i = 0; i <= SMOOTH_STEP_ITERATIONS; ++i) {     //smooth transition when stepping
-
-        for (size_t leg = 0; leg < NUM_LEGS; ++leg) {
-            transition[leg].x = current[leg].x + (transition[leg].x * i / SMOOTH_STEP_ITERATIONS);
-            transition[leg].y = current[leg].y + (transition[leg].y * i / SMOOTH_STEP_ITERATIONS);
-        }
-
-        execute_position(transition, z);
-    }
-	*/
 
     z[LF] = GROUNDED;
     z[RM] = GROUNDED;
@@ -695,7 +728,7 @@ float work_towards_goal(float rot, Point2D goal, Point2D * current){
     direct_legs(rot, targ1, current, goal, false);
     float scaledown1 = scale_legs(targ1, current, scale, false);
 
-    float bestscale = maxf(scaledown0, scaledown1);
+    float bestscale = 0.9 * maxf(scaledown0, scaledown1);
     if (bestscale < 0.001){
     	return bestscale; //too little movement to be relevant executing
     }

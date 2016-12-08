@@ -135,7 +135,8 @@ struct CurrentServoState
 struct CurrentServoState current_servo_state;
 
 void write_current_state();
-
+Point2D divide_point2D(Point2D vector, float divisor);
+Point2D vector_between_points(Point2D current, Point2D target);
 #endif
 
 

@@ -15,7 +15,7 @@ build:
 		${SOURCES} ${SOURCES_AVR} ${SOURCES_MAIN} -DF_CPU=16000000
 
 x86:
-	gcc ${SOURCES} ${SOURCES_MAIN} ${SOURCES_X86} -DIS_X86 -Wall -lm -g
+	gcc ${SOURCES} ${SOURCES_MAIN} ${SOURCES_X86} -DIS_X86 -Wall -lm -g -DSHOULD_PRINT
 
 test:
 	make x86
@@ -23,7 +23,7 @@ test:
 
 unit:
 	gcc ${SOURCES} ${SOURCES_X86} ${SOURCES_UNIT} -DIS_X86 -Wall -lm -g -lcheck \
-		-o unit_tests -DIS_UNIT_TEST -DCK_FORK=no
+		-o unit_tests -DIS_UNIT_TEST -DCK_FORK=no -DSHOULD_PRINT
 	./unit_tests
 
 #avr-objcopy -j .text -j .data -O ihex src.elf src.hex
