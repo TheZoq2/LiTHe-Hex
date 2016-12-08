@@ -133,10 +133,10 @@ int main(void)
 	for(uint8_t i = 0; i < 40; ++i)
 	{
 		Point2D goal;
-		goal.x = -100;
+		goal.x = 1;
 		goal.y = 0;
 
-		//printf("Walking one step")
+		printf("Walking one step\n\n\n\n");
 
 		work_towards_goal(0, goal, current_position);
 	}

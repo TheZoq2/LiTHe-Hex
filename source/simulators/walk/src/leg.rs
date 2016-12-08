@@ -124,7 +124,7 @@ impl Leg
         let mut node3 = node2.add_obj(
                     &Path::new("media/cube.obj"),
                     &Path::new("media/cube.mtl"),
-                    Vector3::new(1., LIMB3_LENGTH / (LIMB2_LENGTH / LIMB1_LENGTH),1.)
+                    Vector3::new(1., LIMB3_LENGTH / (LIMB2_LENGTH),1.)
                 );
 
         node1.set_color(1., 0., 0.);
@@ -136,12 +136,12 @@ impl Leg
         node2.set_local_translation(Vector3::new(0.0, LIMB1_LENGTH, 0.0));
         node3.set_local_translation(Vector3::new(0.0, LIMB2_LENGTH, 0.0));
 
-        let turn_speed = 0.5;
+        let turn_speed = 1.;
         let limb1 = Limb::new(
                                 node1, 
                                 Vector3::new(0., 0., 0.), 
                                 turn_speed, 
-                                Vector3::new(0.,0.,1.)
+                                Vector3::new(0.,0.,-1.)
                             );
         let limb2 = Limb::new(
                                 node2, 
