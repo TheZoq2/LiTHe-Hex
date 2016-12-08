@@ -47,7 +47,7 @@ const int   SMOOTH_STEP_ITERATIONS      = 5;
 const float DEFAULT_LEG_DISTANCE = 0.09;
 const float RELIABLY_EXECUTABLE_ROTATION = 0.4;
 const float STRICT_ROTATION_MARGIN_OF_ERROR = 0.1;
-const float STANDUP_LEG_DISTANCE = 0.18;
+const float STANDUP_LEG_DISTANCE = 0.16;
 
 
 /**
@@ -657,6 +657,17 @@ Point2D* raise_to_default_position()
 		height[i] = HEIGHT_ABOVE_BODY;
 		current_leg_positions[i] = get_leg_position_from_radius
 			(i, STANDUP_LEG_DISTANCE, 0);
+	}
+	execute_position(current_leg_positions, height);
+	
+	for(size_t i = 0; i < NUM_LEGS; i++)
+	{
+		height[i] = 0;
+	}
+	execute_position(current_leg_positions, height);
+	for(size_t i = 0; i < NUM_LEGS; i++)
+	{
+		height[i] = -0.07;
 	}
 	execute_position(current_leg_positions, height);
 	

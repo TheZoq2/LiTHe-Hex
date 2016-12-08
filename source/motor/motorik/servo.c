@@ -34,7 +34,7 @@ const uint8_t BROADCAST_ID = 0xFE;
 
 const uint8_t NUM_SERVOS = 18;
 
-const uint16_t SERVO_TARGET_COMPLIANCE_MARGIN = 20;
+const uint16_t SERVO_TARGET_COMPLIANCE_MARGIN = 25;
 
 
 const uint8_t SERVO_MAP[6][3] = {
@@ -138,6 +138,7 @@ uint16_reply read_uint16_from_servo(uint8_t id, uint8_t address)
 	else
 	{
 		result.result = (reply.parameters[1] << 8) + reply.parameters[0];
+		result.is_error = false;
 	}
 
 	free_servo_reply(reply);
