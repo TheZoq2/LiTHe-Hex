@@ -37,5 +37,4 @@ char read_simulator_servo_state(uint8_t id)
 	fclose(in_file);
 
 	return buffer[target_index];
-	return '0';
 }

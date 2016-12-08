@@ -100,7 +100,7 @@ void write_servo_data(uint8_t id, uint8_t address, const uint8_t* data, uint8_t 
 	free(new_data);
 }
 
-ServoReply read_servo_data(uint8_t id, uint8_t address, uint8_t length, uint8_t* buffer)
+ServoReply read_servo_data(uint8_t id, uint8_t address, uint8_t length)
 {
 	spi_set_interrupts(false);
 	//Send datarequest instruction
@@ -113,7 +113,7 @@ ServoReply read_servo_data(uint8_t id, uint8_t address, uint8_t length, uint8_t*
 
 	send_servo_command(id, READ_DATA_INSTRUCTION, (void*)new_data, 2);
 
-	ServoReply reply = receive_servo_reply(buffer);
+	ServoReply reply = receive_servo_reply();
 	spi_set_interrupts(true);
 	//Read the data
 	return reply;
@@ -121,9 +121,7 @@ ServoReply read_servo_data(uint8_t id, uint8_t address, uint8_t length, uint8_t*
 
 uint16_reply read_uint16_from_servo(uint8_t id, uint8_t address)
 {
-	uint8_t buffer[2];
-
-	ServoReply reply = read_servo_data(id, address, 2, buffer);
+	ServoReply reply = read_servo_data(id, address, 2);
 
 	uint16_reply result;
 
@@ -137,11 +135,11 @@ uint16_reply read_uint16_from_servo(uint8_t id, uint8_t address)
 	}
 	else
 	{
-		result.result = (buffer[1] << 8) + buffer[0];
+		result.result = (reply.parameters[1] << 8) + reply.parameters[0];
 		result.is_error = false;
 	}
 
-	//free_servo_reply(reply);
+	free_servo_reply(reply);
 
 	return result;
 }
@@ -169,7 +167,7 @@ void write_servo_single_byte(uint8_t id, uint8_t address, uint8_t value)
 }
 
 
-ServoReply receive_servo_reply(uint8_t* buffer)
+ServoReply receive_servo_reply()
 {
 	//spi_set_interrupts(false);
 	//Switch the direction of the tri-state gate
@@ -195,15 +193,12 @@ ServoReply receive_servo_reply(uint8_t* buffer)
 		goto failure;
 	}
 
-	//servo_reply.parameters = (uint8_t*) malloc(sizeof(uint8_t) * servo_reply.parameter_amount);
+	servo_reply.parameters = (uint8_t*) malloc(sizeof(uint8_t) * servo_reply.parameter_amount);
 
-#ifndef IS_X86
 	for(uint8_t i = 0; i < servo_reply.parameter_amount; ++i)
 	{
-		//servo_reply.parameters[i] = usart_receive();
-		buffer[i] = usart_receive();
+		servo_reply.parameters[i] = usart_receive();
 	}
-#endif
 
 	//TODO: Check the checksum
 	servo_reply.checksum = usart_receive();
@@ -330,8 +325,6 @@ bool check_servo_done_rotating(uint8_t id, uint16_t target_position)
 	return result;
 #endif
 }
-
-
 bool servos_are_done_rotating()
 {
 #ifdef IS_X86

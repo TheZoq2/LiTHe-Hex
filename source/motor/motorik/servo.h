@@ -148,7 +148,7 @@ void set_leg_angles(enum LegIds leg_index, uint16_t* angles);
 /*
 	Sends a read request to a servo and returns the response
 */
-ServoReply read_servo_data(uint8_t id, uint8_t address, uint8_t length, uint8_t* buffer);
+ServoReply read_servo_data(uint8_t id, uint8_t address, uint8_t length);
 
 /*
 	Returns true when all servos are done rotating
