@@ -165,7 +165,7 @@ update msg model =
         ReceiveChatMessage raw ->
             case JD.decodeValue chatMessageDecoder raw of
                 Ok (DebugMessage msg) ->
-                    ( { model | messages = msg :: model.messages }
+                    ( { model | messages = List.take 30 (msg :: model.messages) }
                     , Cmd.none
                     )
 

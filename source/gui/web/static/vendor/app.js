@@ -22580,7 +22580,10 @@ var _user$project$App$update = F2(
 								_0: _elm_lang$core$Native_Utils.update(
 									model,
 									{
-										messages: {ctor: '::', _0: _p7._0._0, _1: model.messages}
+										messages: A2(
+											_elm_lang$core$List$take,
+											30,
+											{ctor: '::', _0: _p7._0._0, _1: model.messages})
 									}),
 								_1: _elm_lang$core$Platform_Cmd$none
 							};
