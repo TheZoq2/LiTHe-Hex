@@ -20,11 +20,13 @@
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#include <stdbool.h>
 
 void spi_init();
 uint8_t spi_receive_byte();
 uint8_t spi_transmit_byte(uint8_t data);
 void spi_transmit_ack();
 void spi_transmit_fail();
+void spi_set_interrupts(bool value);
 
 #endif /* ifndef SPI_H */

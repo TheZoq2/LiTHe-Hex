@@ -708,7 +708,9 @@ float work_towards_goal(float rot, Point2D goal, Point2D * current){
 
     direct_legs(rot * bestscale, targopt, current, goalopt, lrl);
 
+	//spi_set_interrupts(false);
     execute_step(current, targopt, lrl);
+	//spi_set_interrupts(true);
     return maxf(scaledown0, scaledown1);
 }
 

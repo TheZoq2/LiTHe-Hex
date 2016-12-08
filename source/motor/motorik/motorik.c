@@ -74,8 +74,6 @@ int main(void)
 	
 	usart_init();
 	
-	spi_set_interrupts(true);
-	
 	_delay_ms(100);
 	
 	init_all_servos();
@@ -91,6 +89,8 @@ int main(void)
 	
 	Point2D* current_position = raise_to_default_position();
 
+	spi_set_interrupts(true);
+	
 	/*for(uint8_t i = 0; i < 40; ++i)
 	{
 		Point2D goal;
@@ -112,18 +112,22 @@ int main(void)
         } else {
             Point2D goal;
 
+			spi_set_interrupts(false);
             float x_speed = current_status->x_speed;
             float y_speed = current_status->y_speed;
             float rotation = current_status->rotation;
             float servo_speed = current_status->servo_speed;
             bool auto_mode = current_status->auto_mode;
-
+			spi_set_interrupts(true);
+			
             if (x_speed != 0.0 || y_speed != 0.0 || !auto_mode) {
 
                 goal.x = x_speed;
                 goal.y = y_speed;
-
+				
+				//spi_set_interrupts(false);
                 work_towards_goal(rotation, goal, current_position);
+				//spi_set_interrupts(true);
 
             } else if (rotation != 0) {
                 //rotate_set_angle(rotation * (M_PI / 2), current_position);
