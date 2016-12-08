@@ -149,6 +149,7 @@ uint16_reply read_uint16_from_servo(uint8_t id, uint8_t address)
 #ifdef IS_X86
 void send_servo_action()
 {
+	send_servo_command(BROADCAST_ID, ACTION_INSTRUCTION, 0, 0);
 	while(!servos_are_done_rotating())
 		;
 }
