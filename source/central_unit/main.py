@@ -42,7 +42,8 @@ def main():
     if len(sys.argv) > 0 and sys.argv[0] == "--test":
         test_mode = True
 
-    spi = avr_communication.communication_init()
+    motor_spi = avr_communication.motor_communication_init()
+    sensor_spi = avr_communication.sensor_communication_init()
     res = []
 
     # Setup auto/manual mode and button for it
@@ -75,14 +76,15 @@ def main():
             # Auto mode
             os.system('clear')
             print("Auto mode!")
-            auto = do_auto_mode_iteration(spi, send_queue, receive_queue, decision_packet);
+            auto = do_auto_mode_iteration(sensor_spi, motor_spi, send_queue,
+                                          receive_queue, decision_packet);
             time.sleep(0.5)
 
         else:
             # Manual mode
             # os.system('clear')
             # print("Entering manual mode!")
-            auto = do_manual_mode_iteration(spi, send_queue, receive_queue)
+            auto = do_manual_mode_iteration(sensor_spi, motor_spi, send_queue, receive_queue)
             # time.sleep(0.1)
 
 
@@ -93,9 +95,9 @@ def receive_server_packet(receive_queue):
     return packet
 
 
-def do_auto_mode_iteration(spi, send_queue, receive_queue, decision_packet):
-    sensor_data = avr_communication.get_sensor_data(spi)
-    print(sensor_data)
+def do_auto_mode_iteration(sensor_spi, motor_spi, send_queue,
+                           receive_queue, decision_packet):
+    sensor_data = avr_communication.get_sensor_data(sensor_spi)
    # print("sensor_data:", sensor_data)
 
    # print("Right_angle: ",sensor_data.right_angle)
@@ -109,7 +111,7 @@ def do_auto_mode_iteration(spi, send_queue, receive_queue, decision_packet):
     pid_controller.regulate(sensor_data, decision_packet)
    # print("Pid controller command: ", decision_packet.regulate_base_movement,
    #       ", ", decision_packet.regulate_command_y, ", ", decision_packet.regulate_goal_angle)
-    send_decision_avr(spi, decision_packet)
+    send_decision_avr(motor_spi, decision_packet)
 
     # Send decision to server
     send_queue.put(web.ServerSendPacket(debug_string=
@@ -134,9 +136,9 @@ def do_auto_mode_iteration(spi, send_queue, receive_queue, decision_packet):
     return auto
 
 
-def do_manual_mode_iteration(spi, send_queue, receive_queue):
+def do_manual_mode_iteration(sensor_spi, motor_spi, send_queue, receive_queue):
     try:
-        sensor_data = avr_communication.get_sensor_data(spi)
+        sensor_data = avr_communication.get_sensor_data(sensor_spi)
 
         send_queue.put(web.ServerSendPacket(sensor_data))
     except avr_communication.CommunicationError:
@@ -157,7 +159,7 @@ def do_manual_mode_iteration(spi, send_queue, receive_queue):
             while True:
                 time.sleep(0.01)
                 try:
-                    avr_communication.set_servo_speed(spi, servo_speed)
+                    avr_communication.set_servo_speed(motor_spi, servo_speed)
                     print("")
                     print("Sent speed")
                     break
@@ -173,7 +175,7 @@ def do_manual_mode_iteration(spi, send_queue, receive_queue):
             while True:
                 time.sleep(0.01)
                 try:
-                    avr_communication.walk(spi, x_speed, y_speed, rotation, False)
+                    avr_communication.walk(motor_spi, x_speed, y_speed, rotation, False)
                     print("Walk sent x: {}, y: {}, r: {}".format(x_speed, y_speed, rotation))
                     break
                 except avr_communication.CommunicationError:

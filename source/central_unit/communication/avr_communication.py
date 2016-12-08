@@ -175,11 +175,12 @@ def _request_data(spi, data_id):
     return _recieve_bytes(spi)
 
 
-def _select_device(spi, addr):
-    spi.open(*addr)
-
-def _deselect_device(spi):
-    spi.close()
+# def _select_device(spi, addr):
+#     spi.open(*addr)
+# 
+# 
+# def _deselect_device(spi):
+#     spi.close()
 
 
 def _check_response(response):
@@ -199,12 +200,20 @@ def _get_total_msg(*data):
     return int(res, 2)
 
 
-def communication_init():
-    """Initializes the SPI-communication"""
+def sensor_communication_init():
+    """
+    Initializes the SPI-communication to the
+    sensor unit.
+    """
+    spi = spidev.SpiDev()
+    spi.open(*SENSOR_ADDR)
+    spi.max_speed_hz = 25000
+    return spi
+
+
+def motor_communication_init():
     spi = spidev.SpiDev()
     spi.open(*MOTOR_ADDR)
-    spi.max_speed_hz = 25000
-    spi.open(*SENSOR_ADDR)
     spi.max_speed_hz = 25000
     return spi
 
@@ -215,24 +224,20 @@ def set_obstacle_mode(spi, value):
         raise InvalidCommandException("Value \"{}\" is not a valid mode.".format(value))
     # yes i'm paranoid
     value = 0x01 if value else 0x00
-    _select_device(spi, MOTOR_ADDR)
     response = _send_bytes(spi, _add_parity(SET_OBSTACLE, value), value)
     _check_response(response)
-    _deselect_device(spi)
 
 
 def set_servo_speed(spi, speed):
     """Sets the global servo speed on the motor unit"""
     if speed < 0 or speed > constants.MAX_16BIT_SIZE:
         raise InvalidCommandException("Speed \"{}\" is not a 16-bit value".format(speed))
-    _select_device(spi, MOTOR_ADDR)
     least = speed & 0x00FF
     most = (speed & 0xFF00) >> 8
     total_msg = _get_total_msg(SET_SERVO_SPEED_LENGTH, least, most)
     response = _send_bytes(spi, _add_parity(SET_SERVO_SPEED, total_msg),
                            SET_SERVO_SPEED_LENGTH, least, most)
     _check_response(response)
-    _deselect_device(spi)
 
 
 def walk(spi, x_speed, y_speed, turn_speed, auto_mode):
@@ -240,47 +245,37 @@ def walk(spi, x_speed, y_speed, turn_speed, auto_mode):
     Commands the motor unit to walk in the direction and speed 
     given by x_speed, y_speed and turn_speed
     """
-    _select_device(spi, MOTOR_ADDR)
     auto = 0x01 if auto_mode else 0x00
     total_msg = _get_total_msg(WALK_LENGTH, x_speed, y_speed, turn_speed, auto)
     response = _send_bytes(spi, _add_parity(WALK, total_msg),
                            WALK_LENGTH, x_speed, y_speed, turn_speed, auto)
     _check_response(response)
-    _deselect_device(spi)
 
 
 def back_to_neutral(spi):
     """Commands the motor unit to return to the neutral state"""
-    _select_device(spi, MOTOR_ADDR)
     # we send a zero byte as args
     response = _send_bytes(spi, _add_parity(RETURN_TO_NEUTRAL, 0), 0)
     _check_response(response)
-    _deselect_device(spi)
 
 
 def get_servo_status(spi):
     """Fetches the servo status"""
     # TODO create appropriate data structure
-    _select_device(spi, MOTOR_ADDR)
     data = _request_data(spi, SERVO_STATUS)
-    _deselect_device(spi)
     return data
 
 
 def get_motor_debug(spi):
     """Gets a motor unit debug string"""
     # TODO create string
-    _select_device(spi, MOTOR_ADDR)
     data = _request_data(spi, MOTOR_DEBUG)
-    _deselect_device(spi)
     return data
 
 
 def is_busy_rotating(spi):
     """Asks the motor unit whether it's busy rotating"""
-    _select_device(spi, MOTOR_ADDR)
     raw_data = _request_data(spi, BUSY_ROTATING)
-    _deselect_device(spi)
     return True if raw_data[0] else False
     
 
@@ -289,10 +284,8 @@ def get_sensor_data(spi):
     Gets the values of all sensors in the sensor unit,
     and puts them in a SensorDataPacket
     """
-    _select_device(spi, SENSOR_ADDR)
     raw_data = _request_data(spi, SENSOR_DATA)
     sensor_data = SensorDataPacket(*raw_data)
-    _deselect_device(spi)
     return sensor_data
 
 
