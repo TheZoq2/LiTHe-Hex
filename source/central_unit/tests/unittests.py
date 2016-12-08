@@ -234,7 +234,7 @@ class MainLoopTestCase(unittest.TestCase):
         _set_sensor_data_sequence(spi)
 
         try:
-            auto = main.do_manual_mode_iteration(spi, send_queue, receive_queue)
+            auto = main.do_manual_mode_iteration(spi, spi, send_queue, receive_queue)
         except fake_spi.UnexpectedDataException as e:
             self.fail("Expected {}, got {}".format(e.expected, e.actual))
 
@@ -267,7 +267,7 @@ class MainLoopTestCase(unittest.TestCase):
         receive_queue.put(packet)
 
         try:
-            auto = main.do_manual_mode_iteration(spi, send_queue, receive_queue)
+            auto = main.do_manual_mode_iteration(spi, spi, send_queue, receive_queue)
         except fake_spi.UnexpectedDataException as e:
             self.fail(
                 "Something went wrong when reading sensor data: Expected {}, got {}"
@@ -290,7 +290,7 @@ class MainLoopTestCase(unittest.TestCase):
         receive_queue.put(packet)
 
         try:
-            auto = main.do_manual_mode_iteration(spi, send_queue, receive_queue)
+            auto = main.do_manual_mode_iteration(spi, spi, send_queue, receive_queue)
         except fake_spi.UnexpectedDataException as e:
             self.fail(
                 "Something went wrong when reading sensor data: Expected {}, got {}"
@@ -316,7 +316,7 @@ class MainLoopTestCase(unittest.TestCase):
         receive_queue.put(packet)
 
         try:
-            auto = main.do_manual_mode_iteration(spi, send_queue, receive_queue)
+            auto = main.do_manual_mode_iteration(spi, spi, send_queue, receive_queue)
         except fake_spi.UnexpectedDataException as e:
             self.fail(
                 "Something went wrong in the SPI-communication: Expected {}, got {}"
