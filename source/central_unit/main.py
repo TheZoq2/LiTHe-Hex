@@ -88,7 +88,15 @@ def main():
             # time.sleep(0.1)
 
 
-def do_auto_mode_iteration(sensor_spi, motor_spi, send_queue, receive_queue, decision_packet):
+def receive_server_packet(receive_queue):
+    packet = None 
+    while not receive_queue.empty():
+        packet = receive_queue.get()
+    return packet
+
+
+def do_auto_mode_iteration(sensor_spi, motor_spi, send_queue,
+                           receive_queue, decision_packet):
     sensor_data = avr_communication.get_sensor_data(sensor_spi)
    # print("sensor_data:", sensor_data)
 
@@ -98,7 +106,7 @@ def do_auto_mode_iteration(sensor_spi, motor_spi, send_queue, receive_queue, dec
 
     decision_making.get_decision(sensor_data, decision_packet)
 
-   # print("Decision: ", decision_packet.decision)
+    print("Decision: ", decision_packet.decision)
 
     pid_controller.regulate(sensor_data, decision_packet)
    # print("Pid controller command: ", decision_packet.regulate_base_movement,
@@ -112,8 +120,9 @@ def do_auto_mode_iteration(sensor_spi, motor_spi, send_queue, receive_queue, dec
 
     auto = True
 
-    if not receive_queue.empty():
-        packet = receive_queue.get()
+    packet = receive_server_packet(receive_queue)
+
+    if packet is not None:
         if packet.auto is not None:
             auto = packet.auto
         # Regulate algorithm parameters
@@ -137,10 +146,9 @@ def do_manual_mode_iteration(sensor_spi, motor_spi, send_queue, receive_queue):
 
     auto = False
 
-    if not receive_queue.empty():
-        packet = None 
-        while not receive_queue.empty():
-            packet = receive_queue.get()
+    packet = receive_server_packet(receive_queue)
+
+    if packet is not None:
 
         if packet.auto is not None:
             auto = packet.auto
