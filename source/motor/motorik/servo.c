@@ -34,7 +34,7 @@ const uint8_t BROADCAST_ID = 0xFE;
 
 const uint8_t NUM_SERVOS = 18;
 
-const uint16_t SERVO_TARGET_COMPLIANCE_MARGIN = 25;
+const uint16_t SERVO_TARGET_COMPLIANCE_MARGIN = 100;
 
 
 const uint8_t SERVO_MAP[6][3] = {
@@ -211,7 +211,6 @@ failiure:
 	usart_set_direction(TX);
 
 
-	_delay_ms(5);
 	
 	//spi_set_interrupts(true);
 	

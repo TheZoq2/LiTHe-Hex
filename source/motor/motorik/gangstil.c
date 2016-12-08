@@ -281,7 +281,7 @@ void execute_step(Point2D * current, Point2D * target, bool lrlRaised){
         z[RB] = GROUNDED + HIGH;
     }
 
-	const uint8_t STEP_AMOUNT = 3;
+	const uint8_t STEP_AMOUNT = 2;
 
 	Point2D intermediate_positions[NUM_LEGS];
 	Point2D step_lengths[NUM_LEGS];
