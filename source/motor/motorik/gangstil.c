@@ -696,6 +696,10 @@ float work_towards_goal(float rot, Point2D goal, Point2D * current){
     float scaledown1 = scale_legs(targ1, current, scale, false);
 
     float bestscale = maxf(scaledown0, scaledown1);
+    if (bestscale < 0.001){
+    	return bestscale; //too little movement to be relevant executing
+    }
+	
     bool lrl = scaledown0 > scaledown1;
     Point2D targopt[NUM_LEGS];
     Point2D goalopt;
