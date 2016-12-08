@@ -7,6 +7,8 @@
 #include <avr/interrupt.h>
 #include <util/delay.h>
 #include "spi.h"
+#else
+#include <time.h>
 #endif
 
 const uint8_t READ_DATA_INSTRUCTION = 0x02;
@@ -143,6 +145,8 @@ uint16_reply read_uint16_from_servo(uint8_t id, uint8_t address)
 #ifdef IS_X86
 void send_servo_action()
 {
+	while(!servos_are_done_rotating())
+		;
 }
 #else
 void send_servo_action()
@@ -324,6 +328,7 @@ bool servos_are_done_rotating()
 #ifdef IS_X86
 	//We need to wait for the simulator to process the command before checking this
 	//Sleep for 0.1 seconds
+	printf("Sleeping \n\n\n\n");
 	usleep(100000);
 #endif
 

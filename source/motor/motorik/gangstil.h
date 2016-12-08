@@ -114,6 +114,9 @@ void assume_standardized_stance(Point2D * current);
 */
 Point2D* raise_to_default_position();
 
+Point2D get_leg_position_from_radius
+			(size_t leg, float distance_from_body, float outer_leg_x_offset);
+
 #ifdef IS_UNIT_TEST
 Point2D rotate_point_by_angle(Point2D original, float angle);
 Point2D robot_to_ik_coords(Point2D original, size_t leg);

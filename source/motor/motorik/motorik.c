@@ -91,18 +91,9 @@ int main(void)
 
 	spi_set_interrupts(true);
 	
-	/*for(uint8_t i = 0; i < 40; ++i)
-	{
-		Point2D goal;
-		goal.x = -100;
-		goal.y = 0;
-
-		//printf("Walking one step")
-
-		work_towards_goal(0, goal, current_position);
-	}*/
 	
-	while(1)
+#ifndef IS_X86
+	while(0)
 	{
         if (current_status->return_to_neutral) {
 
@@ -134,6 +125,18 @@ int main(void)
             }
         }
 	}
+#else
+	for(uint8_t i = 0; i < 40; ++i)
+	{
+		Point2D goal;
+		goal.x = -100;
+		goal.y = 0;
+
+		//printf("Walking one step")
+
+		work_towards_goal(0, goal, current_position);
+	}
+#endif
 
 	free(current_position);
 }

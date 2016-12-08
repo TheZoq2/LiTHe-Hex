@@ -47,6 +47,7 @@ const int   SMOOTH_STEP_ITERATIONS      = 5;
 const float DEFAULT_LEG_DISTANCE = 0.09;
 const float RELIABLY_EXECUTABLE_ROTATION = 0.4;
 const float STRICT_ROTATION_MARGIN_OF_ERROR = 0.1;
+const float STANDUP_LEG_DISTANCE = 0.18;
 
 
 /**
@@ -164,15 +165,6 @@ struct Leg* get_angle_set(Point2D * target, float * height){
 
 	return res;
 }
-
-
-//for debug without motor
-
-//void set_leg_angles(uint8_t id, uint16_t * angle){
-//}
-
-//void send_servo_action(){
-//}
 
 
 /**
@@ -304,9 +296,15 @@ void execute_step(Point2D * current, Point2D * target, bool lrlRaised){
 Point2D get_default_leg_position(size_t leg){
 	float distance_from_body = DEFAULT_LEG_DISTANCE;
 	
+	return get_leg_position_from_radius(leg, distance_from_body, 0.02);
+}
+
+
+Point2D get_leg_position_from_radius
+			(size_t leg, float distance_from_body, float outer_leg_x_offset){
     Point2D res;
     if (leg < 2){   //front
-        res.x = distance_from_body / sqrt(2);
+        res.x = distance_from_body / sqrt(2) + outer_leg_x_offset;
         res.y = distance_from_body / sqrt(2);
     }
     else if (leg < 4){  //mid
@@ -314,7 +312,7 @@ Point2D get_default_leg_position(size_t leg){
         res.y = distance_from_body;
     }
     else{//back
-        res.x = -distance_from_body / sqrt(2);
+        res.x = -distance_from_body / sqrt(2) - outer_leg_x_offset;
         res.y = distance_from_body / sqrt(2);
     }    
 
@@ -650,13 +648,15 @@ Point2D* raise_to_default_position()
 	
 	//Allocate memory for current positions
 	Point2D* current_leg_positions = malloc(NUM_LEGS * sizeof(Point2D));
+
 	//The current height above the body for all the legs
 	float height[NUM_LEGS];
 	//Get the default position and raise the legs above it
 	for(size_t i = 0; i < NUM_LEGS; i++)
 	{
 		height[i] = HEIGHT_ABOVE_BODY;
-		current_leg_positions[i] = get_default_leg_position(i);
+		current_leg_positions[i] = get_leg_position_from_radius
+			(i, STANDUP_LEG_DISTANCE, 0);
 	}
 	execute_position(current_leg_positions, height);
 	
@@ -666,6 +666,8 @@ Point2D* raise_to_default_position()
 		height[i] = GROUNDED;
 	}
 	execute_position(current_leg_positions, height);
+
+	assume_standardized_stance(current_leg_positions);
 
 	return current_leg_positions;
 }
