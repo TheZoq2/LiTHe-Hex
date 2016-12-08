@@ -95,7 +95,19 @@ int main(void)
 
 	spi_set_interrupts(true);
 	
+	for(uint8_t i = 0; i < 40; i++)
+	{
+		Point2D goal;
+		goal.x = 1;
+		goal.y = 0;
+		
+		work_towards_goal(0, goal, current_position);
+	}
 	
+	while(1)
+	{
+		
+	}
 #ifndef IS_X86
 	while(1)
 	{
