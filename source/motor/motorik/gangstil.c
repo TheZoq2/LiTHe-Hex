@@ -644,7 +644,7 @@ void assume_standardized_stance(Point2D * current){
 Point2D* raise_to_default_position()
 {
 	//The position of the foot above the body when spreading the legs
-	const float HEIGHT_ABOVE_BODY = 0.07;
+	const float HEIGHT_ABOVE_BODY = 0.03;
 	
 	//Allocate memory for current positions
 	Point2D* current_leg_positions = malloc(NUM_LEGS * sizeof(Point2D));
@@ -654,27 +654,19 @@ Point2D* raise_to_default_position()
 	//Get the default position and raise the legs above it
 	for(size_t i = 0; i < NUM_LEGS; i++)
 	{
-		height[i] = HEIGHT_ABOVE_BODY;
 		current_leg_positions[i] = get_leg_position_from_radius
 			(i, STANDUP_LEG_DISTANCE, 0);
 	}
-	execute_position(current_leg_positions, height);
-	
-	for(size_t i = 0; i < NUM_LEGS; i++)
+
+	float  heights[4] = {HEIGHT_ABOVE_BODY, 0, -0.07, GROUNDED};
+
+	for(size_t i = 0; i < 4; ++i)
 	{
-		height[i] = 0;
-	}
-	execute_position(current_leg_positions, height);
-	for(size_t i = 0; i < NUM_LEGS; i++)
-	{
-		height[i] = -0.07;
-	}
-	execute_position(current_leg_positions, height);
-	
-	//Set all the legs to ground height
-	for(size_t i = 0; i < NUM_LEGS; ++i)
-	{
-		height[i] = GROUNDED;
+		for(size_t leg_id = 0; leg_id < NUM_LEGS; ++leg_id)
+		{
+			height[leg_id] = heights[leg_id];
+		}
+		execute_position(current_leg_positions, height);
 	}
 	execute_position(current_leg_positions, height);
 
@@ -725,7 +717,6 @@ float work_towards_goal(float rot, Point2D goal, Point2D * current){
 
 	//spi_set_interrupts(false);
     execute_step(current, targopt, lrl);
-	printf("Done walking\n");
 	//spi_set_interrupts(true);
     return maxf(scaledown0, scaledown1);
 }
