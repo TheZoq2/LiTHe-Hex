@@ -33,7 +33,7 @@ const size_t RB = 5;
 const float FRONT_LEG_JOINT_X           = 0.12;
 const float FRONT_LEG_JOINT_Y           = 0.06;
 const float MID_LEG_JOINT_Y             = 0.1;
-const float HIGH                        = 0.05;
+const float HIGH                        = 0.03;
 const float GROUNDED                    = -0.14;
 const float MAX_DIST                    = 0.11;
 const float VERT_MID_LEG_BORDER_OFFSET  = 0.06;
@@ -701,6 +701,8 @@ float work_towards_goal(float rot, Point2D goal, Point2D * current){
     Point2D targ0[NUM_LEGS];
     Point2D targ1[NUM_LEGS];
 
+	printf("Working towards goal \n");
+
     float scale[NUM_LEGS];
     direct_legs(rot, targ0, current, goal, true);
     float scaledown0 = scale_legs(targ0, current, scale, true);
@@ -723,6 +725,7 @@ float work_towards_goal(float rot, Point2D goal, Point2D * current){
 
 	//spi_set_interrupts(false);
     execute_step(current, targopt, lrl);
+	printf("Done walking\n");
 	//spi_set_interrupts(true);
     return maxf(scaledown0, scaledown1);
 }

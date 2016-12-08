@@ -44,13 +44,13 @@ impl Robot
         let mut legs = vec!();
 
         let leg_positions = vec!(
-                            na::Vector3::new(10., 0., -6.) * constants::UNIT_SCALE, //Left front
-                            na::Vector3::new(10., 0., 6.) * constants::UNIT_SCALE, //Right front
-                            na::Vector3::new(0., 0., -8.) * constants::UNIT_SCALE, //Left mid
-                            na::Vector3::new(0., 0., 10.) * constants::UNIT_SCALE, //Right mid
-                            na::Vector3::new(-10., 0., -6.) * constants::UNIT_SCALE, //Left back
-                            na::Vector3::new(-10., 0., 6.) * constants::UNIT_SCALE, //Right back
-                        );
+                    na::Vector3::new(10., 0., -6.) * constants::UNIT_SCALE, //Left front
+                    na::Vector3::new(10., 0., 6.) * constants::UNIT_SCALE, //Right front
+                    na::Vector3::new(0., 0., -8.) * constants::UNIT_SCALE, //Left mid
+                    na::Vector3::new(0., 0., 10.) * constants::UNIT_SCALE, //Right mid
+                    na::Vector3::new(-10., 0., -6.) * constants::UNIT_SCALE, //Left back
+                    na::Vector3::new(-10., 0., 6.) * constants::UNIT_SCALE, //Right back
+                );
 
         let leg_angles = vec!(PI/4., -PI/4., PI/2., -PI/2., 3. * PI/4., -3. * PI/4.);
 
@@ -114,7 +114,7 @@ impl LegTarget
 {
     pub fn convert_to_simulator_coordinates(&self) -> LegTarget
     {
-        const scaling: f32 = 10.;
+        const scaling: f32 = 10. * constants::UNIT_SCALE;
 
         let mut new_target = LegTarget{
             angles: self.angles.clone(), 
