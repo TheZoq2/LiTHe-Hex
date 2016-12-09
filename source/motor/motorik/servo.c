@@ -125,13 +125,11 @@ ServoReply read_servo_data(uint8_t id, uint8_t address, uint8_t length)
 	return reply;
 }
 
-uint16_reply read_uint16_from_servo(uint8_t id, uint8_t address)
+Uint16Result read_uint16_from_servo(uint8_t id, uint8_t address)
 {
 	ServoReply reply = read_servo_data(id, address, 2);
 
-	uint16_reply result;
-
-	//uint16_t result = (reply.parameters[1] << 8) + reply.parameters[0];
+	Uint16Result result;
 
 	if(reply.error != 0)
 	{
@@ -324,7 +322,7 @@ bool is_servo_position_in_bounds(uint16_t target_position, uint16_t current_posi
 
 bool check_servo_done_rotating(uint8_t id, uint16_t target_position)
 {
-	uint16_reply current_position = 
+	Uint16Result current_position = 
 		read_uint16_from_servo(id + 1, PRESENT_POSITION_ADDRESS);
 
 	bool result = 
@@ -346,12 +344,11 @@ bool servos_are_done_rotating()
 	//We need to wait for the simulator to process the command before checking this
 	//Sleep for 0.1 seconds
 	printf("Sleeping \n\n\n\n");
-	usleep(100000);
+	usleep(10000);
 #endif
 
 	//_delay_ms(200);
 	uint16_t servo_targets[NUM_SERVOS];
-	uint16_t* targ_ptr = servo_targets;
 
 	read_servo_target_positions(servo_targets);
 
