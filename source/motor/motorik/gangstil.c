@@ -265,7 +265,13 @@ Point2D add_point2D(Point2D point1, Point2D point2)
  * which should remain grounded.
  */
 void execute_step(Point2D * current, Point2D * target, bool lrlRaised){
-    float z[NUM_LEGS];
+    if (current->x == NAN || current->y == NAN || target->x == NAN || target->y == NAN)
+    {
+		free(current);
+		current = raise_to_default_position();
+    }
+	
+	float z[NUM_LEGS];
 
     if(lrlRaised){
         z[LF] = GROUNDED + HIGH;
@@ -416,7 +422,7 @@ float dist(Point2D * vect){
  * leg movement to where it comes within the maximum reach of the leg.
  */
 float scale_to_range_bounds(float targLength, float currLength, float diffLength){
-    if (currLength <= MAX_DIST)
+    if (currLength <= MAX_DIST || diffLength == 0)
         return 1; //no scaling down needed
 
     float alpha = acos((powf(diffLength, 2) + powf(currLength, 2) - powf(targLength, 2))//no n/0 since diffLength & currLength > 0 if statement is entered
@@ -592,30 +598,27 @@ float scale_legs(Point2D * targ, Point2D * curr, float * scale, bool lrlRaised){
  * from target, with negative rotation, if feet are grounded).
  */
 void direct_legs(float rot, Point2D * targ, Point2D * current, Point2D req, bool lrlRaised){
-    Point2D attention;
-    Point2D absTarg;
+    Point2D legRelativeRobotMid;
 
     for(size_t leg = LF; leg < NUM_LEGS; ++leg){
         Point2D joint = joint_position(leg);
-        attention.x = current[leg].x + joint.x;
-        attention.y = current[leg].y + joint.y;
+        legRelativeRobotMid.x = current[leg].x + joint.x;
+        legRelativeRobotMid.y = current[leg].y + joint.y;
 
 
         if (lrlRaised == (leg == 0 || leg == 3 || leg == 4)){ //move legs "away" from position (body towards)
-            absTarg.x =  req.x + cos(rot) * attention.x - sin(rot) * attention.y;
-            absTarg.y =  req.y + sin(rot) * attention.x + cos(rot) * attention.y;
+            targ[leg].x =  req.x + cos(rot) * legRelativeRobotMid.x - sin(rot) * legRelativeRobotMid.y;
+            targ[leg].y =  req.y + sin(rot) * legRelativeRobotMid.x + cos(rot) * legRelativeRobotMid.y;
         }
         else{   //move legs "towards" target position (step)
-            absTarg.x =   - req.x  + cos(rot) * attention.x + sin(rot) * attention.y;
-            absTarg.y =   - req.y  - sin(rot) * attention.x + cos(rot) * attention.y;
+            targ[leg].x =   - req.x  + cos(rot) * legRelativeRobotMid.x + sin(rot) * legRelativeRobotMid.y;
+            targ[leg].y =   - req.y  - sin(rot) * legRelativeRobotMid.x + cos(rot) * legRelativeRobotMid.y;
         }
-        targ[leg].x = absTarg.x - joint.x;
-        targ[leg].y = absTarg.y - joint.y;
+        targ[leg].x = targ[leg].x - joint.x;
+        targ[leg].y = targ[leg].y - joint.y;
     }
 
 }
-
-
 /**
  * @brief assume_standardized_stance Positions the robot in the default position by moving
  * 3 legs at a time.
@@ -726,33 +729,30 @@ Point2D* raise_to_default_position()
  * @return scaledown applied to grounded set of legs.
  */
 float work_towards_goal(float rot, Point2D goal, Point2D * current){
-    Point2D targ0[NUM_LEGS];
-    Point2D targ1[NUM_LEGS];
-
-	printf("Working towards goal \n");
-
+    Point2D targ[NUM_LEGS];
     float scale[NUM_LEGS];
-    direct_legs(rot, targ0, current, goal, true);
-    float scaledown0 = scale_legs(targ0, current, scale, true);
 
-    direct_legs(rot, targ1, current, goal, false);
-    float scaledown1 = scale_legs(targ1, current, scale, false);
+    printf("Working towards goal \n");
 
-    float bestscale = 0.9 * maxf(scaledown0, scaledown1);
+    direct_legs(rot, targ, current, goal, true);
+    float scaledown0 = scale_legs(targ, current, scale, true);
+
+    direct_legs(rot, targ, current, goal, false);
+    float scaledown1 = scale_legs(targ, current, scale, false);
+
+    float bestscale = maxf(scaledown0, scaledown1) * 0.9;
     if (bestscale < 0.001){
     	return bestscale; //too little movement to be relevant executing
     }
 	
-    bool lrl = scaledown0 > scaledown1;
-    Point2D targopt[NUM_LEGS];
-    Point2D goalopt;
-    goalopt.x = goal.x * bestscale;
-    goalopt.y = goal.y * bestscale;
+    bool lrlRaised = scaledown0 > scaledown1;
+    goal.x = goal.x * bestscale;
+    goal.y = goal.y * bestscale;
 
-    direct_legs(rot * bestscale, targopt, current, goalopt, lrl);
+    direct_legs(rot * bestscale, targ, current, goal, lrlRaised);
 
 	//spi_set_interrupts(false);
-    execute_step(current, targopt, lrl);
+    execute_step(current, targ, lrlRaised);
 	//spi_set_interrupts(true);
     return maxf(scaledown0, scaledown1);
 }

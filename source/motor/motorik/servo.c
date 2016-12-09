@@ -147,7 +147,7 @@ void send_servo_action()
 {
 	send_servo_command(BROADCAST_ID, ACTION_INSTRUCTION, 0, 0);
 	//TODO: Olavs fel
-	//_delay_ms(1200);
+	//_delay_ms(200);
 	while(!servos_are_done_rotating())
 		;
 }
@@ -182,7 +182,7 @@ ServoReply receive_servo_reply()
 
 	if(servo_reply.error != 0)
 	{
-		goto failiure;
+		servo_reply.length = 0;
 	}
 
 	servo_reply.parameters = (uint8_t*) malloc(sizeof(uint8_t) * servo_reply.parameter_amount);
@@ -200,7 +200,8 @@ failiure:
 	clear_bit(PORTD, PIN_RX_TOGGLE);
 	usart_set_direction(TX);
 
-
+	
+	_delay_ms(5);
 	
 	//spi_set_interrupts(true);
 	
@@ -288,8 +289,12 @@ void set_leg_angles(enum LegIds leg_index, uint16_t* angles)
 */
 void read_servo_target_positions(uint16_t* buffer)
 {
-	for (uint8_t i = 0; i < NUM_SERVOS; ++i) 
+	for (uint8_t i = 3; i < NUM_SERVOS; ++i) 
 	{
+		if(i == 2 || i == 0)
+		{
+			continue;
+		}
 		buffer[i] = read_uint16_from_servo(i + 1, GOAL_POSITION_ADDRESS).result;
 	}
 }
@@ -326,12 +331,17 @@ bool servos_are_done_rotating()
 	usleep(10000);
 #endif
 
+	//_delay_ms(200);
 	uint16_t servo_targets[NUM_SERVOS];
 
 	read_servo_target_positions(servo_targets);
 
-	for(uint8_t i = 0; i < NUM_SERVOS; i++)
+	for(uint8_t i = 3; i < NUM_SERVOS; i++)
 	{
+		if(i == 2 || i == 0)
+		{
+			continue;
+		}
 		if(check_servo_done_rotating(i, servo_targets[i]) == false)
 		{
 			return false;
