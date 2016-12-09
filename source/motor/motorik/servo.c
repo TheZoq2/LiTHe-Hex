@@ -48,7 +48,7 @@ const uint8_t SERVO_MAP[6][3] = {
 
 void send_servo_command(uint8_t id, uint8_t instruction, void* data, uint8_t data_amount)
 {
-	//spi_set_interrupts(false);
+	////spi_set_interrupts(false);
 	//Set the direction of the tristate gate
 	//clear_bit(PORTD, PIN_RX_TOGGLE);
 
@@ -76,7 +76,7 @@ void send_servo_command(uint8_t id, uint8_t instruction, void* data, uint8_t dat
 	
 	uart_wait();
 	
-	//spi_set_interrupts(true);
+	////spi_set_interrupts(true);
 	
 	//Reset the direction of the tristate gate
 	//set_bit(PORTD, PIN_RX_TOGGLE);
@@ -94,15 +94,19 @@ void write_servo_data(uint8_t id, uint8_t address, const uint8_t* data, uint8_t 
 	{
 		new_data[i+1] = data[i];
 	}
-
+	
+	//spi_set_interrupts(false);
+	
 	send_servo_command(id, WRITE_DATA_INSTRUCTION, (void*)new_data, new_data_amount);
 
+	//spi_set_interrupts(true);
+	
 	free(new_data);
 }
 
 ServoReply read_servo_data(uint8_t id, uint8_t address, uint8_t length)
 {
-	spi_set_interrupts(false);
+	//spi_set_interrupts(false);
 	//Send datarequest instruction
 	uint8_t* new_data = (uint8_t*)malloc(2);
 
@@ -116,7 +120,7 @@ ServoReply read_servo_data(uint8_t id, uint8_t address, uint8_t length)
 	free(new_data);
 
 	ServoReply reply = receive_servo_reply();
-	spi_set_interrupts(true);
+	//spi_set_interrupts(true);
 	//Read the data
 	return reply;
 }
@@ -148,19 +152,22 @@ uint16_reply read_uint16_from_servo(uint8_t id, uint8_t address)
 
 #ifdef IS_X86
 void send_servo_action()
-{
+{	
 	send_servo_command(BROADCAST_ID, ACTION_INSTRUCTION, 0, 0);
 	while(!servos_are_done_rotating())
-		;
+		;	
 }
 #else
 void send_servo_action()
 {
+	//spi_set_interrupts(false);
 	send_servo_command(BROADCAST_ID, ACTION_INSTRUCTION, 0, 0);
 	//TODO: Olavs fel
 	//_delay_ms(200);
 	while(!servos_are_done_rotating())
 		;
+		
+	//spi_set_interrupts(true);
 }
 #endif
 

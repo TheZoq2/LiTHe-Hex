@@ -23,17 +23,17 @@
 
 typedef struct {
 
-    float x_speed;
+    volatile float x_speed;
 
-    float y_speed;
+    volatile float y_speed;
 
-    float rotation;
+    volatile float rotation;
 
-    float servo_speed;
+    volatile float servo_speed;
 
-    bool return_to_neutral;
+    volatile bool return_to_neutral;
 
-    bool auto_mode;
+    volatile bool auto_mode;
 
 } CurrentStatus;
 
