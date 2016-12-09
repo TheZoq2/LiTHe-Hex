@@ -302,6 +302,10 @@ void read_servo_target_positions(uint16_t* buffer)
 {
 	for (uint8_t i = 3; i < NUM_SERVOS; ++i) 
 	{
+		if(i == 2 || i == 0)
+		{
+			continue;
+		}
 		buffer[i] = read_uint16_from_servo(i + 1, GOAL_POSITION_ADDRESS).result;
 	}
 }
@@ -337,7 +341,7 @@ bool servos_are_done_rotating()
 	usleep(100000);
 #endif
 
-	_delay_ms(200);
+	//_delay_ms(200);
 	uint16_t servo_targets[NUM_SERVOS];
 	uint16_t* targ_ptr = servo_targets;
 
@@ -345,6 +349,10 @@ bool servos_are_done_rotating()
 
 	for(uint8_t i = 3; i < NUM_SERVOS; i++)
 	{
+		if(i == 2 || i == 0)
+		{
+			continue;
+		}
 		if(check_servo_done_rotating(i, servo_targets[i]) == false)
 		{
 			return false;
