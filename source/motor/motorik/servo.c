@@ -193,7 +193,7 @@ ServoReply receive_servo_reply()
 
 	if(servo_reply.error != 0)
 	{
-		goto failiure;
+		servo_reply.length = 0;
 	}
 
 	servo_reply.parameters = (uint8_t*) malloc(sizeof(uint8_t) * servo_reply.parameter_amount);
@@ -332,6 +332,7 @@ bool check_servo_done_rotating(uint8_t id, uint16_t target_position)
 	return result;
 #endif
 }
+
 bool servos_are_done_rotating()
 {
 #ifdef IS_X86

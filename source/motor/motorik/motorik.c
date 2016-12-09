@@ -117,7 +117,13 @@ int main(void)
 	rotate_to_position(-1, 1, current_position);
 	rotate_to_position(-1, -1, current_position);
 	
+	while(1){}
+	
 #ifndef IS_X86
+	
+	
+	
+	
 	while(1)
 	{
         if (current_status->return_to_neutral) {

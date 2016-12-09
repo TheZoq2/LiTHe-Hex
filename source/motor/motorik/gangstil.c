@@ -262,7 +262,13 @@ Point2D add_point2D(Point2D point1, Point2D point2)
  * which should remain grounded.
  */
 void execute_step(Point2D * current, Point2D * target, bool lrlRaised){
-    float z[NUM_LEGS];
+    if (current->x == NAN || current->y == NAN || target->x == NAN || target->y == NAN)
+    {
+		free(current);
+		current = raise_to_default_position();
+    }
+	
+	float z[NUM_LEGS];
 
     if(lrlRaised){
         z[LF] = GROUNDED + HIGH;
@@ -413,7 +419,7 @@ float dist(Point2D * vect){
  * leg movement to where it comes within the maximum reach of the leg.
  */
 float scale_to_range_bounds(float targLength, float currLength, float diffLength){
-    if (currLength <= MAX_DIST)
+    if (currLength <= MAX_DIST || diffLength == 0)
         return 1; //no scaling down needed
 
     float alpha = acos((powf(diffLength, 2) + powf(currLength, 2) - powf(targLength, 2))//no n/0 since diffLength & currLength > 0 if statement is entered
