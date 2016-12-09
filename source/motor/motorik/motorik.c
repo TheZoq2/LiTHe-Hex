@@ -93,21 +93,19 @@ int main(void)
 	
 	Point2D* current_position = raise_to_default_position();
 
-	spi_set_interrupts(true);
-	
+	//spi_set_interrupts(true);
+
 	for(;;)
 	{
-		Point2D goal;
-		goal.x = 1;
-		goal.y = 0;
+		Point2D point;
+		point.x = rand() % 3 - 1;
+		point.y = rand() % 3 - 1;
+		//point.x = -1;
+		//point.y = -1;
 		
-		work_towards_goal(0, goal, current_position);
+		work_towards_goal(0, point, current_position);
 	}
 	
-	while(1)
-	{
-		
-	}
 #ifndef IS_X86
 	while(1)
 	{
