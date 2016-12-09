@@ -55,6 +55,15 @@ void test_servo_communication()
 	int a = 0;
 }
 
+void rotate_to_position(float x, float y, Point2D* current)
+{
+	Point2D point;
+	point.x = x;
+	point.y = y;
+	
+	work_towards_goal(0, point, current);
+}
+
 int main(void)
 {
     CurrentStatus status;
@@ -93,24 +102,20 @@ int main(void)
 	
 	Point2D* current_position = raise_to_default_position();
 
-	//spi_set_interrupts(true);
-	Point2D point;
-	point.x = -1;
-	point.y = 1;
-	//point.x = -1;
-	//point.y = -1;
-	
-	work_towards_goal(0, point, current_position);
-	for(;;)
-	{
-		Point2D point;
-		point.x = -1;
-		point.y = -1;
-		//point.x = -1;
-		//point.y = -1;
-		
-		work_towards_goal(0, point, current_position);
-	}
+	//rotate_to_position(0, 1, current_position);
+	//rotate_to_position(-1, -1, current_position);
+	//rotate_to_position(1, 1, current_position);
+	//rotate_to_position(1, 1, current_position);
+	//rotate_to_position(-1, -1, current_position);
+	//rotate_to_position(1, 0, current_position);
+	//rotate_to_position(1, 1, current_position);
+	//rotate_to_position(1, -1, current_position);
+	//rotate_to_position(1, 0, current_position);
+	//rotate_to_position(-1, 0, current_position);
+	rotate_to_position(-1, -1, current_position);
+	rotate_to_position(0, 0, current_position);
+	rotate_to_position(-1, 1, current_position);
+	rotate_to_position(-1, -1, current_position);
 	
 #ifndef IS_X86
 	while(1)
