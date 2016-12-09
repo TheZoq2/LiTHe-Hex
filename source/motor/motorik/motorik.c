@@ -94,12 +94,18 @@ int main(void)
 	Point2D* current_position = raise_to_default_position();
 
 	//spi_set_interrupts(true);
-
+	Point2D point;
+	point.x = -1;
+	point.y = 1;
+	//point.x = -1;
+	//point.y = -1;
+	
+	work_towards_goal(0, point, current_position);
 	for(;;)
 	{
 		Point2D point;
-		point.x = rand() % 3 - 1;
-		point.y = rand() % 3 - 1;
+		point.x = -1;
+		point.y = -1;
 		//point.x = -1;
 		//point.y = -1;
 		
