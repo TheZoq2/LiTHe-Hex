@@ -64,8 +64,8 @@ int main(void)
 
 	// Enable global interrupts and init spi communication
 #ifndef IS_X86
-	spi_init();
-	sei();
+	//spi_init();
+	//sei();
 #endif
 
 	set_ddr(DDRD, 0xfE);
@@ -95,7 +95,7 @@ int main(void)
 
 	spi_set_interrupts(true);
 	
-	for(uint8_t i = 0; i < 40; i++)
+	for(;;)
 	{
 		Point2D goal;
 		goal.x = 1;
