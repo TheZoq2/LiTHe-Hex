@@ -49,9 +49,9 @@ def main():
 
     # Setup auto/manual mode and button for it
     auto = True 
-    button_temp = 0
-    GPIO.setmode(GPIO.BOARD)
-    GPIO.setup(AUTO_BUTTON_PIN, GPIO.IN, GPIO.PUD_DOWN)
+    # button_temp = 0
+    # GPIO.setmode(GPIO.BOARD)
+    # GPIO.setup(AUTO_BUTTON_PIN, GPIO.IN, GPIO.PUD_DOWN)
 
     decision_packet = decision_making.DecisionPacket()
 
@@ -66,14 +66,14 @@ def main():
     while True:
         #pdb.set_trace()
         # Button toggle auto/manual mode and send mode to server
-        button_input = GPIO.input(AUTO_BUTTON_PIN)
-        if (button_input == 1):
-            if (button_temp != button_input):
-                auto = not auto
-                button_temp = 1
-                send_queue.put(web.ServerSendPacket(auto_mode=auto))
-        else:
-            button_temp = 0
+        # button_input = GPIO.input(AUTO_BUTTON_PIN)
+        # if (button_input == 1):
+        #     if (button_temp != button_input):
+        #         auto = not auto
+        #         button_temp = 1
+        #         send_queue.put(web.ServerSendPacket(auto_mode=auto))
+        # else:
+        #     button_temp = 0
 
         if auto:
             # Auto mode
@@ -117,9 +117,9 @@ def do_auto_mode_iteration(sensor_spi, motor_spi, send_queue,
 
         # Send decision to server
         print("Sending sensor data to server: " + str(sensor_data))
-        send_queue.put(web.ServerSendPacket(debug_string=
-            decision_making.int_to_string_command(decision_packet.decision),
-                                            sensor_data_packet=sensor_data))
+        send_queue.put(web.ServerSendPacket(sensor_data_packet=sensor_data))
+        send_queue.put(web.ServerSenderPacket(debug_string=
+            decision_making.int_to_string_command(decision_packet.decision)))
 
         auto = True
 
