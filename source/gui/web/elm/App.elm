@@ -95,6 +95,11 @@ type alias Flags =
     { host : String }
 
 
+initialJoystick : Joystick.JoystickData
+initialJoystick =
+    { x = 0, y = 0, rotation = 0, thrust = 0, reset = False }
+
+
 init : Flags -> ( Model, Cmd Msg )
 init { host } =
     let
@@ -107,7 +112,7 @@ init { host } =
         { phxSocket = phxSocket
         , currentMessage = ""
         , messages = []
-        , joystick = { x = 0, y = 0, rotation = 0, thrust = 0 }
+        , joystick = initialJoystick
         , joystickIndex = Nothing
         , sensorData = []
         , autoMode = False
@@ -148,6 +153,19 @@ sensorMessageDecoder =
 chatMessageDecoder : JD.Decoder BotMessage
 chatMessageDecoder =
     JD.oneOf [ debugMessageDecoder, autoMessageDecoder, sensorMessageDecoder ]
+
+
+sendControlMessage : Socket Msg -> JE.Value -> ( Socket Msg, Cmd Msg )
+sendControlMessage socket payload =
+    let
+        push =
+            Phoenix.Push.init "new_msg" "client"
+                |> Phoenix.Push.withPayload payload
+
+        ( phxSocket, phxCmd ) =
+            Phoenix.Socket.push push socket
+    in
+        ( phxSocket, Cmd.map PhoenixMsg phxCmd )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -236,7 +254,16 @@ update msg model =
                 ( model, Cmd.none )
 
         AxisData data ->
-            ( { model | joystick = data }, Cmd.none )
+            let
+                ( phxSocket, phxCmd ) =
+                    if data.reset && not model.joystick.reset then
+                        sendControlMessage
+                            model.phxSocket
+                            (JE.object [ ( "reset", JE.bool True ) ])
+                    else
+                        ( model.phxSocket, Cmd.none )
+            in
+                ( { model | phxSocket = phxSocket, joystick = data }, phxCmd )
 
         SendMessage ->
             let
@@ -335,7 +362,8 @@ update msg model =
                     model.joystick
 
                 slide ( minv, maxv ) oldv ( decKey, incKey ) =
-                    (oldv * 100) + keyDiff decKey incKey
+                    (oldv * 100)
+                        + keyDiff decKey incKey
                         |> clamp (minv * 100) (maxv * 100)
                         |> \v -> v / 100
             in
@@ -452,7 +480,7 @@ viewButtons model =
                 , Button.render Mdl
                     [ 0 ]
                     model.mdl
-                    [ Joystick.JoystickData 0 0 0 0
+                    [ initialJoystick
                         |> AxisData
                         |> Button.onClick
                     ]
