@@ -48,7 +48,7 @@ def main():
     res = []
 
     # Setup auto/manual mode and button for it
-    auto = False
+    auto = True 
     button_temp = 0
     GPIO.setmode(GPIO.BOARD)
     GPIO.setup(AUTO_BUTTON_PIN, GPIO.IN, GPIO.PUD_DOWN)
@@ -77,8 +77,6 @@ def main():
 
         if auto:
             # Auto mode
-            os.system('clear')
-            print("Auto mode!")
             auto, prev_speed, prev_x, prev_y, prev_rot = do_auto_mode_iteration(
                 sensor_spi, motor_spi, send_queue, 
                 receive_queue, decision_packet,
@@ -105,7 +103,12 @@ def receive_server_packet(receive_queue):
 def do_auto_mode_iteration(sensor_spi, motor_spi, send_queue,
                            receive_queue, decision_packet,
                            prev_speed, prev_x, prev_y, prev_rot):
-    sensor_data = avr_communication.get_sensor_data(sensor_spi)
+    try:
+        sensor_data = avr_communication.get_sensor_data(sensor_spi)
+    except Exception as e:
+        print(e)
+        print("Could not read sensor data. Skipping...")
+        return True, prev_speed, prev_x, prev_y, prev_rot
    # print("sensor_data:", sensor_data)
 
    # print("Right_angle: ",sensor_data.right_angle)
@@ -209,15 +212,8 @@ def send_decision_avr(spi, decision_packet):
         rotation = convert_to_sendable_byte(0)
 
     count = 0
-    while True:
-        try:    
-            avr_communication.set_servo_speed(spi, decision_packet.speed)
-            avr_communication.walk(spi, x_speed, y_speed, rotation, auto_mode=True)
-            print("Walk sent x: {}, y: {}, r: {}".format(x_speed, y_speed, rotation))
-            break
-        except avr_communication.CommunicationError:
-            count += 1
-            print("Tried sending speed (times): " + str(count), end="\r")
+    avr_communication.set_servo_speed(spi, decision_packet.speed)
+    avr_communication.walk(spi, x_speed, y_speed, rotation, auto_mode=True)
 
 # Malcolm conversion for no no negative numbers, other name?
 def convert_to_sendable_byte(byte):
