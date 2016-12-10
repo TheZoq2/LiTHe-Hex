@@ -2,7 +2,6 @@ module App exposing (..)
 
 import Html exposing (Html, h1, img, text, div, input, br, form)
 import Html.Attributes exposing (style, value, src, placeholder)
-import Html.Events exposing (onInput, onSubmit)
 import Html.Lazy exposing (lazy)
 import Json.Encode as JE
 import Json.Decode as JD
@@ -55,8 +54,6 @@ type alias PIDParameter =
 
 type Msg
     = PhoenixMsg (Phoenix.Socket.Msg Msg)
-    | SetNewMessage String
-    | SendMessage
     | ReceiveChatMessage JE.Value
     | GamepadConnected Int
     | GamepadDisconnected Int
@@ -73,7 +70,6 @@ type Msg
 
 type alias Model =
     { phxSocket : Socket Msg
-    , currentMessage : String
     , messages : List String
     , joystick : Joystick.JoystickData
     , joystickIndex : Maybe Int
@@ -110,7 +106,6 @@ init { host } =
                 |> Phoenix.Socket.join (Phoenix.Channel.init "client")
     in
         { phxSocket = phxSocket
-        , currentMessage = ""
         , messages = []
         , joystick = initialJoystick
         , joystickIndex = Nothing
@@ -212,9 +207,6 @@ update msg model =
                 Err error ->
                     ( model, Cmd.none )
 
-        SetNewMessage str ->
-            { model | currentMessage = str } ! []
-
         UpdateControlDisplay _ ->
             case model.joystickIndex of
                 Nothing ->
@@ -225,23 +217,17 @@ update msg model =
 
         SendControlToServer _ ->
             let
-                payload =
-                    JE.object
-                        [ ( "x", JE.float model.joystick.x )
-                        , ( "y", JE.float model.joystick.y )
-                        , ( "rotation", JE.float model.joystick.rotation )
-                        , ( "thrust", JE.float model.joystick.thrust )
-                        ]
-
-                push =
-                    Phoenix.Push.init "joystick" "client"
-                        |> Phoenix.Push.withPayload payload
-
                 ( phxSocket, phxCmd ) =
-                    Phoenix.Socket.push push model.phxSocket
+                    sendControlMessage model.phxSocket
+                        <| JE.object
+                            [ ( "x", JE.float model.joystick.x )
+                            , ( "y", JE.float model.joystick.y )
+                            , ( "rotation", JE.float model.joystick.rotation )
+                            , ( "thrust", JE.float model.joystick.thrust )
+                            ]
             in
                 ( { model | phxSocket = phxSocket }
-                , Cmd.map PhoenixMsg phxCmd
+                , phxCmd
                 )
 
         GamepadConnected index ->
@@ -257,32 +243,12 @@ update msg model =
             let
                 ( phxSocket, phxCmd ) =
                     if data.reset && not model.joystick.reset then
-                        sendControlMessage
-                            model.phxSocket
+                        sendControlMessage model.phxSocket
                             (JE.object [ ( "reset", JE.bool True ) ])
                     else
                         ( model.phxSocket, Cmd.none )
             in
                 ( { model | phxSocket = phxSocket, joystick = data }, phxCmd )
-
-        SendMessage ->
-            let
-                payload =
-                    JE.object [ ( "body", JE.string model.currentMessage ) ]
-
-                push =
-                    Phoenix.Push.init "new_msg" "client"
-                        |> Phoenix.Push.withPayload payload
-
-                ( phxSocket, phxCmd ) =
-                    Phoenix.Socket.push push model.phxSocket
-            in
-                ( { model
-                    | currentMessage = ""
-                    , phxSocket = phxSocket
-                  }
-                , Cmd.map PhoenixMsg phxCmd
-                )
 
         SelectTab num ->
             ( { model | selectedTab = num }, Cmd.none )
@@ -529,12 +495,6 @@ viewControl model =
 viewDebug : Model -> List (Html Msg)
 viewDebug model =
     [ lazy Sensors.viewSensors model.sensorData
-    , form [ onSubmit SendMessage ]
-        [ Textfield.render Mdl
-            [ 0 ]
-            model.mdl
-            [ Textfield.onInput SetNewMessage, Textfield.value model.currentMessage ]
-        ]
     , div []
         [ (messageList model.messages) ]
     ]
