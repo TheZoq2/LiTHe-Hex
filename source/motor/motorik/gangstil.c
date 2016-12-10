@@ -211,7 +211,7 @@ void execute_position(Point2D * target, float * z){
 		current_servo_state.heights[legId] = z[legId];
 		current_servo_state.angles[legId] = ik[legId];
 #endif
-		set_leg_angles(legId, angles);
+        set_leg_angles(legId, angles);
     }
 
     send_servo_action();
@@ -715,9 +715,29 @@ Point2D* raise_to_default_position()
 	return current_leg_positions;
 }
 
+
+/**
+ * @brief scale_goal scales goal coordinates to create a 1-distance vector,
+ * and returns the lesser of original goal vector length and 1.
+ * @param goal Point2D representing intended final position after a movement.
+ * @return lesser of 1 and original length of goal vector.
+ */
+float scale_goal(Point2D * goal){
+    float distance = dist(goal);
+    if (goal->x != 0)
+        goal->x = goal->x / distance;
+    if (goal->y != 0)
+        goal->y = goal->y / distance;
+    return minf(1, distance);
+}
+
+
 /**
  * @brief work_towards_goal takes the robot closer to a requested position and
  * rotation, stepping with the set of legs that best accomplishes this.
+ *
+ * Movement of the robot (though not rotation) can be scaled down from best
+ * possible by sending a goal with distance lesser than 1
  *
  * Also, returns the scaledown applied to whichever set of legs is selected as
  * optimal for forward movement.
@@ -730,9 +750,10 @@ Point2D* raise_to_default_position()
  * @return scaledown applied to grounded set of legs.
  */
 float work_towards_goal(float rot, Point2D goal, Point2D * current){
-	
-	if (goal.x == 0 && goal.y == 0){
-		return 1;
+    float requestedDownscale = scale_goal(& goal); //allows for detailed steering with small joystick tilts.
+
+    if (goal.x == 0 && goal.y == 0 && rot == 0){
+        return 1;   //no movement
 	}
 	
     Point2D targ[NUM_LEGS];
@@ -750,12 +771,15 @@ float work_towards_goal(float rot, Point2D goal, Point2D * current){
     if (bestscale < 0.001){
     	return bestscale; //too little movement to be relevant executing
     }
-	
-    bool lrlRaised = scaledown0 > scaledown1;
-    goal.x = goal.x * bestscale;
-    goal.y = goal.y * bestscale;
 
-    direct_legs(rot * bestscale, targ, current, goal, lrlRaised);
+    bool lrlRaised = scaledown0 > scaledown1;
+
+    rot = rot * bestscale;      //note: requested downscale dependant on joystick tilt; unrelated to rotation
+    goal.x = goal.x * bestscale * requestedDownscale;
+    goal.y = goal.y * bestscale * requestedDownscale;
+
+    direct_legs(rot, targ, current, goal, lrlRaised);
+
 
 	////spi_set_interrupts(false);
     execute_step(current, targ, lrlRaised);
@@ -797,3 +821,38 @@ void rotate_set_angle(float angle, Point2D * current){
 
     assume_standardized_stance(current);
 }
+
+
+int main(int argc, char *argv[]){
+    Point2D command;
+    command.x = -1;
+    command.y = -1;
+
+    printf("command is: %f, %f.\n", command.x, command.y);
+    float scale = scale_goal(& command);
+    printf("new command is: %f, %f.\n", command.x, command.y);
+    printf("scale is %f.\n", scale);
+
+    return 0;
+
+    //remember to uncomment code trololololololololololololololololololololololololololololololo
+
+    /*
+    //testing variables
+    Point2D * current   = (Point2D *)calloc(NUM_LEGS, sizeof(Point2D));
+    Point2D command;
+    float rotation = 0;
+    for (int var = 0; var < 6; ++var) {
+
+        Point2D  temp = get_default_leg_position(var);
+        current[var].x = temp.x;
+        current[var].y = temp.y;
+    }
+    command.x = 0;
+    command.y = -1;
+
+    work_towards_goal(rotation, command, current);
+    return 0;*/
+
+}
+
