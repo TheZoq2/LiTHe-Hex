@@ -278,11 +278,24 @@ def walk(spi, x_speed, y_speed, turn_speed, auto_mode, timeout=None):
             print("Tried sending walk (times): " + str(count), end="\r")
 
 
-def back_to_neutral(spi):
+def back_to_neutral(spi, timeout=None):
     """Commands the motor unit to return to the neutral state"""
     # we send a zero byte as args
-    response = _send_bytes(spi, _add_parity(RETURN_TO_NEUTRAL, 0), 0)
-    _check_response(response)
+    count = 0
+    while True:
+        time.sleep(0.01)
+        try:
+            response = _send_bytes(spi, _add_parity(RETURN_TO_NEUTRAL, 0), 0)
+            _check_response(response)
+            print("Back to neutral sent")
+            break
+        except CommunicationError:
+            count += 1
+            if timeout is not None and count == timeout:
+                print("Timeout reached after {} tries".format(count))
+                return
+            print("Tried sending back to neutral (times): " + str(count), end="\r")
+
 
 
 def get_servo_status(spi):

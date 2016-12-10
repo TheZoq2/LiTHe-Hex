@@ -118,7 +118,7 @@ def do_auto_mode_iteration(sensor_spi, motor_spi, send_queue,
         # Send decision to server
         print("Sending sensor data to server: " + str(sensor_data))
         send_queue.put(web.ServerSendPacket(sensor_data_packet=sensor_data))
-        send_queue.put(web.ServerSenderPacket(debug_string=
+        send_queue.put(web.ServerSendPacket(debug_string=
             decision_making.int_to_string_command(decision_packet.decision)))
 
         auto = True
