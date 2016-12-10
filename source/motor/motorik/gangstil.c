@@ -45,7 +45,7 @@ const float DIAG_DIVISIVE_BORDER_OFFSET = 0.045;
 const float CLOSE_BORDER_TILT           = -1;
 const int   SMOOTH_STEP_ITERATIONS      = 5;
 const float DEFAULT_LEG_DISTANCE = 0.09;
-const float RELIABLY_EXECUTABLE_ROTATION = 0.4;
+const float RELIABLY_EXECUTABLE_ROTATION = 0.2;
 const float STRICT_ROTATION_MARGIN_OF_ERROR = 0.1;
 const float STANDUP_LEG_DISTANCE = 0.16;
 
@@ -731,7 +731,7 @@ Point2D* raise_to_default_position()
  */
 float work_towards_goal(float rot, Point2D goal, Point2D * current){
 	
-	if (goal.x == 0 && goal.y == 0){
+	if (goal.x == 0 && goal.y == 0 && rot == 0){
 		return 1;
 	}
 	
