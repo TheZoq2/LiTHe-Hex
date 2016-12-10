@@ -57,7 +57,7 @@
 #else
 	void usart_init()
 	{
-		printf("Initializing uart");
+		//printf("Initializing uart");
 	}
 
 	void uart_wait()
@@ -67,7 +67,7 @@
 
 	void usart_transmit(uint8_t data)
 	{
-		printf("Transmitting %#04X\n", data);
+		//printf("Transmitting %#04X\n", data);
 	}
 
 	uint8_t usart_receive()
@@ -77,7 +77,7 @@
 
 	void _delay_ms(int ms)
 	{
-		printf("Delaying for %i ms \n", ms);
+		//printf("Delaying for %i ms \n", ms);
 	}
 
 	void usart_set_direction(enum UsartDirection direction)
@@ -85,10 +85,10 @@
 		switch (direction)
 		{
 		case RX:
-			printf("Setting usart direction to RX\n");
+			//printf("Setting usart direction to RX\n");
 			break;
 		case TX:
-			printf("Setting usart direction to TX\n");
+			//printf("Setting usart direction to TX\n");
 			break;
 		}
 	}

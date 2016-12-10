@@ -21399,8 +21399,13 @@ var _user$project$Joystick$axisData = _elm_lang$core$Native_Platform.incomingPor
 							return A2(
 								_elm_lang$core$Json_Decode$andThen,
 								function (thrust) {
-									return _elm_lang$core$Json_Decode$succeed(
-										{x: x, y: y, rotation: rotation, thrust: thrust});
+									return A2(
+										_elm_lang$core$Json_Decode$andThen,
+										function (reset) {
+											return _elm_lang$core$Json_Decode$succeed(
+												{x: x, y: y, rotation: rotation, thrust: thrust, reset: reset});
+										},
+										A2(_elm_lang$core$Json_Decode$field, 'reset', _elm_lang$core$Json_Decode$bool));
 								},
 								A2(_elm_lang$core$Json_Decode$field, 'thrust', _elm_lang$core$Json_Decode$float));
 						},
@@ -21409,9 +21414,9 @@ var _user$project$Joystick$axisData = _elm_lang$core$Native_Platform.incomingPor
 				A2(_elm_lang$core$Json_Decode$field, 'y', _elm_lang$core$Json_Decode$float));
 		},
 		A2(_elm_lang$core$Json_Decode$field, 'x', _elm_lang$core$Json_Decode$float)));
-var _user$project$Joystick$JoystickData = F4(
-	function (a, b, c, d) {
-		return {x: a, y: b, rotation: c, thrust: d};
+var _user$project$Joystick$JoystickData = F5(
+	function (a, b, c, d, e) {
+		return {x: a, y: b, rotation: c, thrust: d, reset: e};
 	});
 
 var _user$project$Sensors$sensorMessagesPerSecond = 10;
@@ -21814,6 +21819,7 @@ var _user$project$App$messageList = function (messages) {
 		{ctor: '[]'},
 		A2(_elm_lang$core$List$map, _user$project$App$showMessage, messages));
 };
+var _user$project$App$initialJoystick = {x: 0, y: 0, rotation: 0, thrust: 0, reset: false};
 var _user$project$App$Model = function (a) {
 	return function (b) {
 		return function (c) {
@@ -22044,8 +22050,7 @@ var _user$project$App$viewButtons = function (model) {
 															{
 																ctor: '::',
 																_0: _MichaelCombs28$elm_mdl$Material_Button$onClick(
-																	_user$project$App$AxisData(
-																		A4(_user$project$Joystick$JoystickData, 0, 0, 0, 0))),
+																	_user$project$App$AxisData(_user$project$App$initialJoystick)),
 																_1: {ctor: '[]'}
 															},
 															{
@@ -22389,7 +22394,7 @@ var _user$project$App$init = function (_p5) {
 			phxSocket: phxSocket,
 			currentMessage: '',
 			messages: {ctor: '[]'},
-			joystick: {x: 0, y: 0, rotation: 0, thrust: 0},
+			joystick: _user$project$App$initialJoystick,
 			joystickIndex: _elm_lang$core$Maybe$Nothing,
 			sensorData: {ctor: '[]'},
 			autoMode: false,
@@ -22403,6 +22408,21 @@ var _user$project$App$init = function (_p5) {
 			_1: {ctor: '[]'}
 		});
 };
+var _user$project$App$sendControlMessage = F2(
+	function (socket, payload) {
+		var push = A2(
+			_fbonetti$elm_phoenix_socket$Phoenix_Push$withPayload,
+			payload,
+			A2(_fbonetti$elm_phoenix_socket$Phoenix_Push$init, 'new_msg', 'client'));
+		var _p8 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$push, push, socket);
+		var phxSocket = _p8._0;
+		var phxCmd = _p8._1;
+		return {
+			ctor: '_Tuple2',
+			_0: phxSocket,
+			_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$App$PhoenixMsg, phxCmd)
+		};
+	});
 var _user$project$App$subscriptions = function (model) {
 	return _elm_lang$core$Platform_Sub$batch(
 		{
@@ -22508,12 +22528,12 @@ var _user$project$App$chatMessageDecoder = _elm_lang$core$Json_Decode$oneOf(
 	});
 var _user$project$App$update = F2(
 	function (msg, model) {
-		var _p8 = msg;
-		switch (_p8.ctor) {
+		var _p9 = msg;
+		switch (_p9.ctor) {
 			case 'PhoenixMsg':
-				var _p9 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$update, _p8._0, model.phxSocket);
-				var phxSocket = _p9._0;
-				var phxCmd = _p9._1;
+				var _p10 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$update, _p9._0, model.phxSocket);
+				var phxSocket = _p10._0;
+				var phxCmd = _p10._1;
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
@@ -22522,11 +22542,11 @@ var _user$project$App$update = F2(
 					_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$App$PhoenixMsg, phxCmd)
 				};
 			case 'Mdl':
-				return A2(_MichaelCombs28$elm_mdl$Material$update, _p8._0, model);
+				return A2(_MichaelCombs28$elm_mdl$Material$update, _p9._0, model);
 			case 'ReceiveChatMessage':
-				var _p10 = A2(_elm_lang$core$Json_Decode$decodeValue, _user$project$App$chatMessageDecoder, _p8._0);
-				if (_p10.ctor === 'Ok') {
-					switch (_p10._0.ctor) {
+				var _p11 = A2(_elm_lang$core$Json_Decode$decodeValue, _user$project$App$chatMessageDecoder, _p9._0);
+				if (_p11.ctor === 'Ok') {
+					switch (_p11._0.ctor) {
 						case 'DebugMessage':
 							return {
 								ctor: '_Tuple2',
@@ -22536,25 +22556,25 @@ var _user$project$App$update = F2(
 										messages: A2(
 											_elm_lang$core$List$take,
 											30,
-											{ctor: '::', _0: _p10._0._0, _1: model.messages})
+											{ctor: '::', _0: _p11._0._0, _1: model.messages})
 									}),
 								_1: _elm_lang$core$Platform_Cmd$none
 							};
 						case 'AutoMessage':
-							var _p12 = _p10._0._0;
-							var _p11 = A2(_elm_lang$core$Debug$log, 'Auto mode set to ', _p12);
+							var _p13 = _p11._0._0;
+							var _p12 = A2(_elm_lang$core$Debug$log, 'Auto mode set to ', _p13);
 							return {
 								ctor: '_Tuple2',
 								_0: _elm_lang$core$Native_Utils.update(
 									model,
-									{autoMode: _p12}),
+									{autoMode: _p13}),
 								_1: _elm_lang$core$Platform_Cmd$none
 							};
 						default:
 							var newData = A2(
 								_elm_lang$core$List$take,
 								5 * _user$project$Sensors$sensorMessagesPerSecond,
-								{ctor: '::', _0: _p10._0._0, _1: model.sensorData});
+								{ctor: '::', _0: _p11._0._0, _1: model.sensorData});
 							return {
 								ctor: '_Tuple2',
 								_0: _elm_lang$core$Native_Utils.update(
@@ -22571,17 +22591,17 @@ var _user$project$App$update = F2(
 					_elm_lang$core$Platform_Cmd_ops['!'],
 					_elm_lang$core$Native_Utils.update(
 						model,
-						{currentMessage: _p8._0}),
+						{currentMessage: _p9._0}),
 					{ctor: '[]'});
 			case 'UpdateControlDisplay':
-				var _p13 = model.joystickIndex;
-				if (_p13.ctor === 'Nothing') {
+				var _p14 = model.joystickIndex;
+				if (_p14.ctor === 'Nothing') {
 					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 				} else {
 					return {
 						ctor: '_Tuple2',
 						_0: model,
-						_1: _user$project$Joystick$poll(_p13._0)
+						_1: _user$project$Joystick$poll(_p14._0)
 					};
 				}
 			case 'SendControlToServer':
@@ -22623,9 +22643,9 @@ var _user$project$App$update = F2(
 					_fbonetti$elm_phoenix_socket$Phoenix_Push$withPayload,
 					payload,
 					A2(_fbonetti$elm_phoenix_socket$Phoenix_Push$init, 'joystick', 'client'));
-				var _p14 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$push, push, model.phxSocket);
-				var phxSocket = _p14._0;
-				var phxCmd = _p14._1;
+				var _p15 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$push, push, model.phxSocket);
+				var phxSocket = _p15._0;
+				var phxCmd = _p15._1;
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
@@ -22639,13 +22659,13 @@ var _user$project$App$update = F2(
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
 						{
-							joystickIndex: _elm_lang$core$Maybe$Just(_p8._0)
+							joystickIndex: _elm_lang$core$Maybe$Just(_p9._0)
 						}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'GamepadDisconnected':
 				return _elm_lang$core$Native_Utils.eq(
-					_elm_lang$core$Maybe$Just(_p8._0),
+					_elm_lang$core$Maybe$Just(_p9._0),
 					model.joystickIndex) ? {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
@@ -22654,12 +22674,28 @@ var _user$project$App$update = F2(
 					_1: _elm_lang$core$Platform_Cmd$none
 				} : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 			case 'AxisData':
+				var _p17 = _p9._0;
+				var _p16 = (_p17.reset && (!model.joystick.reset)) ? A2(
+					_user$project$App$sendControlMessage,
+					model.phxSocket,
+					_elm_lang$core$Json_Encode$object(
+						{
+							ctor: '::',
+							_0: {
+								ctor: '_Tuple2',
+								_0: 'reset',
+								_1: _elm_lang$core$Json_Encode$bool(true)
+							},
+							_1: {ctor: '[]'}
+						})) : {ctor: '_Tuple2', _0: model.phxSocket, _1: _elm_lang$core$Platform_Cmd$none};
+				var phxSocket = _p16._0;
+				var phxCmd = _p16._1;
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
-						{joystick: _p8._0}),
-					_1: _elm_lang$core$Platform_Cmd$none
+						{phxSocket: phxSocket, joystick: _p17}),
+					_1: phxCmd
 				};
 			case 'SendMessage':
 				var payload = _elm_lang$core$Json_Encode$object(
@@ -22676,9 +22712,9 @@ var _user$project$App$update = F2(
 					_fbonetti$elm_phoenix_socket$Phoenix_Push$withPayload,
 					payload,
 					A2(_fbonetti$elm_phoenix_socket$Phoenix_Push$init, 'new_msg', 'client'));
-				var _p15 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$push, push, model.phxSocket);
-				var phxSocket = _p15._0;
-				var phxCmd = _p15._1;
+				var _p18 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$push, push, model.phxSocket);
+				var phxSocket = _p18._0;
+				var phxCmd = _p18._1;
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
@@ -22691,15 +22727,15 @@ var _user$project$App$update = F2(
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
-						{selectedTab: _p8._0}),
+						{selectedTab: _p9._0}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'ChangeParameter':
-				var _p18 = _p8._0;
-				var _p16 = _elm_lang$core$String$toFloat(_p8._1);
-				if (_p16.ctor === 'Err') {
-					var newParameters = A2(_elm_lang$core$Dict$remove, _p18, model.parameters);
-					var _p17 = A2(_elm_lang$core$Debug$log, 'ERROR Could not parse text field value as float: ', _p16._0);
+				var _p21 = _p9._0;
+				var _p19 = _elm_lang$core$String$toFloat(_p9._1);
+				if (_p19.ctor === 'Err') {
+					var newParameters = A2(_elm_lang$core$Dict$remove, _p21, model.parameters);
+					var _p20 = A2(_elm_lang$core$Debug$log, 'ERROR Could not parse text field value as float: ', _p19._0);
 					return {
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
@@ -22708,7 +22744,7 @@ var _user$project$App$update = F2(
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				} else {
-					var newParameters = A3(_elm_lang$core$Dict$insert, _p18, _p16._0, model.parameters);
+					var newParameters = A3(_elm_lang$core$Dict$insert, _p21, _p19._0, model.parameters);
 					return {
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
@@ -22721,12 +22757,12 @@ var _user$project$App$update = F2(
 				var payload = _elm_lang$core$Json_Encode$object(
 					A2(
 						_elm_lang$core$List$map,
-						function (_p19) {
-							var _p20 = _p19;
+						function (_p22) {
+							var _p23 = _p22;
 							return {
 								ctor: '_Tuple2',
-								_0: _p20._0,
-								_1: _elm_lang$core$Json_Encode$float(_p20._1)
+								_0: _p23._0,
+								_1: _elm_lang$core$Json_Encode$float(_p23._1)
 							};
 						},
 						_elm_lang$core$Dict$toList(model.parameters)));
@@ -22734,9 +22770,9 @@ var _user$project$App$update = F2(
 					_fbonetti$elm_phoenix_socket$Phoenix_Push$withPayload,
 					payload,
 					A2(_fbonetti$elm_phoenix_socket$Phoenix_Push$init, 'joystick', 'client'));
-				var _p21 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$push, push, model.phxSocket);
-				var phxSocket = _p21._0;
-				var phxCmd = _p21._1;
+				var _p24 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$push, push, model.phxSocket);
+				var phxSocket = _p24._0;
+				var phxCmd = _p24._1;
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
@@ -22759,9 +22795,9 @@ var _user$project$App$update = F2(
 					_fbonetti$elm_phoenix_socket$Phoenix_Push$withPayload,
 					payload,
 					A2(_fbonetti$elm_phoenix_socket$Phoenix_Push$init, 'joystick', 'client'));
-				var _p22 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$push, push, model.phxSocket);
-				var phxSocket = _p22._0;
-				var phxCmd = _p22._1;
+				var _p25 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$push, push, model.phxSocket);
+				var phxSocket = _p25._0;
+				var phxCmd = _p25._1;
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
@@ -22770,24 +22806,24 @@ var _user$project$App$update = F2(
 					_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$App$PhoenixMsg, phxCmd)
 				};
 			default:
-				var _p27 = _p8._0;
+				var _p30 = _p9._0;
 				var joy = model.joystick;
 				var keyDiff = F2(
 					function (decKey, incKey) {
-						return _elm_lang$core$Native_Utils.eq(_p27, decKey) ? -10 : (_elm_lang$core$Native_Utils.eq(_p27, incKey) ? 10 : 0);
+						return _elm_lang$core$Native_Utils.eq(_p30, decKey) ? -10 : (_elm_lang$core$Native_Utils.eq(_p30, incKey) ? 10 : 0);
 					});
 				var slide = F3(
-					function (_p24, oldv, _p23) {
-						var _p25 = _p24;
-						var _p26 = _p23;
+					function (_p27, oldv, _p26) {
+						var _p28 = _p27;
+						var _p29 = _p26;
 						return function (v) {
 							return v / 100;
 						}(
 							A3(
 								_elm_lang$core$Basics$clamp,
-								_p25._0 * 100,
-								_p25._1 * 100,
-								(oldv * 100) + A2(keyDiff, _p26._0, _p26._1)));
+								_p28._0 * 100,
+								_p28._1 * 100,
+								(oldv * 100) + A2(keyDiff, _p29._0, _p29._1)));
 					});
 				return {
 					ctor: '_Tuple2',

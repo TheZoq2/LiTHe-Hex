@@ -48,7 +48,7 @@ const uint8_t SERVO_MAP[6][3] = {
 
 void send_servo_command(uint8_t id, uint8_t instruction, void* data, uint8_t data_amount)
 {
-	//spi_set_interrupts(false);
+	////spi_set_interrupts(false);
 	//Set the direction of the tristate gate
 	//clear_bit(PORTD, PIN_RX_TOGGLE);
 
@@ -76,7 +76,7 @@ void send_servo_command(uint8_t id, uint8_t instruction, void* data, uint8_t dat
 	
 	uart_wait();
 	
-	//spi_set_interrupts(true);
+	////spi_set_interrupts(true);
 	
 	//Reset the direction of the tristate gate
 	//set_bit(PORTD, PIN_RX_TOGGLE);
@@ -94,15 +94,19 @@ void write_servo_data(uint8_t id, uint8_t address, const uint8_t* data, uint8_t 
 	{
 		new_data[i+1] = data[i];
 	}
-
+	
+	//spi_set_interrupts(false);
+	
 	send_servo_command(id, WRITE_DATA_INSTRUCTION, (void*)new_data, new_data_amount);
 
+	//spi_set_interrupts(true);
+	
 	free(new_data);
 }
 
 ServoReply read_servo_data(uint8_t id, uint8_t address, uint8_t length)
 {
-	spi_set_interrupts(false);
+	//spi_set_interrupts(false);
 	//Send datarequest instruction
 	uint8_t* new_data = (uint8_t*)malloc(2);
 
@@ -116,18 +120,16 @@ ServoReply read_servo_data(uint8_t id, uint8_t address, uint8_t length)
 	free(new_data);
 
 	ServoReply reply = receive_servo_reply();
-	spi_set_interrupts(true);
+	//spi_set_interrupts(true);
 	//Read the data
 	return reply;
 }
 
-uint16_reply read_uint16_from_servo(uint8_t id, uint8_t address)
+Uint16Result read_uint16_from_servo(uint8_t id, uint8_t address)
 {
 	ServoReply reply = read_servo_data(id, address, 2);
 
-	uint16_reply result;
-
-	//uint16_t result = (reply.parameters[1] << 8) + reply.parameters[0];
+	Uint16Result result;
 
 	if(reply.error != 0)
 	{
@@ -148,19 +150,22 @@ uint16_reply read_uint16_from_servo(uint8_t id, uint8_t address)
 
 #ifdef IS_X86
 void send_servo_action()
-{
+{	
 	send_servo_command(BROADCAST_ID, ACTION_INSTRUCTION, 0, 0);
 	while(!servos_are_done_rotating())
-		;
+		;	
 }
 #else
 void send_servo_action()
 {
+	//spi_set_interrupts(false);
 	send_servo_command(BROADCAST_ID, ACTION_INSTRUCTION, 0, 0);
 	//TODO: Olavs fel
-	//_delay_ms(1200);
+	//_delay_ms(200);
 	while(!servos_are_done_rotating())
 		;
+		
+	//spi_set_interrupts(true);
 }
 #endif
 
@@ -193,7 +198,7 @@ ServoReply receive_servo_reply()
 
 	if(servo_reply.error != 0)
 	{
-		goto failiure;
+		servo_reply.length = 0;
 	}
 
 	servo_reply.parameters = (uint8_t*) malloc(sizeof(uint8_t) * servo_reply.parameter_amount);
@@ -211,7 +216,8 @@ failiure:
 	clear_bit(PORTD, PIN_RX_TOGGLE);
 	usart_set_direction(TX);
 
-
+	
+	_delay_ms(5);
 	
 	//spi_set_interrupts(true);
 	
@@ -299,8 +305,12 @@ void set_leg_angles(enum LegIds leg_index, uint16_t* angles)
 */
 void read_servo_target_positions(uint16_t* buffer)
 {
-	for (uint8_t i = 0; i < NUM_SERVOS; ++i) 
+	for (uint8_t i = 3; i < NUM_SERVOS; ++i) 
 	{
+		if(i == 2 || i == 0)
+		{
+			continue;
+		}
 		buffer[i] = read_uint16_from_servo(i + 1, GOAL_POSITION_ADDRESS).result;
 	}
 }
@@ -312,7 +322,7 @@ bool is_servo_position_in_bounds(uint16_t target_position, uint16_t current_posi
 
 bool check_servo_done_rotating(uint8_t id, uint16_t target_position)
 {
-	uint16_reply current_position = 
+	Uint16Result current_position = 
 		read_uint16_from_servo(id + 1, PRESENT_POSITION_ADDRESS);
 
 	bool result = 
@@ -327,22 +337,27 @@ bool check_servo_done_rotating(uint8_t id, uint16_t target_position)
 	return result;
 #endif
 }
+
 bool servos_are_done_rotating()
 {
 #ifdef IS_X86
 	//We need to wait for the simulator to process the command before checking this
 	//Sleep for 0.1 seconds
 	printf("Sleeping \n\n\n\n");
-	usleep(100000);
+	usleep(10000);
 #endif
 
+	//_delay_ms(200);
 	uint16_t servo_targets[NUM_SERVOS];
-	uint16_t* targ_ptr = servo_targets;
 
 	read_servo_target_positions(servo_targets);
 
-	for(uint8_t i = 0; i < NUM_SERVOS; i++)
+	for(uint8_t i = 3; i < NUM_SERVOS; i++)
 	{
+		if(i == 2 || i == 0)
+		{
+			continue;
+		}
 		if(check_servo_done_rotating(i, servo_targets[i]) == false)
 		{
 			return false;

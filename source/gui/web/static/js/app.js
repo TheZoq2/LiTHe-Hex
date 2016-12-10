@@ -40,14 +40,16 @@ function pollRequestReceived(gamePadIndex) {
         x: gamepad.axes[0],
         y: gamepad.axes[1],
         rotation: gamepad.axes[3],
-        thrust: (1 - gamepad.axes[2]) / 2
+        thrust: (1 - gamepad.axes[2]) / 2,
+
+        reset: gamepad.buttons[4].pressed
     }
     elmApp.ports.axisData.send(data);
 }
 
 function removeGamepad(gamepad) {
     console.log("Gamepad with index " + gamepad.index + " has been disconnected");
-    elmApp.ports.connected.send(gamepad.index);
+    elmApp.ports.disconnected.send(gamepad.index);
     delete controllers[gamepad.index];
 }
 

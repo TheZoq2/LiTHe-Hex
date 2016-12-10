@@ -27,6 +27,7 @@ CurrentStatus* current_status;
 void build_spi_reply_frame(Frame *frame_trans);
 void handle_spi_frame(Frame *frame_recv);
 
+
 // If SPI receive something
 ISR(SPI_STC_vect) {
     Frame frame_recv;
@@ -46,13 +47,13 @@ ISR(SPI_STC_vect) {
 }
 #endif
 
-
-void test_servo_communication()
+void rotate_to_position(float x, float y, Point2D* current)
 {
-	//Read internal temperature from servo 1
-	ServoReply reply = read_servo_data(1, 0x2B, 1);
-
-	int a = 0;
+	Point2D point;
+	point.x = x;
+	point.y = y;
+	
+	work_towards_goal(0, point, current);
 }
 
 int main(void)
@@ -65,12 +66,12 @@ int main(void)
 	// Enable global interrupts and init spi communication
 #ifndef IS_X86
 	spi_init();
+	spi_set_interrupts(false);
 	sei();
 #endif
 
 	set_ddr(DDRD, 0xfE);
 	
-	spi_set_interrupts(false);
 	
 	usart_init();
 	
@@ -93,24 +94,33 @@ int main(void)
 	
 	Point2D* current_position = raise_to_default_position();
 
-	spi_set_interrupts(true);
+	// rotate_to_position(0.123, 0.99, current_position);
+	// rotate_to_position(-1, -1, current_position);
+	// rotate_to_position(1, 0.7, current_position);
+	// rotate_to_position(1, 0.1, current_position);
+	// rotate_to_position(-1, -0.45, current_position);
+	// rotate_to_position(1, 0, current_position);
+	// rotate_to_position(1, 1, current_position);
+	// rotate_to_position(1, -1, current_position);
+	// rotate_to_position(1, 0, current_position);
+	// rotate_to_position(-1, 0, current_position);
+	// rotate_to_position(-1, -1, current_position);
+	// rotate_to_position(0, 0, current_position);
+	// rotate_to_position(-0.9, 1, current_position);
+	// rotate_to_position(-1, -1, current_position);
 	
-	for(uint8_t i = 0; i < 40; i++)
-	{
-		Point2D goal;
-		goal.x = 1;
-		goal.y = 0;
-		
-		work_towards_goal(0, goal, current_position);
-	}
+	//while(1){
 	
-	while(1)
-	{
-		
-	}
 #ifndef IS_X86
+	
+	
+	
+	
+	spi_set_interrupts(true);
+
 	while(1)
 	{
+		
         if (current_status->return_to_neutral) {
 
             current_status->return_to_neutral = false;
@@ -132,14 +142,18 @@ int main(void)
                 goal.x = x_speed;
                 goal.y = y_speed;
 				
-				//spi_set_interrupts(false);
+				spi_set_interrupts(false);
                 work_towards_goal(rotation, goal, current_position);
-				//spi_set_interrupts(true);
+				spi_set_interrupts(true);
 
             } else if (rotation != 0) {
                 //rotate_set_angle(rotation * (M_PI / 2), current_position);
             }
         }
+		uint32_t i = 0;
+		while (i < 10000) {
+			i++;
+		}
 	}
 #else
 	for(uint8_t i = 0; i < 40; ++i)
@@ -148,7 +162,7 @@ int main(void)
 		goal.x = 1;
 		goal.y = 0;
 
-		printf("Walking one step\n\n\n\n");
+		//printf("Walking one step\n\n\n\n");
 
 		work_towards_goal(0, goal, current_position);
 	}

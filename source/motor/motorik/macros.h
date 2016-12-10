@@ -9,10 +9,10 @@
 	#define set_ddr(reg, mask) reg=mask
 #else
 	
-	#define set_bit(reg,bit) printf("Setting %c %#010x\n", reg, bit)
-	#define clear_bit(reg,bit) printf("Clearing %c %#010x\n", reg, bit)
+	#define set_bit(reg,bit) //printf("Setting %c %#010x\n", reg, bit)
+	#define clear_bit(reg,bit) //printf("Clearing %c %#010x\n", reg, bit)
 
-	#define set_ddr(reg, mask) printf("Setting DDR%c to %#010x\n", reg, mask)
+	#define set_ddr(reg, mask) //printf("Setting DDR%c to %#010x\n", reg, mask)
 #endif
 
 #endif

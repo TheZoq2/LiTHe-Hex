@@ -35,7 +35,7 @@ const float FRONT_LEG_JOINT_Y           = 0.06;
 const float MID_LEG_JOINT_Y             = 0.1;
 const float HIGH                        = 0.03;
 const float GROUNDED                    = -0.14;
-const float MAX_DIST                    = 0.11;
+const float MAX_DIST                    = 0.14;
 const float VERT_MID_LEG_BORDER_OFFSET  = 0.06;
 const float VERT_HEAD_LEG_BORDER_OFFSET = -0.03;
 const float HORIZ_BORDER_TILT           = 0;
@@ -145,6 +145,9 @@ Point2D robot_to_ik_coords(Point2D original, size_t leg)
 	{
 		return rotate_point_by_angle(result, -3 * M_PI / 4);
 	}
+
+	printf("robot_to_ik coords got an invalid leg %u\n", leg);
+	return original;
 }
 
 
@@ -262,7 +265,13 @@ Point2D add_point2D(Point2D point1, Point2D point2)
  * which should remain grounded.
  */
 void execute_step(Point2D * current, Point2D * target, bool lrlRaised){
-    float z[NUM_LEGS];
+    if (current->x == NAN || current->y == NAN || target->x == NAN || target->y == NAN)
+    {
+		free(current);
+		current = raise_to_default_position();
+    }
+	
+	float z[NUM_LEGS];
 
     if(lrlRaised){
         z[LF] = GROUNDED + HIGH;
@@ -413,12 +422,13 @@ float dist(Point2D * vect){
  * leg movement to where it comes within the maximum reach of the leg.
  */
 float scale_to_range_bounds(float targLength, float currLength, float diffLength){
-    if (currLength <= MAX_DIST)
+    if (targLength <= MAX_DIST || absf(diffLength) < 0.0001)
         return 1; //no scaling down needed
 
     float alpha = acos((powf(diffLength, 2) + powf(currLength, 2) - powf(targLength, 2))//no n/0 since diffLength & currLength > 0 if statement is entered
                        / (2 * diffLength * currLength));    // a = acos ((B2 + C2 - A2)/2BC), cosine trig formula
-    float beta = asin(currLength * sin(alpha) / MAX_DIST);     // b = asin (B * sin(a)/A ) // sin(b)/B = sin(a)/A, sine trig formula
+	float max_dist = MAX_DIST;
+    float beta = asin(currLength * sin(alpha) / max_dist);     // b = asin (B * sin(a)/A ) // sin(b)/B = sin(a)/A, sine trig formula
     float gamma = M_PI - alpha - beta;                      //sum internal angles = PI
     float optimalDiff  = absf(MAX_DIST * sin(gamma) / sin(alpha));  //sin(alpha)never 0, if current leg pos legal and statement entered.
                                                                  //C = A * sin(c) / sin(a),
@@ -720,10 +730,15 @@ Point2D* raise_to_default_position()
  * @return scaledown applied to grounded set of legs.
  */
 float work_towards_goal(float rot, Point2D goal, Point2D * current){
+	
+	if (goal.x == 0 && goal.y == 0){
+		return 1;
+	}
+	
     Point2D targ[NUM_LEGS];
     float scale[NUM_LEGS];
 
-    printf("Working towards goal \n");
+    //printf("Working towards goal \n");
 
     direct_legs(rot, targ, current, goal, true);
     float scaledown0 = scale_legs(targ, current, scale, true);
@@ -742,9 +757,9 @@ float work_towards_goal(float rot, Point2D goal, Point2D * current){
 
     direct_legs(rot * bestscale, targ, current, goal, lrlRaised);
 
-	//spi_set_interrupts(false);
+	////spi_set_interrupts(false);
     execute_step(current, targ, lrlRaised);
-	//spi_set_interrupts(true);
+	////spi_set_interrupts(true);
     return maxf(scaledown0, scaledown1);
 }
 

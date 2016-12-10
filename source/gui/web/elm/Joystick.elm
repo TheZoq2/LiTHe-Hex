@@ -31,6 +31,7 @@ type alias JoystickData =
     , y : Float
     , rotation : Float
     , thrust : Float
+    , reset : Bool
     }
 
 
