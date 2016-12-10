@@ -12,6 +12,7 @@ use std::path::Path;
 use std::vec::Vec;
 
 use constants::UNIT_SCALE;
+use constants;
 
 
 const LIMB1_LENGTH: f32 = 5.5 * UNIT_SCALE;
@@ -136,7 +137,7 @@ impl Leg
         node2.set_local_translation(Vector3::new(0.0, LIMB1_LENGTH, 0.0));
         node3.set_local_translation(Vector3::new(0.0, LIMB2_LENGTH, 0.0));
 
-        let turn_speed = 1.;
+        let turn_speed = constants::TURN_SPEED;
         let limb1 = Limb::new(
                                 node1, 
                                 Vector3::new(0., 0., 0.), 

@@ -24,13 +24,16 @@ char read_simulator_servo_state(uint8_t id)
 
 	size_t read_amount = fread(buffer, 1, 18, in_file);
 
+
+	fclose(in_file);
+
 	if(target_index > read_amount - 1)
 	{
 		printf("Servo state file does not contain enough information, assuming done rotating");
 		return '0';
 	}
-
-	fclose(in_file);
-
-	return buffer[target_index];
+	else
+	{
+		return buffer[target_index];
+	}
 }
