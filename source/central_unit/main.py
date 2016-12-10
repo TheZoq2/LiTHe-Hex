@@ -136,6 +136,7 @@ def do_auto_mode_iteration(sensor_spi, motor_spi, send_queue,
             if packet.angle_adjustment_border is not None:
                 decision_packet.regulate_angle_adjustment_border = packet.angle_adjustment_border
         return auto, prev_speed, prev_x, prev_y, prev_rot
+
     except Exception as e:
         print(e)
         print("Could not read sensor data. Skipping...")
@@ -153,10 +154,9 @@ def do_manual_mode_iteration(sensor_spi, motor_spi, send_queue, receive_queue,
                              prev_speed, prev_x, prev_y, prev_rot):
     try:
         sensor_data = avr_communication.get_sensor_data(sensor_spi)
-
         send_queue.put(web.ServerSendPacket(sensor_data))
-    except avr_communication.CommunicationError:
-        pass
+    except avr_communication.CommunicationError as e:
+        print("Could not read sensor data: " + str(e))
 
     auto = False
 
@@ -169,6 +169,12 @@ def do_manual_mode_iteration(sensor_spi, motor_spi, send_queue, receive_queue,
         if packet.has_motion_command():
             print(packet.raw)
             servo_speed = (int)(packet.thrust * constants.MAX_16BIT_SIZE)
+            
+            return_to_neutral = packet.return_to_neutral
+
+            if return_to_neutral is not None and return_to_neutral:
+                avr_communication.back_to_neutral(motor_spi)
+
             if prev_speed != servo_speed:
                 avr_communication.set_servo_speed(motor_spi, servo_speed, 100)
 
