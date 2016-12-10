@@ -29,7 +29,7 @@ import constants
 
 
 MOTOR_ADDR = (0, 0)
-SENSOR_ADDR = (0, 1)
+SENSOR_ADDR = (1, 0)
 
 DATA_REQ    = 0x02
 

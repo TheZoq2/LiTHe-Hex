@@ -33,7 +33,7 @@ try:
 except ImportError:
     pass
 
-AUTO_BUTTON_PIN = 40
+AUTO_BUTTON_PIN = 37
 
 
 def main():
@@ -105,6 +105,37 @@ def do_auto_mode_iteration(sensor_spi, motor_spi, send_queue,
                            prev_speed, prev_x, prev_y, prev_rot):
     try:
         sensor_data = avr_communication.get_sensor_data(sensor_spi)
+        print(" YAY: {} ".format(sensor_data))
+        decision_making.get_decision(sensor_data, decision_packet)
+
+        print("Decision: ", decision_packet.decision)
+
+        pid_controller.regulate(sensor_data, decision_packet)
+       # print("Pid controller command: ", decision_packet.regulate_base_movement,
+       #       ", ", decision_packet.regulate_command_y, ", ", decision_packet.regulate_goal_angle)
+        send_decision_avr(motor_spi, decision_packet)
+
+        # Send decision to server
+        print("Sending sensor data to server: " + str(sensor_data))
+        send_queue.put(web.ServerSendPacket(debug_string=
+            decision_making.int_to_string_command(decision_packet.decision),
+                                            sensor_data_packet=sensor_data))
+
+        auto = True
+
+        packet = receive_server_packet(receive_queue)
+
+        if packet is not None:
+            if packet.auto is not None:
+                auto = packet.auto
+            # Regulate algorithm parameters
+            if packet.angle_scaledown is not None:
+                decision_packet.regulate_angle_scaledown = packet.angle_scaledown
+            if packet.movement_scaledown is not None:
+                decision_packet.regulate_set_movement_scaledown = packet.movement_scaledown
+            if packet.angle_adjustment_border is not None:
+                decision_packet.regulate_angle_adjustment_border = packet.angle_adjustment_border
+        return auto, prev_speed, prev_x, prev_y, prev_rot
     except Exception as e:
         print(e)
         print("Could not read sensor data. Skipping...")
@@ -115,36 +146,7 @@ def do_auto_mode_iteration(sensor_spi, motor_spi, send_queue,
    # print("Left_angle: ",sensor_data.left_angle)
    # print("Average angle: ", sensor_data.average_angle)
 
-    decision_making.get_decision(sensor_data, decision_packet)
 
-    print("Decision: ", decision_packet.decision)
-
-    pid_controller.regulate(sensor_data, decision_packet)
-   # print("Pid controller command: ", decision_packet.regulate_base_movement,
-   #       ", ", decision_packet.regulate_command_y, ", ", decision_packet.regulate_goal_angle)
-    send_decision_avr(motor_spi, decision_packet)
-
-    # Send decision to server
-    send_queue.put(web.ServerSendPacket(debug_string=
-        decision_making.int_to_string_command(decision_packet.decision),
-                                        sensor_data_packet=sensor_data))
-
-    auto = True
-
-    packet = receive_server_packet(receive_queue)
-
-    if packet is not None:
-        if packet.auto is not None:
-            auto = packet.auto
-        # Regulate algorithm parameters
-        if packet.angle_scaledown is not None:
-            decision_packet.regulate_angle_scaledown = packet.angle_scaledown
-        if packet.movement_scaledown is not None:
-            decision_packet.regulate_set_movement_scaledown = packet.movement_scaledown
-        if packet.angle_adjustment_border is not None:
-            decision_packet.regulate_angle_adjustment_border = packet.angle_adjustment_border
-
-    return auto, prev_speed, prev_x, prev_y, prev_rot
 
 
 def do_manual_mode_iteration(sensor_spi, motor_spi, send_queue, receive_queue,
