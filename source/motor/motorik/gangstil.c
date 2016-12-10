@@ -822,37 +822,3 @@ void rotate_set_angle(float angle, Point2D * current){
     assume_standardized_stance(current);
 }
 
-
-int main(int argc, char *argv[]){
-    Point2D command;
-    command.x = -1;
-    command.y = -1;
-
-    printf("command is: %f, %f.\n", command.x, command.y);
-    float scale = scale_goal(& command);
-    printf("new command is: %f, %f.\n", command.x, command.y);
-    printf("scale is %f.\n", scale);
-
-    return 0;
-
-    //remember to uncomment code trololololololololololololololololololololololololololololololo
-
-    /*
-    //testing variables
-    Point2D * current   = (Point2D *)calloc(NUM_LEGS, sizeof(Point2D));
-    Point2D command;
-    float rotation = 0;
-    for (int var = 0; var < 6; ++var) {
-
-        Point2D  temp = get_default_leg_position(var);
-        current[var].x = temp.x;
-        current[var].y = temp.y;
-    }
-    command.x = 0;
-    command.y = -1;
-
-    work_towards_goal(rotation, command, current);
-    return 0;*/
-
-}
-
