@@ -22,6 +22,7 @@ const LIMB3_LENGTH: f32 = 13.5 * UNIT_SCALE;
 const JOINT2_ANGLE_OFFSET: f32 = 0.349;
 const JOINT3_ANGLE_OFFSET: f32 = 0.873;
 
+
 #[derive(Clone)]
 pub struct Limb
 {
@@ -60,20 +61,23 @@ impl Limb
     {
         let angle_diff = self.target_angle - self.current_angle;
 
-        if angle_diff.abs() < self.turn_speed * delta_time
-        {
-            self.current_angle = self.target_angle;
-        }
-        else if angle_diff > 0.
-        {
-            self.current_angle += self.turn_speed * delta_time;
-        }
-        else
-        {
-            self.current_angle -= self.turn_speed * delta_time;
-        }
+        //if angle_diff.abs() < self.turn_speed * delta_time
+        //{
+        //    self.current_angle = self.target_angle;
+        //}
+        //else if angle_diff > 0.
+        //{
+        //    self.current_angle += self.turn_speed * delta_time;
+        //}
+        //else
+        //{
+        //    self.current_angle -= self.turn_speed * delta_time;
+        //}
 
-        //println!("{:?}", self.turn_axis);
+        const scaling: f32 = 0.1;
+
+        self.current_angle += angle_diff * scaling;
+
 
         self.node.set_local_rotation(
                     self.base_rotation + self.turn_axis * self.current_angle);
@@ -87,6 +91,11 @@ impl Limb
     pub fn is_done_rotating(&self) -> bool
     {
         self.current_angle == self.target_angle
+    }
+
+    pub fn get_target_angle(&self) -> f32
+    {
+        self.target_angle
     }
 }
 
@@ -207,5 +216,10 @@ impl Leg
     pub fn is_still_moving(&self) -> Vec<bool>
     {
         self.limbs.clone().into_iter().map(|x|{x.is_done_rotating() == false}).collect()
+    }
+
+    pub fn get_target_angles(&self) -> Vec<f32>
+    {
+        self.limbs.clone().into_iter().map(|x|{x.get_target_angle()}).collect()
     }
 }
