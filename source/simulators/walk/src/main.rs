@@ -85,22 +85,54 @@ impl Robot
 
     pub fn write_angles_done(&self) 
     {
-        let mut file = File::create("/tmp/hexsim/servo_states").unwrap();
-
-        let mut result = String::from("");
-        for leg in &self.legs
         {
-            for status in leg.is_still_moving()
+            let mut file = File::create("/tmp/hexsim/servo_states").unwrap();
+
+            let mut result = String::from("");
+            for leg in &self.legs
             {
-                result += match status
+                for status in leg.is_still_moving()
                 {
-                    true => "1",
-                    false => "0"
+                    result += match status
+                    {
+                        true => "1",
+                        false => "0"
+                    }
                 }
             }
-        }
 
-        file.write_all(result.into_bytes().as_slice());
+            file.write_all(result.into_bytes().as_slice());
+        }
+        //Writing angles
+        {
+            let mut file = File::create("/tmp/hexsim/servo_angles").unwrap();
+
+            let mut result = String::from("");
+            for leg in &self.legs
+            {
+                for status in leg.get_angles()
+                {
+                    file.write(&format!("{}\n", status).into_bytes());
+                }
+            }
+
+            file.write_all(result.into_bytes().as_slice());
+        }
+        //Writing targets
+        {
+            let mut file = File::create("/tmp/hexsim/servo_targets").unwrap();
+
+            let mut result = String::from("");
+            for leg in &self.legs
+            {
+                for status in leg.get_target_angles()
+                {
+                    file.write(&format!("{}\n", status).into_bytes());
+                }
+            }
+
+            file.write_all(result.into_bytes().as_slice());
+        }
     }
 }
 

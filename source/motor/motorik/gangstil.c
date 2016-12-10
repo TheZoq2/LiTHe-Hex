@@ -177,18 +177,6 @@ void execute_position(Point2D * target, float * z){
     uint16_t angles[3];
     uint8_t legId;
     for (size_t leg = 0; leg < NUM_LEGS; ++leg){
-        if ((leg & 1) == 0){
-            angles[0] = (uint16_t)(0x1ff - radian_to_servo(ik[leg].angle1));
-            angles[1] = (uint16_t)(0x1ff - radian_to_servo(ik[leg].angle2));
-            angles[2] = (uint16_t)(0x1ff - radian_to_servo(ik[leg].angle3));
-            legId = (uint8_t)(leg/2);
-        }
-        else{
-            angles[0] = (uint16_t)(0x1ff - radian_to_servo(ik[leg].angle1));
-            angles[1] = (uint16_t)(0x1ff + radian_to_servo(ik[leg].angle2));
-            angles[2] = (uint16_t)(0x1ff + radian_to_servo(ik[leg].angle3));
-            legId = (uint8_t)(leg/2 + 3);
-        }
 
 #ifdef IS_X86
 		current_servo_state.points[legId] = target[legId];

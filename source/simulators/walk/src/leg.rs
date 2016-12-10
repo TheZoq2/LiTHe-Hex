@@ -87,6 +87,11 @@ impl Limb
     {
         self.current_angle == self.target_angle
     }
+
+    pub fn get_target_angle(&self) -> f32
+    {
+        self.target_angle
+    }
 }
 
 pub struct Leg
@@ -206,5 +211,10 @@ impl Leg
     pub fn is_still_moving(&self) -> Vec<bool>
     {
         self.limbs.clone().into_iter().map(|x|{x.is_done_rotating() == false}).collect()
+    }
+
+    pub fn get_target_angles(&self) -> Vec<f32>
+    {
+        self.limbs.clone().into_iter().map(|x|{x.get_target_angle()}).collect()
     }
 }

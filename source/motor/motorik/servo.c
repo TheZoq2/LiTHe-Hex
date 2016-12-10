@@ -263,7 +263,11 @@ void read_servo_target_positions(uint16_t* buffer)
 {
 	for (uint8_t i = 0; i < NUM_SERVOS; ++i) 
 	{
+#ifdef IS_X86
+		buffer[i] = 0x1ff + radian_to_servo(read_servo_target_angle(i));
+#else
 		buffer[i] = read_uint16_from_servo(i, GOAL_POSITION_ADDRESS);
+#endif
 	}
 }
 
@@ -278,10 +282,14 @@ bool check_servo_done_rotating(uint8_t id, uint16_t target_position)
 
 	bool result = is_servo_position_in_bounds(target_position, current_position);
 #ifdef IS_X86
+	uint16_t x86_position = 0x1ff + radian_to_servo(read_servo_angle(id));
+
+	result = is_servo_position_in_bounds(target_position, x86_position);
 	//Run the regular code but don't return it. 
 	//This is to be able to check for memory leaks
 	//using valgrind
-	return read_simulator_servo_state(id) == '0';
+	//return read_simulator_servo_state(id) == '0';
+	return result;
 #else
 	return result;
 #endif
