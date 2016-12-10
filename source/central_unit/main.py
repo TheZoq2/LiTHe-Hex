@@ -165,14 +165,14 @@ def do_manual_mode_iteration(sensor_spi, motor_spi, send_queue, receive_queue,
             print(packet.raw)
             servo_speed = (int)(packet.thrust * constants.MAX_16BIT_SIZE)
             if prev_speed != servo_speed:
-                avr_communication.set_servo_speed(motor_spi, servo_speed)
+                avr_communication.set_servo_speed(motor_spi, servo_speed, 100)
 
             x_speed = convert_to_sendable_byte(packet.x)
             y_speed = convert_to_sendable_byte(packet.y)
             rotation = convert_to_sendable_byte(packet.rotation)
 
             if x_speed != prev_x or y_speed != prev_y or rotation != prev_rot:
-                avr_communication.walk(motor_spi, x_speed, y_speed, rotation, False)
+                avr_communication.walk(motor_spi, x_speed, y_speed, rotation, False, 100)
 
             prev_x = x_speed
             prev_y = y_speed

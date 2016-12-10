@@ -249,7 +249,8 @@ def set_servo_speed(spi, speed, timeout=None):
         except CommunicationError:
             count += 1
             if timeout is not None and count == timeout:
-                raise CommunicationError("Time-out reached when sending speed!")
+                print("Timeout reached after {} tries".format(count))
+                return
             print("Tried sending speed (times): " + str(count), end="\r")
 
 
@@ -272,7 +273,8 @@ def walk(spi, x_speed, y_speed, turn_speed, auto_mode, timeout=None):
         except CommunicationError:
             count += 1
             if timeout is not None and count == timeout:
-                raise CommunicationError("Time-out reached when sending speed!")
+                print("Timeout reached after {} tries".format(count))
+                return
             print("Tried sending walk (times): " + str(count), end="\r")
 
 
