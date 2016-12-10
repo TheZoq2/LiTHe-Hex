@@ -88,7 +88,7 @@ def main():
         else:
             # Manual mode
             # os.system('clear')
-            print("Entering manual mode!")
+            # print("Entering manual mode!")
             auto, prev_speed, prev_x, prev_y, prev_rot = do_manual_mode_iteration(
                 sensor_spi, motor_spi, send_queue, receive_queue, 
                 prev_speed, prev_x, prev_y, prev_rot)

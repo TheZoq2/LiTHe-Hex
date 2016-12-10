@@ -232,7 +232,7 @@ def set_servo_speed(spi, speed, timeout=None):
     """Sets the global servo speed on the motor unit"""
     count = 0
     while True:
-        time.sleep(0.001)
+        time.sleep(0.01)
         try:
             if speed < 0 or speed > constants.MAX_16BIT_SIZE:
                 raise InvalidCommandException("Speed \"{}\" is not a 16-bit value"
@@ -260,14 +260,14 @@ def walk(spi, x_speed, y_speed, turn_speed, auto_mode, timeout=None):
     """
     count = 0
     while True:
-        time.sleep(0.001)
+        time.sleep(0.01)
         try:
             auto = 0x01 if auto_mode else 0x00
             total_msg = _get_total_msg(WALK_LENGTH, x_speed, y_speed, turn_speed, auto)
             response = _send_bytes(spi, _add_parity(WALK, total_msg),
                            WALK_LENGTH, x_speed, y_speed, turn_speed, auto)
             _check_response(response)
-            print("Walk sent x: {}, y: {}, r: {}".format(x_speed, y_speed, rotation))
+            print("Walk sent x: {}, y: {}, r: {}".format(x_speed, y_speed, turn_speed))
             break
         except CommunicationError:
             count += 1
