@@ -35,6 +35,7 @@ except ImportError:
 
 AUTO_BUTTON_PIN = 40
 
+
 def main():
 
     test_mode = False
@@ -58,6 +59,8 @@ def main():
     receive_queue = queue.Queue()
     thread = web.CommunicationThread(send_queue, receive_queue)
 
+    prev_x = prev_y = prev_rot = prev_speed = 0
+
     thread.start()
 
     while True:
@@ -76,15 +79,19 @@ def main():
             # Auto mode
             os.system('clear')
             print("Auto mode!")
-            auto = do_auto_mode_iteration(sensor_spi, motor_spi, send_queue,
-                                          receive_queue, decision_packet);
+            auto, prev_speed, prev_x, prev_y, prev_rot = do_auto_mode_iteration(
+                sensor_spi, motor_spi, send_queue, 
+                receive_queue, decision_packet,
+                prev_speed, prev_x, prev_y, prev_rot);
             time.sleep(0.5)
 
         else:
             # Manual mode
             # os.system('clear')
-            # print("Entering manual mode!")
-            auto = do_manual_mode_iteration(sensor_spi, motor_spi, send_queue, receive_queue)
+            print("Entering manual mode!")
+            auto, prev_speed, prev_x, prev_y, prev_rot = do_manual_mode_iteration(
+                sensor_spi, motor_spi, send_queue, receive_queue, 
+                prev_speed, prev_x, prev_y, prev_rot)
             # time.sleep(0.1)
 
 
@@ -96,7 +103,8 @@ def receive_server_packet(receive_queue):
 
 
 def do_auto_mode_iteration(sensor_spi, motor_spi, send_queue,
-                           receive_queue, decision_packet):
+                           receive_queue, decision_packet,
+                           prev_speed, prev_x, prev_y, prev_rot):
     sensor_data = avr_communication.get_sensor_data(sensor_spi)
    # print("sensor_data:", sensor_data)
 
@@ -133,10 +141,11 @@ def do_auto_mode_iteration(sensor_spi, motor_spi, send_queue,
         if packet.angle_adjustment_border is not None:
             decision_packet.regulate_angle_adjustment_border = packet.angle_adjustment_border
 
-    return auto
+    return auto, prev_speed, prev_x, prev_y, prev_rot
 
 
-def do_manual_mode_iteration(sensor_spi, motor_spi, send_queue, receive_queue):
+def do_manual_mode_iteration(sensor_spi, motor_spi, send_queue, receive_queue,
+                             prev_speed, prev_x, prev_y, prev_rot):
     try:
         sensor_data = avr_communication.get_sensor_data(sensor_spi)
 
@@ -149,40 +158,28 @@ def do_manual_mode_iteration(sensor_spi, motor_spi, send_queue, receive_queue):
     packet = receive_server_packet(receive_queue)
 
     if packet is not None:
-
+        
         if packet.auto is not None:
             auto = packet.auto
         if packet.has_motion_command():
             print(packet.raw)
             servo_speed = (int)(packet.thrust * constants.MAX_16BIT_SIZE)
-            count = 0
-            while True:
-                time.sleep(0.01)
-                try:
-                    avr_communication.set_servo_speed(motor_spi, servo_speed)
-                    print("")
-                    print("Sent speed")
-                    break
-                except avr_communication.CommunicationError:
-                    count += 1
-                    print("Tried sending speed (times): " + str(count), end="\r")
+            if prev_speed != servo_speed:
+                avr_communication.set_servo_speed(motor_spi, servo_speed)
 
             x_speed = convert_to_sendable_byte(packet.x)
             y_speed = convert_to_sendable_byte(packet.y)
             rotation = convert_to_sendable_byte(packet.rotation)
-            
-            count = 0
-            while True:
-                time.sleep(0.01)
-                try:
-                    avr_communication.walk(motor_spi, x_speed, y_speed, rotation, False)
-                    print("Walk sent x: {}, y: {}, r: {}".format(x_speed, y_speed, rotation))
-                    break
-                except avr_communication.CommunicationError:
-                    count += 1
-                    print("Tried sending walk (times): " + str(count), end="\r")
 
-    return auto
+            if x_speed != prev_x or y_speed != prev_y or rotation != prev_rot:
+                avr_communication.walk(motor_spi, x_speed, y_speed, rotation, False)
+
+            prev_x = x_speed
+            prev_y = y_speed
+            prev_rot = rotation
+            prev_speed = servo_speed
+
+    return auto, prev_speed, prev_x, prev_y, prev_rot
 
 
 def send_decision_avr(spi, decision_packet):
