@@ -16,7 +16,6 @@
 // along with LiTHe Hex.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "ir_queue.h"
-#include "error.h"
 
 ///////////////////////////////////////////////////////////////////
 // "Private"
@@ -60,9 +59,6 @@ void ir_queue_init(IRQueue* queue, Timer* timer) {
 }
 
 void schedule(IRQueue* queue, irport_t port) {
-
-    if (queue->curr_size == NUM_SENSORS) error();
-
 
     IRElem e;
     e.port = port;

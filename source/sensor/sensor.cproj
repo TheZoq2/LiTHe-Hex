@@ -126,12 +126,6 @@
     <Compile Include="communication.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="error.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="error.h">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="gyro.c">
       <SubType>compile</SubType>
     </Compile>
