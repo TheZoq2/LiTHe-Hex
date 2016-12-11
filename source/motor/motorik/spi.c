@@ -56,8 +56,8 @@ void spi_transmit_fail() {
 
 void spi_set_interrupts(bool value) {
 	if(value) {
-		SPCR |= 0x80;
+		SPCR = (1<<SPE) | (1<<SPIE);
 	} else {
-		SPCR &= 0x7F;
+		SPCR = 0;
 	}
 }

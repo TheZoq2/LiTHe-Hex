@@ -55,7 +55,7 @@
 \rhead{\today}
 \setlength\headheight{26pt} 
 
-\lfoot{TSEA29 -- KMM \\ LIPS Designspecifikation}
+\lfoot{TSEA29 -- KMM \\ LIPS Teknisk Dokumentation}
 \rfoot{Grupp 9 \\ LiTHe Hex}
 
 \newcommand{\itc}{I\textsuperscript{2}C}
@@ -445,19 +445,21 @@
     \end{lstlisting}
     
     \subsubsection{Manuell navigation}
-    För den manuella navigationen används sockets mellan webbservern
+    För den manuella navigationen används RabbitMQ mellan webbservern
     och centralenheten. Det kommer in ett nytt meddelande med data för varje
     knapptryck/händelse som sker på GUI:t som centralenheten tolkar och överför
     till motorikenheten. 
-    % sockets används mellan centralenhet - server, server - client.
 
 	\subsection{Kommunikation}
 	Centralenheten kommunicerar med en dator över WiFi. Datorns webbläsare 
 	ansluter till centralenhetens webbserver, då kan man
-	via webbgränssnittet styra roboten samt läsa av robotens loggar. 	
-	% TODO: write more
+	via webbgränssnittet styra roboten samt läsa av robotens loggar. 
+		
 	\subsubsection{Kommunikation med webbserver}
-	Datan som skickas mellan centralenheten och webservern är i JSON-format.
+	Centralenheten skickar och hämtar kontinuerligt meddelanden ifrån RabbitMQ servern och är i JSON-format. Centralenheten skickar den data som gui:t
+	behöver till RabbitMQ servern och webbservern läser sedan in den data som finns där.
+	Den data som skickas mellan centralenheten till webbservern kan ses i
+	tabell \ref{table:guimessagesfromcentral} och den data som skickas från webbservern till centralenheten kan ses i tabell \ref{table:guimessagestocentral} vid sektion \ref{gui:kommunikation}.
 
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%						Motorikenheten
@@ -527,7 +529,20 @@
 	Då planläggningsdelen av motorikenheten beslutat om var ett ben skall flyttas beräknas 
 	lämpliga vinklar för benets alla servon genom inverterad kinematik. Utifrån kända 
 	längder på benen och positioner där man vill att fötterna ska placeras används 
-	trigonometri och linjär algebra för att avgöra slutgiltiga servovinklar.
+	trigonometri för att avgöra slutgiltiga servovinklar.
+	
+	% TODO: Fix image by making it bigger and adding z, x, y..
+	% or remake it
+	Inverterad kinematik är ett 3D-problem men vi har delat upp det i två stycken 2D-problem istället. Z-axeln går rakt upp, x-axeln går jämt med roboten och y axeln går rakt ut med lederna. Det första 2D-problemet beräknar vinkeln mellan roboten och den innersta leden $\gamma$ och det andra 2D-problemet beräknar vinkeln $\alpha$ mellan första och andra leden samt vinkeln $\beta$ mellan andra och tredje leden. Se figur \ref{fig:ik}.
+	
+	% Add formulas for the different angles?
+	
+	\begin{figure}[h!]
+		\centering
+		\includegraphics[width=0.5\linewidth]{images/ik.png}
+		\caption{3D-problemet för IK med ett ben
+		\label{fig:ik}}
+	\end{figure}
 
 	\subsection{Kommunikation med servon}
 	Servona styrs via en UART-länk, med hjälp av addresserade datapaket. Vid behov, 
@@ -658,7 +673,7 @@
     läge. Front-end-delen är skriven i Elm och back-end-delen i Elixir med hjälp
     av webbramverket Phoenix. På webbservern körs också RabbitMQ som används som
     en kommunikationsserver mellan centralenheten och webbservern/gui:t. Se
-    Kommunikation nedan %TODO: add reference to the subsection
+    \ref{gui:kommunikation} Kommunikation nedan.
 
 	I det manuella läget styrs roboten med en joystick som är kopplad till
     användarens dator eller med knappar på gränssnittet. Figur
@@ -670,25 +685,34 @@
 		\caption{Det grafiska gränssnittet\label{fig:gui-overview}}
 	\end{figure}
 
+	\subsection{Webbserver}
+	Webbservern är skriven i Elixir och använder webbramverket Phoenix. Kommunikationen mellan frontend och backend sker via en channel. En channel är en socket som tillåter kommunikation mellan en klient och en server. I channeln så skickas det från frontend till backend styrdata, d.v.s, joystickdata och om det autonoma läget ska köras eller inte. Från backend till frontend skickas debugdata som IR-sensorer, LIDAR samt vinklar.
+	
+	% Är det varje 0.3 sekund?
+	Backend skickar styrdatan till RabbitMQ servern som centralenheten sedan
+	läser av. Det skickas varje 0.3 sekund till RabbitMQ servern.
+
     \subsection{Styrning}
     Under styrning kan man välja om roboten ska köras autonomt eller i manuellt läge.
     För att ändra vilket läge roboten ska köras i finns en knapp som växlar dess läge.
     
+    % TODO: Kan man verkligen styra med tangentbordet??
     \subsubsection{Manuell Styrning}
     Under styrning man man styra roboten med en joystick. Man kan även
     styra roboten med tangentbord eller knappar på skärmen. För att styra
     roboten finnas knappar som säger åt roboten att gå i en riktning,
     att vrida sig åt ett håll och att stanna.
 
+	% TODO: Stämmer det med 10 gånger per sekund? Kan man ändra styrparamterarna till regleralgoritmen?
     \subsection{Debug}
 	Under debug visas robotens olika inställningar samt sensordata vid
     tillfället. Sidan uppdateras 10 gånger per sekund och klienten får den
-    uppdaterade data:n med hjälp av JSON. Det finns också en eller flera grafer
+    uppdaterade data:n med hjälp av JSON. Det finns också flera grafer
     som beskriver några av de olika sensorernas data. Man kan också ändra
     styrparametrarna till regleralgoritmen.
 
+	\label{gui:kommunikation}
     \subsection{Kommunikation}
-	
 
 	\begin{longtable}[c]{l l l }
         \textbf{Data} & \textbf{Nyckel} & \textbf{Typ} \\ \midrule
@@ -735,7 +759,8 @@
 	\subsection{Simulering för inverterad kinematik}
 	Simuleringen går till genom att implementera algoritmen för 2D som beskrivs
     i avsnitt \ref{sub:inverterad-kinematik}. Simuleringen ritas sedan ut i
-    webbläsaren för att visualisera den inverterade kinematiken.
+    webbläsaren för att visualisera den inverterade kinematiken. Den här
+    simuleringen är skriven i Elm.
 	
 	\subsection{Simulering för korridorföljning}
 	Simulering för korridorföljning kan testa olika regleralgoritmer utan att

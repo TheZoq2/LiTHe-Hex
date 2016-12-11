@@ -47,13 +47,13 @@ ISR(SPI_STC_vect) {
 }
 #endif
 
-void rotate_to_position(float x, float y, Point2D* current)
+void rotate_to_position(float x, float y, float r, Point2D* current)
 {
 	Point2D point;
 	point.x = x;
 	point.y = y;
 	
-	work_towards_goal(0, point, current);
+	work_towards_goal(r, point, current);
 }
 
 int main(void)
@@ -79,9 +79,6 @@ int main(void)
 	
 	init_all_servos();
 	
-	
-	
-
 	_delay_ms(100);
 
 	send_servo_action();
@@ -93,6 +90,9 @@ int main(void)
 	//Initialize all legs
 	
 	Point2D* current_position = raise_to_default_position();
+	
+	assume_standardized_stance(current_position);
+	assume_standardized_stance(current_position);
 
 	// rotate_to_position(0.123, 0.99, current_position);
 	// rotate_to_position(-1, -1, current_position);
@@ -103,11 +103,19 @@ int main(void)
 	// rotate_to_position(1, 1, current_position);
 	// rotate_to_position(1, -1, current_position);
 	// rotate_to_position(1, 0, current_position);
-	// rotate_to_position(-1, 0, current_position);
-	// rotate_to_position(-1, -1, current_position);
-	// rotate_to_position(0, 0, current_position);
-	// rotate_to_position(-0.9, 1, current_position);
-	// rotate_to_position(-1, -1, current_position);
+	//rotate_to_position(0, 0, -1, current_position);
+	//rotate_to_position(0, 0, -1, current_position);
+	//rotate_to_position(0, 0, 0, current_position);
+	//rotate_to_position(0, 0, 1, current_position);
+	//rotate_to_position(0, 0, 1, current_position);
+	
+/*	while (1) {
+		rotate_set_angle(-1 * (M_PI / 1), current_position);
+		rotate_set_angle(-1 * (M_PI / 1), current_position);
+		rotate_set_angle(1 * (M_PI / 1), current_position);
+		rotate_set_angle(1 * (M_PI / 1), current_position);
+	}
+*/
 	
 	//while(1){
 	
@@ -147,7 +155,9 @@ int main(void)
 				spi_set_interrupts(true);
 
             } else if (rotation != 0) {
-                //rotate_set_angle(rotation * (M_PI / 2), current_position);
+				spi_set_interrupts(false);
+                rotate_set_angle(rotation * (M_PI / 1), current_position);
+				spi_set_interrupts(true);
             }
         }
 		uint32_t i = 0;
