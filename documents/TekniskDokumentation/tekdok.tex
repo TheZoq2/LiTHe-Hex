@@ -55,7 +55,7 @@
 \rhead{\today}
 \setlength\headheight{26pt} 
 
-\lfoot{TSEA29 -- KMM \\ LIPS Designspecifikation}
+\lfoot{TSEA29 -- KMM \\ LIPS Teknisk Dokumentation}
 \rfoot{Grupp 9 \\ LiTHe Hex}
 
 \newcommand{\itc}{I\textsuperscript{2}C}
@@ -688,7 +688,9 @@
 	\subsection{Webbserver}
 	Webbservern är skriven i Elixir och använder webbramverket Phoenix. Kommunikationen mellan frontend och backend sker via en channel. En channel är en socket som tillåter kommunikation mellan en klient och en server. I channeln så skickas det från frontend till backend styrdata, d.v.s, joystickdata och om det autonoma läget ska köras eller inte. Från backend till frontend skickas debugdata som IR-sensorer, LIDAR samt vinklar.
 	
-	
+	% Är det varje 0.3 sekund?
+	Backend skickar styrdatan till RabbitMQ servern som centralenheten sedan
+	läser av. Det skickas varje 0.3 sekund till RabbitMQ servern.
 
     \subsection{Styrning}
     Under styrning kan man välja om roboten ska köras autonomt eller i manuellt läge.
