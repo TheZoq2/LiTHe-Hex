@@ -7,6 +7,8 @@
 #include "uart_lib.h"
 
 #include "macros.h"
+#include "conversion_util.h"
+#include <unistd.h>
 
 
 #define DD_MOSI 6
@@ -161,6 +163,8 @@ bool servos_are_done_rotating();
 #ifdef IS_X86
 char read_simulator_servo_state(uint8_t id);
 bool is_servo_position_in_bounds(uint16_t target_position, uint16_t current_position);
+float read_servo_angle(uint8_t id);
+float read_servo_target_angle(uint8_t id);
 #endif
 
 #endif

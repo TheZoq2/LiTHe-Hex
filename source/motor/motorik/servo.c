@@ -34,7 +34,7 @@ const uint8_t BROADCAST_ID = 0xFE;
 
 const uint8_t NUM_SERVOS = 18;
 
-const uint16_t SERVO_TARGET_COMPLIANCE_MARGIN = 100;
+const uint16_t SERVO_TARGET_COMPLIANCE_MARGIN = 30;
 
 
 const uint8_t SERVO_MAP[6][3] = {
@@ -196,6 +196,7 @@ ServoReply receive_servo_reply()
 	servo_reply.parameter_amount = servo_reply.length - 2; //See ax12 datasheet
 	servo_reply.error = usart_receive();
 
+	//TODO: This is dangerous. make sure the amount of parameters is correct
 	if(servo_reply.error != 0)
 	{
 		servo_reply.length = 0;
@@ -211,7 +212,6 @@ ServoReply receive_servo_reply()
 	//TODO: Check the checksum
 	servo_reply.checksum = usart_receive();
 
-failiure:
 	//Reset the tri-state gate
 	clear_bit(PORTD, PIN_RX_TOGGLE);
 	usart_set_direction(TX);
@@ -293,9 +293,8 @@ void set_leg_angles(enum LegIds leg_index, uint16_t* angles)
 
 	for (uint8_t i = 0; i < 3; ++i) 
 	{
-		printf("Moving servo %i\n", ids[i]);
 		set_servo_angle(ids[i], angles[i]);
-		_delay_ms(1);
+		_delay_ms(1); //TODO: Try removing this delay
 	}
 }
 
@@ -311,7 +310,12 @@ void read_servo_target_positions(uint16_t* buffer)
 		{
 			continue;
 		}
+#ifdef IS_X86
+		float servo_angle = read_servo_target_angle(i);
+		buffer[i] = 0x1ff + radian_to_servo(servo_angle);
+#else
 		buffer[i] = read_uint16_from_servo(i + 1, GOAL_POSITION_ADDRESS).result;
+#endif
 	}
 }
 
@@ -329,10 +333,14 @@ bool check_servo_done_rotating(uint8_t id, uint16_t target_position)
 		is_servo_position_in_bounds(target_position, current_position.result) |
 		current_position.is_error;
 #ifdef IS_X86
+	uint16_t x86_position = 0x1ff + radian_to_servo(read_servo_angle(id));
+
+	result = is_servo_position_in_bounds(target_position, x86_position);
 	//Run the regular code but don't return it. 
 	//This is to be able to check for memory leaks
 	//using valgrind
-	return read_simulator_servo_state(id) == '0';
+	//return read_simulator_servo_state(id) == '0';
+	return result;
 #else
 	return result;
 #endif
@@ -343,8 +351,8 @@ bool servos_are_done_rotating()
 #ifdef IS_X86
 	//We need to wait for the simulator to process the command before checking this
 	//Sleep for 0.1 seconds
-	printf("Sleeping \n\n\n\n");
-	usleep(10000);
+	printf("Sleeping\n");
+	usleep(50000);
 #endif
 
 	//_delay_ms(200);

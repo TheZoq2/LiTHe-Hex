@@ -146,7 +146,6 @@ Point2D robot_to_ik_coords(Point2D original, size_t leg)
 		return rotate_point_by_angle(result, -3 * M_PI / 4);
 	}
 
-	printf("robot_to_ik coords got an invalid leg %u\n", leg);
 	return original;
 }
 
@@ -171,18 +170,6 @@ struct Leg* get_angle_set(Point2D * target, float * height){
 
 
 /**
- * @brief radian_to_servo converts between radians and the unit of angular
- * measurement used in the ax12-servos.
- * @param radian_angle angle to be converted.
- * @return angle compatible with the servos' value interpretation of angles.
- */
-int radian_to_servo(float radian_angle)
-{
-	return (int)(radian_angle * (0x1ff/150*180) / M_PI);
-}
-
-
-/**
  * @brief takes a target set of leg positions and causes the servos to execute them.
  * @param target set of foot positions arranged LF RF LM RM LB RB, indicating 
  * intended final placement of feet relative to the mounts of their joints.
@@ -193,7 +180,7 @@ void execute_position(Point2D * target, float * z){
     uint16_t angles[3];
     uint8_t legId;
     for (size_t leg = 0; leg < NUM_LEGS; ++leg){
-        if ((leg & 1) == 0){
+		if ((leg & 1) == 0){
             angles[0] = (uint16_t)(0x1ff - radian_to_servo(ik[leg].angle1));
             angles[1] = (uint16_t)(0x1ff - radian_to_servo(ik[leg].angle2));
             angles[2] = (uint16_t)(0x1ff - radian_to_servo(ik[leg].angle3));
@@ -204,14 +191,14 @@ void execute_position(Point2D * target, float * z){
             angles[1] = (uint16_t)(0x1ff + radian_to_servo(ik[leg].angle2));
             angles[2] = (uint16_t)(0x1ff + radian_to_servo(ik[leg].angle3));
             legId = (uint8_t)(leg/2 + 3);
-        }
+		}
 
 #ifdef IS_X86
 		current_servo_state.points[legId] = target[legId];
 		current_servo_state.heights[legId] = z[legId];
 		current_servo_state.angles[legId] = ik[legId];
 #endif
-		set_leg_angles(legId, angles);
+        set_leg_angles(legId, angles);
     }
 
     send_servo_action();
@@ -715,9 +702,29 @@ Point2D* raise_to_default_position()
 	return current_leg_positions;
 }
 
+
+/**
+ * @brief scale_goal scales goal coordinates to create a 1-distance vector,
+ * and returns the lesser of original goal vector length and 1.
+ * @param goal Point2D representing intended final position after a movement.
+ * @return lesser of 1 and original length of goal vector.
+ */
+float scale_goal(Point2D * goal){
+    float distance = dist(goal);
+    if (goal->x != 0)
+        goal->x = goal->x / distance;
+    if (goal->y != 0)
+        goal->y = goal->y / distance;
+    return minf(1, distance);
+}
+
+
 /**
  * @brief work_towards_goal takes the robot closer to a requested position and
  * rotation, stepping with the set of legs that best accomplishes this.
+ *
+ * Movement of the robot (though not rotation) can be scaled down from best
+ * possible by sending a goal with distance lesser than 1
  *
  * Also, returns the scaledown applied to whichever set of legs is selected as
  * optimal for forward movement.
@@ -730,9 +737,10 @@ Point2D* raise_to_default_position()
  * @return scaledown applied to grounded set of legs.
  */
 float work_towards_goal(float rot, Point2D goal, Point2D * current){
-	
-	if (goal.x == 0 && goal.y == 0 && rot == 0){
-		return 1;
+    float requestedDownscale = scale_goal(& goal); //allows for detailed steering with small joystick tilts.
+
+    if (goal.x == 0 && goal.y == 0 && rot == 0){
+        return 1;   //no movement
 	}
 	
     Point2D targ[NUM_LEGS];
@@ -750,12 +758,15 @@ float work_towards_goal(float rot, Point2D goal, Point2D * current){
     if (bestscale < 0.001){
     	return bestscale; //too little movement to be relevant executing
     }
-	
-    bool lrlRaised = scaledown0 > scaledown1;
-    goal.x = goal.x * bestscale;
-    goal.y = goal.y * bestscale;
 
-    direct_legs(rot * bestscale, targ, current, goal, lrlRaised);
+    bool lrlRaised = scaledown0 > scaledown1;
+
+    rot = rot * bestscale;      //note: requested downscale dependant on joystick tilt; unrelated to rotation
+    goal.x = goal.x * bestscale * requestedDownscale;
+    goal.y = goal.y * bestscale * requestedDownscale;
+
+    direct_legs(rot, targ, current, goal, lrlRaised);
+
 
 	////spi_set_interrupts(false);
     execute_step(current, targ, lrlRaised);
@@ -797,3 +808,4 @@ void rotate_set_angle(float angle, Point2D * current){
 
     assume_standardized_stance(current);
 }
+
