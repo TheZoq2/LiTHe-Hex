@@ -146,7 +146,6 @@ Point2D robot_to_ik_coords(Point2D original, size_t leg)
 		return rotate_point_by_angle(result, -3 * M_PI / 4);
 	}
 
-	printf("robot_to_ik coords got an invalid leg %u\n", leg);
 	return original;
 }
 
@@ -171,18 +170,6 @@ struct Leg* get_angle_set(Point2D * target, float * height){
 
 
 /**
- * @brief radian_to_servo converts between radians and the unit of angular
- * measurement used in the ax12-servos.
- * @param radian_angle angle to be converted.
- * @return angle compatible with the servos' value interpretation of angles.
- */
-int radian_to_servo(float radian_angle)
-{
-	return (int)(radian_angle * (0x1ff/150*180) / M_PI);
-}
-
-
-/**
  * @brief takes a target set of leg positions and causes the servos to execute them.
  * @param target set of foot positions arranged LF RF LM RM LB RB, indicating 
  * intended final placement of feet relative to the mounts of their joints.
@@ -193,7 +180,7 @@ void execute_position(Point2D * target, float * z){
     uint16_t angles[3];
     uint8_t legId;
     for (size_t leg = 0; leg < NUM_LEGS; ++leg){
-        if ((leg & 1) == 0){
+		if ((leg & 1) == 0){
             angles[0] = (uint16_t)(0x1ff - radian_to_servo(ik[leg].angle1));
             angles[1] = (uint16_t)(0x1ff - radian_to_servo(ik[leg].angle2));
             angles[2] = (uint16_t)(0x1ff - radian_to_servo(ik[leg].angle3));
@@ -204,7 +191,7 @@ void execute_position(Point2D * target, float * z){
             angles[1] = (uint16_t)(0x1ff + radian_to_servo(ik[leg].angle2));
             angles[2] = (uint16_t)(0x1ff + radian_to_servo(ik[leg].angle3));
             legId = (uint8_t)(leg/2 + 3);
-        }
+		}
 
 #ifdef IS_X86
 		current_servo_state.points[legId] = target[legId];
