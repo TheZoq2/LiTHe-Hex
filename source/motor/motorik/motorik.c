@@ -81,7 +81,7 @@ int main(void)
 	
 	_delay_ms(100);
 
-	send_servo_action();
+	send_servo_action(0x1ff);
 
 	_delay_ms(100);
 

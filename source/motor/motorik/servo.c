@@ -34,7 +34,7 @@ const uint8_t BROADCAST_ID = 0xFE;
 
 const uint8_t NUM_SERVOS = 18;
 
-const uint16_t SERVO_TARGET_COMPLIANCE_MARGIN = 100;
+//const uint16_t SERVO_TARGET_COMPLIANCE_MARGIN = 100;
 
 
 const uint8_t SERVO_MAP[6][3] = {
@@ -48,12 +48,7 @@ const uint8_t SERVO_MAP[6][3] = {
 
 void send_servo_command(uint8_t id, uint8_t instruction, void* data, uint8_t data_amount)
 {
-	////spi_set_interrupts(false);
-	//Set the direction of the tristate gate
-	//clear_bit(PORTD, PIN_RX_TOGGLE);
-
 	uint8_t length = data_amount + 2;
-	//PORTD = PORTD & 0b11111011;
 	usart_transmit(0xff);
 	usart_transmit(0xff);
 	usart_transmit(id);
@@ -75,11 +70,6 @@ void send_servo_command(uint8_t id, uint8_t instruction, void* data, uint8_t dat
 	usart_transmit(checksum);
 	
 	uart_wait();
-	
-	////spi_set_interrupts(true);
-	
-	//Reset the direction of the tristate gate
-	//set_bit(PORTD, PIN_RX_TOGGLE);
 }
 
 void write_servo_data(uint8_t id, uint8_t address, const uint8_t* data, uint8_t data_amount)
@@ -149,20 +139,21 @@ Uint16Result read_uint16_from_servo(uint8_t id, uint8_t address)
 }
 
 #ifdef IS_X86
-void send_servo_action()
+void send_servo_action(uint16_t threshold)
 {	
 	send_servo_command(BROADCAST_ID, ACTION_INSTRUCTION, 0, 0);
-	while(!servos_are_done_rotating())
+
+	while(!servos_are_done_rotating(threshold))
 		;	
 }
 #else
-void send_servo_action()
+void send_servo_action(uint16_t threshold)
 {
 	//spi_set_interrupts(false);
 	send_servo_command(BROADCAST_ID, ACTION_INSTRUCTION, 0, 0);
 	//TODO: Olavs fel
 	//_delay_ms(200);
-	while(!servos_are_done_rotating())
+	while(!servos_are_done_rotating(threshold))
 		;
 		
 	//spi_set_interrupts(true);
@@ -315,34 +306,31 @@ void read_servo_target_positions(uint16_t* buffer)
 	}
 }
 
-bool is_servo_position_in_bounds(uint16_t target_position, uint16_t current_position)
+bool is_servo_position_in_bounds
+		(uint16_t target_position, uint16_t current_position, uint16_t threshold)
 {
-	return abs(target_position - current_position) < SERVO_TARGET_COMPLIANCE_MARGIN;
+	return abs(target_position - current_position) < threshold;
 }
 
-bool check_servo_done_rotating(uint8_t id, uint16_t target_position)
+bool check_servo_done_rotating(uint8_t id, uint16_t target_position, uint16_t threshold)
 {
 	Uint16Result current_position = 
 		read_uint16_from_servo(id + 1, PRESENT_POSITION_ADDRESS);
 
 	bool result = 
-		is_servo_position_in_bounds(target_position, current_position.result) |
+		is_servo_position_in_bounds(target_position, current_position.result, threshold) |
 		current_position.is_error;
 #ifdef IS_X86
 	uint16_t x86_position = 0x1ff + radian_to_servo(read_servo_angle(id));
 
-	result = is_servo_position_in_bounds(target_position, x86_position);
-	//Run the regular code but don't return it. 
-	//This is to be able to check for memory leaks
-	//using valgrind
-	//return read_simulator_servo_state(id) == '0';
+	result = is_servo_position_in_bounds(target_position, x86_position, threshold);
 	return result;
 #else
 	return result;
 #endif
 }
 
-bool servos_are_done_rotating()
+bool servos_are_done_rotating(uint16_t threshold)
 {
 #ifdef IS_X86
 	//We need to wait for the simulator to process the command before checking this
@@ -358,7 +346,7 @@ bool servos_are_done_rotating()
 
 	for(uint8_t i = 1; i < NUM_SERVOS; i++)
 	{
-		if(check_servo_done_rotating(i, servo_targets[i]) == false)
+		if(check_servo_done_rotating(i, servo_targets[i], threshold) == false)
 		{
 			return false;
 		}
