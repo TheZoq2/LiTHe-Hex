@@ -531,26 +531,6 @@
 		\caption{Flödesschema för normal gångstil hos roboten \label{fig:walkflow0}}
 	\end{figure}
 
-	% TODO: Eftersom vi inte har med hindergång i vår lösning
-	% ta bort den delen?
-	\subsection{Hindergång}
-	För hindergång kan roboten treva med benen och anpassa sig efter höjdskillnaden genom
-	läsning av benens mötta motstånd. Benen sänks till det att de möter motstånd, dels
-	vid uppstigning på hindret, men också vid gång på hindret (för att upptäcka när hindret 
-	tar slut). Inför uppgång på hinder höjs även benen extra, för att tillåta kliven att nå 
-	upp på hindret.
-
-	Därtill gäller att benen flyttas marginellt (någon centimeter) vid uppkliv på eller 
-	nedkliv från hinder. Detta för att undvika att fötterna hamnar instabilt på kanten till 
-	hindret, samtidigt som roboten tycker sig stå stabilt. Detta underlättar även för att vid nedstig stödja benen 
-	längre fram, för att undvika att falla framåt. En översikt över detta kan fås i figur \ref{fig:walkflow1}.
-
-	\begin{figure}[h!]
-		\centering
-		\includegraphics[width=0.5\linewidth]{images/hindergang_flowchart.png}
-		\caption{Flödesschema för hindergångsprocedur hos roboten \label{fig:walkflow1}}
-	\end{figure}
-
 	\subsection{Inverterad kinematik}
 	\label{sub:inverterad-kinematik}
 	Då planläggningsdelen av motorikenheten beslutat om var ett ben skall flyttas beräknas 
