@@ -213,6 +213,15 @@ def _add_servo_speed_and_walk(spi):
     spi.data_sequence += [avr_communication.ACK, avr_communication.ACK]
 
 
+def _add_return_to_neutral(spi):
+    spi.expected_seq += [
+        avr_communication.GARBAGE,
+        (avr_communication.RETURN_TO_NEUTRAL << 2) | 0x00, # type
+        0x00
+    ]
+    spi.data_sequence += [avr_communication.ACK]
+
+
 class MainLoopTestCase(unittest.TestCase):
     """
     Test for the methods used by the main loop.
@@ -234,7 +243,8 @@ class MainLoopTestCase(unittest.TestCase):
         _set_sensor_data_sequence(spi)
 
         try:
-            auto = main.do_manual_mode_iteration(spi, spi, send_queue, receive_queue)
+            auto, _, _, _, _  = main.do_manual_mode_iteration(spi, spi, send_queue,
+                                                              receive_queue, -1, -1, -1, -1)
         except fake_spi.UnexpectedDataException as e:
             self.fail("Expected {}, got {}".format(e.expected, e.actual))
 
@@ -267,7 +277,9 @@ class MainLoopTestCase(unittest.TestCase):
         receive_queue.put(packet)
 
         try:
-            auto = main.do_manual_mode_iteration(spi, spi, send_queue, receive_queue)
+            auto, _, _, _, _  = main.do_manual_mode_iteration(spi, spi, 
+                                                              send_queue, receive_queue, 
+                                                              -1, -1, -1, -1)
         except fake_spi.UnexpectedDataException as e:
             self.fail(
                 "Something went wrong when reading sensor data: Expected {}, got {}"
@@ -290,7 +302,8 @@ class MainLoopTestCase(unittest.TestCase):
         receive_queue.put(packet)
 
         try:
-            auto = main.do_manual_mode_iteration(spi, spi, send_queue, receive_queue)
+            auto, _, _, _, _ = main.do_manual_mode_iteration(spi, spi, send_queue,
+                                                       receive_queue, -1, -1, -1, -1)
         except fake_spi.UnexpectedDataException as e:
             self.fail(
                 "Something went wrong when reading sensor data: Expected {}, got {}"
@@ -316,13 +329,41 @@ class MainLoopTestCase(unittest.TestCase):
         receive_queue.put(packet)
 
         try:
-            auto = main.do_manual_mode_iteration(spi, spi, send_queue, receive_queue)
+            auto, _, _, _, _  = main.do_manual_mode_iteration(spi, spi, send_queue,
+                                                              receive_queue, -1, -1, -1, -1)
         except fake_spi.UnexpectedDataException as e:
             self.fail(
                 "Something went wrong in the SPI-communication: Expected {}, got {}"
                 .format(e.expected, e.actual))
 
         self.assertFalse(auto)
+
+    def test_manual_return_to_neutral(self):
+        """
+        Tests whether the the manual mode responds to a command
+        from the server to return to neutral by sending the 
+        correct commands to the motor unit.
+        """
+        send_queue = queue.Queue()
+        receive_queue = queue.Queue()
+        spi = fake_spi.SpiDev()
+        _set_sensor_data_sequence(spi)
+        _add_return_to_neutral(spi)
+
+        packet = web.ServerReceivedPacket("{\"reset\": true}")
+
+        receive_queue.put(packet)
+
+        try:
+            auto, _, _, _, _  = main.do_manual_mode_iteration(spi, spi, send_queue,
+                                                              receive_queue, -1, -1, -1, -1)
+        except fake_spi.UnexpectedDataException as e:
+            self.fail(
+                "Something went wrong in the SPI-communication: Expected {}, got {}"
+                .format(e.expected, e.actual))
+
+        self.assertFalse(auto)
+        
 
     # def test_auto_mode_no_input(self):
 

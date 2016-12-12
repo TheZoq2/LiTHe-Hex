@@ -1,4 +1,4 @@
-update=Tue 15 Nov 2016 20:29:46 CET
+update=Mon 12 Dec 2016 04:19:24 PM CET
 version=1
 last_client=kicad
 [pcbnew]
@@ -59,6 +59,7 @@ LibName27=atmel
 LibName28=contrib
 LibName29=valves
 LibName30=/home/frans/Documents/LiTHe-Hex/documents/Designspecifikation/charts/hex
+LibName31=/home/malcolm/Documents/LiTHe-Hex/documents/Designspecifikation/charts/hex
 [schematic_editor]
 version=1
 PageLayoutDescrFile=
