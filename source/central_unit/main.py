@@ -33,14 +33,9 @@ try:
 except ImportError:
     pass
 
-AUTO_BUTTON_PIN = 40
+AUTO_BUTTON_PIN = 26
 
 def main():
-
-    test_mode = False
-
-    if len(sys.argv) > 0 and sys.argv[0] == "--test":
-        test_mode = True
 
     motor_spi = avr_communication.motor_communication_init()
     sensor_spi = avr_communication.sensor_communication_init()
@@ -77,7 +72,7 @@ def main():
             os.system('clear')
             print("Auto mode!")
             auto = do_auto_mode_iteration(sensor_spi, motor_spi, send_queue,
-                                          receive_queue, decision_packet);
+                                          receive_queue, decision_packet)
             time.sleep(0.5)
 
         else:
