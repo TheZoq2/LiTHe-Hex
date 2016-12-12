@@ -295,7 +295,7 @@ void set_leg_angles(enum LegIds leg_index, uint16_t* angles)
 */
 void read_servo_target_positions(uint16_t* buffer)
 {
-	for (uint8_t i = 1; i < NUM_SERVOS; ++i) 
+	for (uint8_t i = 3; i < NUM_SERVOS; ++i) 
 	{
 #ifdef IS_X86
 		float servo_angle = read_servo_target_angle(i);
@@ -344,7 +344,7 @@ bool servos_are_done_rotating(uint16_t threshold)
 
 	read_servo_target_positions(servo_targets);
 
-	for(uint8_t i = 1; i < NUM_SERVOS; i++)
+	for(uint8_t i = 3; i < NUM_SERVOS; i++)
 	{
 		if(check_servo_done_rotating(i, servo_targets[i], threshold) == false)
 		{

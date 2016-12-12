@@ -49,8 +49,13 @@ const float RELIABLY_EXECUTABLE_ROTATION = 0.2;
 const float STRICT_ROTATION_MARGIN_OF_ERROR = 0.1;
 const float STANDUP_LEG_DISTANCE = 0.16;
 
+#ifdef IS_X86
 const uint16_t STANDARD_THRESHOLD = 100;
 const uint16_t HIGH_PRECISION_THRESHOLD = 20;
+#else //AVR constants
+const uint16_t STANDARD_THRESHOLD = 150;
+const uint16_t HIGH_PRECISION_THRESHOLD = 100;
+#endif
 
 /**
  * @brief absf returns the absolute value of a given float.
