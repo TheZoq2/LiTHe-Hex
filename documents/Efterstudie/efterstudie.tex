@@ -1,0 +1,210 @@
+\documentclass[a4paper,titlepage,12pt]{article}
+\usepackage[utf8]{inputenc} %Make sure all UTF8 characters work in the document
+\usepackage{graphicx}
+\usepackage{titling}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage[yyyymmdd]{datetime}
+\usepackage[figurename=Figur]{caption}
+\usepackage{booktabs}
+\usepackage[parfill]{parskip}
+
+%Set page size
+\usepackage{geometry}
+\geometry{margin=3cm}
+
+\renewcommand{\dateseparator}{-}
+\renewcommand{\contentsname}{Innehållsförteckning}
+\renewcommand{\tablename}{Tabell}
+
+
+\usepackage{listings}
+\usepackage{color}
+
+\usepackage[colorinlistoftodos,prependcaption,textsize=tiny]{todonotes}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+	language=Python,
+	aboveskip=3mm,
+	belowskip=3mm,
+	showstringspaces=false,
+	columns=flexible,
+	basicstyle={\small\ttfamily},
+	numbers=none,
+	numberstyle=\tiny\color{gray},
+	keywordstyle=\color{blue},
+	commentstyle=\color{dkgreen},
+	stringstyle=\color{mauve},
+	breaklines=true,
+	breakatwhitespace=true,
+	tabsize=3
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Header and footer
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+
+\lhead{\includegraphics[width=0.15\linewidth]{../images/logo_full.png}}
+\chead{Efterstudie}
+\rhead{\today}
+\setlength\headheight{26pt} 
+
+\lfoot{TSEA29 -- KMM \\ LIPS Efterstudie}
+\rfoot{Grupp 9 \\ LiTHe Hex}
+
+\newcommand{\itc}{I\textsuperscript{2}C}
+
+\pretitle{%
+	\begin{center}
+		\LARGE
+		\includegraphics[width=6cm]{../images/logo_full.png}\\[\bigskipamount]
+	}
+	
+	\posttitle{\end{center}}
+
+\begin{document}
+	\listoftodos
+	\title{\LARGE
+		\textbf{Efterstudie} \\
+		\vspace*{0.5\baselineskip}
+		\large
+		Redaktör ???? \\
+		Grupp 9 \\
+		\small
+		\vspace*{0.5\baselineskip}
+		Version 1.0}
+	
+	\date{\today}
+	
+	\maketitle
+	
+	\newpage
+	
+	\begin{center}
+		
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		%						Medlemmar
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		
+		\section*{Projektidentitet}
+		Grupp 9, Ht 2016, LiTHe Hex
+		
+		Linköpings Tekniska Högskola, ISY
+		
+		\renewcommand*{\arraystretch}{1.4}
+		\begin{longtable}[c]{ l l l }
+			\textbf{Namn} & \textbf{Ansvar} & \textbf{E-post} \\ \midrule
+			Emil Segerbäck & & emise935@student.liu.se \\ \midrule
+			Frans Skarman & Dokumentansvarig & frask812@student.liu.se \\ \midrule
+			Hannes Tuhkala & & hantu447@student.liu.se \\ \midrule
+			Malcolm Vigren & Projektledare & malvi108@student.liu.se \\ \midrule
+			Noak Ringman &  & noari093@student.liu.se \\ \midrule
+			Olav Övrebö &  & olaov121@student.liu.se \\ \midrule
+			Robin Sliwa &  & robsl733@student.liu.se \\
+		\end{longtable}
+		
+		\centering
+		\textbf{Kursansvarig}: Tomas Svensson Rum 3B:528 013--28 13 68 tomas.svensson@liu.se
+		
+		\newpage
+		\tableofcontents
+		\newpage
+		
+		
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		%						Historik
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		
+		\section*{Dokumenthistorik}
+		\renewcommand*{\arraystretch}{1.4}
+		\begin{longtable}[c]{ l l >{\raggedright}p{5cm} >{\raggedright}p{3cm} l }
+			\textbf{Version} & \textbf{Datum} & \textbf{Utförda förändringar} 
+			& \textbf{Utförda av} & \textbf{Granskad} \\ \midrule
+			
+			0.1 & 2016--12--21 & Första utkastet & Projektgruppen &
+			Projektgruppen \\
+			
+		\end{longtable}
+	\end{center}
+	
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%						Inledning
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+	\newpage
+	
+	\raggedright
+	
+	\section{Tidsåtgång}
+	Nu är det dags för Hannes
+	
+	\subsection{Arbetsfördelning}
+	Nu är det dags för Hannes
+	
+	\subsection{Tidsåtgång jämfört med planerad tid}
+	Nu är det dags för Hannes
+	
+	\begin{longtable}[c]{l l l }
+		\textbf{Fas} & \textbf{Planerad tid i timmar} & \textbf{Använd tid i timmar} \\ \midrule
+		Före &  &  \\
+		Under &  &  \\
+		Efter &  &  \\
+	\end{longtable}
+	
+	\section{Analys av arbete och problem}
+	Nu är det dags för Hannes
+	
+	\subsection{Vad hände under de olika faserna (bra/dåligt/orsak)?}
+	Nu är det dags för Hannes
+	
+	\subsection{Hur vi arbetade tillsammans (ansvar, beslut, kommunikation etc.)?}
+	Nu är det dags för Hannes
+	
+	\subsection{Hur använde vi projektmodellen?}
+	Nu är det dags för Hannes
+	
+	\subsection{Hur fungerade relationen med beställaren?}
+	Nu är det dags för Hannes
+	
+	\subsection{Hur fungerade relationen med handledaren?}
+	Nu är det dags för Hannes
+	
+	\subsection{Tekniska framgångar/problem}
+	Beskriv de 3 besvärligaste problemen som ni har haft under projektet. 
+	Rangordna problemen där 1 är mest besvärlig i betydelsen tog längst tid att fixa.
+	Beskriv för varje problem:
+	a. felets typ - ange t.ex.  hårdvarufel, mjukvarufel, systemintegrationsfel 
+	b. kort beskrivning av felets symptom 
+	c. kort beskrivning av felets orsak t.ex. logiskt fel i programmering, timing-fel, glappkontakt, missförstånd av spec., felaktig design. 
+	d. kort beskrivning av hur ni fixade felet. T.ex. hur ni fixade mjukvarubuggen, fick ny hårdvara, virade om, gick runt problemet.
+	e. ungefärlig skattning av hur mycket tid som ni ägnade åt felsökningen (dvs. tid som kunde tjänats in om felet inte hade uppstått)
+	
+	
+	\section{Måluppfyllelse}
+	Nu är det dags för Hannes
+	
+	\subsection{Vad har uppnåtts?}
+	Nu är det dags för Hannes
+	
+	\subsection{Hur fungerade leveransen?}
+	Nu är det dags för Hannes
+	
+	\subsection{Hur har studiesituationen påverkat projektet?}
+	Nu är det dags för Hannes
+	
+	\section{Sammanfattning}
+	Nu är det dags för Hannes
+	
+	\subsection{De tre viktigaste erfarenheterna}
+	Nu är det dags för Hannes
+	
+	\subsection{Goda råd till de som ska utföra ett liknande projekt}
+	Nu är det dags för Hannes
+	
+\end{document}

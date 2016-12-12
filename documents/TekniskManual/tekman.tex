@@ -8,6 +8,13 @@
 \usepackage[figurename=Figur]{caption}
 \usepackage{booktabs}
 \usepackage[parfill]{parskip}
+\usepackage{xcolor}
+
+\lstdefinestyle{DOS}
+{
+	backgroundcolor=\color{black},
+	basicstyle=\scriptsize\color{white}\ttfamily
+}
 
 %Set page size
 \usepackage{geometry}
@@ -152,14 +159,15 @@
 	Här beskrivs hur man använder det grafiska användargränssnittet för roboten.
 	
 	\subsection{Starta webbservern}
-	Man startar servern genom att gå till mappen "/var/www/gui/" och skriva "mix phoenix.server".
+	Man startar servern genom att gå till mappen "/var/www/gui/" och skriva "mix phoenix.server". Se exempel nedan:
 	
-	Exempel:
+	\begin{lstlisting}[style=DOS]
+	Microsoft Windows [Version 6.1.7601]
+	Copyright (c) 2009 Microsoft Corporation. All rights reserved.
 	
-	cd /var/www/gui/
-	
-	mix phoenix.server
-	
+	c:\User\Garbage Collector> cd /var/www/gui/
+	c:\User\Garbage Collector> mix phoenix.server
+	\end{lstlisting}
 	
 	\subsection{Ansluta till webbsidan}
 	Servern startas på port 4000 och för att komma till webbsidan behöver man också pi:ens ip-address. 
