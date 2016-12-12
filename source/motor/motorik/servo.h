@@ -8,7 +8,10 @@
 
 #include "macros.h"
 #include "conversion_util.h"
+
+#ifdef IS_X86
 #include <unistd.h>
+#endif
 
 
 #define DD_MOSI 6
@@ -129,7 +132,7 @@ void set_servo_angle(uint8_t id, uint16_t angle);
 	Sends the 'action' instruction to all servos which makes them perform
 	previously sent commads
 */
-void send_servo_action();
+void send_servo_action(uint16_t threshold);
 
 /*
 	Sets default values, disables replies and enables  torque on all servos
@@ -155,14 +158,15 @@ ServoReply read_servo_data(uint8_t id, uint8_t address, uint8_t length);
 /*
 	Returns true when all servos are done rotating
 */
-bool servos_are_done_rotating();
+bool servos_are_done_rotating(uint16_t threshold);
 
 
 
 
 #ifdef IS_X86
 char read_simulator_servo_state(uint8_t id);
-bool is_servo_position_in_bounds(uint16_t target_position, uint16_t current_position);
+bool is_servo_position_in_bounds
+			(uint16_t target_position, uint16_t current_position, uint16_t threshold);
 float read_servo_angle(uint8_t id);
 float read_servo_target_angle(uint8_t id);
 #endif

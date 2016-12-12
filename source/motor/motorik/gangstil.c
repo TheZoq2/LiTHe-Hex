@@ -49,6 +49,13 @@ const float RELIABLY_EXECUTABLE_ROTATION = 0.2;
 const float STRICT_ROTATION_MARGIN_OF_ERROR = 0.1;
 const float STANDUP_LEG_DISTANCE = 0.16;
 
+#ifdef IS_X86
+const uint16_t STANDARD_THRESHOLD = 100;
+const uint16_t HIGH_PRECISION_THRESHOLD = 20;
+#else //AVR constants
+const uint16_t STANDARD_THRESHOLD = 150;
+const uint16_t HIGH_PRECISION_THRESHOLD = 100;
+#endif
 
 /**
  * @brief absf returns the absolute value of a given float.
@@ -174,7 +181,7 @@ struct Leg* get_angle_set(Point2D * target, float * height){
  * @param target set of foot positions arranged LF RF LM RM LB RB, indicating 
  * intended final placement of feet relative to the mounts of their joints.
  */
-void execute_position(Point2D * target, float * z){
+void execute_position(Point2D * target, float * z, uint16_t threshold){
     struct Leg* ik = get_angle_set(target, z);
 
     uint16_t angles[3];
@@ -201,7 +208,7 @@ void execute_position(Point2D * target, float * z){
         set_leg_angles(legId, angles);
     }
 
-    send_servo_action();
+    send_servo_action(threshold);
 
 #ifdef IS_X86
 	write_current_state();
@@ -289,6 +296,7 @@ void execute_step(Point2D * current, Point2D * target, bool lrlRaised){
 		step_lengths[leg] = divide_point2D(difference, STEP_AMOUNT);
 	}
 	
+	bool is_first_step = true;
 
 	for(uint8_t step = 0; step < STEP_AMOUNT; step++)
 	{
@@ -297,7 +305,14 @@ void execute_step(Point2D * current, Point2D * target, bool lrlRaised){
 			intermediate_positions[leg] = 
 				add_point2D(intermediate_positions[leg], step_lengths[leg]);
 		}
-		execute_position(intermediate_positions, z);
+
+		uint8_t threshold = STANDARD_THRESHOLD;
+		if(is_first_step == true)
+		{
+			threshold = HIGH_PRECISION_THRESHOLD;
+		}
+		is_first_step = false;
+		execute_position(intermediate_positions, z, threshold);
 	}
 
 
@@ -308,7 +323,7 @@ void execute_step(Point2D * current, Point2D * target, bool lrlRaised){
     z[RF] = GROUNDED;
     z[LM] = GROUNDED;
     z[RB] = GROUNDED;
-    execute_position(target, z);
+    execute_position(target, z, STANDARD_THRESHOLD);
 
     for (size_t leg = 0; leg < NUM_LEGS; ++leg) {
         current[leg].x = target[leg].x;
@@ -633,18 +648,18 @@ void assume_standardized_stance(Point2D * current){
     current[LB].y = stdLeg.y;
 
     
-    execute_position(current, z);
+    execute_position(current, z, STANDARD_THRESHOLD);
     
     z[LF] = GROUNDED;
     z[RM] = GROUNDED;
     z[LB] = GROUNDED;
     
-    execute_position(current, z);
+    execute_position(current, z, STANDARD_THRESHOLD);
     z[RF] = GROUNDED + HIGH;
     z[LM] = GROUNDED + HIGH;
     z[RB] = GROUNDED + HIGH;
     
-    execute_position(current, z);
+    execute_position(current, z, STANDARD_THRESHOLD);
 
     stdLeg = get_default_leg_position(RF);
     current[RF].x = stdLeg.x;
@@ -659,11 +674,11 @@ void assume_standardized_stance(Point2D * current){
     current[RB].y = stdLeg.y;
 
     
-    execute_position(current, z);
+    execute_position(current, z, STANDARD_THRESHOLD);
     z[RF] = GROUNDED;
     z[LM] = GROUNDED;
     z[RB] = GROUNDED;
-    execute_position(current, z);
+    execute_position(current, z, STANDARD_THRESHOLD);
 }
 
 
@@ -694,7 +709,7 @@ Point2D* raise_to_default_position()
 		{
 			height[leg_id] = heights[i];
 		}
-		execute_position(current_leg_positions, height);
+		execute_position(current_leg_positions, height, STANDARD_THRESHOLD);
 	}
 
 	assume_standardized_stance(current_leg_positions);

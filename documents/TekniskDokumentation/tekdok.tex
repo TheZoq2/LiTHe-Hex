@@ -465,7 +465,7 @@
 
 	% TODO: Den ger fel sektion ovan! Det ska vara 7.4 och inte 7.3.
 
-	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%						Motorikenheten
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     \newpage
@@ -486,6 +486,26 @@
 		\label{fig:motorik}
 	\end{figure}
 	
+		\subsection{Kommandotolkning}
+	Motorikenheten  tar in ett flyttalspar med koordinater för önskad målposition (önskat 
+	center för roboten efter förflyttning) angivet i meter, med x-coordinat fram och 
+	y-coordinat åt vänster om roboten, med origo i robotens mittpunkt. Om totalavståndet 
+	origo till målposition är mindre än 1 (m) skalas rörelsen ned utifrån detta avstånd. 
+	Det vill säga, om roboten ombeds gå 0,5 meter frammåt, tar den ett kliv med halva 
+	steglängden av om den ombetts gå en meter, även om inget av kliven är i närheten av 
+	de respektive distanserna; om en enmetersdistans (maximal steglängd) leder till ett 
+	1,6 decimeters kliv, leder halvmetersdistansen till ett ca: 0.8 decimeters kliv i samma 
+	startposition. 
+	
+	Vidare ges den rotation som roboten 
+	skall rotera, angiven i radianer positiv vänster med 0 rad frammåt, och en flagga för om 
+	roboten är i autonomt läge eller manuellt styrt läge. Om roboten är i autonomt läge, tolkas 
+	rotation utan koordinater som att en strikt rotation skall utföras (det vill säga, att 
+	roboten inte skall ändra rörelse förrän den utfört rotationen i fullo). I alla andra fall 
+	tar roboten in ett nytt kommando efter att ett enda steg utförts i indikerad riktning. 
+	%kontrollera att nedanstående stämmer, servospeedmanupulation inte implementerat at time of writing.
+	Även robotens servohastighet styras utifrån ett fartvärde.
+
 		\subsection{Planläggning}
 	Första steget i motorikenheten för en anpassad gångstil är att utifrån efterfrågad
 	förflyttning avgöra en önskad slutposition för respektive ben, som för roboten närmare 
