@@ -53,6 +53,7 @@ class ServerReceivedPacket(object):
         self.angle_scaledown = data.get('angle_scaledown', None)
         self.movement_scaledown = data.get('movement_scaledown', None)
         self.angle_adjustment_border = data.get('angle_adjustment_border', None)
+        self.return_to_neutral = data.get('reset', None)
 
 
         # if we got x, then we should have gotten everything else
@@ -123,6 +124,7 @@ class ServerSenderThread(threading.Thread):
         while True:
             if not self.queue.empty():
                 packet = self.queue.get()
+                print(packet.get_json())
                 self.channel.basic_publish(exchange='', 
                                            routing_key=CENTRAL_UNIT_KEY_SEND,
                                            body=packet.get_json())
