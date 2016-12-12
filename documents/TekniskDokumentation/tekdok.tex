@@ -781,24 +781,24 @@
     Simulatorn visualiserar resultatet av kommandona och skriver data som
     servona skulle svara med till en annan fil som motorikkoden kan läsa.
 
-	\begin{appendices}
-	\addtocontents{toc}{\protect\setcounter{tocdepth}{0}}
-	\makeatletter
-	\addtocontents{toc}{%
-		\begingroup
-		\let\protect\l@chapter\protect\l@section
-		\let\protect\l@section\protect\l@subsection
-	}
-	\makeatother
-	\chapter{First appendix}
-	\section{First section}
-	\section{Second section}
+	\appendix
+	\section{Kopplingsschema}
+	HÄR VAR DET SCHEMAN
 	
-	\chapter{Second appendix}
-	\section{First section}
-	\section{Second section}
-	\addtocontents{toc}{\endgroup}
+	\section{Programlistning}
+	Här visas en lista på de olika program roboten
+	använder sig av.
 	
-	\end{appendices}
-
+	\begin{longtable}[c]{l l l l}
+		\textbf{Program} & \textbf{Programmerare} & \textbf{Datum}& \textbf{Version} \\ \midrule
+		Inverterad Kinematik & Emil Segerbäck, Hannes Tuhkala & 2016-12-02 & 1.0 \\
+		
+		\caption{Lista över program \label{table:programlisting}}
+	\end{longtable}
+	
+	\section{Övrigt}
+	HÄR VAR DET ÖVRIGT
+	
+	\addtocontents{toc}
+	
 \end{document}
