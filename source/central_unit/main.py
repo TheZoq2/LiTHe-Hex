@@ -38,7 +38,7 @@ AUTO_BUTTON_PIN = 37
 
 def main():
 
-    test_mode = False
+    test_mode = True
 
     if len(sys.argv) > 0 and sys.argv[0] == "--test":
         test_mode = True
@@ -48,7 +48,7 @@ def main():
     res = []
 
     # Setup auto/manual mode and button for it
-    auto = True 
+    auto = False
     # button_temp = 0
     # GPIO.setmode(GPIO.BOARD)
     # GPIO.setup(AUTO_BUTTON_PIN, GPIO.IN, GPIO.PUD_DOWN)
@@ -90,7 +90,7 @@ def main():
             auto, prev_speed, prev_x, prev_y, prev_rot = do_manual_mode_iteration(
                 sensor_spi, motor_spi, send_queue, receive_queue, 
                 prev_speed, prev_x, prev_y, prev_rot)
-            # time.sleep(0.1)
+            time.sleep(0.1)
 
 
 def receive_server_packet(receive_queue):
@@ -220,8 +220,8 @@ def send_decision_avr(spi, decision_packet):
         rotation = convert_to_sendable_byte(0)
 
     count = 0
-    avr_communication.set_servo_speed(spi, decision_packet.speed)
-    avr_communication.walk(spi, x_speed, y_speed, rotation, auto_mode=True)
+    avr_communication.set_servo_speed(spi, decision_packet.speed, timeout=100)
+    avr_communication.walk(spi, x_speed, y_speed, rotation, auto_mode=True, timeout=100)
 
 # Malcolm conversion for no no negative numbers, other name?
 def convert_to_sendable_byte(byte):
