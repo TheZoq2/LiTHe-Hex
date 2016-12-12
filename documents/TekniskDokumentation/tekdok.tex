@@ -183,12 +183,12 @@
 
 	\newpage
 
-	\subsection{Kommunikation mellan enheterna}
+	\section{Kommunikation mellan enheterna}
 	Kommunikation mellan centralenheten och de två AVR-processorerna sker
 	med SPI. Sensor- och motorikenhetens SPI-portar kopplas till centralenhetens
-	SPI-port med varsin chip select. Detta illustreras i figur \ref{fig:central_circuit}.
-	All kommunikation inleds med att 
-	centralenheten skickar ett kommando eller en databegäran till slavenheterna.
+	varsin SPI-port på Raspberry PI:en. Detta illustreras i figur \ref{fig:central_circuit}.
+	All kommunikation inleds med att centralenheten skickar ett kommando 
+    eller en databegäran till slavenheterna.
 	Slavenheterna utför sedan kommandot eller svarar med den begärda data.
 
 	\begin{figure}[htpb]
@@ -201,7 +201,7 @@
 
 
 
-	\subsubsection{Kommunikationsprotokoll}
+	\subsection{Kommunikationsprotokoll}
 	\label{ssub:Kommunikationsprotokoll}
 	Kommunikationen mellan centralenheten, motorikenheten och sensorenheten sker 
 	med protokollet som beskrivs i figur \ref{fig:kommunikation1}.
@@ -257,8 +257,9 @@
 
 		\caption{Meddelandespecifikation \label{table:messages}}
 	\end{longtable}
+    
+    \subsection{Centralenheten}
 
-	\newpage
 	Algoritmen för läsning av data i centralenheten beskrivs av följande pseudokod.
 
 
