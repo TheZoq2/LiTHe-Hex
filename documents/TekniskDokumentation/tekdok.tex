@@ -8,6 +8,7 @@
 \usepackage[figurename=Figur]{caption}
 \usepackage{booktabs}
 \usepackage[parfill]{parskip}
+\usepackage[toc,page]{appendix}
 
 %Set page size
 \usepackage{geometry}
@@ -779,5 +780,25 @@
     på roboten skulle skickas till servona till en fil som simulatorn läser.
     Simulatorn visualiserar resultatet av kommandona och skriver data som
     servona skulle svara med till en annan fil som motorikkoden kan läsa.
+
+	\begin{appendices}
+	\addtocontents{toc}{\protect\setcounter{tocdepth}{0}}
+	\makeatletter
+	\addtocontents{toc}{%
+		\begingroup
+		\let\protect\l@chapter\protect\l@section
+		\let\protect\l@section\protect\l@subsection
+	}
+	\makeatother
+	\chapter{First appendix}
+	\section{First section}
+	\section{Second section}
+	
+	\chapter{Second appendix}
+	\section{First section}
+	\section{Second section}
+	\addtocontents{toc}{\endgroup}
+	
+	\end{appendices}
 
 \end{document}
