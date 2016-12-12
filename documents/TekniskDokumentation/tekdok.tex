@@ -146,7 +146,7 @@
 	Detta dokument går i detalj in på konstruktionen och mjukvaran för en 
 	sexbent robot, med autonom och manuell styrning. Först presenteras en 
 	översiktlig beskrivning av robotens styrande processorer ("enheter", vilka kopplas till ett färdigt 
-	PhantomX AX Metal Hexapod Mark III chassi från TrossenRobotics). Dessa (central-, 
+	PhantomX AX Metal Hexapod Mark III chassi från TrossenRobotics). Dessa enheter (central-, 
 	motorik- och sensorenhet), kommunikation mellan dessa, samt användargränssnitt specificeras 
 	sedan i större noggrannhet under egna avdelningar.
 
@@ -156,21 +156,25 @@
 
 	\section{Systemöversikt}
 	Systemet innehåller tre enheter. En centralenhet implementerad på en Raspberry Pi 3 
-	agerar som master för de andra två (slav-)processorerna. Denna står för all kommunikation 
-	med omgivningen genom en webserver som datorer kan koppla upp sig mot för att styra roboten 
+	agerar som master för de andra två (slav-)enheterna. Denna står för all kommunikation 
+	med omgivningen genom en webbserver som datorer kan koppla upp sig mot för att styra roboten 
 	eller få tillgång till debugdata. I autonomt läge är det även denna enhet som utifrån 
-	insamlad data fattar alla styrande beslut utifrån vilka de andra enheterna
-  verkar. Vid manuell styrning vidarebefordras endast data från styrdatorn.
+	insamlad data fattar alla styrande beslut utifrån vilka de andra enheterna 
+	verkar. Vid manuell styrning vidarebefordras endast data från styrdatorn.
 
 	De två andra enheterna (slavarna till centralenheten) utgörs av AVR-processorer och styr 
 	mer generella uppgifter. Den ena, motorikenheten, översätter generella indikationer om 
-	förflyttning från centralenheten till faktiska kommandon för robotens servon, och skickar 
+	förflyttning från centralenheten till faktiska kommandon för robotens servon och skickar 
 	vidare dessa. Den kan även förse centralenheten med bland annat debugdata om så efterfrågas.
 	
+	% Tror inte vi använde brusreducering va? Ta bort den delen
+	% isf.
 	Den andra AVR-processorn utgör en sensorenhet, vilken styr och läser robotens sensorsvit. 
 	Den svarar även för att översätta råa sensordata till mer konkreta former (som vinklar och 
 	avstånd), samt att brusreducera dessa efter behov. Figur \ref{fig:overview} ger en översiktsbild av
 	systemet.
+	
+	% Ska det stå servon eftersom det står sensorer?
 	\begin{figure}[h!]
 		\centering
 		\includegraphics[width=0.5\linewidth]{../images/overview.png}
@@ -185,7 +189,7 @@
 	SPI-port med varsin chip select. Detta illustreras i figur \ref{fig:central_circuit}.
 	All kommunikation inleds med att 
 	centralenheten skickar ett kommando eller en databegäran till slavenheterna.
-	Slavenheterna utför sedan kommandot eller svarar med den begärda datan.
+	Slavenheterna utför sedan kommandot eller svarar med den begärda data.
 
 	\begin{figure}[htpb]
 		\centering
@@ -303,13 +307,13 @@
 	i följande pseudokod
 
 	\begin{lstlisting}
-		#Init
+		# Init
 		set activate_interrupts_for_spi()
 		set received_msgs = new Queue()
 
 		set current_msg = []
 
-		#Event handler for spi messages
+		# Event handler for spi messages
 		def on_spi_recv(byte):
 			current_msg += byte
 
@@ -324,7 +328,6 @@
 					received_msgs.push(current_msg)
 	\end{lstlisting}
 
-	
 	\section{Komponentbudget}
 
     Tabell \ref{table:components} visar komponenter som ingår i
@@ -338,7 +341,7 @@
 		GP2D120 & 1 \\
 		GP2Y0A02YK & 4 \\
 		MLX90609 & 1 \\
-		LIDAR Lite, V2 eller V3 & 1 \\
+		LIDAR Lite V3 & 1 \\
 	    74LS240 & 8 \\
         Extern 16 MHz-klocka EXO-3 & 1 \\
         TXB0104 & 2 \\
@@ -362,11 +365,11 @@
     data för att den är mitt i utförandet av en annan funktion. Utifrån denna data
     fattar centralenheten beslut om hexapodens färdriktning.
 
-    I beslutsfattning ingår bland annat korridorreglering, svänga in i korridorer, detektera
-    och undvika återvändsgränder och gå över hinder när det har upptäckts.
+    I beslutsfattning ingår bland annat korridorreglering, svänga in i korridorer samt detektera
+    och undvika återvändsgränder.
 
     Korridorregleringen sker med hjälp av de fyra IR-sensorerna som sitter på
-    sidorna av roboten. En vinkel räknas ut med med datan från dessa som säger
+    sidorna av roboten. En vinkel räknas ut med data från dessa som säger
     hur roboten är vinklad i en korridor. Regleringen sker samtidigt som när
     roboten går framåt för att få jämnare gång i korridoren. Detta uppnås genom
     att en offset från mitten av korridoren beräknas och används när roboten ska
@@ -378,24 +381,22 @@
     def regulate(sensor_data, decision_packet):
     \end{lstlisting}
 
-    Förutom de fyra IR-sensorerna på sidorna används även LIDAR och en femte
-    IR-sensor när beslut ska fattas. LIDAR-sensorn som är riktad framåt används
+    Förutom de fyra IR-sensorerna på sidorna används även LIDAR när beslut ska fattas. LIDAR-sensorn som är riktad framåt används
     för att undvika ingång i återvändsgränder framåt. När ett beslut om korridor
     eller återvändsgränd fattas används sidosensorerna för att detektera och
     bekräfta det som detekterats. Inget beslut fattas innan båda sidosensorerna
-    har detekterat samma sak så att risken för felbeslut minskar. Den femte
-    IR-sensorn är riktad nedåt för att detektera hinder i labyrinten.
+    har detekterat samma sak så att risken för felbeslut minskar.
 
     När ett beslut om vändning har tagits väntar koden tills att en hel vändning
     har skett. Detta görs genom att vänta tills roboten står rakt framåt m.h.a.
     den uträknade vinkeln men även genom att vänta tills motorikenheten svarar
     att en hel vändning har gjorts klart. När en hel vändning har skett går
     roboten framåt tills den har kommit in i den nya korridoren innan den börjar
-    fatta beslut med sensordatan den får in. Detta för att ignorera korridoren
+    fatta beslut med sensordata den får in. Detta för att ignorera korridoren
     som roboten kom från. 
     
     \begin{lstlisting}
-    def get_decision(sesor_data, decision_packet):
+    def get_decision(sensor_data, decision_packet):
         corridors_and_dead_angles = get_corridors_and_dead_angles(sensor_data)
 
         for value in corridors_and_dead_ends:
@@ -441,26 +442,28 @@
         
         # if the robot has entered the new corridor
         if robot is inside a corridor:
-            prev ious_decision = GO_FORWARD
+            previous_decision = GO_FORWARD
         
     \end{lstlisting}
     
     \subsubsection{Manuell navigation}
-    För den manuella navigationen används RabbitMQ mellan webbservern
+    För den manuella navigationen används RabbitMQ som är en kommunikationsserver mellan webbservern
     och centralenheten. Det kommer in ett nytt meddelande med data för varje
     knapptryck/händelse som sker på GUI:t som centralenheten tolkar och överför
     till motorikenheten. 
 
 	\subsection{Kommunikation}
 	Centralenheten kommunicerar med en dator över WiFi. Datorns webbläsare 
-	ansluter till centralenhetens webbserver, då kan man
-	via webbgränssnittet styra roboten samt läsa av robotens loggar. 
+	ansluter till centralenhetens webbserver och då kan man
+	via webbgränssnittet styra roboten samt läsa av robotens olika data. 
 		
 	\subsubsection{Kommunikation med webbserver}
-	Centralenheten skickar och hämtar kontinuerligt meddelanden ifrån RabbitMQ servern och är i JSON-format. Centralenheten skickar den data som gui:t
+	Centralenheten skickar och hämtar kontinuerligt meddelanden ifrån RabbitMQ servern och är i JSON-format. Centralenheten skickar den data som GUI:t
 	behöver till RabbitMQ servern och webbservern läser sedan in den data som finns där.
 	Den data som skickas mellan centralenheten till webbservern kan ses i
 	tabell \ref{table:guimessagesfromcentral} och den data som skickas från webbservern till centralenheten kan ses i tabell \ref{table:guimessagestocentral} vid sektion \ref{gui:kommunikation}.
+
+	% TODO: Den ger fel sektion ovan! Det ska vara 7.4 och inte 7.3.
 
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%						Motorikenheten
@@ -471,7 +474,7 @@
 	instruktioner från centralenheten som anger steglängd, fart, rotation och riktning för 
 	förflyttnnig. Motorikenheten behandlar detta, räknar ut en lämplig gångstil och 
 	signalerar nödvändiga vinklar till de sex benen. Vissa delmoment i förflyttningen 
-	görs hårdkodade. Ett kretschema för motorikenheten finns i figur \ref{fig:motorik}
+	görs hårdkodade. Ett kretschema för motorikenheten finns i figur \ref{fig:motorik}.
 
 	För att kunna kommunicera med servona i 1 MBAUD klockas motorikenheten med en 16 MHz 
 	EXO3 klocka.
@@ -485,7 +488,7 @@
 	
 		\subsection{Planläggning}
 	Första steget i motorikenheten för en anpassad gångstil är att utifrån efterfrågad
-	förflyttning avgöra en önskad slutposition för respektive ben, som för roboten närmre 
+	förflyttning avgöra en önskad slutposition för respektive ben, som för roboten närmare 
 	ett läge indikerat av centralenheten. Utifrån hastighet skalas förflyttningsvektorerna 
 	från nuvarande läge för varje ben ner. Benen flyttas i grupper av tre med ett ben på 
 	ena sidan och två på andra (uppdelat på ett mittenben, respektive ett framben och ett 
@@ -495,20 +498,23 @@
 	set höjs och sänks först när de satts i önskad position, sådan att benens position 
 	och förflyttning för vanlig gång kan beräknas i planet, snarare än i rummet, med 
 	avseende på beslutsfattning. Endast vid den inverterade kinematiken krävs då 
-	tredimensionell planering av benens rörelser. Detta beteende finns även illustrerat i 
+	tredimensionell planering av benens rörelser, som även är två tvådimensionella problem. Detta beteende finns även illustrerat i 
 	figur \ref{fig:walkflow0}. 
 	
 	För manuell styrning ska hastighet även kunna anpassas genom justering av servonas
 	hastighetsinställning.
 
+	% TODO: Fix "typos" in figure
 	\begin{figure}[h]
 		\centering
 		\includegraphics[width=0.5\linewidth]{images/gangstil_flowchart.png}
 		\caption{Flödesschema för normal gångstil hos roboten \label{fig:walkflow0}}
 	\end{figure}
 
+	% TODO: Eftersom vi inte har med hindergång i vår lösning
+	% ta bort den delen?
 	\subsection{Hindergång}
-	För hindergång kan roboten treva med benen, och anpassa sig efter höjdskillnaden genom
+	För hindergång kan roboten treva med benen och anpassa sig efter höjdskillnaden genom
 	läsning av benens mötta motstånd. Benen sänks till det att de möter motstånd, dels
 	vid uppstigning på hindret, men också vid gång på hindret (för att upptäcka när hindret 
 	tar slut). Inför uppgång på hinder höjs även benen extra, för att tillåta kliven att nå 
@@ -534,7 +540,7 @@
 	
 	% TODO: Fix image by making it bigger and adding z, x, y..
 	% or remake it
-	Inverterad kinematik är ett 3D-problem men vi har delat upp det i två stycken 2D-problem istället. Z-axeln går rakt upp, x-axeln går jämt med roboten och y axeln går rakt ut med lederna. Det första 2D-problemet beräknar vinkeln mellan roboten och den innersta leden $\gamma$ och det andra 2D-problemet beräknar vinkeln $\alpha$ mellan första och andra leden samt vinkeln $\beta$ mellan andra och tredje leden. Se figur \ref{fig:ik}.
+	Inverterad kinematik är ett 3D-problem men vi har delat upp det i två stycken 2D-problem istället. Z-axeln går rakt upp, x-axeln går jämt med roboten och y axeln går rakt ut med jäms med lederna. Det första 2D-problemet beräknar vinkeln mellan roboten och den innersta leden $\gamma$, det andra 2D-problemet beräknar vinkeln $\alpha$ mellan den första och andra leden samt vinkeln $\beta$ mellan den andra och tredje leden. Se figur \ref{fig:ik}.
 	
 	% Add formulas for the different angles?
 	
@@ -560,7 +566,7 @@
 	kan navigera autonomt genom labyrinten. Sensorenheten är för
 	centralenheten ett abstrakt gränssnitt till sensorerna. Centralenheten
 	behöver alltså inte veta exakt vilka sensorer som används, utan istället
-	läser av data som "avstånd till vägg", eller "vridning relativt väggarna".
+	läser av data som "avstånd till vägg" eller "vridning relativt väggarna".
 
 	\subsection{Styrenhet i sensorenheten}
 	Styrenheten för sensorenheten består av AVR-processorn ATmega1284, som läser av och 
@@ -568,10 +574,10 @@
 	kommunikationen med centralenheten -- den tar emot förfrågningar om data och
 	skickar behandlad data på begäran.
 
-	Styrenheten behandlar den råa sensordatan till den grad att
+	Styrenheten behandlar den råa sensordata till den grad att
 	centralenheten inte behöver göra allt för många egna beräkningar på
 	sensorinformationen. Den sköter därför bland annat brusreducering av
-	datan. ATmega1284 har tillräckligt med 
+	data. ATmega1284 har tillräckligt med 
 	beräkningskraft för att ta hand om den data som sensorerna genererar. Den kritiska 
 	delen är istället A/D-omvandling. Eftersom vi har många IR-sensorer tar det tid att 
 	mäta och omvandla de analoga signalerna till digitala värden. Att starta en IR-sensor 
@@ -580,11 +586,11 @@
     \subsubsection{Huvudloop}
     Sensorenheten kör en huvudloop som hanterar en kö som varje ir-sensor är placerad 
     i. Den första ir-sensorn i kön är den första sensorn som kommer att ha ett nytt 
-    värde. Tiden sedan förra mätnigen av ir-sensorn beräknas och det är inte 
-    möjligt att läsa en ir-sensor innan tiden passerat. Om det det finns ett nytt värde 
+    värde. Tiden sedan förra mätningen av IR-sensorn beräknas och det är inte 
+    möjligt att läsa en IR-sensor innan tiden passerat. Om det det finns ett nytt värde 
     görs en A/D-omvandling. Data från omvandlingen sparas för den ir-sensorn 
     tillsammans med äldre värden och sen utförs en brusreducering. När det inte finns 
-    någon ir-sensor som har ett nytt värde läses det värde som Lidar skickar. Sedan 
+    någon IR-sensor som har ett nytt värde läses det värde som Lidar skickar. Sedan 
     uppdateras den tabell som innehåller den data som är klar att skickas till 
     centralenheten. 
 
@@ -592,36 +598,28 @@
 	Följade avbrott är aktiva:
     \begin{itemize}
         \item Avbrott 20 genereras när någon bit i registret för SPI-kommunikationen
-            ändras. Det användas för kommunikationen över SPI med centralenheten. 
-            Avbrottsrutinen för SPI genereras vid första byte från centralenheten 
-            sedan sköts läsning av resterande byte samt evenetuellt svar i samma 
-            avbrott. 
+        ändras. Det används för kommunikationen över SPI med centralenheten. 
+        Avbrottsrutinen för SPI genereras vid första byte från centralenheten 
+        sedan sköts läsning av resterande byte samt evenetuellt svar i samma 
+        avbrott. 
 		\item Avbrott 16 genereras när Counter1 blir sitt maxvärde (overflow). 
-			Det användas för att räkna upp antal overflow vilket gör att vi hela tiden 
-			vet hur lång tid det passerat sedan start. 
+		Det användas för att räkna upp antal overflow vilket gör att vi hela tiden 
+		vet hur lång tid det passerat sedan start. 
 		\item Avbrott 19 genereras när Counter0 blir sitt maxvärde (overflow). 
-			Det användas för att räkna upp antal overflow vilket gör att vi hela tiden 
-			vet hur lång tid det passerat sedan start. 
+		Det användas för att räkna upp antal overflow vilket gör att vi hela tiden 
+		vet hur lång tid det passerat sedan start. 
     \end{itemize}
 	
     \subsection{Avståndssensorer fram}
-
-        Sensorenheten använder avståndssensorer på framsidan, en sensor för att
-        upptäcka väggar och en sensor som är snett vinklad ner mot golvet för
-        hinderdetektion.
+        Sensorenheten använder en avståndssensor på framsidan för att upptäcka väggar.
 
         Avståndssensorn som mäter framåt ska utgöras av en LIDAR-sensor, som har
-    ett mycket brett mätspann (0-40 m) med 1 centimeters upplösning. LIDAR-sensorn
-    är ansluten med PWM och längden av varje puls motsvarar den uppmätta distansen.
-    Alltså för att beräkna värdet från lidar mäter vi tiden mellan att signalen går
-    hög och att den går låg så att vi vet hur långa pulsen var.
+	    ett mycket brett mätspann (0-40 m) med 1 centimeters upplösning. LIDAR-sensorn
+	    är ansluten med PWM och längden av varje puls motsvarar den uppmätta distansen.
+	    Alltså för att beräkna värdet från LIDAR mäter vi tiden	mellan att signalen går
+	    hög och att den går låg så att vi vet hur lång pulsen var.
 
-        Sensorn som upptäcker hinder utgöras av IR-sensorn GP2D120 som kan mäta
-        mellan 4 och 30 cm. Denna IR-sensor är riktad ned och avståndet till marken
-        är mellan 4 och 30 cm. Denna IR-sensor har fördelen att använda samma
-        analoga gränssnitt som de andra IR-sensorerna som roboten använder.
-
-    Monteringen av dessa sensorer illustreras i Figur \ref{fig:sensor_mount}.
+	    Monteringen av dessa sensorer illustreras i Figur \ref{fig:sensor_mount}.
 
         \subsection{Avståndssensorer åt sidorna}
         Roboten har avståndssensorer på vardera långsida av roboten, för
@@ -632,10 +630,9 @@
         Detta spann gör det möjligt att navigera i korridorer och upptäcka
         återvändsgränder. Med två IR-sensorer på varje sida möjliggörs mätning av hur
         roboten är vriden i en rak korridor, vinkeln roboten har jämfört med
-        korridoren användas av regleralgoritmen i centalenheten.
+        korridoren användas av regleralgoritmen i centralenheten.
 
-
-    Monteringen av dessa sensorer illustreras i Figur \ref{fig:sensor_mount}.
+	    Monteringen av dessa sensorer illustreras i Figur \ref{fig:sensor_mount}.
 
     \begin{figure}[h]
         \includegraphics[width=17cm, trim=2cm 18cm 0cm 0cm]{images/sensor_mount.pdf}
@@ -690,7 +687,7 @@
 	Webbservern är skriven i Elixir och använder webbramverket Phoenix. Kommunikationen mellan frontend och backend sker via en channel. En channel är en socket som tillåter kommunikation mellan en klient och en server. I channeln så skickas det från frontend till backend styrdata, d.v.s, joystickdata och om det autonoma läget ska köras eller inte. Från backend till frontend skickas debugdata som IR-sensorer, LIDAR samt vinklar.
 	
 	% Är det varje 0.3 sekund?
-	Backend skickar styrdatan till RabbitMQ servern som centralenheten sedan
+	Backend skickar styrdata till RabbitMQ servern som centralenheten sedan
 	läser av. Det skickas varje 0.3 sekund till RabbitMQ servern.
 
     \subsection{Styrning}
