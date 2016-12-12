@@ -8,7 +8,10 @@
 
 #include "macros.h"
 #include "conversion_util.h"
+
+#ifdef IS_X86
 #include <unistd.h>
+#endif
 
 
 #define DD_MOSI 6
