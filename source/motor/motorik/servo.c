@@ -34,7 +34,7 @@ const uint8_t BROADCAST_ID = 0xFE;
 
 const uint8_t NUM_SERVOS = 18;
 
-const uint16_t SERVO_TARGET_COMPLIANCE_MARGIN = 30;
+const uint16_t SERVO_TARGET_COMPLIANCE_MARGIN = 100;
 
 
 const uint8_t SERVO_MAP[6][3] = {
@@ -304,12 +304,8 @@ void set_leg_angles(enum LegIds leg_index, uint16_t* angles)
 */
 void read_servo_target_positions(uint16_t* buffer)
 {
-	for (uint8_t i = 3; i < NUM_SERVOS; ++i) 
+	for (uint8_t i = 1; i < NUM_SERVOS; ++i) 
 	{
-		if(i == 2 || i == 0)
-		{
-			continue;
-		}
 #ifdef IS_X86
 		float servo_angle = read_servo_target_angle(i);
 		buffer[i] = 0x1ff + radian_to_servo(servo_angle);
@@ -360,12 +356,8 @@ bool servos_are_done_rotating()
 
 	read_servo_target_positions(servo_targets);
 
-	for(uint8_t i = 3; i < NUM_SERVOS; i++)
+	for(uint8_t i = 1; i < NUM_SERVOS; i++)
 	{
-		if(i == 2 || i == 0)
-		{
-			continue;
-		}
 		if(check_servo_done_rotating(i, servo_targets[i]) == false)
 		{
 			return false;

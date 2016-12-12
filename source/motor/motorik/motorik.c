@@ -65,9 +65,9 @@ int main(void)
 
 	// Enable global interrupts and init spi communication
 #ifndef IS_X86
-	spi_init();
-	spi_set_interrupts(false);
-	sei();
+	//spi_init();
+	//spi_set_interrupts(false);
+	//sei();
 #endif
 
 	set_ddr(DDRD, 0xfE);
@@ -92,7 +92,6 @@ int main(void)
 	Point2D* current_position = raise_to_default_position();
 	
 	assume_standardized_stance(current_position);
-	assume_standardized_stance(current_position);
 
 	// rotate_to_position(0.123, 0.99, current_position);
 	// rotate_to_position(-1, -1, current_position);
@@ -109,13 +108,9 @@ int main(void)
 	//rotate_to_position(0, 0, 1, current_position);
 	//rotate_to_position(0, 0, 1, current_position);
 	
-/*	while (1) {
-		rotate_set_angle(-1 * (M_PI / 1), current_position);
-		rotate_set_angle(-1 * (M_PI / 1), current_position);
-		rotate_set_angle(1 * (M_PI / 1), current_position);
-		rotate_set_angle(1 * (M_PI / 1), current_position);
+	while (1) {
+		rotate_to_position(1, 0, 0, current_position);
 	}
-*/
 	
 	//while(1){
 	
