@@ -29,7 +29,7 @@ import constants
 
 
 MOTOR_ADDR = (0, 0)
-SENSOR_ADDR = (0, 1)
+SENSOR_ADDR = (1, 0)
 
 DATA_REQ    = 0x02
 
@@ -228,35 +228,74 @@ def set_obstacle_mode(spi, value):
     _check_response(response)
 
 
-def set_servo_speed(spi, speed):
+def set_servo_speed(spi, speed, timeout=None):
     """Sets the global servo speed on the motor unit"""
-    if speed < 0 or speed > constants.MAX_16BIT_SIZE:
-        raise InvalidCommandException("Speed \"{}\" is not a 16-bit value".format(speed))
-    least = speed & 0x00FF
-    most = (speed & 0xFF00) >> 8
-    total_msg = _get_total_msg(SET_SERVO_SPEED_LENGTH, least, most)
-    response = _send_bytes(spi, _add_parity(SET_SERVO_SPEED, total_msg),
-                           SET_SERVO_SPEED_LENGTH, least, most)
-    _check_response(response)
+    count = 0
+    while True:
+        time.sleep(0.01)
+        try:
+            if speed < 0 or speed > constants.MAX_16BIT_SIZE:
+                raise InvalidCommandException("Speed \"{}\" is not a 16-bit value"
+                                              .format(speed))
+            least = speed & 0x00FF
+            most = (speed & 0xFF00) >> 8
+            total_msg = _get_total_msg(SET_SERVO_SPEED_LENGTH, least, most)
+            response = _send_bytes(spi, _add_parity(SET_SERVO_SPEED, total_msg),
+                                   SET_SERVO_SPEED_LENGTH, least, most)
+            _check_response(response)
+            print("")
+            print("Sent speed")
+            break
+        except CommunicationError:
+            count += 1
+            if timeout is not None and count == timeout:
+                print("Timeout reached after {} tries".format(count))
+                return
+            print("Tried sending speed (times): " + str(count), end="\r")
 
 
-def walk(spi, x_speed, y_speed, turn_speed, auto_mode):
+def walk(spi, x_speed, y_speed, turn_speed, auto_mode, timeout=None):
     """
     Commands the motor unit to walk in the direction and speed 
     given by x_speed, y_speed and turn_speed
     """
-    auto = 0x01 if auto_mode else 0x00
-    total_msg = _get_total_msg(WALK_LENGTH, x_speed, y_speed, turn_speed, auto)
-    response = _send_bytes(spi, _add_parity(WALK, total_msg),
+    count = 0
+    while True:
+        time.sleep(0.01)
+        try:
+            auto = 0x01 if auto_mode else 0x00
+            total_msg = _get_total_msg(WALK_LENGTH, x_speed, y_speed, turn_speed, auto)
+            response = _send_bytes(spi, _add_parity(WALK, total_msg),
                            WALK_LENGTH, x_speed, y_speed, turn_speed, auto)
-    _check_response(response)
+            _check_response(response)
+            print("Walk sent x: {}, y: {}, r: {}".format(x_speed, y_speed, turn_speed))
+            break
+        except CommunicationError:
+            count += 1
+            if timeout is not None and count == timeout:
+                print("Timeout reached after {} tries".format(count))
+                return
+            print("Tried sending walk (times): " + str(count), end="\r")
 
 
-def back_to_neutral(spi):
+def back_to_neutral(spi, timeout=None):
     """Commands the motor unit to return to the neutral state"""
     # we send a zero byte as args
-    response = _send_bytes(spi, _add_parity(RETURN_TO_NEUTRAL, 0), 0)
-    _check_response(response)
+    count = 0
+    while True:
+        time.sleep(0.01)
+        try:
+            response = _send_bytes(spi, _add_parity(RETURN_TO_NEUTRAL, 0), 0)
+            _check_response(response)
+            print("Back to neutral sent")
+            break
+        except CommunicationError:
+            count += 1
+            if timeout is not None and count == timeout:
+                print("Timeout reached after {} tries".format(count))
+                return
+            print("Tried sending back to neutral (times): " + str(count), end="\r")
+
 
 
 def get_servo_status(spi):
