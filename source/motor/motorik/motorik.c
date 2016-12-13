@@ -30,7 +30,7 @@ void handle_spi_frame(Frame *frame_recv);
 
 // If SPI receive something
 ISR(SPI_STC_vect) {
-	cli();
+	//spi_set_interrupts(false);
     Frame frame_recv;
 	on_spi_recv(&frame_recv);
 
@@ -45,7 +45,7 @@ ISR(SPI_STC_vect) {
 
 		handle_spi_frame(&frame_recv);
 	}
-	sei();
+	//spi_set_interrupts(true);
 }
 #endif
 
