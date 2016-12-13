@@ -145,16 +145,11 @@ sensorMessageDecoder =
         |> JD.map SensorMessage
 
 
-chatMessageDecoder : JD.Decoder BotMessage
-chatMessageDecoder =
-    JD.oneOf [ debugMessageDecoder, autoMessageDecoder, sensorMessageDecoder ]
-
-
 sendControlMessage : Socket Msg -> JE.Value -> ( Socket Msg, Cmd Msg )
 sendControlMessage socket payload =
     let
         push =
-            Phoenix.Push.init "new_msg" "client"
+            Phoenix.Push.init "joystick" "client"
                 |> Phoenix.Push.withPayload payload
 
         ( phxSocket, phxCmd ) =
@@ -179,7 +174,7 @@ update msg model =
             Material.update mdlMsg model
 
         ReceiveChatMessage raw ->
-            case JD.decodeValue chatMessageDecoder raw of
+            case JD.decodeValue debugMessageDecoder raw of
                 Ok (DebugMessage msg) ->
                     ( { model | messages = List.take 30 (msg :: model.messages) }
                     , Cmd.none
@@ -282,36 +277,26 @@ update msg model =
                         |> List.map (\( par, v ) -> ( par, JE.float v ))
                         |> JE.object
 
-                push =
-                    Phoenix.Push.init "joystick" "client"
-                        |> Phoenix.Push.withPayload payload
-
                 ( phxSocket, phxCmd ) =
-                    Phoenix.Socket.push push model.phxSocket
+                    sendControlMessage model.phxSocket payload
             in
                 ( { model
                     | phxSocket = phxSocket
                   }
-                , Cmd.map PhoenixMsg phxCmd
+                , phxCmd
                 )
 
         ToggleAuto ->
             let
-                payload =
-                    JE.object [ ( "auto", JE.bool (not model.autoMode) ) ]
-
-                push =
-                    Phoenix.Push.init "joystick" "client"
-                        |> Phoenix.Push.withPayload payload
-
                 ( phxSocket, phxCmd ) =
-                    Phoenix.Socket.push push model.phxSocket
+                    sendControlMessage model.phxSocket
+                        <| JE.object [ ( "auto", JE.bool (not model.autoMode) ) ]
             in
                 ( { model
                     | autoMode = not model.autoMode
                     , phxSocket = phxSocket
                   }
-                , Cmd.map PhoenixMsg phxCmd
+                , phxCmd
                 )
 
         MoveSlider keyCode ->
