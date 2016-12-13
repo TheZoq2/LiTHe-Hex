@@ -35,15 +35,27 @@ type alias JoystickData =
     }
 
 
+{-| Event that will fire when a new joystick is connected. The included data is
+the index of the new joystick.
+-}
 port connected : (Int -> msg) -> Sub msg
 
 
+{-| Event that will fire when a joystick is disconnected. The included data is
+the index of the new joystick.
+-}
 port disconnected : (Int -> msg) -> Sub msg
 
 
+{-| Port to send a joystick index to when you want to know the current state of
+that joystick.
+-}
 port poll : Int -> Cmd msg
 
 
+{-| Event that will send state for a particular joystick every time that its
+index is sent to poll.
+-}
 port axisData : (JoystickData -> msg) -> Sub msg
 
 
@@ -72,6 +84,8 @@ steeringRect angle =
         []
 
 
+{-| Make a visualization of the joystick state.
+-}
 joystickDisplay : JoystickData -> Html a
 joystickDisplay data =
     let

@@ -41,34 +41,3 @@ r =
 c : Keyboard.KeyCode
 c =
     67
-
-
--- update : Bool -> KeyboardData -> Keyboard.KeyCode -> KeyboardData
--- update down keys keyCode =
---     case kecCode of
---         87 ->
---             { keys | w = down }
-
---         65 ->
---             { keys | a = down }
-
---         83 ->
---             { keys | s = down }
-
---         68 ->
---             { keys | d = down }
-
---         81 ->
---             { keys | q = down }
-
---         69 ->
---             { keys | e = down }
-
---         82 ->
---             { keys | r = down }
-
---         67 ->
---             { keys | c = down }
-
---         _ ->
---             keys
