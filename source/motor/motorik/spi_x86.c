@@ -24,5 +24,5 @@ void spi_transmit_fail()
 }
 void spi_set_interrupts(bool value)
 {
-	printf("Setting spi interrupts to %i", value);
+	//printf("Setting spi interrupts to %i\n", value);
 }

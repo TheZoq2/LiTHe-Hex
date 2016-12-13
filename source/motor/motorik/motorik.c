@@ -28,11 +28,6 @@ volatile CurrentStatus* current_status;
 void build_spi_reply_frame(Frame *frame_trans);
 void handle_spi_frame(Frame *frame_recv);
 
-// When TIMER0 overflow increase timer8 overflow counter;
-ISR(TIMER0_OVF_vect) {
-	timer8->num_overflows++;
-}
-
 // If SPI receive something
 ISR(SPI_STC_vect) {
     Frame frame_recv;
@@ -138,11 +133,11 @@ int main(void)
         }
 	}
 #else
-	for(uint8_t i = 0; i < 40; ++i)
+	for(;;)
 	{
 		Point2D goal;
-		goal.x = 1;
-		goal.y = 0;
+		goal.x = rand() % 3 - 1;
+		goal.y = rand() % 3 - 1;
 
 		//printf("Walking one step\n\n\n\n");
 
