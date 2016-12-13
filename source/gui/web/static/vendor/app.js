@@ -21534,6 +21534,18 @@ var _user$project$Sensors$h = 200;
 var _user$project$Sensors$w = 200;
 var _user$project$Sensors$viewSensor = F3(
 	function (name, range, data) {
+		var firstValue = _elm_lang$core$Tuple$second(
+			A2(
+				_elm_lang$core$Maybe$withDefault,
+				{ctor: '_Tuple2', _0: 0, _1: 0},
+				_elm_lang$core$List$head(data)));
+		var label = A2(
+			_elm_lang$core$Basics_ops['++'],
+			name,
+			A2(
+				_elm_lang$core$Basics_ops['++'],
+				': ',
+				_elm_lang$core$Basics$toString(firstValue)));
 		var opts = _gampleman$elm_visualization$Visualization_Axis$defaultOptions;
 		var yScale = A2(
 			_gampleman$elm_visualization$Visualization_Scale$linear,
@@ -21752,7 +21764,7 @@ var _user$project$Sensors$viewSensor = F3(
 								},
 								{
 									ctor: '::',
-									_0: _elm_lang$svg$Svg$text(name),
+									_0: _elm_lang$svg$Svg$text(label),
 									_1: {ctor: '[]'}
 								}),
 							_1: {ctor: '[]'}

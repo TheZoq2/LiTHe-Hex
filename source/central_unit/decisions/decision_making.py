@@ -120,7 +120,7 @@ def _is_inside_corridor(sensor_data):
 
 
 # Returns the decision made based on the dead ends and corridors detected
-def get_decision(sensor_data, decision_packet):
+def get_decision(sensor_data, decision_packet, motor_spi):
     corridors_and_dead_ends = _get_corridors_and_dead_ends(sensor_data)
 
     # Robot will always move forward until it detects a dead end forward
@@ -178,7 +178,7 @@ def get_decision(sensor_data, decision_packet):
         # larger than 5 (0 ideally), so we don't make new decisions until
         # the robot is back at straight angle and robot has stopped rotating.
         if (abs(sensor_data.average_angle) <= ANGLE_10_DEGREE and
-            not avr_communication.is_busy_rotating()):
+            not avr_communication.is_busy_rotating(motor_spi, timeout=0)):
             decision_packet.decision = GO_FORWARD
             decision_packet.previous_decision = COMPLETE_TURN
             #print("Turning left complete.")
