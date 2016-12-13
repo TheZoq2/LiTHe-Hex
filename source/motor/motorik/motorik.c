@@ -148,11 +148,13 @@ int main(void)
 				//spi_set_interrupts(true);
 
             } else if (rotation != 0) {
-				//spi_set_interrupts(false);
+				spi_set_interrupts(false);
 				current_status->is_rotating = true;
+				spi_set_interrupts(true);
                 rotate_set_angle(rotation * (M_PI / 1), current_position);
+				spi_set_interrupts(false);
 				current_status->is_rotating = false;
-				//spi_set_interrupts(true);
+				spi_set_interrupts(true);
             }
         }
 	}

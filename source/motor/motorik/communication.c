@@ -155,6 +155,10 @@ void get_new_frame(Frame* frame_recv) {
  
 	if(frame_recv->control_byte & 0x80) { // msg is more than one byte long 
 		frame_recv->len = spi_receive_byte();
+		if (frame_recv->len > MAX_MESSAGE_LENGTH) {
+			frame_recv->control_byte = 0x0;
+			frame_recv->len = 0;
+		}
 		for(uint8_t i = 0; i < frame_recv->len; i++) {
 			frame_recv->msg[i] = spi_receive_byte();
 		}
