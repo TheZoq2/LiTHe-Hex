@@ -6,6 +6,7 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
+#include <stdbool.h>
 
 #include "communication.h"
 #endif
@@ -65,13 +66,12 @@ int main(void)
 
 	// Enable global interrupts and init spi communication
 #ifndef IS_X86
-	//spi_init();
-	//spi_set_interrupts(false);
-	//sei();
+	spi_init();
+	spi_set_interrupts(false);
+	sei();
 #endif
 
 	set_ddr(DDRD, 0xfE);
-	
 	
 	usart_init();
 	
@@ -108,16 +108,13 @@ int main(void)
 	//rotate_to_position(0, 0, 1, current_position);
 	//rotate_to_position(0, 0, 1, current_position);
 	
-	while (1) {
-		rotate_to_position(1, 0, 0, current_position);
-	}
+	//while (1) {
+	//	rotate_to_position(1, 0, 0, current_position);
+	//}
 	
 	//while(1){
 	
 #ifndef IS_X86
-	
-	
-	
 	
 	spi_set_interrupts(true);
 
@@ -145,20 +142,20 @@ int main(void)
                 goal.x = x_speed;
                 goal.y = y_speed;
 				
-				spi_set_interrupts(false);
+				//spi_set_interrupts(false);
                 work_towards_goal(rotation, goal, current_position);
-				spi_set_interrupts(true);
+				//spi_set_interrupts(true);
 
             } else if (rotation != 0) {
-				spi_set_interrupts(false);
+				//spi_set_interrupts(false);
                 rotate_set_angle(rotation * (M_PI / 1), current_position);
-				spi_set_interrupts(true);
+				//spi_set_interrupts(true);
             }
         }
-		uint32_t i = 0;
-		while (i < 10000) {
-			i++;
-		}
+	//	uint32_t i = 0;
+	//	while (i < 10000) {
+	//		i++;
+	//	}
 	}
 #else
 	for(uint8_t i = 0; i < 40; ++i)
@@ -192,23 +189,20 @@ void build_spi_reply_frame(Frame *frame_trans) {
 			frame_trans->len = 0x05; // SET LEN OF MSG
 			frame_trans->msg[0] = 0x00; // SET MSG
 			break;
-		case OBSTACLE :
-			// Send servo status data
-			frame_trans->control_byte = OBSTACLE << 2;
-			frame_trans->len = 0x00; 
-			frame_trans->msg[0] = 0x00; // SET MSG
-			break;
+		case BUSY_ROTATING :
+			frame_trans->control_byte = BUSY_ROTATING << 2;
+			frame_trans->len = 0x00;
+			if (current_status->rotation > 0) {
+				frame_trans->msg[0] = 0x01;
+			} else {
+				frame_trans->msg[0] = 0x00;
+			}
 	}
 }
 
 void handle_spi_frame(Frame *frame_recv) {
 
 	switch(get_id(frame_recv)){
-		case TOGGLE_OBSTACLE : {
-			// Toggle obstacle
-			//uint8_t on_off = frame_recv->msg[0];
-			break;
-		}
 		case SET_SERVO_SPEED : {
 			uint8_t speed_lsb = frame_recv->msg[0];
             uint8_t speed_msb = frame_recv->msg[1];
@@ -235,4 +229,5 @@ void handle_spi_frame(Frame *frame_recv) {
 		}
 	}
 }
+
 #endif
