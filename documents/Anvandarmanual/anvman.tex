@@ -122,19 +122,12 @@
 	\raggedright
 
 	\section{Inledning}
-	Detta dokument går i detalj in på konstruktionen och mjukvaran för en
-    sexbent robot, med autonom och manuell styrning. Först presenteras en
-    översiktlig beskrivning av robotens styrande processorer ("enheter", vilka
-    kopplas till ett färdigt PhantomX AX Metal Hexapod Mark III chassi från
-    TrossenRobotics). Dessa (central-, motorik- och sensorenhet), kommunikation
-    mellan dessa, samt användargränssnitt specificeras sedan i större
-    noggrannhet under egna avdelningar.
+	Detta dokument beskriver användningen av LiTHe Hex magnifika sexbenta robot.
 
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%						Översikt
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	
-    \newpage
 	\section{Roboten}
     På roboten finns en knapp med vilken man kan byta mellan autonomt och
     manuellt läge.
@@ -144,12 +137,12 @@
 	%						Grafiskt användargränssnitt
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    \newpage
 	\section{Grafiskt användargränssnitt}
 	Här beskrivs hur man använder det grafiska användargränssnittet för roboten.
 	
 	\subsection{Starta webbservern}
-	Man startar servern genom att gå till mappen "/var/www/gui/" och skriva "mix phoenix.server". Se exempel nedan:
+	Man startar servern genom att gå till mappen "/var/www/gui/" och skriva "mix
+    phoenix.server". Se exempel nedan:
 	
 	\begin{lstlisting}[style=linux]
 	/var/www/gui$ mix phoenix.server
@@ -157,25 +150,25 @@
 	
 	\subsection{Ansluta till webbsidan}
 	Servern startas på port 4000 och för att komma till webbsidan behöver man
-    också pi:ens ip-address.
+    också pi:ens ip-adress. För att ta reda på pi:ens ip-adress
 	
-	Vi antar att ip-addressen är 127.0.0.1 och då skulle man i addressfältet i
+	Vi antar att ip-adressen är 127.0.0.1 och då skulle man i adressfältet i
     webbläsaren skriva 127.0.0.1:4000 för att komma till webbsidan.
 	
 	När man har anslutit till webbsidan finns det två olika flikar man kan välja
     mellan: Control och Debug. De beskrivs nedan i \ref{gui:control} och
-    \ref{gui:debug}. Control är default sidan som öppnas.
+    \ref{gui:debug}. Control är den första sidan som öppnas.
     \newpage
 	
 	\subsection{Control}\label{gui:control}
 	\begin{figure}[h]
       \centering
-      \begin{subfigure}{.5\textwidth}
+      \begin{subfigure}{.4\textwidth}
         \centering
 		\includegraphics[width=1\linewidth]{images/gui-control.png}
         \caption{Styrning för det manuella läget}
       \end{subfigure}
-      \begin{subfigure}{.5\textwidth}
+      \begin{subfigure}{.4\textwidth}
         \centering
 		\includegraphics[width=1\linewidth]{images/gui-parameters.png}
 		\caption{Parametrar för det autonoma läget}
@@ -183,7 +176,7 @@
       \caption{Det grafiska gränssnittet för control\label{fig:gui-control}}
 	\end{figure}
 	
-	När man har öppnat control sidan antas det att en joystick är inkopplad i
+	När man har öppnat controlsidan antas det att en joystick är inkopplad i
     datorn. Om det finns en joystick inkopplad så kan man styra roboten med den.
     Om man drar joysticken åt ett håll rör sig roboten i den riktningen, En
     vridning av joysticken kommer göra att roboten vrider sig. På joysticken
@@ -196,14 +189,14 @@
 	
 	Det finns en knapp som heter stop som stoppar roboten. Längst upp finns
     också en knapp för att välja mellan autonomt och manuellt läge. Manuellt
-    läge är default. Se figur \ref{fig:gui-control} för att se hur webbsidan ser
-    ut.
+    läge är grundvärden. Se figur \ref{fig:gui-control} för att se hur webbsidan
+    ser ut.
 	
 	\subsection{Debug}\label{gui:debug}
 	När man öppnat debug så finns det nio stycken olika grafer som visar olika
     sensordata för roboten vid det här tillfället. Graferna uppdateras tio
     gånger i sekunden för de nya värden som kommer in. Se figur
-    \ref{fig:gui-debug} för hur debug sidan ser ut.
+    \ref{fig:gui-debug} för hur debugsidan ser ut.
 	
 	\begin{figure}[h]
 		\centering

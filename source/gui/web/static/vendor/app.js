@@ -21534,6 +21534,18 @@ var _user$project$Sensors$h = 200;
 var _user$project$Sensors$w = 200;
 var _user$project$Sensors$viewSensor = F3(
 	function (name, range, data) {
+		var firstValue = _elm_lang$core$Tuple$second(
+			A2(
+				_elm_lang$core$Maybe$withDefault,
+				{ctor: '_Tuple2', _0: 0, _1: 0},
+				_elm_lang$core$List$head(data)));
+		var label = A2(
+			_elm_lang$core$Basics_ops['++'],
+			name,
+			A2(
+				_elm_lang$core$Basics_ops['++'],
+				': ',
+				_elm_lang$core$Basics$toString(firstValue)));
 		var opts = _gampleman$elm_visualization$Visualization_Axis$defaultOptions;
 		var yScale = A2(
 			_gampleman$elm_visualization$Visualization_Scale$linear,
@@ -21752,7 +21764,7 @@ var _user$project$Sensors$viewSensor = F3(
 								},
 								{
 									ctor: '::',
-									_0: _elm_lang$svg$Svg$text(name),
+									_0: _elm_lang$svg$Svg$text(label),
 									_1: {ctor: '[]'}
 								}),
 							_1: {ctor: '[]'}
@@ -22359,7 +22371,7 @@ var _user$project$App$sendControlMessage = F2(
 		var push = A2(
 			_fbonetti$elm_phoenix_socket$Phoenix_Push$withPayload,
 			payload,
-			A2(_fbonetti$elm_phoenix_socket$Phoenix_Push$init, 'new_msg', 'client'));
+			A2(_fbonetti$elm_phoenix_socket$Phoenix_Push$init, 'joystick', 'client'));
 		var _p8 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$push, push, socket);
 		var phxSocket = _p8._0;
 		var phxCmd = _p8._1;
@@ -22458,7 +22470,7 @@ var _user$project$App$debugMessageDecoder = A2(
 	_elm_lang$core$Json_Decode$map,
 	_user$project$App$DebugMessage,
 	A2(_elm_lang$core$Json_Decode$field, 'debug', _elm_lang$core$Json_Decode$string));
-var _user$project$App$chatMessageDecoder = _elm_lang$core$Json_Decode$oneOf(
+var _user$project$App$serverMessageDecoder = _elm_lang$core$Json_Decode$oneOf(
 	{
 		ctor: '::',
 		_0: _user$project$App$debugMessageDecoder,
@@ -22490,7 +22502,7 @@ var _user$project$App$update = F2(
 			case 'Mdl':
 				return A2(_MichaelCombs28$elm_mdl$Material$update, _p9._0, model);
 			case 'ReceiveChatMessage':
-				var _p11 = A2(_elm_lang$core$Json_Decode$decodeValue, _user$project$App$chatMessageDecoder, _p9._0);
+				var _p11 = A2(_elm_lang$core$Json_Decode$decodeValue, _user$project$App$serverMessageDecoder, _p9._0);
 				if (_p11.ctor === 'Ok') {
 					switch (_p11._0.ctor) {
 						case 'DebugMessage':
@@ -22678,11 +22690,7 @@ var _user$project$App$update = F2(
 							};
 						},
 						_elm_lang$core$Dict$toList(model.parameters)));
-				var push = A2(
-					_fbonetti$elm_phoenix_socket$Phoenix_Push$withPayload,
-					payload,
-					A2(_fbonetti$elm_phoenix_socket$Phoenix_Push$init, 'joystick', 'client'));
-				var _p23 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$push, push, model.phxSocket);
+				var _p23 = A2(_user$project$App$sendControlMessage, model.phxSocket, payload);
 				var phxSocket = _p23._0;
 				var phxCmd = _p23._1;
 				return {
@@ -22690,24 +22698,22 @@ var _user$project$App$update = F2(
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
 						{phxSocket: phxSocket}),
-					_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$App$PhoenixMsg, phxCmd)
+					_1: phxCmd
 				};
 			case 'ToggleAuto':
-				var payload = _elm_lang$core$Json_Encode$object(
-					{
-						ctor: '::',
-						_0: {
-							ctor: '_Tuple2',
-							_0: 'auto',
-							_1: _elm_lang$core$Json_Encode$bool(!model.autoMode)
-						},
-						_1: {ctor: '[]'}
-					});
-				var push = A2(
-					_fbonetti$elm_phoenix_socket$Phoenix_Push$withPayload,
-					payload,
-					A2(_fbonetti$elm_phoenix_socket$Phoenix_Push$init, 'joystick', 'client'));
-				var _p24 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$push, push, model.phxSocket);
+				var _p24 = A2(
+					_user$project$App$sendControlMessage,
+					model.phxSocket,
+					_elm_lang$core$Json_Encode$object(
+						{
+							ctor: '::',
+							_0: {
+								ctor: '_Tuple2',
+								_0: 'auto',
+								_1: _elm_lang$core$Json_Encode$bool(!model.autoMode)
+							},
+							_1: {ctor: '[]'}
+						}));
 				var phxSocket = _p24._0;
 				var phxCmd = _p24._1;
 				return {
@@ -22715,7 +22721,7 @@ var _user$project$App$update = F2(
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
 						{autoMode: !model.autoMode, phxSocket: phxSocket}),
-					_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$App$PhoenixMsg, phxCmd)
+					_1: phxCmd
 				};
 			default:
 				var _p29 = _p9._0;

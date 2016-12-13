@@ -123,7 +123,11 @@ Point2D rotate_point_by_angle(Point2D original, float angle)
 }
 
 
-//Frans, please document your code /Olav
+/**
+	Converts from the robot coordinate system where the x-axis is pointed 
+	forward and the y-axis is pointed left to the coordinate system used by
+	the inverse kinematics for each leg
+*/
 Point2D robot_to_ik_coords(Point2D original, size_t leg)
 {
 	Point2D result = original;
@@ -164,15 +168,12 @@ Point2D robot_to_ik_coords(Point2D original, size_t leg)
  * @return array ordered LF RF LM RM LB RB (left/right - front/mid/back) of calculated 
  * angles for the legs.
  */
-struct Leg* get_angle_set(Point2D * target, float * height){
-    struct Leg* res = (struct Leg *)malloc(NUM_LEGS * sizeof(struct Leg));
+void get_angle_set(Point2D * target, float * height, struct Leg* res){
     for (size_t leg = 0; leg < NUM_LEGS; ++leg){
 		Point2D target_robot_coords = robot_to_ik_coords(target[leg], leg);
 
         res[leg] = leg_ik(target_robot_coords.x, height[leg], target_robot_coords.y);
     }
-
-	return res;
 }
 
 
@@ -182,7 +183,9 @@ struct Leg* get_angle_set(Point2D * target, float * height){
  * intended final placement of feet relative to the mounts of their joints.
  */
 void execute_position(Point2D * target, float * z, uint16_t threshold){
-    struct Leg* ik = get_angle_set(target, z);
+    //struct Leg* ik = get_angle_set(target, z);
+	struct Leg ik[NUM_LEGS];
+	get_angle_set(target, z, ik);
 
     uint16_t angles[3];
     uint8_t legId;
@@ -213,8 +216,6 @@ void execute_position(Point2D * target, float * z, uint16_t threshold){
 #ifdef IS_X86
 	write_current_state();
 #endif
-
-	free(ik);
 }
 
 
@@ -258,13 +259,7 @@ Point2D add_point2D(Point2D point1, Point2D point2)
  * @param lrlRaised decides which set of legs should be used for stepping forward, and
  * which should remain grounded.
  */
-void execute_step(Point2D * current, Point2D * target, bool lrlRaised){
-    if (current->x == NAN || current->y == NAN || target->x == NAN || target->y == NAN)
-    {
-		free(current);
-		current = raise_to_default_position();
-    }
-	
+void execute_step(Point2D * current, Point2D * target, bool lrlRaised){	
 	float z[NUM_LEGS];
 
     if(lrlRaised){

@@ -1,5 +1,5 @@
 SOURCES=uart_lib.c servo.c  \
-		../../IK/ik.c gangstil.c \
+		ik.c gangstil.c \
 		status.c conversion_util.c
 
 SOURCES_X86=gangstil_x86.c servo_x86.c spi_x86.c
