@@ -148,14 +148,12 @@ int main(void)
 
             } else if (rotation != 0) {
 				//spi_set_interrupts(false);
+				current_status->is_rotating = true;
                 rotate_set_angle(rotation * (M_PI / 1), current_position);
+				current_status->is_rotating = false;
 				//spi_set_interrupts(true);
             }
         }
-	//	uint32_t i = 0;
-	//	while (i < 10000) {
-	//		i++;
-	//	}
 	}
 #else
 	for(uint8_t i = 0; i < 40; ++i)
@@ -192,7 +190,7 @@ void build_spi_reply_frame(Frame *frame_trans) {
 		case BUSY_ROTATING :
 			frame_trans->control_byte = BUSY_ROTATING << 2;
 			frame_trans->len = 0x00;
-			if (current_status->rotation > 0) {
+			if (current_status->is_rotating) {
 				frame_trans->msg[0] = 0x01;
 			} else {
 				frame_trans->msg[0] = 0x00;
