@@ -136,12 +136,12 @@ int main(void)
 	for(;;)
 	{
 		Point2D goal;
-		goal.x = rand() % 3 - 1;
-		goal.y = rand() % 3 - 1;
+		goal.x = 1;
+		goal.y = 0;
 
 		//printf("Walking one step\n\n\n\n");
 
-		work_towards_goal(0, goal, current_position);
+		work_towards_goal(0.5, goal, current_position);
 	}
 #endif
 
