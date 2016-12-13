@@ -185,8 +185,8 @@
 
 	\section{Kommunikation mellan enheterna}
 	Kommunikation mellan centralenheten och de två AVR-processorerna sker
-	med SPI. Sensor- och motorikenhetens SPI-portar kopplas till centralenhetens
-	varsin SPI-port på Raspberry PI:en. Detta illustreras i figur \ref{fig:central_circuit}.
+	med SPI. Sensor- och motorikenhetens SPI-portar är kopplade till varsin
+  SPI-port på centralenheten. Detta illustreras i figur \ref{fig:central_circuit}.
 	All kommunikation inleds med att centralenheten skickar ett kommando 
     eller en databegäran till slavenheterna.
 	Slavenheterna utför sedan kommandot eller svarar med den begärda data.
@@ -489,47 +489,52 @@
 	
 		\subsection{Kommandotolkning}
 	Motorikenheten  tar in ett flyttalspar med koordinater för önskad målposition (önskat 
-	center för roboten efter förflyttning) angivet i meter, med x-koordinat fram och 
+	center för roboten efter förflyttning), med x-koordinat fram och 
 	y-koordinat åt vänster om roboten, med origo i robotens mittpunkt. Om totalavståndet 
-	origo till målposition är mindre än 1 (m) skalas rörelsen ned utifrån detta avstånd. 
-	Det vill säga, om roboten ombeds gå 0,5 meter framåt, tar den ett kliv med halva 
+	origo till målposition är mindre än 1 enhet skalas rörelsen ned utifrån detta avstånd. 
+	Det vill säga, om roboten ombeds gå 0,5 enheter framåt, tar den ett kliv med halva 
 	steglängden av om den ombetts gå en meter, även om inget av kliven är i närheten av 
-	de respektive distanserna; om en enmetersdistans (maximal steglängd) leder till ett 
-	1,6 decimeters kliv, leder halvmetersdistansen till ett ca: 0.8 decimeters kliv i samma 
-	startposition. 
+	de respektive distanserna; om en enhetsdistans (maximal steglängd) leder till ett 
+	1,6 decimeters kliv, leder halva ehtetsdistansen till ett ca: 0.8 decimeters kliv givet samma 
+	startposition och riktning. 
 	
 	Vidare ges den rotation som roboten 
-	skall rotera, angiven i radianer positiv vänster med 0 rad frammåt, och en flagga för om 
+	skall rotera, angiven positiv vänster med 0 frammåt, och en flagga för om 
 	roboten är i autonomt läge eller manuellt styrt läge. Om roboten är i autonomt läge, tolkas 
 	rotation utan koordinater som att en strikt rotation skall utföras (det vill säga, att 
 	roboten inte skall ändra rörelse förrän den utfört rotationen i fullo). I alla andra fall 
 	tar roboten in ett nytt kommando efter att ett enda steg utförts i indikerad riktning. 
 	%kontrollera att nedanstående stämmer, servospeedmanupulation inte implementerat at time of writing.
-	Även robotens servohastighet styras utifrån ett fartvärde.
+	Även robotens servohastighet styras utifrån ett fartvärde. 
 
-		\subsection{Planläggning}
+		\subsection{Planläggning och utförande}
 	Första steget i motorikenheten för en anpassad gångstil är att utifrån efterfrågad
 	förflyttning avgöra en önskad slutposition för respektive ben, som för roboten närmare 
-	ett läge indikerat av centralenheten. Utifrån hastighet skalas förflyttningsvektorerna 
-	från nuvarande läge för varje ben ner. Benen flyttas i grupper av tre med ett ben på 
-	ena sidan och två på andra (uppdelat på ett mittenben, respektive ett framben och ett 
-	bakben). När en uppsättning ben förflyttas, skiftas de markfästa benen vid behov för 
-	att flytta själva kroppen, även denna utifrån en förflyttningsvektor (som med benen). 
-	Lyft och nedsättning av ben hårdkodas, sådan att alla tre ben som skall flyttas i ett 
-	set höjs och sänks först när de satts i önskad position, sådan att benens position 
-	och förflyttning för vanlig gång kan beräknas i planet, snarare än i rummet, med 
-	avseende på beslutsfattning. Endast vid den inverterade kinematiken krävs då 
-	tredimensionell planering av benens rörelser, som även är två tvådimensionella problem. Detta beteende finns även illustrerat i 
-	figur \ref{fig:walkflow0}. 
-	
-	För manuell styrning ska hastighet även kunna anpassas genom justering av servonas
-	hastighetsinställning.
+	det läge indikerat av centralenheten. Sedan avgörs den nedskalning av rörelsen som för 
+	varje set om tre ben (vänster-, höger-, vänster-ben och höger-, vänster-, höger-ben, taget 
+	frammifrån bakåt) är nödvändig för att robotbenen skall kunna nå positionen utan att ben 
+	skär varandra, och utan att gå utanför benens räckvidd eller in under roboten. Detta görs 
+	två gånger, en med vardera set ben höjt, och roboten använder sig av det alternativ där 
+	markfästa bens förflyttning nedskalas minst för att omberäkna benrörelsen. 
+
+	Beräkning av nedskalning sker i tre avseenden. För det första skalas benförflyttningarna 
+	ner så att de inte tar benen utanför benens räckvidd. För det andra skalas  rörelserna så 
+	att de inte skär en uppsättning hårdkodade gränser mellan ben och mellan fot och robotchassi.
+	Avslutningsvis görs en nedskalning utifrån angivet kommando, så att steglängd kan justeras av 
+	användaren. Om ingen rörelse anges, kommmer roboten att förbli stillastående, %och om den rörelsen som anges anses allt för svårutförd, kommer roboten att först anta en mer neutral ställning varifrån rörelsen bör vara utförbar.
+
+	Bestämningen av benposition sker endast i planet; höjdled tas i beräkning endast inför åberopning 
+	av IK, för bestämning av servovinklar. Själva klivet sker genom en sekvens av 
+	positionsinställningar med höjning och sänkning av ben, och stegvis övergång från gällande till 
+	önskad position. Vidare anpassas servonas aktuationshastighet för att ge en unison rörelse 
+	över alla ben (hanterat i kommandot för servohandling). För en översiktlig inblick i 
+	gångstilen, se figur \ref{fig:walkflow0}.
 
 	% TODO: Fix "typos" in figure
 	\begin{figure}[h]
 		\centering
 		\includegraphics[width=0.5\linewidth]{images/gangstil_flowchart.png}
-		\caption{Flödesschema för normal gångstil hos roboten \label{fig:walkflow0}}
+		\caption{Flödesschema för normal gångstil hos roboten \label{fig:walkflow0}}	%TODO: Chart slightly out of date, update
 	\end{figure}
 
 	\subsection{Inverterad kinematik}
@@ -541,7 +546,13 @@
 	
 	% TODO: Fix image by making it bigger and adding z, x, y..
 	% or remake it
-	Inverterad kinematik är ett 3D-problem men vi har delat upp det i två stycken 2D-problem istället. Z-axeln går rakt upp, x-axeln går jämt med roboten och y axeln går rakt ut med jäms med lederna. Det första 2D-problemet beräknar vinkeln mellan roboten och den innersta leden $\gamma$, det andra 2D-problemet beräknar vinkeln $\alpha$ mellan den första och andra leden samt vinkeln $\beta$ mellan den andra och tredje leden. Se figur \ref{fig:ik}.
+	Inverterad kinematik är ett 3D-problem men vi har delat upp det i två
+    stycken 2D-problem istället. Y-axeln går rakt upp, x-axeln går rakt ut från
+    roboten i benfästets riktning och z-axeln går i riktningen $x \times y$
+    längs med roboten. Det första 2D-problemet beräknar vinkeln mellan roboten
+    och den innersta leden $\gamma$, det andra 2D-problemet beräknar vinkeln
+    $\alpha$ mellan den första och andra leden samt vinkeln $\beta$ mellan den
+    andra och tredje leden. Se figur \ref{fig:ik}.
 	
 	% Add formulas for the different angles?
 	
@@ -553,11 +564,50 @@
 	\end{figure}
 
 	\subsection{Kommunikation med servon}
-	Servona styrs via en UART-länk, med hjälp av addresserade datapaket. Vid behov, 
-	som vid justering av hastighet, ändras inställningarna i servona själva, allt 
-	utifrån metoden beskriven i databladet för AX-12-servon.
+	Kommunikation med servona sker via en half-duplex UART-länk. AVR-processorns RX
+	och TX pinnar är kopplade till var sin port på 74LS241 tri-state-grind. Portens riktning
+	styrs med en vanlig IO pinne på processorn som sätts till HIGH när data ska skickas 
+	och LOW när data tas emot. 
+
+	\subsubsection{Skrivning av data}
+	För att undvika onödiga svar från servona skrivs data till dem med hjälp av REG\_WRITE
+	instruktionen som sparar data i en buffer på servot tills en ACTION instruktion skickas.
+	Actioninstruktionen skickas med funktionen send\_servo\_action.
 	
-    
+	\subsubsection{Läsning av data}
+	För att läsa data från servona används funktionen read\_servo\_data som skickar en 
+	databegäran till servona och läser resultatet. Begäran görs med hjälp av en
+	READ\_DATA instruktion där addres och mängd bitar som ska läsa specificeras.
+	
+	Datan som returneras sparas i en struct som innehåller fält för metadata 
+	(ID, errorflaggor, längd etc.) samt en array som innehåller den lästa datan.
+	
+	\subsubsection{Väntning på servorotation}
+	För att inte behöva gissa hur lång tid ett steg kommer att ta så returnerar inte
+	send\_servo\_action fören alla servon är nära sin målvinkel. Vad som räknas som "nära"
+	beror på vilken del av steget som utför och skickas som parameter till 
+	send\_servo\_action.
+
+	För att se när rotationen är klar läses först varje servos nuvarande målvinkel in och
+	sparas i en array. Varje servos nuvarande vinkel läses sedan in och jämförs med målet.
+	Om skilnaden mellan nuvarande vinkel och målvinkel är under gränsen för "närhet" för
+	varje servo så räknas rotationen som klar och funktionen returnerar.
+
+	\subsubsection{Undantag för kommunikation}
+	På grund av ett okänt fel i hård- eller mjukvaran blir UART signalen fel om data 
+	begärs från de 3 första servona på roboten en bild på fenomenet kan ses i figur 
+	\ref{fig:servo_tri_state_bug}. Eftersom att flera ben kommer att göra ungefär samma 
+	rörelser samtidigt ignoreras därför de tre första servona vid beräkningar där data
+	från servona behövs.
+
+	\begin{figure}[htpb]
+		\centering
+		\includegraphics[width=0.8\linewidth]{images/uart_tri_state.jpg}
+		\caption{UART signal när svar begärs från de tre första servona. 
+			Signalen som skiftar mellan 3 lägen ska vara en digital signal}
+		\label{fig:servo_tri_state_bug}
+	\end{figure}
+
 
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%						Sensorenheten
@@ -627,7 +677,7 @@
         detektion av väggar och återvändsgränder. Dessa sensorer utgörs av två
         IR-sensorer på varje sida där båda pekar ut från samma sida och
         är placerade på varsin ända av plattformen. IR-sensorerna som är placerade
-        på sidan är typen GP2Y0A02YK som kan mästa avtånd mellan 20 och 150 cm.
+        på sidan är typen GP2Y0A02YK som kan mäta avtånd mellan 20 och 150 cm.
         Detta spann gör det möjligt att navigera i korridorer och upptäcka
         återvändsgränder. Med två IR-sensorer på varje sida möjliggörs mätning av hur
         roboten är vriden i en rak korridor, vinkeln roboten har jämfört med
@@ -685,11 +735,15 @@
 	\end{figure}
 
 	\subsection{Webbserver}
-	Webbservern är skriven i Elixir och använder webbramverket Phoenix. Kommunikationen mellan frontend och backend sker via en channel. En channel är en socket som tillåter kommunikation mellan en klient och en server. I channeln så skickas det från frontend till backend styrdata, d.v.s, joystickdata och om det autonoma läget ska köras eller inte. Från backend till frontend skickas debugdata som IR-sensorer, LIDAR samt vinklar.
+	Webbservern är skriven i Elixir och använder webbramverket Phoenix.
+    Kommunikationen mellan frontend och backend sker via en channel. En channel
+    är en socket som tillåter kommunikation mellan en klient och en server. I
+    channeln så skickas det från frontend till backend styrdata, d.v.s,
+    joystickdata och om det autonoma läget ska köras eller inte. Från backend
+    till frontend skickas debugdata som IR-sensorer, LIDAR samt vinklar.
 	
-	% Är det varje 0.3 sekund?
 	Backend skickar styrdata till RabbitMQ servern som centralenheten sedan
-	läser av. Det skickas varje 0.3 sekund till RabbitMQ servern.
+	läser av. Det skickas varje 0.5 sekund till RabbitMQ servern.
 
     \subsection{Styrning}
     Under styrning kan man välja om roboten ska köras autonomt eller i manuellt läge.
@@ -699,7 +753,7 @@
     \subsubsection{Manuell Styrning}
     Under styrning man man styra roboten med en joystick. Man kan även
     styra roboten med tangentbord eller knappar på skärmen. För att styra
-    roboten finnas knappar som säger åt roboten att gå i en riktning,
+    roboten finns knappar som säger åt roboten att gå i en riktning,
     att vrida sig åt ett håll och att stanna.
 
 	% TODO: Stämmer det med 10 gånger per sekund? Kan man ändra styrparamterarna till regleralgoritmen?

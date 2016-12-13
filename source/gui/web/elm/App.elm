@@ -118,18 +118,24 @@ init { host } =
             ! [ Cmd.map PhoenixMsg phxCmd ]
 
 
+{-| Decodes a debug message from the robot
+-}
 debugMessageDecoder : JD.Decoder BotMessage
 debugMessageDecoder =
     JD.map DebugMessage
         (JD.field "debug" JD.string)
 
 
+{-| Decodes a message about changing between manual and autonomous mode
+-}
 autoMessageDecoder : JD.Decoder BotMessage
 autoMessageDecoder =
     JD.map AutoMessage
         (JD.field "auto" JD.bool)
 
 
+{-| Decodes a message with new debug data
+-}
 sensorMessageDecoder : JD.Decoder BotMessage
 sensorMessageDecoder =
     decode (Sensors.SensorData)
@@ -145,16 +151,20 @@ sensorMessageDecoder =
         |> JD.map SensorMessage
 
 
-chatMessageDecoder : JD.Decoder BotMessage
-chatMessageDecoder =
+{-| Checks what kind of message has been received and decodes it
+-}
+serverMessageDecoder : JD.Decoder BotMessage
+serverMessageDecoder =
     JD.oneOf [ debugMessageDecoder, autoMessageDecoder, sensorMessageDecoder ]
 
 
+{-| Send a message to the robot about joystick state, auto mode or PID parameters
+-}
 sendControlMessage : Socket Msg -> JE.Value -> ( Socket Msg, Cmd Msg )
 sendControlMessage socket payload =
     let
         push =
-            Phoenix.Push.init "new_msg" "client"
+            Phoenix.Push.init "joystick" "client"
                 |> Phoenix.Push.withPayload payload
 
         ( phxSocket, phxCmd ) =
@@ -179,7 +189,7 @@ update msg model =
             Material.update mdlMsg model
 
         ReceiveChatMessage raw ->
-            case JD.decodeValue chatMessageDecoder raw of
+            case JD.decodeValue serverMessageDecoder raw of
                 Ok (DebugMessage msg) ->
                     ( { model | messages = List.take 30 (msg :: model.messages) }
                     , Cmd.none
@@ -282,36 +292,26 @@ update msg model =
                         |> List.map (\( par, v ) -> ( par, JE.float v ))
                         |> JE.object
 
-                push =
-                    Phoenix.Push.init "joystick" "client"
-                        |> Phoenix.Push.withPayload payload
-
                 ( phxSocket, phxCmd ) =
-                    Phoenix.Socket.push push model.phxSocket
+                    sendControlMessage model.phxSocket payload
             in
                 ( { model
                     | phxSocket = phxSocket
                   }
-                , Cmd.map PhoenixMsg phxCmd
+                , phxCmd
                 )
 
         ToggleAuto ->
             let
-                payload =
-                    JE.object [ ( "auto", JE.bool (not model.autoMode) ) ]
-
-                push =
-                    Phoenix.Push.init "joystick" "client"
-                        |> Phoenix.Push.withPayload payload
-
                 ( phxSocket, phxCmd ) =
-                    Phoenix.Socket.push push model.phxSocket
+                    sendControlMessage model.phxSocket
+                        <| JE.object [ ( "auto", JE.bool (not model.autoMode) ) ]
             in
                 ( { model
                     | autoMode = not model.autoMode
                     , phxSocket = phxSocket
                   }
-                , Cmd.map PhoenixMsg phxCmd
+                , phxCmd
                 )
 
         MoveSlider keyCode ->
@@ -367,6 +367,8 @@ showMessage str =
         ]
 
 
+{-| Render a list of debug data
+-}
 messageList : List String -> Html a
 messageList messages =
     Lists.ul [] <| List.map showMessage messages
@@ -393,6 +395,8 @@ view model =
         }
 
 
+{-| Create input for PID parameters
+-}
 createInputField : Model -> Int -> ( String, PIDParameter ) -> Html Msg
 createInputField model idx ( desc, field ) =
     Textfield.render Mdl
@@ -403,8 +407,10 @@ createInputField model idx ( desc, field ) =
         ]
 
 
-viewButtons : Model -> Html Msg
-viewButtons model =
+{-| View sliders for control when no joystick is connected
+-}
+viewSliderControl : Model -> Html Msg
+viewSliderControl model =
     let
         joy =
             model.joystick
@@ -455,6 +461,9 @@ viewButtons model =
             ]
 
 
+{-| Show sliders or joystick visualization depending on whether a joystick has
+been connected
+-}
 viewControl : Model -> List (Html Msg)
 viewControl model =
     [ Toggles.switch Mdl
@@ -468,7 +477,7 @@ viewControl model =
         if model.joystickIndex /= Nothing then
             Joystick.joystickDisplay model.joystick
         else
-            viewButtons model
+            viewSliderControl model
       else
         Card.view [ Elevation.e2 ]
             [ Card.title [] [ Card.head [] [ text "PID parameters" ] ]
@@ -492,6 +501,8 @@ viewControl model =
     ]
 
 
+{-| Show list of debug messages
+-}
 viewDebug : Model -> List (Html Msg)
 viewDebug model =
     [ lazy Sensors.viewSensors model.sensorData
@@ -500,6 +511,8 @@ viewDebug model =
     ]
 
 
+{-| Show control or debug tab depending on which is selected
+-}
 viewBody : Model -> Html Msg
 viewBody model =
     if model.selectedTab == 0 then

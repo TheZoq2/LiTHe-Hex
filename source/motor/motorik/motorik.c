@@ -22,7 +22,11 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+<<<<<<< HEAD
 CurrentStatus* current_status;
+=======
+volatile CurrentStatus* current_status;
+>>>>>>> 09f38ef7f37e3b5cc6af72cfb333bef74c78e459
 
 #ifndef IS_X86
 void build_spi_reply_frame(Frame *frame_trans);
@@ -86,34 +90,12 @@ int main(void)
 
 	_delay_ms(100);
 
-	//test_servo_communication();
-
 	//Initialize all legs
 	
 	Point2D* current_position = raise_to_default_position();
 	
 	assume_standardized_stance(current_position);
 
-	// rotate_to_position(0.123, 0.99, current_position);
-	// rotate_to_position(-1, -1, current_position);
-	// rotate_to_position(1, 0.7, current_position);
-	// rotate_to_position(1, 0.1, current_position);
-	// rotate_to_position(-1, -0.45, current_position);
-	// rotate_to_position(1, 0, current_position);
-	// rotate_to_position(1, 1, current_position);
-	// rotate_to_position(1, -1, current_position);
-	// rotate_to_position(1, 0, current_position);
-	//rotate_to_position(0, 0, -1, current_position);
-	//rotate_to_position(0, 0, -1, current_position);
-	//rotate_to_position(0, 0, 0, current_position);
-	//rotate_to_position(0, 0, 1, current_position);
-	//rotate_to_position(0, 0, 1, current_position);
-	
-	//while (1) {
-	//	rotate_to_position(1, 0, 0, current_position);
-	//}
-	
-	//while(1){
 	
 #ifndef IS_X86
 	
@@ -159,11 +141,11 @@ int main(void)
         }
 	}
 #else
-	for(uint8_t i = 0; i < 40; ++i)
+	for(;;)
 	{
 		Point2D goal;
-		goal.x = 1;
-		goal.y = 0;
+		goal.x = rand() % 3 - 1;
+		goal.y = rand() % 3 - 1;
 
 		//printf("Walking one step\n\n\n\n");
 
