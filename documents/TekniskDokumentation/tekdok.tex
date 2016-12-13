@@ -260,74 +260,68 @@
     
     \subsection{Centralenheten}
 
-	Algoritmen för läsning av data i centralenheten beskrivs av följande pseudokod.
+    Centralenheten använder SpiDev-modulen för python för kommunikation med
+    motorik- och sensorenheten över SPI. Den skapar en instans av SpiDev för
+    varje enhet, då centralenheten använder två separata SPI-bussar för varje
+    enhet. Alla funktioner i som rör kommunikationen till AVR-processorerna tar
+    alltså in instansen för den enhet som ska kommuniceras till.
 
-
-	%Pseudocode for reading replies
-	\begin{lstlisting}
-	def read_reply():
-		set_chip_select()
-
-		set byte = read_byte_when_available()
-
-		set type = byte[0..5]
-		if(byte[0] == 0)
-			set length = 1
-		else
-			set length = read_byte_when_available()
-		
-		result = []
-		for i = 0..length:
-			result.append(read_byte_when_available())
-
-		if check_parity_bits() == good
-			return (Ok, type, result)
-		else
-			return (Fail, 0, [])
-	\end{lstlisting}
-
-	Algoritmen för att skicka data till andra enheter beskrivs i följande pseudokod.
+    Pseudokoden för läsning av spi-meddelanden beskrivs som följande:
 
 	\begin{lstlisting}
-	def write_to_module(msg):
-		set_chip_select()
+	def read_bytes(spidev):
 
-		write_to_spi(msg)
+		type_byte = spidev.read_single_byte()
 
-		set reply = read_reply()
+        if is_multibyte_msg(type_byte):
+            length_byte = spidev.read_single_byte()
+            return spidev.read_several_bytes(length)
+        else:
+            return spidev.read_single_byte()
 
-		if reply.status == OK and reply.type == ACK:
-			return
-		else:
-			write_to_module(msg)
 	\end{lstlisting}
 
+	Algoritmen för att skicka data till AVR-processorerna ser lite annorlunda
+    ut beroende på vad som ska skickas. Det som är gemensamt med alla
+    transaktioner till enheterna är dock att först skickas en \textit{garbage}-byte
+    (definierad 0x00) som ska ignoreras,
+    då AVR-processorerna inte alltid lyssnar på den första 
+    byten. Ifall AVR-processorerna märker att den första byten är en
+    \textit{garbage}, så struntar de alltså i den, annars behandlar den
+    meddelandet som vanligt. Det betyder att inga data-ID:n kan ha samma
+    värde som \textit{garbage}-byten.
 
-	\newpage
-	Algoritmen för att skicka och ta emot data på motorik- och sensorenheten beskrivs
-	i följande pseudokod
+    Efter att \textit{garbage}-byten är skickad, skickar enheten hela
+    meddelandet enligt protokollet, alltså genom att beräkna och lägga till
+    paritetsbitar i byten för data-ID, skicka längden ifall det är flera bytes
+    i meddelandet, och slutligen skicka de bytes som ska skickas.
+
+	Algoritmen för mottagning och behandling av meddelanden på motorik- och
+    sensorenheten körs i en avbrottsruting som beskrivs av följande pseudokod:
 
 	\begin{lstlisting}
-		# Init
-		set activate_interrupts_for_spi()
-		set received_msgs = new Queue()
+        def on_spi_interrupt():
+			
+            received_frame = receive_frame()
+            success = check_parity(received_frame)
 
-		set current_msg = []
+            if success:
+                send_acknowledge_message()
+            else:
+                send_fail_message()
+                return
 
-		# Event handler for spi messages
-		def on_spi_recv(byte):
-			current_msg += byte
+            if received_frame.type == DATA_REQUEST:
+                # message requires reply
+                reply_frame = build_reply_frame()
+                send_frame(reply_frame)
+            else:
+                # message contains command to be processed
+                handle_frame(received_frame)
 
-			if msg_is_complete:
-				set success = check_parity()
-				if success == OK:
-					send_ack()
-				
-				if message requires reply:
-					send_reply()
-				else:
-					received_msgs.push(current_msg)
 	\end{lstlisting}
+    \textit{Frame} syftar på en datastruktur som innehåller all relevant
+    information om meddelandet. som typ, längd och data
 
 	\section{Komponentbudget}
 
@@ -451,7 +445,7 @@
     För den manuella navigationen används RabbitMQ som är en kommunikationsserver mellan webbservern
     och centralenheten. Det kommer in ett nytt meddelande med data för varje
     knapptryck/händelse som sker på GUI:t som centralenheten tolkar och överför
-    till motorikenheten. 
+    till motorikenheten.
 
 	\subsection{Kommunikation}
 	Centralenheten kommunicerar med en dator över WiFi. Datorns webbläsare 
@@ -534,7 +528,9 @@
 	\begin{figure}[h]
 		\centering
 		\includegraphics[width=0.5\linewidth]{images/gangstil_flowchart.png}
-		\caption{Flödesschema för normal gångstil hos roboten \label{fig:walkflow0}}	%TODO: Chart slightly out of date, update
+		\caption{Flödesschema för normal gångstil hos roboten
+        \label{fig:walkflow0}}
+        %TODO: Chart slightly out of date, update
 	\end{figure}
 
 	\subsection{Inverterad kinematik}
@@ -664,7 +660,7 @@
     sensor. Filtret är kopplad mellan sensorerna och de analoga PA-ingångarna på
     processorn.
 
-    LIDAR-sensorn är ansluten via PWM till ???VILKEN\_PORT??? på processorn.
+    LIDAR-sensorn är ansluten via PWM till PD5 på processorn.
 
     PC2 upp till PC5 används som anslutning till JTAG, för programmering av
     processorn, och PB4 upp till PB7 är anslutna via SPI till centralenheten.
