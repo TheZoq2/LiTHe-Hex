@@ -489,47 +489,52 @@
 	
 		\subsection{Kommandotolkning}
 	Motorikenheten  tar in ett flyttalspar med koordinater för önskad målposition (önskat 
-	center för roboten efter förflyttning) angivet i meter, med x-koordinat fram och 
+	center för roboten efter förflyttning), med x-koordinat fram och 
 	y-koordinat åt vänster om roboten, med origo i robotens mittpunkt. Om totalavståndet 
-	origo till målposition är mindre än 1 (m) skalas rörelsen ned utifrån detta avstånd. 
-	Det vill säga, om roboten ombeds gå 0,5 meter framåt, tar den ett kliv med halva 
+	origo till målposition är mindre än 1 enhet skalas rörelsen ned utifrån detta avstånd. 
+	Det vill säga, om roboten ombeds gå 0,5 enheter framåt, tar den ett kliv med halva 
 	steglängden av om den ombetts gå en meter, även om inget av kliven är i närheten av 
-	de respektive distanserna; om en enmetersdistans (maximal steglängd) leder till ett 
-	1,6 decimeters kliv, leder halvmetersdistansen till ett ca: 0.8 decimeters kliv i samma 
-	startposition. 
+	de respektive distanserna; om en enhetsdistans (maximal steglängd) leder till ett 
+	1,6 decimeters kliv, leder halva ehtetsdistansen till ett ca: 0.8 decimeters kliv givet samma 
+	startposition och riktning. 
 	
 	Vidare ges den rotation som roboten 
-	skall rotera, angiven i radianer positiv vänster med 0 rad frammåt, och en flagga för om 
+	skall rotera, angiven positiv vänster med 0 frammåt, och en flagga för om 
 	roboten är i autonomt läge eller manuellt styrt läge. Om roboten är i autonomt läge, tolkas 
 	rotation utan koordinater som att en strikt rotation skall utföras (det vill säga, att 
 	roboten inte skall ändra rörelse förrän den utfört rotationen i fullo). I alla andra fall 
 	tar roboten in ett nytt kommando efter att ett enda steg utförts i indikerad riktning. 
 	%kontrollera att nedanstående stämmer, servospeedmanupulation inte implementerat at time of writing.
-	Även robotens servohastighet styras utifrån ett fartvärde.
+	Även robotens servohastighet styras utifrån ett fartvärde. 
 
-		\subsection{Planläggning}
+		\subsection{Planläggning och utförande}
 	Första steget i motorikenheten för en anpassad gångstil är att utifrån efterfrågad
 	förflyttning avgöra en önskad slutposition för respektive ben, som för roboten närmare 
-	ett läge indikerat av centralenheten. Utifrån hastighet skalas förflyttningsvektorerna 
-	från nuvarande läge för varje ben ner. Benen flyttas i grupper av tre med ett ben på 
-	ena sidan och två på andra (uppdelat på ett mittenben, respektive ett framben och ett 
-	bakben). När en uppsättning ben förflyttas, skiftas de markfästa benen vid behov för 
-	att flytta själva kroppen, även denna utifrån en förflyttningsvektor (som med benen). 
-	Lyft och nedsättning av ben hårdkodas, sådan att alla tre ben som skall flyttas i ett 
-	set höjs och sänks först när de satts i önskad position, sådan att benens position 
-	och förflyttning för vanlig gång kan beräknas i planet, snarare än i rummet, med 
-	avseende på beslutsfattning. Endast vid den inverterade kinematiken krävs då 
-	tredimensionell planering av benens rörelser, som även är två tvådimensionella problem. Detta beteende finns även illustrerat i 
-	figur \ref{fig:walkflow0}. 
-	
-	För manuell styrning ska hastighet även kunna anpassas genom justering av servonas
-	hastighetsinställning.
+	det läge indikerat av centralenheten. Sedan avgörs den nedskalning av rörelsen som för 
+	varje set om tre ben (vänster-, höger-, vänster-ben och höger-, vänster-, höger-ben, taget 
+	frammifrån bakåt) är nödvändig för att robotbenen skall kunna nå positionen utan att ben 
+	skär varandra, och utan att gå utanför benens räckvidd eller in under roboten. Detta görs 
+	två gånger, en med vardera set ben höjt, och roboten använder sig av det alternativ där 
+	markfästa bens förflyttning nedskalas minst för att omberäkna benrörelsen. 
+
+	Beräkning av nedskalning sker i tre avseenden. För det första skalas benförflyttningarna 
+	ner så att de inte tar benen utanför benens räckvidd. För det andra skalas  rörelserna så 
+	att de inte skär en uppsättning hårdkodade gränser mellan ben och mellan fot och robotchassi.
+	Avslutningsvis görs en nedskalning utifrån angivet kommando, så att steglängd kan justeras av 
+	användaren. Om ingen rörelse anges, kommmer roboten att förbli stillastående, %och om den rörelsen som anges anses allt för svårutförd, kommer roboten att först anta en mer neutral ställning varifrån rörelsen bör vara utförbar.
+
+	Bestämningen av benposition sker endast i planet; höjdled tas i beräkning endast inför åberopning 
+	av IK, för bestämning av servovinklar. Själva klivet sker genom en sekvens av 
+	positionsinställningar med höjning och sänkning av ben, och stegvis övergång från gällande till 
+	önskad position. Vidare anpassas servonas aktuationshastighet för att ge en unison rörelse 
+	över alla ben (hanterat i kommandot för servohandling). För en översiktlig inblick i 
+	gångstilen, se figur \ref{fig:walkflow0}.
 
 	% TODO: Fix "typos" in figure
 	\begin{figure}[h]
 		\centering
 		\includegraphics[width=0.5\linewidth]{images/gangstil_flowchart.png}
-		\caption{Flödesschema för normal gångstil hos roboten \label{fig:walkflow0}}
+		\caption{Flödesschema för normal gångstil hos roboten \label{fig:walkflow0}}	%TODO: Chart slightly out of date, update
 	\end{figure}
 
 	\subsection{Inverterad kinematik}
