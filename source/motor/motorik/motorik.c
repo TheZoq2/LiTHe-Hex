@@ -23,7 +23,6 @@
 #include <stdlib.h>
 
 volatile CurrentStatus* current_status;
-Timer* timer8;
 
 #ifndef IS_X86
 void build_spi_reply_frame(Frame *frame_trans);
@@ -68,10 +67,6 @@ int main(void)
     current_status = &status;
 
     status_init(current_status);
-    
-    Timer timer8bit;
-    timer8 = &timer8bit;
-    timer_init(timer8, BIT8);
 
 	// Enable global interrupts and init spi communication
 #ifndef IS_X86
