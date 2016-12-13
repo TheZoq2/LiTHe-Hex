@@ -21908,7 +21908,7 @@ var _user$project$App$UpdateControlDisplay = function (a) {
 var _user$project$App$AxisData = function (a) {
 	return {ctor: 'AxisData', _0: a};
 };
-var _user$project$App$viewButtons = function (model) {
+var _user$project$App$viewSliderControl = function (model) {
 	var viewSlider = F3(
 		function (_p2, value, setter) {
 			var _p3 = _p2;
@@ -22117,7 +22117,7 @@ var _user$project$App$viewControl = function (model) {
 			}),
 		_1: {
 			ctor: '::',
-			_0: (!model.autoMode) ? ((!_elm_lang$core$Native_Utils.eq(model.joystickIndex, _elm_lang$core$Maybe$Nothing)) ? _user$project$Joystick$joystickDisplay(model.joystick) : _user$project$App$viewButtons(model)) : A2(
+			_0: (!model.autoMode) ? ((!_elm_lang$core$Native_Utils.eq(model.joystickIndex, _elm_lang$core$Maybe$Nothing)) ? _user$project$Joystick$joystickDisplay(model.joystick) : _user$project$App$viewSliderControl(model)) : A2(
 				_MichaelCombs28$elm_mdl$Material_Card$view,
 				{
 					ctor: '::',
