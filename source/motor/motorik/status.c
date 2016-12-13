@@ -16,6 +16,7 @@ void status_init(CurrentStatus* status) {
     status->x_speed = 0.0;
     status->y_speed = 0.0;
     status->rotation = 0.0;
+	status->is_rotating = false;
     status->servo_speed = 0.0;
     status->return_to_neutral = false;
     status->auto_mode = false;

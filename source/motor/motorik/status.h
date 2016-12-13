@@ -28,6 +28,8 @@ typedef struct {
     volatile float y_speed;
 
     volatile float rotation;
+	
+	volatile bool is_rotating;
 
     volatile float servo_speed;
 
