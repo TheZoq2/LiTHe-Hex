@@ -124,7 +124,6 @@ class ServerSenderThread(threading.Thread):
         while True:
             if not self.queue.empty():
                 packet = self.queue.get()
-                print(packet.get_json())
                 self.channel.basic_publish(exchange='', 
                                            routing_key=CENTRAL_UNIT_KEY_SEND,
                                            body=packet.get_json())
