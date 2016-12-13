@@ -17,6 +17,10 @@
 # You should have received a copy of the GNU General Public License
 # along with LiTHe Hex.  If not, see <http://www.gnu.org/licenses/>.
 
+"""
+This is the file which contains the main loop of the central unit program.
+"""
+
 import communication.avr_communication as avr_communication
 import communication.web as web
 import sys
@@ -43,37 +47,16 @@ def main():
     if len(sys.argv) > 0 and sys.argv[0] == "--test":
         test_mode = True
 
-    motor_spi = avr_communication.motor_communication_init()
-    sensor_spi = avr_communication.sensor_communication_init()
-    res = []
+    setup_button()
+    send_queue, receive_queue = setup_server_communication()
+    prev_x, prev_y, prev_rot, \
+        prev_speed, auto, button_temp, decision_packet = setup_variables()
+    motor_spi, sensor_spi = setup_avr_communication()
 
-    # Setup auto/manual mode and button for it
-    auto = False
-    button_temp = 0
-    GPIO.setmode(GPIO.BOARD)
-    GPIO.setup(AUTO_BUTTON_PIN, GPIO.IN, GPIO.PUD_DOWN)
-
-    decision_packet = decision_making.DecisionPacket()
-
-    send_queue = queue.Queue()
-    receive_queue = queue.Queue()
-    thread = web.CommunicationThread(send_queue, receive_queue)
-
-    prev_x = prev_y = prev_rot = prev_speed = 0
-
-    thread.start()
-
+    # Main loop
     while True:
-        #pdb.set_trace()
         # Button toggle auto/manual mode and send mode to server
-        button_input = GPIO.input(AUTO_BUTTON_PIN)
-        if (button_input == 1):
-            if (button_temp != button_input):
-                auto = not auto
-                button_temp = 1
-                send_queue.put(web.ServerSendPacket(auto_mode=auto))
-        else:
-            button_temp = 0
+        button_temp, auto = check_auto_toggle_button(button_temp, auto, send_queue)
 
         if auto:
             # Auto mode
@@ -83,6 +66,7 @@ def main():
                 sensor_spi, motor_spi, send_queue, 
                 receive_queue, decision_packet,
                 prev_speed, prev_x, prev_y, prev_rot);
+            # TODO increase frequency
             time.sleep(0.5)
 
         else:
@@ -95,7 +79,56 @@ def main():
             time.sleep(0.1)
 
 
+def check_auto_toggle_button(button_temp, auto, send_queue):
+    """
+    Checks whether the user pressed the auto mode toggle button
+    and updates button_temp and auto accordingly.
+    """
+    button_input = GPIO.input(AUTO_BUTTON_PIN)
+    if button_input == 1:
+        if (button_temp != button_input):
+            auto = not auto
+            button_temp = 1
+            send_queue.put(web.ServerSendPacket(auto_mode=auto))
+    else:
+        button_temp = 0
+    return button_temp, auto
+
+
+def setup_avr_communication():
+    motor_spi = avr_communication.motor_communication_init()
+    sensor_spi = avr_communication.sensor_communication_init()
+    return motor_spi, sensor_spi
+
+
+def setup_variables():
+    prev_x = prev_y = prev_rot = prev_speed = None
+    auto = False
+    button_temp = 0
+    decision_packet = decision_making.DecisionPacket()
+    return prev_x, prev_y, prev_rot, prev_speed, auto, button_temp, decision_packet
+
+
+def setup_server_communication():
+    send_queue = queue.Queue()
+    receive_queue = queue.Queue()
+    thread = web.CommunicationThread(send_queue, receive_queue)
+    thread.start()
+    return send_queue, receive_queue
+
+
+def setup_button():
+    GPIO.setmode(GPIO.BOARD)
+    GPIO.setup(AUTO_BUTTON_PIN, GPIO.IN, GPIO.PUD_DOWN)
+
+
 def receive_server_packet(receive_queue):
+    """
+    Receives the latest data packet from the server
+    by dequeueing all elements from the queue, to prevent
+    packets from building up in the queue. Returns the latest
+    packet.
+    """
     packet = None 
     while not receive_queue.empty():
         packet = receive_queue.get()
@@ -105,44 +138,38 @@ def receive_server_packet(receive_queue):
 def do_auto_mode_iteration(sensor_spi, motor_spi, send_queue,
                            receive_queue, decision_packet,
                            prev_speed, prev_x, prev_y, prev_rot):
-    try:
-        sensor_data = avr_communication.get_sensor_data(sensor_spi)
-        print(" YAY: {} ".format(sensor_data))
-        decision_making.get_decision(sensor_data, decision_packet)
+    sensor_data = avr_communication.get_sensor_data(sensor_spi)
+    decision_making.get_decision(sensor_data, decision_packet)
 
-        print("Decision: ", decision_packet.decision)
+    print("Decision: ", decision_packet.decision)
 
-        pid_controller.regulate(sensor_data, decision_packet)
-       # print("Pid controller command: ", decision_packet.regulate_base_movement,
-       #       ", ", decision_packet.regulate_command_y, ", ", decision_packet.regulate_goal_angle)
-        send_decision_avr(motor_spi, decision_packet)
+    pid_controller.regulate(sensor_data, decision_packet)
+   # print("Pid controller command: ", decision_packet.regulate_base_movement,
+   #       ", ", decision_packet.regulate_command_y, ", ", decision_packet.regulate_goal_angle)
+    send_decision_avr(motor_spi, decision_packet, prev_speed, prev_x, prev_y, prev_rot)
 
-        # Send decision to server
-        print("Sending sensor data to server: " + str(sensor_data))
-        send_queue.put(web.ServerSendPacket(sensor_data_packet=sensor_data))
-        send_queue.put(web.ServerSendPacket(debug_string=
-            decision_making.int_to_string_command(decision_packet.decision)))
+    # Send decision to server
+    print("Sending sensor data to server: " + str(sensor_data))
+    send_queue.put(web.ServerSendPacket(sensor_data_packet=sensor_data))
+    send_queue.put(web.ServerSendPacket(debug_string=
+        decision_making.int_to_string_command(decision_packet.decision)))
 
-        auto = True
+    auto = True
 
-        packet = receive_server_packet(receive_queue)
+    packet = receive_server_packet(receive_queue)
 
-        if packet is not None:
-            if packet.auto is not None:
-                auto = packet.auto
-            # Regulate algorithm parameters
-            if packet.angle_scaledown is not None:
-                decision_packet.regulate_angle_scaledown = packet.angle_scaledown
-            if packet.movement_scaledown is not None:
-                decision_packet.regulate_set_movement_scaledown = packet.movement_scaledown
-            if packet.angle_adjustment_border is not None:
-                decision_packet.regulate_angle_adjustment_border = packet.angle_adjustment_border
-        return auto, prev_speed, prev_x, prev_y, prev_rot
+    if packet is not None:
+        if packet.auto is not None:
+            auto = packet.auto
+        # Regulate algorithm parameters
+        if packet.angle_scaledown is not None:
+            decision_packet.regulate_angle_scaledown = packet.angle_scaledown
+        if packet.movement_scaledown is not None:
+            decision_packet.regulate_set_movement_scaledown = packet.movement_scaledown
+        if packet.angle_adjustment_border is not None:
+            decision_packet.regulate_angle_adjustment_border = packet.angle_adjustment_border
+    return auto, prev_speed, prev_x, prev_y, prev_rot
 
-    except Exception as e:
-        print(e)
-        print("Could not read sensor data. Skipping...")
-        return True, prev_speed, prev_x, prev_y, prev_rot
    # print("sensor_data:", sensor_data)
 
    # print("Right_angle: ",sensor_data.right_angle)
@@ -195,7 +222,7 @@ def do_manual_mode_iteration(sensor_spi, motor_spi, send_queue, receive_queue,
     return auto, prev_speed, prev_x, prev_y, prev_rot
 
 
-def send_decision_avr(spi, decision_packet):
+def send_decision_avr(spi, decision_packet, prev_speed, prev_x, prev_y, prev_rot):
 
     x_speed = convert_to_sendable_byte(0)
     y_speed = convert_to_sendable_byte(0)
@@ -220,14 +247,27 @@ def send_decision_avr(spi, decision_packet):
         x_speed = convert_to_sendable_byte(0)
         y_speed = convert_to_sendable_byte(0)
         rotation = convert_to_sendable_byte(0)
+    
+    # Only send command if it is different from last time
+    if prev_speed != decision_packet.speed:
+        avr_communication.set_servo_speed(spi, decision_packet.speed, timeout=100)
 
-    count = 0
-    avr_communication.set_servo_speed(spi, decision_packet.speed, timeout=100)
-    avr_communication.walk(spi, x_speed, y_speed, rotation, auto_mode=True, timeout=100)
+    # Only send command if it is different from last time
+    if x_speed != prev_x or y_speed != prev_y or rotation != prev_rot:
+        avr_communication.walk(spi, x_speed, y_speed, rotation,
+                               auto_mode=True, timeout=100)
 
-# Malcolm conversion for no no negative numbers, other name?
+    prev_speed = decision_packet.speed
+    prev_x = x_speed
+    prev_y = y_speed
+    prev_rot = rotation
+
+    return prev_speed, prev_x, prev_y, prev_rot
+
+
 def convert_to_sendable_byte(byte):
     return (int)(((byte + 1) / 2) * constants.MAX_BYTE_SIZE)
+
 
 if __name__ == '__main__':
     main()

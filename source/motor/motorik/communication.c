@@ -173,7 +173,7 @@ bool message_require_reply(uint8_t current_msg) {
 
 	switch(current_msg) {
 		case DATA_REQUEST :
-		case TOGGLE_OBSTACLE :
+		case BUSY_ROTATING :
 		case SET_SERVO_SPEED :
 		case WALK_COMMAMD :
 		case RETURN_TO_NEUTRAL :
