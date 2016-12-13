@@ -56,7 +56,7 @@
 \rhead{\today}
 \setlength\headheight{26pt} 
 
-\lfoot{TSEA29 -- KMM \\ LIPS Teknisk Dokumentation}
+\lfoot{TSEA29 -- KMM \\ Teknisk Dokumentation}
 \rfoot{Grupp 9 \\ LiTHe Hex}
 
 \newcommand{\itc}{I\textsuperscript{2}C}
@@ -183,12 +183,12 @@
 
 	\newpage
 
-	\subsection{Kommunikation mellan enheterna}
+	\section{Kommunikation mellan enheterna}
 	Kommunikation mellan centralenheten och de två AVR-processorerna sker
 	med SPI. Sensor- och motorikenhetens SPI-portar kopplas till centralenhetens
-	SPI-port med varsin chip select. Detta illustreras i figur \ref{fig:central_circuit}.
-	All kommunikation inleds med att 
-	centralenheten skickar ett kommando eller en databegäran till slavenheterna.
+	varsin SPI-port på Raspberry PI:en. Detta illustreras i figur \ref{fig:central_circuit}.
+	All kommunikation inleds med att centralenheten skickar ett kommando 
+    eller en databegäran till slavenheterna.
 	Slavenheterna utför sedan kommandot eller svarar med den begärda data.
 
 	\begin{figure}[htpb]
@@ -201,7 +201,7 @@
 
 
 
-	\subsubsection{Kommunikationsprotokoll}
+	\subsection{Kommunikationsprotokoll}
 	\label{ssub:Kommunikationsprotokoll}
 	Kommunikationen mellan centralenheten, motorikenheten och sensorenheten sker 
 	med protokollet som beskrivs i figur \ref{fig:kommunikation1}.
@@ -257,8 +257,9 @@
 
 		\caption{Meddelandespecifikation \label{table:messages}}
 	\end{longtable}
+    
+    \subsection{Centralenheten}
 
-	\newpage
 	Algoritmen för läsning av data i centralenheten beskrivs av följande pseudokod.
 
 
@@ -488,10 +489,10 @@
 	
 		\subsection{Kommandotolkning}
 	Motorikenheten  tar in ett flyttalspar med koordinater för önskad målposition (önskat 
-	center för roboten efter förflyttning) angivet i meter, med x-coordinat fram och 
-	y-coordinat åt vänster om roboten, med origo i robotens mittpunkt. Om totalavståndet 
+	center för roboten efter förflyttning) angivet i meter, med x-koordinat fram och 
+	y-koordinat åt vänster om roboten, med origo i robotens mittpunkt. Om totalavståndet 
 	origo till målposition är mindre än 1 (m) skalas rörelsen ned utifrån detta avstånd. 
-	Det vill säga, om roboten ombeds gå 0,5 meter frammåt, tar den ett kliv med halva 
+	Det vill säga, om roboten ombeds gå 0,5 meter framåt, tar den ett kliv med halva 
 	steglängden av om den ombetts gå en meter, även om inget av kliven är i närheten av 
 	de respektive distanserna; om en enmetersdistans (maximal steglängd) leder till ett 
 	1,6 decimeters kliv, leder halvmetersdistansen till ett ca: 0.8 decimeters kliv i samma 
@@ -529,26 +530,6 @@
 		\centering
 		\includegraphics[width=0.5\linewidth]{images/gangstil_flowchart.png}
 		\caption{Flödesschema för normal gångstil hos roboten \label{fig:walkflow0}}
-	\end{figure}
-
-	% TODO: Eftersom vi inte har med hindergång i vår lösning
-	% ta bort den delen?
-	\subsection{Hindergång}
-	För hindergång kan roboten treva med benen och anpassa sig efter höjdskillnaden genom
-	läsning av benens mötta motstånd. Benen sänks till det att de möter motstånd, dels
-	vid uppstigning på hindret, men också vid gång på hindret (för att upptäcka när hindret 
-	tar slut). Inför uppgång på hinder höjs även benen extra, för att tillåta kliven att nå 
-	upp på hindret.
-
-	Därtill gäller att benen flyttas marginellt (någon centimeter) vid uppkliv på eller 
-	nedkliv från hinder. Detta för att undvika att fötterna hamnar instabilt på kanten till 
-	hindret, samtidigt som roboten tycker sig stå stabilt. Detta underlättar även för att vid nedstig stödja benen 
-	längre fram, för att undvika att falla framåt. En översikt över detta kan fås i figur \ref{fig:walkflow1}.
-
-	\begin{figure}[h!]
-		\centering
-		\includegraphics[width=0.5\linewidth]{images/hindergang_flowchart.png}
-		\caption{Flödesschema för hindergångsprocedur hos roboten \label{fig:walkflow1}}
 	\end{figure}
 
 	\subsection{Inverterad kinematik}

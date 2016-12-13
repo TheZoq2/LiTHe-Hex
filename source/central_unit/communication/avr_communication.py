@@ -16,6 +16,10 @@
 # You should have received a copy of the GNU General Public License
 # along with LiTHe Hex.  If not, see <http://www.gnu.org/licenses/>.
 
+"""
+Module for handling communication with the sensor and motor units.
+"""
+
 try:
     import spidev
 except ImportError:
@@ -53,6 +57,32 @@ MOTOR_DEBUG = 0x23
 SENSOR_DATA = 0x24
 
 
+class InvalidCommandException(Exception):
+
+    def __init__(self, message, command=""):
+        self.message = message
+        self.command = command
+
+    def __repr__(self):
+        return self.message
+
+    def __str__(self):
+        return self.message
+
+
+class CommunicationError(Exception):
+
+    def __init__(self, message, cause=None):
+        self.message = message
+        self.cause = cause
+
+    def __repr__(self):
+        return self.message
+
+    def __str__(self):
+        return self.message
+
+
 class SensorDataPacket(object):
     """
     Data structure containing the values of all sensors. All angles
@@ -87,32 +117,6 @@ Lidar:       {}
                         self.ir_back_right,
                         self.ir_down,
                         self.lidar)
-
-
-class InvalidCommandException(Exception):
-
-    def __init__(self, message, command=""):
-        self.message = message
-        self.command = command
-
-    def __repr__(self):
-        return self.message
-
-    def __str__(self):
-        return self.message
-
-
-class CommunicationError(Exception):
-
-    def __init__(self, message, cause=None):
-        self.message = message
-        self.cause = cause
-
-    def __repr__(self):
-        return self.message
-
-    def __str__(self):
-        return self.message
 
 
 def _calculate_parity(data):
@@ -218,21 +222,20 @@ def motor_communication_init():
     return spi
 
 
-def set_obstacle_mode(spi, value):
-    """Sets the obstacle mode to either True or False on the motor unit"""
-    if value not in (True, False):
-        raise InvalidCommandException("Value \"{}\" is not a valid mode.".format(value))
-    # yes i'm paranoid
-    value = 0x01 if value else 0x00
-    response = _send_bytes(spi, _add_parity(SET_OBSTACLE, value), value)
-    _check_response(response)
-
+# def set_obstacle_mode(spi, value):
+#     """Sets the obstacle mode to either True or False on the motor unit"""
+#     if value not in (True, False):
+#         raise InvalidCommandException("Value \"{}\" is not a valid mode.".format(value))
+#     # yes i'm paranoid
+#     value = 0x01 if value else 0x00
+#     response = _send_bytes(spi, _add_parity(SET_OBSTACLE, value), value)
+#     _check_response(response)
+# 
 
 def set_servo_speed(spi, speed, timeout=None):
     """Sets the global servo speed on the motor unit"""
     count = 0
     while True:
-        time.sleep(0.01)
         try:
             if speed < 0 or speed > constants.MAX_16BIT_SIZE:
                 raise InvalidCommandException("Speed \"{}\" is not a 16-bit value"
@@ -248,6 +251,7 @@ def set_servo_speed(spi, speed, timeout=None):
             break
         except CommunicationError:
             count += 1
+            time.sleep(0.01)
             if timeout is not None and count == timeout:
                 print("Timeout reached after {} tries".format(count))
                 return
@@ -261,7 +265,6 @@ def walk(spi, x_speed, y_speed, turn_speed, auto_mode, timeout=None):
     """
     count = 0
     while True:
-        time.sleep(0.01)
         try:
             auto = 0x01 if auto_mode else 0x00
             total_msg = _get_total_msg(WALK_LENGTH, x_speed, y_speed, turn_speed, auto)
@@ -272,6 +275,7 @@ def walk(spi, x_speed, y_speed, turn_speed, auto_mode, timeout=None):
             break
         except CommunicationError:
             count += 1
+            time.sleep(0.01)
             if timeout is not None and count == timeout:
                 print("Timeout reached after {} tries".format(count))
                 return
@@ -283,7 +287,6 @@ def back_to_neutral(spi, timeout=None):
     # we send a zero byte as args
     count = 0
     while True:
-        time.sleep(0.01)
         try:
             response = _send_bytes(spi, _add_parity(RETURN_TO_NEUTRAL, 0), 0)
             _check_response(response)
@@ -291,6 +294,7 @@ def back_to_neutral(spi, timeout=None):
             break
         except CommunicationError:
             count += 1
+            time.sleep(0.01)
             if timeout is not None and count == timeout:
                 print("Timeout reached after {} tries".format(count))
                 return
@@ -298,33 +302,58 @@ def back_to_neutral(spi, timeout=None):
 
 
 
-def get_servo_status(spi):
-    """Fetches the servo status"""
-    # TODO create appropriate data structure
-    data = _request_data(spi, SERVO_STATUS)
-    return data
+# def get_servo_status(spi):
+#     """Fetches the servo status"""
+#     # TODO create appropriate data structure
+#     data = _request_data(spi, SERVO_STATUS)
+#     return data
+# 
+# 
+# def get_motor_debug(spi):
+#     """Gets a motor unit debug string"""
+#     # TODO create string
+#     data = _request_data(spi, MOTOR_DEBUG)
+#     return data
 
 
-def get_motor_debug(spi):
-    """Gets a motor unit debug string"""
-    # TODO create string
-    data = _request_data(spi, MOTOR_DEBUG)
-    return data
+def is_busy_rotating(spi, timeout=None):
+    """
+    Asks the motor unit whether it's busy rotating. Stops asking
+    if an optional given timeout is reached, at which point it
+    returns True, since the motor unit is busy if it doesn't respond.
+    """
+    count = 0
+    while True:
+        time.sleep(0.01)
+        try:
+            raw_data = _request_data(spi, BUSY_ROTATING)
+            print("Sucessfully asked motor whether busy rotating")
+            return bool(raw_data[0])
+        except CommunicationError:
+            count += 1
+            if timeout is not None and count == timeout:
+                print("Timeout reached after {} tries".format(count))
+                # we can assume the motor unit is busy if it doesn't respond
+                return True
+            print("Tried asking motor unit whether busy (times): " +
+                  str(count), end="\r")
 
-
-def is_busy_rotating(spi):
-    """Asks the motor unit whether it's busy rotating"""
-    raw_data = _request_data(spi, BUSY_ROTATING)
-    return True if raw_data[0] else False
-    
 
 def get_sensor_data(spi):
     """
     Gets the values of all sensors in the sensor unit,
-    and puts them in a SensorDataPacket
+    and puts them in a SensorDataPacket.
     """
-    raw_data = _request_data(spi, SENSOR_DATA)
-    sensor_data = SensorDataPacket(*raw_data)
-    return sensor_data
+    count = 0
+    while True:
+        time.sleep(0.01)
+        try:
+            raw_data = _request_data(spi, SENSOR_DATA)
+            sensor_data = SensorDataPacket(*raw_data)
+            return sensor_data
+        except CommunicationError as e:
+            count += 1
+            print("Tried getting sensor_data ({}) (times): ".format(str(e)) +
+                  str(count), end="\r")
 
 
