@@ -29,7 +29,7 @@ TILE_SIZE = 0.8
 
 # Distances to different objects in meters
 DEAD_END_DISTANCE = 1.2
-LIDAR_STOP_DISTANCE = 0.35
+LIDAR_STOP_DISTANCE = 0.42
 DISTANCE_TO_OBSTACLE = 0.0
 DISTANCE_TO_WALL_IN_CORRIDOR = 0.5
 
@@ -41,6 +41,7 @@ class DecisionPacket():
     def __init__(self):
         self.decision = GO_FORWARD
         self.decisions = [GO_FORWARD, GO_FORWARD, GO_FORWARD]
+        self.previous_decision = GO_FORWARD
         self.speed = 1
         self.regulate_base_movement = 0;
         self.regulate_command_y = 0;
@@ -170,8 +171,8 @@ def get_decision(sensor_data, decision_packet, motor_spi):
     # Check if previous decision was to make a turn.
     # If it was we need to let the robot make a full turn before using
     # the sensor data because they will give bad values during a turn.
-    if (decision_packet.previous_decisions[0] == TURN_LEFT or
-        decision_packet.previous_decisions[0] == TURN_RIGHT):
+    if (decision_packet.previous_decision == TURN_LEFT or
+        decision_packet.previous_decision == TURN_RIGHT):
         #print("Robot is turning left!")
 
         # After the robot has started turning the angle will be
@@ -199,7 +200,7 @@ def average_decision(decision_packet):
     if (decision_packet.decisions[0] == decision_packet.decisions[1] and 
         decision_packet.decisions[0] == decision_packet.decisions[2]):
         
-        decision_packet.decision = decision_packet.decision
+        decision_packet.decision = decision_packet.decisions[0]
 
 def int_to_string_command(command):
     if (command == GO_FORWARD):
