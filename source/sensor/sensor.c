@@ -41,7 +41,7 @@ ISR(TIMER1_OVF_vect) {
 // If SPI receive something
 ISR(SPI_STC_vect) {
     Frame frame_recv;
-	on_spi_recv(&frame_recv);
+	on_spi_recv(&frame_recv, timer8);
 	
 	if(get_id(&frame_recv) == DATA_REQUEST) {
 	
@@ -50,10 +50,10 @@ ISR(SPI_STC_vect) {
 	
 		if(frame_recv.msg[0] == SENSOR_DATA) {
 			get_sensor_data(&frame_trans);
-			send_frame(&frame_trans);
+			send_frame(&frame_trans, timer8);
 		} else if (frame_recv.msg[0] == CORRIDOR_DATA) {
 			get_wall_data(&frame_trans);
-			send_frame(&frame_trans);
+			send_frame(&frame_trans, timer8);
 		}
 	}
 }
@@ -116,7 +116,7 @@ int main(void) {
        // Disable global interrupts for lidar
 	   // to not interrupt reading of 16 bits
        //cli();
-       lidar_measure(&lidar);
+       lidar_measure(&lidar, timer8);
        //sei();
 
 		update(mainTable, &lidar);
