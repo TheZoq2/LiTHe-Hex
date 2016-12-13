@@ -104,7 +104,7 @@ def setup_avr_communication():
 
 def setup_variables():
     prev_x = prev_y = prev_rot = prev_speed = None
-    auto = False
+    auto = True 
     button_temp = 0
     decision_packet = decision_making.DecisionPacket()
     return prev_x, prev_y, prev_rot, prev_speed, auto, button_temp, decision_packet
@@ -233,7 +233,8 @@ def send_decision_avr(spi, decision_packet, prev_speed, prev_x, prev_y, prev_rot
     if decision_packet.decision == decision_making.GO_FORWARD:
         x_speed = convert_to_sendable_byte(1)
         y_speed = convert_to_sendable_byte(0)
-        rotation = convert_to_sendable_byte(decision_packet.regulate_goal_angle)
+        rotation = convert_to_sendable_byte(0)
+        # print("Goal angle:", decision_packet.regulate_goal_angle)
 
     elif decision_packet.decision == decision_making.TURN_LEFT:
         x_speed = convert_to_sendable_byte(0)
