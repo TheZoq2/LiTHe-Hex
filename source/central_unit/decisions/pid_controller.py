@@ -27,7 +27,11 @@ def _to_radians(deg):
 def regulate(sensor_data, decision_packet):
 
     # offset for the robot length from mid in a corridor
-    offset = (CORRIDOR_WIDTH * (sensor_data.ir_front_left + SENSOR_OFFSET)/(sensor_data.ir_front_right + (2 * SENSOR_OFFSET) + sensor_data.ir_front_left)) - (CORRIDOR_WIDTH/2)
+    offset = (CORRIDOR_WIDTH * (sensor_data.ir_front_left + \
+                                SENSOR_OFFSET)/(sensor_data.ir_front_right + \
+                                                (2 * SENSOR_OFFSET) + \
+                                                sensor_data.ir_front_left)) - \
+                                                (CORRIDOR_WIDTH/2)
 
     decision_packet.command_y = (sensor_data.ir_front_right - sensor_data.ir_front_left) * decision_packet.regulate_movement_scaledown
     # TODO: fix a check for if one angle is way off. If it happens do not use it
@@ -38,3 +42,5 @@ def regulate(sensor_data, decision_packet):
     else:
         decision_packet.regulate_goal_angle = -_to_radians(sensor_data.average_angle)
         decision_packet.regulate_base_movement;
+
+
