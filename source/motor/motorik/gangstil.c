@@ -123,7 +123,11 @@ Point2D rotate_point_by_angle(Point2D original, float angle)
 }
 
 
-//Frans, please document your code /Olav
+/**
+	Converts from the robot coordinate system where the x-axis is pointed 
+	forward and the y-axis is pointed left to the coordinate system used by
+	the inverse kinematics for each leg
+*/
 Point2D robot_to_ik_coords(Point2D original, size_t leg)
 {
 	Point2D result = original;
@@ -164,15 +168,12 @@ Point2D robot_to_ik_coords(Point2D original, size_t leg)
  * @return array ordered LF RF LM RM LB RB (left/right - front/mid/back) of calculated 
  * angles for the legs.
  */
-struct Leg* get_angle_set(Point2D * target, float * height){
-    struct Leg* res = (struct Leg *)malloc(NUM_LEGS * sizeof(struct Leg));
+void get_angle_set(Point2D * target, float * height, struct Leg* res){
     for (size_t leg = 0; leg < NUM_LEGS; ++leg){
 		Point2D target_robot_coords = robot_to_ik_coords(target[leg], leg);
 
         res[leg] = leg_ik(target_robot_coords.x, height[leg], target_robot_coords.y);
     }
-
-	return res;
 }
 
 
@@ -182,7 +183,9 @@ struct Leg* get_angle_set(Point2D * target, float * height){
  * intended final placement of feet relative to the mounts of their joints.
  */
 void execute_position(Point2D * target, float * z, uint16_t threshold){
-    struct Leg* ik = get_angle_set(target, z);
+    //struct Leg* ik = get_angle_set(target, z);
+	struct Leg ik[NUM_LEGS];
+	get_angle_set(target, z, ik);
 
     uint16_t angles[3];
     uint8_t legId;
@@ -213,8 +216,6 @@ void execute_position(Point2D * target, float * z, uint16_t threshold){
 #ifdef IS_X86
 	write_current_state();
 #endif
-
-	free(ik);
 }
 
 
@@ -757,30 +758,63 @@ float work_towards_goal(float rot, Point2D goal, Point2D * current){
 
     //printf("Working towards goal \n");
 
-    direct_legs(rot, targ, current, goal, true);
+    //lrl
+    direct_legs(0, targ, current, goal, true);
+    float goalScaledown_lrl = scale_legs(targ, current, scale, true);
+
+    Point2D scaledGoal;
+    scaledGoal.x = goalScaledown_lrl * goal.x;
+    scaledGoal.y = goalScaledown_lrl * goal.y;
+
+    direct_legs(rot, targ, current, scaledGoal, true);
     float scaledown0 = scale_legs(targ, current, scale, true);
 
-    direct_legs(rot, targ, current, goal, false);
-    float scaledown1 = scale_legs(targ, current, scale, false);
+    float lrlLegMoveDist = sqrtf(powf(targ[RF].x - current[RF].x, 2) + powf(targ[RF].y - current[RF].y, 2));
 
-    float bestscale = maxf(scaledown0, scaledown1) * 0.9;
-    if (bestscale < 0.001){
-    	return bestscale; //too little movement to be relevant executing
+    //rlr
+    direct_legs(0, targ, current, goal, false);
+    float goal_scaledown_rlr = scale_legs(targ, current, scale, false);
+
+    scaledGoal.x = goal_scaledown_rlr * goal.x;
+    scaledGoal.y = goal_scaledown_rlr * goal.y;
+
+    direct_legs(rot, targ, current, goal, false);
+    float scaledown_rlr = scale_legs(targ, current, scale, false);
+
+    float rlr_leg_move_dist = sqrtf(powf(targ[LF].x - current[LF].x, 2) + powf(targ[LF].y - current[LF].y, 2));
+
+    float best_scale;
+    float best_goal_scale;
+    bool lrl_raised;
+
+
+    if (lrlLegMoveDist > rlr_leg_move_dist){
+        best_scale = scaledown0 * 0.9;
+        best_goal_scale = goalScaledown_lrl;
+        lrl_raised = true;
+    }
+    else {
+        best_scale = scaledown_rlr;
+        best_goal_scale = goal_scaledown_rlr;
+        lrl_raised = false;
     }
 
-    bool lrlRaised = scaledown0 > scaledown1;
+    //float bestscale = maxf(scaledown0, scaledown1) * 0.9;
+    if (best_scale < 0.001){
+        return best_scale; //too little movement to be relevant executing
+    }
 
-    rot = rot * bestscale;      //note: requested downscale dependant on joystick tilt; unrelated to rotation
-    goal.x = goal.x * bestscale * requestedDownscale;
-    goal.y = goal.y * bestscale * requestedDownscale;
+    rot = rot * best_scale;      //note: requested downscale dependant on joystick tilt; unrelated to rotation
+    goal.x = goal.x * best_scale * requestedDownscale * best_goal_scale;
+    goal.y = goal.y * best_scale * requestedDownscale * best_goal_scale;
 
-    direct_legs(rot, targ, current, goal, lrlRaised);
+    direct_legs(rot, targ, current, goal, lrl_raised);
 
 
 	////spi_set_interrupts(false);
-    execute_step(current, targ, lrlRaised);
+    execute_step(current, targ, lrl_raised);
 	////spi_set_interrupts(true);
-    return maxf(scaledown0, scaledown1);
+    return best_scale;
 }
 
 

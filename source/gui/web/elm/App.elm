@@ -118,18 +118,24 @@ init { host } =
             ! [ Cmd.map PhoenixMsg phxCmd ]
 
 
+{-| Decodes a debug message from the robot
+-}
 debugMessageDecoder : JD.Decoder BotMessage
 debugMessageDecoder =
     JD.map DebugMessage
         (JD.field "debug" JD.string)
 
 
+{-| Decodes a message about changing between manual and autonomous mode
+-}
 autoMessageDecoder : JD.Decoder BotMessage
 autoMessageDecoder =
     JD.map AutoMessage
         (JD.field "auto" JD.bool)
 
 
+{-| Decodes a message with new debug data
+-}
 sensorMessageDecoder : JD.Decoder BotMessage
 sensorMessageDecoder =
     decode (Sensors.SensorData)
@@ -145,11 +151,15 @@ sensorMessageDecoder =
         |> JD.map SensorMessage
 
 
+{-| Checks what kind of message has been received and decodes it
+-}
 serverMessageDecoder : JD.Decoder BotMessage
 serverMessageDecoder =
     JD.oneOf [ debugMessageDecoder, autoMessageDecoder, sensorMessageDecoder ]
 
 
+{-| Send a message to the robot about joystick state, auto mode or PID parameters
+-}
 sendControlMessage : Socket Msg -> JE.Value -> ( Socket Msg, Cmd Msg )
 sendControlMessage socket payload =
     let
@@ -357,6 +367,8 @@ showMessage str =
         ]
 
 
+{-| Render a list of debug data
+-}
 messageList : List String -> Html a
 messageList messages =
     Lists.ul [] <| List.map showMessage messages
@@ -383,6 +395,8 @@ view model =
         }
 
 
+{-| Create input for PID parameters
+-}
 createInputField : Model -> Int -> ( String, PIDParameter ) -> Html Msg
 createInputField model idx ( desc, field ) =
     Textfield.render Mdl
@@ -393,8 +407,10 @@ createInputField model idx ( desc, field ) =
         ]
 
 
-viewButtons : Model -> Html Msg
-viewButtons model =
+{-| View sliders for control when no joystick is connected
+-}
+viewSliderControl : Model -> Html Msg
+viewSliderControl model =
     let
         joy =
             model.joystick
@@ -445,6 +461,9 @@ viewButtons model =
             ]
 
 
+{-| Show sliders or joystick visualization depending on whether a joystick has
+been connected
+-}
 viewControl : Model -> List (Html Msg)
 viewControl model =
     [ Toggles.switch Mdl
@@ -458,7 +477,7 @@ viewControl model =
         if model.joystickIndex /= Nothing then
             Joystick.joystickDisplay model.joystick
         else
-            viewButtons model
+            viewSliderControl model
       else
         Card.view [ Elevation.e2 ]
             [ Card.title [] [ Card.head [] [ text "PID parameters" ] ]
@@ -482,6 +501,8 @@ viewControl model =
     ]
 
 
+{-| Show list of debug messages
+-}
 viewDebug : Model -> List (Html Msg)
 viewDebug model =
     [ lazy Sensors.viewSensors model.sensorData
@@ -490,6 +511,8 @@ viewDebug model =
     ]
 
 
+{-| Show control or debug tab depending on which is selected
+-}
 viewBody : Model -> Html Msg
 viewBody model =
     if model.selectedTab == 0 then
