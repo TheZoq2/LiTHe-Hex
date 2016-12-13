@@ -51,3 +51,8 @@ def regulate(sensor_data, decision_packet):
         decision_packet.regulate_goal_angle = 1
     elif decision_packet.regulate_goal_angle < -1:
         decision_packet.regulate_goal_angle = -1
+
+if __name__ == "__main__":
+    while True:
+        SensorDataPacket(ir_down, ir_front_left, ir_back_left,
+                     ir_front_right, ir_back_right, lidar_msd, lidar_lsd)

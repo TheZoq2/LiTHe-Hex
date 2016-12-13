@@ -36,6 +36,6 @@ typedef struct Lidar {
 
 void lidar_init(Lidar* lidar, Timer* timer);
 
-void lidar_measure(Lidar* lidar, Timer* timer8);
+void lidar_measure(Lidar* lidar);
 
 #endif /* ifndef LIDAR_H */

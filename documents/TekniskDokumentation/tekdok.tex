@@ -260,74 +260,68 @@
     
     \subsection{Centralenheten}
 
-	Algoritmen för läsning av data i centralenheten beskrivs av följande pseudokod.
+    Centralenheten använder SpiDev-modulen för python för kommunikation med
+    motorik- och sensorenheten över SPI. Den skapar en instans av SpiDev för
+    varje enhet, då centralenheten använder två separata SPI-bussar för varje
+    enhet. Alla funktioner i som rör kommunikationen till AVR-processorerna tar
+    alltså in instansen för den enhet som ska kommuniceras till.
 
-
-	%Pseudocode for reading replies
-	\begin{lstlisting}
-	def read_reply():
-		set_chip_select()
-
-		set byte = read_byte_when_available()
-
-		set type = byte[0..5]
-		if(byte[0] == 0)
-			set length = 1
-		else
-			set length = read_byte_when_available()
-		
-		result = []
-		for i = 0..length:
-			result.append(read_byte_when_available())
-
-		if check_parity_bits() == good
-			return (Ok, type, result)
-		else
-			return (Fail, 0, [])
-	\end{lstlisting}
-
-	Algoritmen för att skicka data till andra enheter beskrivs i följande pseudokod.
+    Pseudokoden för läsning av spi-meddelanden beskrivs som följande:
 
 	\begin{lstlisting}
-	def write_to_module(msg):
-		set_chip_select()
+	def read_bytes(spidev):
 
-		write_to_spi(msg)
+		type_byte = spidev.read_single_byte()
 
-		set reply = read_reply()
+        if is_multibyte_msg(type_byte):
+            length_byte = spidev.read_single_byte()
+            return spidev.read_several_bytes(length)
+        else:
+            return spidev.read_single_byte()
 
-		if reply.status == OK and reply.type == ACK:
-			return
-		else:
-			write_to_module(msg)
 	\end{lstlisting}
 
+	Algoritmen för att skicka data till AVR-processorerna ser lite annorlunda
+    ut beroende på vad som ska skickas. Det som är gemensamt med alla
+    transaktioner till enheterna är dock att först skickas en \textit{garbage}-byte
+    (definierad 0x00) som ska ignoreras,
+    då AVR-processorerna inte alltid lyssnar på den första 
+    byten. Ifall AVR-processorerna märker att den första byten är en
+    \textit{garbage}, så struntar de alltså i den, annars behandlar den
+    meddelandet som vanligt. Det betyder att inga data-ID:n kan ha samma
+    värde som \textit{garbage}-byten.
 
-	\newpage
-	Algoritmen för att skicka och ta emot data på motorik- och sensorenheten beskrivs
-	i följande pseudokod
+    Efter att \textit{garbage}-byten är skickad, skickar enheten hela
+    meddelandet enligt protokollet, alltså genom att beräkna och lägga till
+    paritetsbitar i byten för data-ID, skicka längden ifall det är flera bytes
+    i meddelandet, och slutligen skicka de bytes som ska skickas.
+
+	Algoritmen för mottagning och behandling av meddelanden på motorik- och
+    sensorenheten körs i en avbrottsruting som beskrivs av följande pseudokod:
 
 	\begin{lstlisting}
-		# Init
-		set activate_interrupts_for_spi()
-		set received_msgs = new Queue()
+        def on_spi_interrupt():
+			
+            received_frame = receive_frame()
+            success = check_parity(received_frame)
 
-		set current_msg = []
+            if success:
+                send_acknowledge_message()
+            else:
+                send_fail_message()
+                return
 
-		# Event handler for spi messages
-		def on_spi_recv(byte):
-			current_msg += byte
+            if received_frame.type == DATA_REQUEST:
+                # message requires reply
+                reply_frame = build_reply_frame()
+                send_frame(reply_frame)
+            else:
+                # message contains command to be processed
+                handle_frame(received_frame)
 
-			if msg_is_complete:
-				set success = check_parity()
-				if success == OK:
-					send_ack()
-				
-				if message requires reply:
-					send_reply()
-				else:
-					received_msgs.push(current_msg)
 	\end{lstlisting}
+    \textit{Frame} syftar på en datastruktur som innehåller all relevant
+    information om meddelandet. som typ, längd och data
 
 	\section{Komponentbudget}
 
@@ -362,6 +356,7 @@
 	skickar kommandon till motorikenheten.
   
 	\subsubsection{Autonomt läge}
+	\label{sec:central-autonom}
 	I det autonoma läget frågar centralenheten om data från sensorenheten
     varje gång det ska fattas ett beslut. Detta gör att centralenheten själv
     bestämmer när den ska ha ny data för att den inte ska bli avbruten eller missa
@@ -453,7 +448,7 @@
     För den manuella navigationen används RabbitMQ som är en kommunikationsserver mellan webbservern
     och centralenheten. Det kommer in ett nytt meddelande med data för varje
     knapptryck/händelse som sker på GUI:t som centralenheten tolkar och överför
-    till motorikenheten. 
+    till motorikenheten.
 
 	\subsection{Kommunikation}
 	Centralenheten kommunicerar med en dator över WiFi. Datorns webbläsare 
@@ -536,7 +531,9 @@
 	\begin{figure}[h]
 		\centering
 		\includegraphics[width=0.5\linewidth]{images/gangstil_flowchart.png}
-		\caption{Flödesschema för normal gångstil hos roboten \label{fig:walkflow0}}	%TODO: Chart slightly out of date, update
+		\caption{Flödesschema för normal gångstil hos roboten
+        \label{fig:walkflow0}}
+        %TODO: Chart slightly out of date, update
 	\end{figure}
 
 	\subsection{Inverterad kinematik}
@@ -705,7 +702,7 @@
     sensor. Filtret är kopplad mellan sensorerna och de analoga PA-ingångarna på
     processorn.
 
-    LIDAR-sensorn är ansluten via PWM till ???VILKEN\_PORT??? på processorn.
+    LIDAR-sensorn är ansluten via PWM till PD5 på processorn.
 
     PC2 upp till PC5 används som anslutning till JTAG, för programmering av
     processorn, och PB4 upp till PB7 är anslutna via SPI till centralenheten.
@@ -751,14 +748,15 @@
     Under styrning kan man välja om roboten ska köras autonomt eller i manuellt läge.
     För att ändra vilket läge roboten ska köras i finns en knapp som växlar dess läge.
     
-    % TODO: Kan man verkligen styra med tangentbordet??
+    \subsubsection{Autonomt läge}
+    Användaren klickar på en knapp som sätter roboten i autonomt läge. Detta beskrivs i sektion \ref{sec:central-autonom}.
+    
     \subsubsection{Manuell Styrning}
     Under styrning man man styra roboten med en joystick. Man kan även
-    styra roboten med tangentbord eller knappar på skärmen. För att styra
-    roboten finns knappar som säger åt roboten att gå i en riktning,
-    att vrida sig åt ett håll och att stanna.
+    styra roboten med knappar/reglage på skärmen. Med de kan man styra
+    roboten som då säger åt roboten att gå i en riktning,
+    att vrida sig åt ett håll eller att stanna.
 
-	% TODO: Stämmer det med 10 gånger per sekund? Kan man ändra styrparamterarna till regleralgoritmen?
     \subsection{Debug}
 	Under debug visas robotens olika inställningar samt sensordata vid
     tillfället. Sidan uppdateras 10 gånger per sekund och klienten får den
@@ -822,7 +820,7 @@
     behöva testa dem på en gående robot. Simuleringen ritar ut en korridor och
     en robot som går framåt. Simulatorn skickar ut sensorvärden till en fil,
     regleralgoritmen läser in sensorvärden och tar sedan beslut. Roboten i
-    simulatorn använder 2 IR-sensorer på varje sida som pekar rakt ut från
+    simulatorn använder två IR-sensorer på varje sida som pekar rakt ut från
     roboten, det går att välja var på roboten som sensorerna ska sitta. Beslutet
     av regleralgoritmen skrivs till en fil som simulatorn läser in och styr
     roboten efter det. Det finns möjlighet att lägga till en störningsfunktion
@@ -837,11 +835,8 @@
 
 	\section{Slutsatser}
 	Vilka förbättringar skulle kunna göras?
-
-	\appendix
-	\section{Kopplingsschema}
-	HÄR VAR DET SCHEMAN
 	
+	\appendix
 	\section{Programlistning}
 	Här visas en lista på de olika program roboten
 	använder sig av.
@@ -849,6 +844,13 @@
 	\begin{longtable}[c]{l l l l}
 		\textbf{Program} & \textbf{Programmerare} & \textbf{Datum}& \textbf{Version} \\ \midrule
 		Inverterad Kinematik & Emil Segerbäck, Hannes Tuhkala & 2016-12-02 & 1.0 \\
+		Gångstil & & & \\
+		Kommunikation med SPI & & & \\
+		Webbserver/GUI & & & \\
+		Beslutsfattning & & & \\
+		PID-reglering & & & \\
+		Motorik & & & \\
+		Servokontroll & & & \\
 		
 		\caption{Lista över program \label{table:programlisting}}
 	\end{longtable}

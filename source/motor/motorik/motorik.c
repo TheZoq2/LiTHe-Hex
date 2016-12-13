@@ -22,7 +22,11 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+<<<<<<< HEAD
+CurrentStatus* current_status;
+=======
 volatile CurrentStatus* current_status;
+>>>>>>> 09f38ef7f37e3b5cc6af72cfb333bef74c78e459
 
 #ifndef IS_X86
 void build_spi_reply_frame(Frame *frame_trans);
@@ -30,6 +34,7 @@ void handle_spi_frame(Frame *frame_recv);
 
 // If SPI receive something
 ISR(SPI_STC_vect) {
+	//spi_set_interrupts(false);
     Frame frame_recv;
 	on_spi_recv(&frame_recv);
 
@@ -44,6 +49,7 @@ ISR(SPI_STC_vect) {
 
 		handle_spi_frame(&frame_recv);
 	}
+	//spi_set_interrupts(true);
 }
 #endif
 
@@ -124,11 +130,13 @@ int main(void)
 				//spi_set_interrupts(true);
 
             } else if (rotation != 0) {
-				//spi_set_interrupts(false);
+				spi_set_interrupts(false);
 				current_status->is_rotating = true;
+				spi_set_interrupts(true);
                 rotate_set_angle(rotation * (M_PI / 1), current_position);
+				spi_set_interrupts(false);
 				current_status->is_rotating = false;
-				//spi_set_interrupts(true);
+				spi_set_interrupts(true);
             }
         }
 	}
@@ -136,12 +144,12 @@ int main(void)
 	for(;;)
 	{
 		Point2D goal;
-		goal.x = rand() % 3 - 1;
-		goal.y = rand() % 3 - 1;
+		goal.x = 1;
+		goal.y = 0;
 
 		//printf("Walking one step\n\n\n\n");
 
-		work_towards_goal(0, goal, current_position);
+		work_towards_goal(0.5, goal, current_position);
 	}
 #endif
 
