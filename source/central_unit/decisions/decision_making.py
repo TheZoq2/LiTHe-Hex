@@ -40,7 +40,7 @@ TIME_NEEDED_TO_TURN = 5
 class DecisionPacket():
     def __init__(self):
         self.decision = GO_FORWARD
-        self.previous_decision = GO_FORWARD
+        self.decisions = [GO_FORWARD, GO_FORWARD, GO_FORWARD]
         self.speed = 1
         self.regulate_base_movement = 0;
         self.regulate_command_y = 0;
@@ -124,54 +124,54 @@ def get_decision(sensor_data, decision_packet):
     corridors_and_dead_ends = _get_corridors_and_dead_ends(sensor_data)
 
     # Robot will always move forward until it detects a dead end forward
-    decision_packet.decision = GO_FORWARD;
+    decision_packet.decisions[0] = GO_FORWARD;
 
     if (_found_obstacle(sensor_data)):
         if (corridors_and_dead_ends[LEFT] == CORRIDOR):
-            decision_packet.decision = TURN_LEFT
+            decision_packet.decisions[0] = TURN_LEFT
         elif (corridors_and_dead_ends[RIGHT] == CORRIDOR):
-            decision_packet.decision == TURN_RIGHT
+            decision_packet.decisiona[0] == TURN_RIGHT
         else:
-            decision_packet.decision = CLIMB_OBSTACLE
+            decision_packet.decisions[0] = CLIMB_OBSTACLE
 
     else:
 
         for value in corridors_and_dead_ends:
             # If more than one corridor to choose from
             if (corridors_and_dead_ends.count(CORRIDOR) == 3):
-                decision_packet.decision = TURN_LEFT;
+                decision_packet.decisions[0] = TURN_LEFT;
 
             elif (corridors_and_dead_ends.count(CORRIDOR) == 2):
                 if (sensor_data.lidar > DEAD_END_DISTANCE):
-                    decision_packet.decision = GO_FORWARD
+                    decision_packet.decisions[0] = GO_FORWARD
                 else:
                     if (corridors_and_dead_ends[LEFT] == CORRIDOR):
-                        decision_packet.decision = TURN_LEFT
+                        decision_packet.decisions[0] = TURN_LEFT
                     else:
-                        decision_packet.decision = TURN_RIGHT
+                        decision_packet.decisions[0] = TURN_RIGHT
 
             elif (corridors_and_dead_ends.count(CORRIDOR) == 1):
                 if (sensor_data.lidar < TILE_SIZE and sensor_data.lidar > LIDAR_STOP_DISTANCE):
-                    decision_packet.decision = GO_FORWARD
+                    decision_packet.decisions[0] = GO_FORWARD
                 elif (corridors_and_dead_ends[LEFT] == CORRIDOR):
-                    decision_packet.decision = TURN_LEFT
+                    decision_packet.decisions[0] = TURN_LEFT
                 elif (corridors_and_dead_ends[RIGHT] == CORRIDOR):
-                    decision_packet.decision = TURN_RIGHT
+                    decision_packet.decisions[0] = TURN_RIGHT
                 else:
-                    decision_packet.decision = GO_FORWARD
+                    decision_packet.decisions[0] = GO_FORWARD
 
             elif (corridors_and_dead_ends.count(CORRIDOR) == 0):
                 if (sensor_data.lidar > LIDAR_STOP_DISTANCE):
-                    decision_packet.decision = GO_FORWARD
+                    decision_packet.decisions[0] = GO_FORWARD
                 else:
-                    decision_packet.decision = TURN_LEFT
+                    decision_packet.decisions[0] = TURN_LEFT
 
 
     # Check if previous decision was to make a turn.
     # If it was we need to let the robot make a full turn before using
     # the sensor data because they will give bad values during a turn.
-    if (decision_packet.previous_decision == TURN_LEFT or
-        decision_packet.previous_decision == TURN_RIGHT):
+    if (decision_packet.previous_decisions[0] == TURN_LEFT or
+        decision_packet.previous_decisions[0] == TURN_RIGHT):
         #print("Robot is turning left!")
 
         # After the robot has started turning the angle will be
@@ -179,17 +179,25 @@ def get_decision(sensor_data, decision_packet):
         # the robot is back at straight angle and robot has stopped rotating.
         if (abs(sensor_data.average_angle) <= ANGLE_10_DEGREE and
             not avr_communication.is_busy_rotating()):
-            decision_packet.decision = GO_FORWARD
+            decision_packet.decisions[0] = GO_FORWARD
             decision_packet.previous_decision = COMPLETE_TURN
             #print("Turning left complete.")
 
     # When the robot has rotated but yet not entered the new corridor
     elif (decision_packet.previous_decision == COMPLETE_TURN):
-        decision_packet.decision = GO_FORWARD
+        decision_packet.decisions[0] = GO_FORWARD
         decision_packet.previous_decision = COMPLETE_TURN
 
         if (_is_inside_corridor(sensor_data)):
             decision_packet.previous_decision = GO_FORWARD
+    
+    average_decision(decision_packet)
+
+def average_decision(decision_packet): 
+    decision_packet.decisions[2] = decision_packet.decisions[1]
+    decision_packet.decisions[1] = decision_packet.decisions[0]
+    if (decision_packet.decisions[0] == decision_packet.decisions[1] && decision_packet.decisions[0] == decision_packet.decisions[2]):
+        decision_packet.decision = decision_packet.decision
 
 def int_to_string_command(command):
     if (command == GO_FORWARD):
