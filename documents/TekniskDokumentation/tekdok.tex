@@ -185,8 +185,8 @@
 
 	\section{Kommunikation mellan enheterna}
 	Kommunikation mellan centralenheten och de två AVR-processorerna sker
-	med SPI. Sensor- och motorikenhetens SPI-portar kopplas till centralenhetens
-	varsin SPI-port på Raspberry PI:en. Detta illustreras i figur \ref{fig:central_circuit}.
+	med SPI. Sensor- och motorikenhetens SPI-portar är kopplade till varsin
+  SPI-port på centralenheten. Detta illustreras i figur \ref{fig:central_circuit}.
 	All kommunikation inleds med att centralenheten skickar ett kommando 
     eller en databegäran till slavenheterna.
 	Slavenheterna utför sedan kommandot eller svarar med den begärda data.
@@ -677,7 +677,7 @@
         detektion av väggar och återvändsgränder. Dessa sensorer utgörs av två
         IR-sensorer på varje sida där båda pekar ut från samma sida och
         är placerade på varsin ända av plattformen. IR-sensorerna som är placerade
-        på sidan är typen GP2Y0A02YK som kan mästa avtånd mellan 20 och 150 cm.
+        på sidan är typen GP2Y0A02YK som kan mäta avtånd mellan 20 och 150 cm.
         Detta spann gör det möjligt att navigera i korridorer och upptäcka
         återvändsgränder. Med två IR-sensorer på varje sida möjliggörs mätning av hur
         roboten är vriden i en rak korridor, vinkeln roboten har jämfört med
@@ -753,7 +753,7 @@
     \subsubsection{Manuell Styrning}
     Under styrning man man styra roboten med en joystick. Man kan även
     styra roboten med tangentbord eller knappar på skärmen. För att styra
-    roboten finnas knappar som säger åt roboten att gå i en riktning,
+    roboten finns knappar som säger åt roboten att gå i en riktning,
     att vrida sig åt ett håll och att stanna.
 
 	% TODO: Stämmer det med 10 gånger per sekund? Kan man ändra styrparamterarna till regleralgoritmen?
