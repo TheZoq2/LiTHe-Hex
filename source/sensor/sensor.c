@@ -86,8 +86,10 @@ int main(void) {
 	IR ir_list[NUM_SENSORS];
 	ir_init(ir_list);
 
-    adc_init();
+        // Setup interna A/D-converter on avr
+        adc_init();
 	
+        // Setup queue for scheduling of ir sensors
 	IRQueue ir_queue;
 	ir_queue_init(&ir_queue, timer8);
 	
@@ -99,6 +101,7 @@ int main(void) {
 	Lidar lidar;
 	lidar_init(&lidar, timer16);
 	
+        // Contains data ready to be sent to central unit
 	MainTable mainTableData;
 	mainTable = &mainTableData;
 	table_init(mainTable, ir_list);

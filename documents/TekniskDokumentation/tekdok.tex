@@ -639,7 +639,55 @@
     tillsammans med äldre värden och sen utförs en brusreducering. När det inte finns 
     någon IR-sensor som har ett nytt värde läses det värde som Lidar skickar. Sedan 
     uppdateras den tabell som innehåller den data som är klar att skickas till 
-    centralenheten. 
+    centralenheten. Pseudo-kod för huvudloopen kan ses nedan. 
+    
+    \begin{lstlisting}
+    # Main loop
+	def main():
+		port_init() # Setup hardware ports on AVR
+		timer_init(timer8)
+		timer_init(timer16)
+		spi_init()
+    	ir_init()
+		ir_queue_init(ir_queue) # Setup queue for scheduling of ir sensors
+		adc_init() # Setup interna A/D-converter on avr
+		lidar_init(lidar)
+        
+		for ir in NUM_SENSORS:
+        	schedule(ir)
+        
+        # Contains data ready to be sent to central unit
+		table_init(table)
+        
+		while(true):
+
+			if (has_new_value(ir_queue)):
+				ir = dequeue(ir_queue)
+				ir_add_data(ir, adc_read(ir))
+				ir_reduce_noise(ir)
+				schedule(ir_queue, ir)
+        		
+				lidar_measure(lidar)
+        	
+        	# Update table with new data values
+			update(table, lidar)
+        
+    # Schedule ir sensor to read it when has new value
+    def schedule(ir_queue, ir):
+    	e = ir
+    	e.last_time_measured = time(ir_queue.timer)
+
+    	ir_queue.elements[ir_queue.current_size] = e;
+	    ir_queue.current_size++
+	    
+	# Calculate if ir sensor has new value
+	def has_new_value(ir_queue):
+    	if (ir_queue.current_size == 0) 
+    		return false
+    	else:
+    		return time(ir_queue.timer) - ir_queue.elements[0].last_time_measured >= IR_UPDATE_TIME
+	    
+    \end{lstlisting}
 
     \subsubsection{Avbrott}
 	Följade avbrott är aktiva:
@@ -681,6 +729,8 @@
 
 	    Monteringen av dessa sensorer illustreras i Figur \ref{fig:sensor_mount}.
 
+
+	%% TODO ta bort ir-sesnor som pekar nedåt
     \begin{figure}[h]
         \includegraphics[width=17cm, trim=2cm 18cm 0cm 0cm]{images/sensor_mount.pdf}
         \caption{Montering av avståndssensorer\label{fig:sensor_mount}}
