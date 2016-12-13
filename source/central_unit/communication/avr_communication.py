@@ -351,7 +351,7 @@ def get_sensor_data(spi):
             raw_data = _request_data(spi, SENSOR_DATA)
             sensor_data = SensorDataPacket(*raw_data)
             return sensor_data
-        except CommunicationError as e:
+        except Exception as e:
             count += 1
             print("Tried getting sensor_data ({}) (times): ".format(str(e)) +
                   str(count), end="\r")

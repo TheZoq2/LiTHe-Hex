@@ -52,6 +52,7 @@ def main():
     prev_x, prev_y, prev_rot, \
         prev_speed, auto, button_temp, decision_packet = setup_variables()
     motor_spi, sensor_spi = setup_avr_communication()
+        
 
     # Main loop
     while True:
@@ -67,12 +68,12 @@ def main():
                 receive_queue, decision_packet,
                 prev_speed, prev_x, prev_y, prev_rot);
             # TODO increase frequency
-            time.sleep(0.5)
+            time.sleep(0.1)
 
         else:
             # Manual mode
             # os.system('clear')
-            # print("Entering manual mode!")
+            print("Entering manual mode!")
             auto, prev_speed, prev_x, prev_y, prev_rot = do_manual_mode_iteration(
                 sensor_spi, motor_spi, send_queue, receive_queue, 
                 prev_speed, prev_x, prev_y, prev_rot)
@@ -103,7 +104,7 @@ def setup_avr_communication():
 
 def setup_variables():
     prev_x = prev_y = prev_rot = prev_speed = None
-    auto = False
+    auto = True 
     button_temp = 0
     decision_packet = decision_making.DecisionPacket()
     return prev_x, prev_y, prev_rot, prev_speed, auto, button_temp, decision_packet
@@ -141,7 +142,7 @@ def do_auto_mode_iteration(sensor_spi, motor_spi, send_queue,
     sensor_data = avr_communication.get_sensor_data(sensor_spi)
     decision_making.get_decision(sensor_data, decision_packet, motor_spi)
 
-    print("Decision: ", decision_packet.decision)
+    print("Decision: ", decision_making.int_to_string_command(decision_packet.decision))
 
     pid_controller.regulate(sensor_data, decision_packet)
    # print("Pid controller command: ", decision_packet.regulate_base_movement,
@@ -184,6 +185,7 @@ def do_manual_mode_iteration(sensor_spi, motor_spi, send_queue, receive_queue,
     try:
         sensor_data = avr_communication.get_sensor_data(sensor_spi)
         send_queue.put(web.ServerSendPacket(sensor_data))
+        print("Sent sensor data")
     except avr_communication.CommunicationError as e:
         print("Could not read sensor data: " + str(e))
 
@@ -232,6 +234,7 @@ def send_decision_avr(spi, decision_packet, prev_speed, prev_x, prev_y, prev_rot
         x_speed = convert_to_sendable_byte(1)
         y_speed = convert_to_sendable_byte(0)
         rotation = convert_to_sendable_byte(0)
+        # print("Goal angle:", decision_packet.regulate_goal_angle)
 
     elif decision_packet.decision == decision_making.TURN_LEFT:
         x_speed = convert_to_sendable_byte(0)

@@ -9,6 +9,7 @@
 #include "macros.h"
 #include "conversion_util.h"
 
+#include "spi.h"
 #ifdef IS_X86
 #include <unistd.h>
 #endif

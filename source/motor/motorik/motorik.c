@@ -22,17 +22,11 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-CurrentStatus* current_status;
-Timer* timer8;
+volatile CurrentStatus* current_status;
 
 #ifndef IS_X86
 void build_spi_reply_frame(Frame *frame_trans);
 void handle_spi_frame(Frame *frame_recv);
-
-// When TIMER0 overflow increase timer8 overflow counter;
-ISR(TIMER0_OVF_vect) {
-	timer8->num_overflows++;
-}
 
 // If SPI receive something
 ISR(SPI_STC_vect) {
@@ -68,10 +62,6 @@ int main(void)
     current_status = &status;
 
     status_init(current_status);
-    
-    Timer timer8bit;
-    timer8 = &timer8bit;
-    timer_init(timer8, BIT8);
 
 	// Enable global interrupts and init spi communication
 #ifndef IS_X86
@@ -94,34 +84,12 @@ int main(void)
 
 	_delay_ms(100);
 
-	//test_servo_communication();
-
 	//Initialize all legs
 	
 	Point2D* current_position = raise_to_default_position();
 	
 	assume_standardized_stance(current_position);
 
-	// rotate_to_position(0.123, 0.99, current_position);
-	// rotate_to_position(-1, -1, current_position);
-	// rotate_to_position(1, 0.7, current_position);
-	// rotate_to_position(1, 0.1, current_position);
-	// rotate_to_position(-1, -0.45, current_position);
-	// rotate_to_position(1, 0, current_position);
-	// rotate_to_position(1, 1, current_position);
-	// rotate_to_position(1, -1, current_position);
-	// rotate_to_position(1, 0, current_position);
-	//rotate_to_position(0, 0, -1, current_position);
-	//rotate_to_position(0, 0, -1, current_position);
-	//rotate_to_position(0, 0, 0, current_position);
-	//rotate_to_position(0, 0, 1, current_position);
-	//rotate_to_position(0, 0, 1, current_position);
-	
-	//while (1) {
-	//	rotate_to_position(1, 0, 0, current_position);
-	//}
-	
-	//while(1){
 	
 #ifndef IS_X86
 	
@@ -165,11 +133,11 @@ int main(void)
         }
 	}
 #else
-	for(uint8_t i = 0; i < 40; ++i)
+	for(;;)
 	{
 		Point2D goal;
-		goal.x = 1;
-		goal.y = 0;
+		goal.x = rand() % 3 - 1;
+		goal.y = rand() % 3 - 1;
 
 		//printf("Walking one step\n\n\n\n");
 
