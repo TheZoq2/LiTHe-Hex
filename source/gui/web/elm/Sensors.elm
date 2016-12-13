@@ -140,6 +140,16 @@ viewSensor name range data =
         line =
             List.map lineGenerator data
                 |> Shape.line Shape.monotoneInXCurve
+
+        firstValue : Float
+        firstValue =
+            List.head data
+                |> Maybe.withDefault ( 0, 0 )
+                |> Tuple.second
+
+        label : String
+        label =
+            name ++ ": " ++ toString firstValue
     in
         svg [ width (toString w ++ "px"), height (toString h ++ "px") ]
             [ g [ transform ("translate(" ++ toString (padding - 1) ++ ", " ++ toString (h - padding) ++ ")") ]
@@ -150,5 +160,5 @@ viewSensor name range data =
                 [ Svg.path [ d area, stroke "none", strokeWidth "3px", fill "rgba(255, 0, 0, 0.54)" ] []
                 , Svg.path [ d line, stroke "red", strokeWidth "3px", fill "none" ] []
                 ]
-            , text_ [ x "50", y "35" ] [ text name ]
+            , text_ [ x "50", y "35" ] [ text label ]
             ]

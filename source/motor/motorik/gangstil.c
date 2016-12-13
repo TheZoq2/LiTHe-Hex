@@ -258,13 +258,7 @@ Point2D add_point2D(Point2D point1, Point2D point2)
  * @param lrlRaised decides which set of legs should be used for stepping forward, and
  * which should remain grounded.
  */
-void execute_step(Point2D * current, Point2D * target, bool lrlRaised){
-    if (current->x == NAN || current->y == NAN || target->x == NAN || target->y == NAN)
-    {
-		free(current);
-		current = raise_to_default_position();
-    }
-	
+void execute_step(Point2D * current, Point2D * target, bool lrlRaised){	
 	float z[NUM_LEGS];
 
     if(lrlRaised){

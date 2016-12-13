@@ -85,11 +85,11 @@ void write_servo_data(uint8_t id, uint8_t address, const uint8_t* data, uint8_t 
 		new_data[i+1] = data[i];
 	}
 	
-	spi_set_interrupts(false);
+	//spi_set_interrupts(false);
 	
 	send_servo_command(id, WRITE_DATA_INSTRUCTION, (void*)new_data, new_data_amount);
 
-	spi_set_interrupts(true);
+	//spi_set_interrupts(true);
 	
 	free(new_data);
 }
@@ -149,14 +149,14 @@ void send_servo_action(uint16_t threshold)
 #else
 void send_servo_action(uint16_t threshold)
 {
-	spi_set_interrupts(false);
+	//spi_set_interrupts(false);
 	send_servo_command(BROADCAST_ID, ACTION_INSTRUCTION, 0, 0);
 	//TODO: Olavs fel
 	//_delay_ms(200);
 	while(!servos_are_done_rotating(threshold))
 		;
 		
-	spi_set_interrupts(true);
+	//spi_set_interrupts(true);
 }
 #endif
 
