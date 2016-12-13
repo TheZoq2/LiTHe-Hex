@@ -2,13 +2,10 @@ module Sensors exposing (viewSensors, SensorData, sensorMessagesPerSecond)
 
 import Visualization.Scale as Scale exposing (ContinuousScale, ContinuousTimeScale)
 import Visualization.Axis as Axis
-import Visualization.List as VisList
 import Visualization.Shape as Shape
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
 import Html exposing (Html)
-import String
-import Debug
 
 
 {-
@@ -73,6 +70,8 @@ sensorNames =
     ]
 
 
+{-| Used for scaling of the time axes
+-}
 sensorMessagesPerSecond : number
 sensorMessagesPerSecond =
     10
@@ -84,6 +83,8 @@ timestamps =
         |> List.map (\x -> toFloat x * -1/sensorMessagesPerSecond)
 
 
+{-| Draw a line chart for the data from all sensors
+-}
 viewSensors : List SensorData -> Html msg
 viewSensors sensors =
     let
