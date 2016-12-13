@@ -564,11 +564,50 @@
 	\end{figure}
 
 	\subsection{Kommunikation med servon}
-	Servona styrs via en UART-länk, med hjälp av addresserade datapaket. Vid behov, 
-	som vid justering av hastighet, ändras inställningarna i servona själva, allt 
-	utifrån metoden beskriven i databladet för AX-12-servon.
+	Kommunikation med servona sker via en half-duplex UART-länk. AVR-processorns RX
+	och TX pinnar är kopplade till var sin port på 74LS241 tri-state-grind. Portens riktning
+	styrs med en vanlig IO pinne på processorn som sätts till HIGH när data ska skickas 
+	och LOW när data tas emot. 
+
+	\subsubsection{Skrivning av data}
+	För att undvika onödiga svar från servona skrivs data till dem med hjälp av REG\_WRITE
+	instruktionen som sparar data i en buffer på servot tills en ACTION instruktion skickas.
+	Actioninstruktionen skickas med funktionen send\_servo\_action.
 	
-    
+	\subsubsection{Läsning av data}
+	För att läsa data från servona används funktionen read\_servo\_data som skickar en 
+	databegäran till servona och läser resultatet. Begäran görs med hjälp av en
+	READ\_DATA instruktion där addres och mängd bitar som ska läsa specificeras.
+	
+	Datan som returneras sparas i en struct som innehåller fält för metadata 
+	(ID, errorflaggor, längd etc.) samt en array som innehåller den lästa datan.
+	
+	\subsubsection{Väntning på servorotation}
+	För att inte behöva gissa hur lång tid ett steg kommer att ta så returnerar inte
+	send\_servo\_action fören alla servon är nära sin målvinkel. Vad som räknas som "nära"
+	beror på vilken del av steget som utför och skickas som parameter till 
+	send\_servo\_action.
+
+	För att se när rotationen är klar läses först varje servos nuvarande målvinkel in och
+	sparas i en array. Varje servos nuvarande vinkel läses sedan in och jämförs med målet.
+	Om skilnaden mellan nuvarande vinkel och målvinkel är under gränsen för "närhet" för
+	varje servo så räknas rotationen som klar och funktionen returnerar.
+
+	\subsubsection{Undantag för kommunikation}
+	På grund av ett okänt fel i hård- eller mjukvaran blir UART signalen fel om data 
+	begärs från de 3 första servona på roboten en bild på fenomenet kan ses i figur 
+	\ref{fig:servo_tri_state_bug}. Eftersom att flera ben kommer att göra ungefär samma 
+	rörelser samtidigt ignoreras därför de tre första servona vid beräkningar där data
+	från servona behövs.
+
+	\begin{figure}[htpb]
+		\centering
+		\includegraphics[width=0.8\linewidth]{images/uart_tri_state.jpg}
+		\caption{UART signal när svar begärs från de tre första servona. 
+			Signalen som skiftar mellan 3 lägen ska vara en digital signal}
+		\label{fig:servo_tri_state_bug}
+	\end{figure}
+
 
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%						Sensorenheten

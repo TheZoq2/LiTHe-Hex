@@ -39,10 +39,10 @@ typedef struct {
 
 } CurrentStatus;
 
-void status_init(CurrentStatus* status);
-void status_set_speed(CurrentStatus* status, uint8_t x_speed, uint8_t y_speed);
-void status_set_rotation(CurrentStatus* status, uint8_t rotation);
-void status_set_servo_speed(CurrentStatus* status, uint8_t speed_lsb, uint8_t speed_msb);
+void status_init(volatile CurrentStatus* status);
+void status_set_speed(volatile CurrentStatus* status, uint8_t x_speed, uint8_t y_speed);
+void status_set_rotation(volatile CurrentStatus* status, uint8_t rotation);
+void status_set_servo_speed(volatile CurrentStatus* status, uint8_t speed_lsb, uint8_t speed_msb);
 
 #ifdef IS_UNIT_TEST
 float uint8_to_float(uint8_t original);
