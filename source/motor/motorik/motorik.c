@@ -22,7 +22,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-CurrentStatus* current_status;
+volatile CurrentStatus* current_status;
 Timer* timer8;
 
 #ifndef IS_X86
@@ -94,34 +94,12 @@ int main(void)
 
 	_delay_ms(100);
 
-	//test_servo_communication();
-
 	//Initialize all legs
 	
 	Point2D* current_position = raise_to_default_position();
 	
 	assume_standardized_stance(current_position);
 
-	// rotate_to_position(0.123, 0.99, current_position);
-	// rotate_to_position(-1, -1, current_position);
-	// rotate_to_position(1, 0.7, current_position);
-	// rotate_to_position(1, 0.1, current_position);
-	// rotate_to_position(-1, -0.45, current_position);
-	// rotate_to_position(1, 0, current_position);
-	// rotate_to_position(1, 1, current_position);
-	// rotate_to_position(1, -1, current_position);
-	// rotate_to_position(1, 0, current_position);
-	//rotate_to_position(0, 0, -1, current_position);
-	//rotate_to_position(0, 0, -1, current_position);
-	//rotate_to_position(0, 0, 0, current_position);
-	//rotate_to_position(0, 0, 1, current_position);
-	//rotate_to_position(0, 0, 1, current_position);
-	
-	//while (1) {
-	//	rotate_to_position(1, 0, 0, current_position);
-	//}
-	
-	//while(1){
 	
 #ifndef IS_X86
 	
