@@ -546,7 +546,13 @@
 	
 	% TODO: Fix image by making it bigger and adding z, x, y..
 	% or remake it
-	Inverterad kinematik är ett 3D-problem men vi har delat upp det i två stycken 2D-problem istället. Z-axeln går rakt upp, x-axeln går jämt med roboten och y axeln går rakt ut med jäms med lederna. Det första 2D-problemet beräknar vinkeln mellan roboten och den innersta leden $\gamma$, det andra 2D-problemet beräknar vinkeln $\alpha$ mellan den första och andra leden samt vinkeln $\beta$ mellan den andra och tredje leden. Se figur \ref{fig:ik}.
+	Inverterad kinematik är ett 3D-problem men vi har delat upp det i två
+    stycken 2D-problem istället. Y-axeln går rakt upp, x-axeln går rakt ut från
+    roboten i benfästets riktning och z-axeln går i riktningen $x \times y$
+    längs med roboten. Det första 2D-problemet beräknar vinkeln mellan roboten
+    och den innersta leden $\gamma$, det andra 2D-problemet beräknar vinkeln
+    $\alpha$ mellan den första och andra leden samt vinkeln $\beta$ mellan den
+    andra och tredje leden. Se figur \ref{fig:ik}.
 	
 	% Add formulas for the different angles?
 	
@@ -690,11 +696,15 @@
 	\end{figure}
 
 	\subsection{Webbserver}
-	Webbservern är skriven i Elixir och använder webbramverket Phoenix. Kommunikationen mellan frontend och backend sker via en channel. En channel är en socket som tillåter kommunikation mellan en klient och en server. I channeln så skickas det från frontend till backend styrdata, d.v.s, joystickdata och om det autonoma läget ska köras eller inte. Från backend till frontend skickas debugdata som IR-sensorer, LIDAR samt vinklar.
+	Webbservern är skriven i Elixir och använder webbramverket Phoenix.
+    Kommunikationen mellan frontend och backend sker via en channel. En channel
+    är en socket som tillåter kommunikation mellan en klient och en server. I
+    channeln så skickas det från frontend till backend styrdata, d.v.s,
+    joystickdata och om det autonoma läget ska köras eller inte. Från backend
+    till frontend skickas debugdata som IR-sensorer, LIDAR samt vinklar.
 	
-	% Är det varje 0.3 sekund?
 	Backend skickar styrdata till RabbitMQ servern som centralenheten sedan
-	läser av. Det skickas varje 0.3 sekund till RabbitMQ servern.
+	läser av. Det skickas varje 0.5 sekund till RabbitMQ servern.
 
     \subsection{Styrning}
     Under styrning kan man välja om roboten ska köras autonomt eller i manuellt läge.

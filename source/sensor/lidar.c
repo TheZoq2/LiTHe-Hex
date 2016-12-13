@@ -17,6 +17,7 @@
 
 #include "lidar.h"
 #include "math.h"
+#include "timer.h"
 
 uint16_t lidar_value_to_centimeters(uint32_t pulse_time);
 
@@ -26,22 +27,22 @@ void lidar_init(Lidar* lidar, Timer* timer) {
     lidar->timer = timer;
 }
 
-void lidar_measure(Lidar* lidar) {
+void lidar_measure(Lidar* lidar, Timer* timer8) {
     
     // if the pin is already high, we should wait it out 
     uint32_t time = timer_value_millis(timer8);
-    while ((MONITOR_MASK & PIND) != 0 && (timer_value_millis(timer8) - time < 100));
+    while ((MONITOR_MASK & PIND) != 0 && (timer_value_millis(timer8) - time < 1000));
     uint32_t start;
     uint32_t end;
     
     // wait until we detect a rising edge
     time = timer_value_millis(timer8);
-    while ((MONITOR_MASK & PIND) == 0 && (timer_value_millis(timer8) - time < 100));
+    while ((MONITOR_MASK & PIND) == 0 && (timer_value_millis(timer8) - time < 1000));
     start = timer_value_micros(lidar->timer);
     
     // wait until the falling edge
     time = timer_value_millis(timer8);
-    while ((MONITOR_MASK & PIND) != 0 && (timer_value_millis(timer8) - time < 100));
+    while ((MONITOR_MASK & PIND) != 0 && (timer_value_millis(timer8) - time < 1000));
     end = timer_value_micros(lidar->timer);
 
     uint32_t pulse_time = end - start;
