@@ -37,8 +37,9 @@ try:
 except ImportError:
     pass
 
-
 AUTO_BUTTON_PIN = 37 
+SLEEP_TIME_AUTO_MODE = 0.05
+SLEEP_TIME_MANUAL_MODE = 0.1
 
 def main():
 
@@ -68,7 +69,7 @@ def main():
                 receive_queue, decision_packet,
                 prev_speed, prev_x, prev_y, prev_rot);
             # TODO increase frequency
-            time.sleep(0.1)
+            time.sleep(SLEEP_TIME_AUTO_MODE)
 
         else:
             # Manual mode
@@ -77,7 +78,7 @@ def main():
             auto, prev_speed, prev_x, prev_y, prev_rot = do_manual_mode_iteration(
                 sensor_spi, motor_spi, send_queue, receive_queue, 
                 prev_speed, prev_x, prev_y, prev_rot)
-            time.sleep(0.1)
+            time.sleep(SLEEP_TIME_MANUAL_MODE)
 
 
 def check_auto_toggle_button(button_temp, auto, send_queue):
