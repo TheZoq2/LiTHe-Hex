@@ -139,7 +139,7 @@ def do_auto_mode_iteration(sensor_spi, motor_spi, send_queue,
                            receive_queue, decision_packet,
                            prev_speed, prev_x, prev_y, prev_rot):
     sensor_data = avr_communication.get_sensor_data(sensor_spi)
-    decision_making.get_decision(sensor_data, decision_packet)
+    decision_making.get_decision(sensor_data, decision_packet, motor_spi)
 
     print("Decision: ", decision_packet.decision)
 
