@@ -29,15 +29,19 @@ void lidar_init(Lidar* lidar, Timer* timer) {
 void lidar_measure(Lidar* lidar) {
     
     // if the pin is already high, we should wait it out 
-    while ((MONITOR_MASK & PIND) != 0);
+    uint32_t time = timer_value_millis(timer8);
+    while ((MONITOR_MASK & PIND) != 0 && (timer_value_millis(timer8) - time < 100));
     uint32_t start;
     uint32_t end;
+    
     // wait until we detect a rising edge
-    while ((MONITOR_MASK & PIND) == 0);
+    time = timer_value_millis(timer8);
+    while ((MONITOR_MASK & PIND) == 0 && (timer_value_millis(timer8) - time < 100));
     start = timer_value_micros(lidar->timer);
     
     // wait until the falling edge
-    while ((MONITOR_MASK & PIND) != 0);
+    time = timer_value_millis(timer8);
+    while ((MONITOR_MASK & PIND) != 0 && (timer_value_millis(timer8) - time < 100));
     end = timer_value_micros(lidar->timer);
 
     uint32_t pulse_time = end - start;

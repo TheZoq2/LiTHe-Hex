@@ -28,7 +28,8 @@
 	void uart_wait()
 	{
 		//Wait for buffer to be empty
-		while(!(UCSR0A & (1<<UDRE0)))
+                uint32_t time = timer_value_millis(timer8);
+		while(!(UCSR0A & (1<<UDRE0)) && (timer_value_millis(timer8) - time < 100))
 		{
 			
 		}
@@ -48,8 +49,10 @@
 	uint8_t usart_receive()
 	{
 		//Wait for data to arrive
-		while(!(UCSR0A & (1<<RXC0)))
+                uint32_t time = timer_value_millis(timer8);
+		while(!(UCSR0A & (1<<RXC0)) && (timer_value_millis(timer8) - time < 100))
 		{
+                    
 		}
 
 		return UDR0;

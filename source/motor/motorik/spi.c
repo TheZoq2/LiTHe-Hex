@@ -31,7 +31,8 @@ void spi_init() {
 uint8_t spi_receive_byte() {
 
 	// Wait for reception complete 
-	while(!((SPSR) & (1<<SPIF)));
+        uint32_t time = timer_value_millis(timer8);
+	while(!((SPSR) & (1<<SPIF)) && (timer_value_millis(timer8) - time < 100));
 
 	// Return Data Register
 	return SPDR;
@@ -40,7 +41,8 @@ uint8_t spi_receive_byte() {
 uint8_t spi_transmit_byte(uint8_t data) {
 	SPDR = data;
 	// Wait for reception complete
-	while(!((SPSR) & (1<<SPIF)));
+        uint32_t time = timer_value_millis(timer8);
+	while(!((SPSR) & (1<<SPIF)) && (timer_value_millis(timer8) - time < 100));
 
 	// Return Data Register
 	return SPDR;

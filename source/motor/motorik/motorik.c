@@ -22,11 +22,16 @@
 #include <stdlib.h>
 
 CurrentStatus* current_status;
+Timer* timer8;
 
 #ifndef IS_X86
 void build_spi_reply_frame(Frame *frame_trans);
 void handle_spi_frame(Frame *frame_recv);
 
+// When TIMER0 overflow increase timer8 overflow counter;
+ISR(TIMER0_OVF_vect) {
+	timer8->num_overflows++;
+}
 
 // If SPI receive something
 ISR(SPI_STC_vect) {
@@ -62,6 +67,10 @@ int main(void)
     current_status = &status;
 
     status_init(current_status);
+    
+    Timer timer8bit;
+    timer8 = &timer8bit;
+    timer_init(timer8, BIT8);
 
 	// Enable global interrupts and init spi communication
 #ifndef IS_X86
