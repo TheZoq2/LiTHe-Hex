@@ -145,6 +145,11 @@ sensorMessageDecoder =
         |> JD.map SensorMessage
 
 
+serverMessageDecoder : JD.Decoder BotMessage
+serverMessageDecoder =
+    JD.oneOf [ debugMessageDecoder, autoMessageDecoder, sensorMessageDecoder ]
+
+
 sendControlMessage : Socket Msg -> JE.Value -> ( Socket Msg, Cmd Msg )
 sendControlMessage socket payload =
     let
@@ -174,7 +179,7 @@ update msg model =
             Material.update mdlMsg model
 
         ReceiveChatMessage raw ->
-            case JD.decodeValue debugMessageDecoder raw of
+            case JD.decodeValue serverMessageDecoder raw of
                 Ok (DebugMessage msg) ->
                     ( { model | messages = List.take 30 (msg :: model.messages) }
                     , Cmd.none

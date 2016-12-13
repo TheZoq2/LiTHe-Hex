@@ -22470,6 +22470,20 @@ var _user$project$App$debugMessageDecoder = A2(
 	_elm_lang$core$Json_Decode$map,
 	_user$project$App$DebugMessage,
 	A2(_elm_lang$core$Json_Decode$field, 'debug', _elm_lang$core$Json_Decode$string));
+var _user$project$App$serverMessageDecoder = _elm_lang$core$Json_Decode$oneOf(
+	{
+		ctor: '::',
+		_0: _user$project$App$debugMessageDecoder,
+		_1: {
+			ctor: '::',
+			_0: _user$project$App$autoMessageDecoder,
+			_1: {
+				ctor: '::',
+				_0: _user$project$App$sensorMessageDecoder,
+				_1: {ctor: '[]'}
+			}
+		}
+	});
 var _user$project$App$update = F2(
 	function (msg, model) {
 		var _p9 = msg;
@@ -22488,7 +22502,7 @@ var _user$project$App$update = F2(
 			case 'Mdl':
 				return A2(_MichaelCombs28$elm_mdl$Material$update, _p9._0, model);
 			case 'ReceiveChatMessage':
-				var _p11 = A2(_elm_lang$core$Json_Decode$decodeValue, _user$project$App$debugMessageDecoder, _p9._0);
+				var _p11 = A2(_elm_lang$core$Json_Decode$decodeValue, _user$project$App$serverMessageDecoder, _p9._0);
 				if (_p11.ctor === 'Ok') {
 					switch (_p11._0.ctor) {
 						case 'DebugMessage':
