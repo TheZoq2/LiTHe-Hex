@@ -354,6 +354,7 @@
 	skickar kommandon till motorikenheten.
   
 	\subsubsection{Autonomt läge}
+	\label{sec:central-autonom} 
 	I det autonoma läget frågar centralenheten om data från sensorenheten
     varje gång det ska fattas ett beslut. Detta gör att centralenheten själv
     bestämmer när den ska ha ny data för att den inte ska bli avbruten eller missa
@@ -918,7 +919,7 @@
     behöva testa dem på en gående robot. Simuleringen ritar ut en korridor och
     en robot som går framåt. Simulatorn skickar ut sensorvärden till en fil,
     regleralgoritmen läser in sensorvärden och tar sedan beslut. Roboten i
-    simulatorn använder 2 IR-sensorer på varje sida som pekar rakt ut från
+    simulatorn använder två IR-sensorer på varje sida som pekar rakt ut från
     roboten, det går att välja var på roboten som sensorerna ska sitta. Beslutet
     av regleralgoritmen skrivs till en fil som simulatorn läser in och styr
     roboten efter det. Det finns möjlighet att lägga till en störningsfunktion
@@ -945,6 +946,13 @@
 	\begin{longtable}[c]{l l l l}
 		\textbf{Program} & \textbf{Programmerare} & \textbf{Datum}& \textbf{Version} \\ \midrule
 		Inverterad Kinematik & Emil Segerbäck, Hannes Tuhkala & 2016-12-02 & 1.0 \\
+		Gångstil & & & \\ 
+		Kommunikation med SPI & & & \\ 
+		Webbserver/GUI & & & \\ 
+		Beslutsfattning & & & \\ 
+		PID-reglering & & & \\ 
+		Motorik & & & \\ 
+		Servokontroll & & & \\ 
 		
 		\caption{Lista över program \label{table:programlisting}}
 	\end{longtable}
