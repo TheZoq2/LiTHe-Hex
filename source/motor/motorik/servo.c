@@ -265,9 +265,19 @@ void init_all_servos()
 		_delay_ms(1);
 	}
 }
-
-
-
+/*
+void set_servo_speed(CurrentStatus* current_status) {
+	for(uint8_t i = 1; i < 19; ++i) {
+		_delay_ms(1);
+		reset_servo_bounds(i);
+		_delay_ms(1);
+		set_servo_rotation_speed(i, 0x006f);
+		_delay_ms(1);
+		set_servo_compliance_thresholds(i);
+		_delay_ms(1);
+	}
+}
+*/
 void set_leg_angles(enum LegIds leg_index, uint16_t* angles)
 {
 	const uint8_t* ids = SERVO_MAP[leg_index];
