@@ -22,11 +22,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-<<<<<<< HEAD
-CurrentStatus* current_status;
-=======
 volatile CurrentStatus* current_status;
->>>>>>> 09f38ef7f37e3b5cc6af72cfb333bef74c78e459
 
 #ifndef IS_X86
 void build_spi_reply_frame(Frame *frame_trans);
