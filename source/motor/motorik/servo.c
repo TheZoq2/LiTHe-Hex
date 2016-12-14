@@ -158,8 +158,6 @@ void send_servo_action(uint16_t threshold)
 	//spi_set_interrupts(false);
 >>>>>>> 09f38ef7f37e3b5cc6af72cfb333bef74c78e459
 	send_servo_command(BROADCAST_ID, ACTION_INSTRUCTION, 0, 0);
-	//TODO: Olavs fel
-	//_delay_ms(200);
 	while(!servos_are_done_rotating(threshold))
 		;
 <<<<<<< HEAD
@@ -183,7 +181,6 @@ ServoReply receive_servo_reply()
 	set_bit(PORTD, PIN_RX_TOGGLE);
 	usart_set_direction(RX);
 
-	//send_servo_command(1, 0, 0, 0);
 	
 	ServoReply servo_reply;
 
