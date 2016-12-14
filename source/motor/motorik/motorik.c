@@ -96,6 +96,8 @@ int main(void)
 #ifndef IS_X86
 	
 	spi_set_interrupts(true);
+	
+	uint16_t servo_speed = 0;
 
 	while(1)
 	{
@@ -112,15 +114,18 @@ int main(void)
             float x_speed = current_status->x_speed;
             float y_speed = current_status->y_speed;
             float rotation = current_status->rotation;
-			//if (current_status->speed_changed != ser) {
-				
-            float servo_speed = current_status->servo_speed;
+			if (servo_speed != current_status->servo_speed) {
+				current_status->speed_changed = true;
+			} else {
+				current_status->speed_changed = false;	
+			}
+            servo_speed = current_status->servo_speed;
             bool auto_mode = current_status->auto_mode;
 			spi_set_interrupts(true);
 			
-			//if(current_status->speed_changed) {
-			//	set_servo_speed(current_status->servo_speed);
-			//}
+			if(current_status->speed_changed) {
+				set_servo_speed(current_status->servo_speed);
+			}
 			
             if (x_speed != 0.0 || y_speed != 0.0 || !auto_mode) {
 

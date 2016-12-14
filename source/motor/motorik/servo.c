@@ -34,6 +34,8 @@ const uint8_t BROADCAST_ID = 0xFE;
 
 const uint8_t NUM_SERVOS = 18;
 
+const uint16_t MAX_SERVO_SPEED = 0x01ff;
+
 //const uint16_t SERVO_TARGET_COMPLIANCE_MARGIN = 100;
 
 
@@ -265,19 +267,16 @@ void init_all_servos()
 		_delay_ms(1);
 	}
 }
-/*
-void set_servo_speed(CurrentStatus* current_status) {
+
+void set_servo_speed(uint16_t servo_speed) {
+	if(servo_speed > MAX_SERVO_SPEED) {
+		servo_speed = MAX_SERVO_SPEED;
+	}
 	for(uint8_t i = 1; i < 19; ++i) {
-		_delay_ms(1);
-		reset_servo_bounds(i);
-		_delay_ms(1);
-		set_servo_rotation_speed(i, 0x006f);
-		_delay_ms(1);
-		set_servo_compliance_thresholds(i);
-		_delay_ms(1);
+		set_servo_rotation_speed(i, servo_speed);
 	}
 }
-*/
+
 void set_leg_angles(enum LegIds leg_index, uint16_t* angles)
 {
 	const uint8_t* ids = SERVO_MAP[leg_index];

@@ -31,7 +31,7 @@ typedef struct {
 	
 	volatile bool is_rotating;
 
-    volatile float servo_speed;
+    volatile uint16_t servo_speed;
 
     volatile bool return_to_neutral;
 
