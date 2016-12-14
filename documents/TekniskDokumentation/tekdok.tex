@@ -484,7 +484,7 @@
 		\subsection{Kommandotolkning}
 	Motorikenheten  tar in ett flyttalspar med koordinater för önskad målposition (önskat 
 	center för roboten efter förflyttning), med x-koordinat fram och 
-	y-koordinat åt vänster om roboten, med origo i robotens mittpunkt. Om totalavståndet 
+	y-koordinat åt vänster om roboten, och med origo i robotens mittpunkt. Om totalavståndet 
 	origo till målposition är mindre än 1 enhet skalas rörelsen ned utifrån detta avstånd. 
 	Det vill säga, om roboten ombeds gå 0,5 enheter framåt, tar den ett kliv med halva 
 	steglängden av om den ombetts gå en meter, även om inget av kliven är i närheten av 
@@ -507,9 +507,13 @@
 	det läge indikerat av centralenheten. Sedan avgörs den nedskalning av rörelsen som för 
 	varje set om tre ben (vänster-, höger-, vänster-ben och höger-, vänster-, höger-ben, taget 
 	frammifrån bakåt) är nödvändig för att robotbenen skall kunna nå positionen utan att ben 
-	skär varandra, och utan att gå utanför benens räckvidd eller in under roboten. Detta görs 
-	två gånger, en med vardera set ben höjt, och roboten använder sig av det alternativ där 
-	markfästa bens förflyttning nedskalas minst för att omberäkna benrörelsen. 
+	skär varandra, och utan att gå utanför benens räckvidd eller in under roboten. Skalningen 
+	görs först utan rotation, så att målförflyttningen är precist uppnåbar, varefter omberäkning 
+	och skalning görs med rotation och ny, nedskalad målposition, så att rotationen inte skall 
+	försvinna i nedskalning gjord i första hand för förflyttningens skull. Denna dubbla skalning 
+	görs två gånger, en med vardera uppsättning ben höjd, och roboten använder sig av det 
+	alternativ där markfästa bens förflyttning är störst för att omberäkna benrörelsen, då dessa 
+	ger den faktiska förflyttningen av chassit. 
 
 	Beräkning av nedskalning sker i tre avseenden. För det första skalas benförflyttningarna 
 	ner så att de inte tar benen utanför benens räckvidd. För det andra skalas  rörelserna så 
@@ -523,6 +527,59 @@
 	önskad position. Vidare anpassas servonas aktuationshastighet för att ge en unison rörelse 
 	över alla ben (hanterat i kommandot för servohandling). För en översiktlig inblick i 
 	gångstilen, se figur \ref{fig:walkflow0}.
+	
+	%start exempel pseudokod, som referens. Ta bort.
+	def get_decision(sensor_data, decision_packet):
+        corridors_and_dead_angles = get_corridors_and_dead_angles(sensor_data)
+
+        for value in corridors_and_dead_ends:
+            if 3 corridors detected:
+                decision = TURN_LEFT
+            
+            elif 2 corridors detected:
+                if distance forward is greater than DEAD_END_DISTANCE:
+                    decision = GO_FORWARD
+                else:
+                    if left corridor detected:
+                        decision = TURN_LEFT
+                    else:
+                        decision = TURN_RIGHT
+	%end exempel pseudokod, som referens. Ta bort.
+    	Nedan finns pseudokod för den mainloop som körs på motorikenheten. Besluten fattas 
+	utifrån en struct som ändras av SPI via interrupts.
+
+	\begin{lstlisting}
+	def motorik_mainloop():
+	stand_robot
+
+	while true:
+		if should move or rotate:
+			if autonomous and only rotation:
+				rotate_until_done
+			else
+				take_one_step_in_requested_direction
+	\end{lstlisting}
+	
+	Vidare beskrivs nedan förenklat funktionaliteten för work_towards_goal i gangstil.c, i pseudokoden skriven 
+	som take_one_step_in_requested_direction för tydlighet:
+
+	\begin{lstlisting}
+	
+	def take_one_step_in_requested_direction(rotation, goal_position, current_leg_placement):
+		scale_down_leg_movement_to_executable(no_rotation, leg_set_1_raised, goal_position)
+		scale_down_leg_movement_to_executable(rotation, leg_set_1_raised, downscaled_goal_position)
+
+		scale_down_leg_movement_to_executable(no_rotation, leg_set_2_raised, goal_position)
+		scale_down_leg_movement_to_executable(rotation, leg_set_2_raised, downscaled_goal_position)
+
+		if(leg_set_1_raised_movement > leg_set_2_raised_movement):
+			execute_scaled_movement(leg_set_1_raised)
+		else:
+			execute_scaled_movement(leg_set_1_raised)
+		return downscale_of_movement
+	\end{lstlisting}
+
+		
 
 	% TODO: Fix "typos" in figure
 	\begin{figure}[h]
@@ -530,7 +587,7 @@
 		\includegraphics[width=0.5\linewidth]{images/gangstil_flowchart.png}
 		\caption{Flödesschema för normal gångstil hos roboten
         \label{fig:walkflow0}}
-        %TODO: Chart slightly out of date, update
+        %TODO: Chart out of date, update
 	\end{figure}
 
 	\subsection{Inverterad kinematik}
