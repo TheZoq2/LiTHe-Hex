@@ -522,14 +522,17 @@
 	ner så att de inte tar benen utanför benens räckvidd. För det andra skalas  rörelserna så 
 	att de inte skär en uppsättning hårdkodade gränser mellan ben och mellan fot och robotchassi.
 	Avslutningsvis görs en nedskalning utifrån angivet kommando, så att steglängd kan justeras av 
-	användaren. Om ingen rörelse anges, kommmer roboten att förbli stillastående, %och om den rörelsen som anges anses allt för svårutförd, kommer roboten att först anta en mer neutral ställning varifrån rörelsen bör vara utförbar.
+	användaren. Om ingen rörelse anges, kommmer roboten att förbli stillastående. %och om den rörelsen som anges anses allt för svårutförd, kommer roboten att först anta en mer neutral ställning varifrån rörelsen bör vara utförbar.
 
 	Bestämningen av benposition sker endast i planet; höjdled tas i beräkning endast inför åberopning 
 	av IK, för bestämning av servovinklar. Själva klivet sker genom en sekvens av 
 	positionsinställningar med höjning och sänkning av ben, och stegvis övergång från gällande till 
 	önskad position. Vidare anpassas servonas aktuationshastighet för att ge en unison rörelse 
 	över alla ben (hanterat i kommandot för servohandling). För en översiktlig inblick i 
-	gångstilen, se figur \ref{fig:walkflow0}.
+	gångstilen, se figur \ref{fig:walkflow0}. Figuren visar beteendet specifikt i manuellt läge;
+	i autonomt läge tillkommer möjligheten att med ett funktionsanrop rotera en strikt vinkel.
+	Detta görs genom att upprepade åberopningar av koden för ensamt steg, illustrerat i figuren, 
+	vilken returnerar andelen av det begärda klivet som uppnåtts.
 	
 	%start exempel pseudokod, som referens. Ta bort.
 	%def get_decision(sensor_data, decision_packet):
