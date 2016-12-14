@@ -491,10 +491,7 @@
 	center för roboten efter förflyttning), med x-koordinat fram och 
 	y-koordinat åt vänster om roboten, och med origo i robotens mittpunkt. Om totalavståndet 
 	origo till målposition är mindre än 1 enhet skalas rörelsen ned utifrån detta avstånd. 
-	Det vill säga, om roboten ombeds gå 0,5 enheter framåt, tar den ett kliv med halva 
-    % TODO FIX
-	steglängden av om den ombetts gå en meter, även om inget av kliven är i närheten av 
-	de respektive distanserna; om en enhetsdistans (maximal steglängd) leder till ett 
+	Det vill säga, om ett kommando om en enhetsdistans (maximal steglängd) leder till ett 
 	1,6 decimeters kliv, leder halva enhetsdistansen till ett ca: 0.8 decimeters kliv givet samma 
 	startposition och riktning.
 	
@@ -513,12 +510,13 @@
 	vänster mitt-, höger bak-ben) är nödvändig för att robotbenen skall kunna nå positionen utan att ben 
         skär varandra, och utan att gå utanför benens räckvidd eller in under roboten. Skalningen 
         görs först utan rotation, så att den skalade målförflyttningen är precis uppnåbar, varefter omberäkning 
-        och skalning görs med rotation och ny, nedskalad målposition, så att rotationen inte skall 
-        försvinna i nedskalning gjord i första hand för förflyttningens skull. Denna dubbla skalning 
-        % TODO fix
-        görs två gånger, en med vardera uppsättning ben höjd, och roboten använder sig av det 
-        alternativ där markfästa bens förflyttning är störst för att omberäkna benrörelsen, då dessa 
-        ger den faktiska förflyttningen av chassit. 
+        och skalning görs med rotation och ny, nedskalad målposition. Detta gör att rotationen inte skalas ner 
+	till nära nollvärd, bara för att förflyttningen behöver skalas kraftigt. Denna dubbla skalning 
+        görs två gånger, en med vardera uppsättning ben stegande frammåt, och roboten använder sig av det 
+        alternativ där markfästa bens förflyttning är störst för att ta fram benrörelsen, då dessa 
+        ger den faktiska förflyttningen av chassit. En direkt nedskalning av förflyttningsvektor från nuvarande 
+	till målposition för fötter görs inte, då detta vid upprepad rotation (där benen rör sig i en ark runt 
+	roboten) skulle leda till successiv nedkortning av fötternas avstånd till kroppen.
 
 	Beräkning av nedskalning sker i tre avseenden. För det första skalas benförflyttningarna 
 	ner så att de inte tar något ben utanför dess räckvidd. För det andra skalas  rörelserna så 
@@ -532,14 +530,13 @@
 	positionsinställningar med höjning och sänkning av ben, och stegvis övergång från nuvarande till 
 	önskad position. För en översiktlig inblick i 
 	gångstilen, se figur \ref{fig:walkflow0}. Figuren visar beteendet specifikt i manuellt läge;
-	i autonomt läge tillkommer möjligheten att med ett funktionsanrop rotera en strikt vinkel.
-	Detta görs genom att upprepade åberopningar av koden för ensamt steg, illustrerat i figuren, 
-	vilken returnerar andelen av det begärda klivet som uppnåtts. Vid strikt rotation gör även 
+	i autonomt läge tillkommer möjligheten att med ett funktionsanrop rotera en strikt vinkel på plats.
+	Koden för ett enda steg, illustrerat i figuren, returnerar andelen av den begärda rörelsen som 
+	slutförts, så för en strikt rotation beräknas kvarvarande vinkel att rotera. Vid strikt rotation gör även 
 	roboten en återgång till en neutral position före och efter själva rotationen.
 	
     	Nedan finns pseudokod för den mainloop som körs på motorikenheten. Besluten fattas utifrån en 
 	struct som ändras av SPI via avbrott.
-	%TODO omformulera texten om fixed rotation
 
 	\begin{lstlisting}
 	def motorik_mainloop():
@@ -573,13 +570,11 @@
 		return downscale_of_movement
 	\end{lstlisting}
 
-	% TODO: Fix "typos" in figure
 	\begin{figure}[h]
 		\centering
 		\includegraphics[width=0.5\linewidth]{images/gangstil_flowchart.png}
 		\caption{Flödesschema för normal gångstil hos roboten
         \label{fig:walkflow0}}
-        %TODO: Chart slightly out of date, update
 	\end{figure}
 
 	\subsection{Inverterad kinematik}
