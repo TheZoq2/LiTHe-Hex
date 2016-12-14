@@ -494,13 +494,14 @@
 	y-koordinat åt vänster om roboten, och med origo i robotens mittpunkt. Om totalavståndet 
 	origo till målposition är mindre än 1 enhet skalas rörelsen ned utifrån detta avstånd. 
 	Det vill säga, om roboten ombeds gå 0,5 enheter framåt, tar den ett kliv med halva 
+    % TODO FIX
 	steglängden av om den ombetts gå en meter, även om inget av kliven är i närheten av 
 	de respektive distanserna; om en enhetsdistans (maximal steglängd) leder till ett 
-	1,6 decimeters kliv, leder halva ehtetsdistansen till ett ca: 0.8 decimeters kliv givet samma 
+	1,6 decimeters kliv, leder halva enhetsdistansen till ett ca: 0.8 decimeters kliv givet samma 
 	startposition och riktning.
 	
 	Vidare ges den rotation som roboten 
-	skall rotera, angiven positiv vänster med 0 frammåt, och en flagga för om 
+	skall rotera, angiven positiv vänster med 0 framåt, och en flagga för om 
 	roboten är i autonomt eller manuellt styrt läge. Om roboten är i autonomt läge, tolkas 
 	rotation utan koordinater som att en strikt rotation skall utföras (det vill säga, att 
 	roboten inte skall ändra rörelse förrän den utfört rotationen i fullo). I alla andra fall 
@@ -516,6 +517,7 @@
         görs först utan rotation, så att den skalade målförflyttningen är precis uppnåbar, varefter omberäkning 
         och skalning görs med rotation och ny, nedskalad målposition, så att rotationen inte skall 
         försvinna i nedskalning gjord i första hand för förflyttningens skull. Denna dubbla skalning 
+        % TODO fix
         görs två gånger, en med vardera uppsättning ben höjd, och roboten använder sig av det 
         alternativ där markfästa bens förflyttning är störst för att omberäkna benrörelsen, då dessa 
         ger den faktiska förflyttningen av chassit. 
@@ -956,7 +958,8 @@
 		\textbf{Program} & \textbf{Programmerare} & \textbf{Datum}& \textbf{Version} \\ \midrule
 		Inverterad Kinematik & Emil Segerbäck, Hannes Tuhkala & 2016-12-02 & 1.0 \\
 		Gångstil & Olav Övrebö & 2016-12-13 & 1.0 \\ 
-		Kommunikation med SPI & Malcolm Vigren, Noak Ringman & 2016-12-13 & 1.0 \\ 
+		AVR-Kommunikation med SPI & Malcolm Vigren, Noak Ringman & 2016-12-13 & 1.0 \\ 
+		SPI på centralenheten & Malcolm Vigren, Noak Ringman & 2016-12-13 & 1.0 \\ 
 		Webbserver/GUI & Emil Segerbäck, Hannes Tuhkala & 2016-12-13 & 1.0 \\ 
 		Beslutsfattning & Robin Sliwa, Noak Ringman & 2016-12-13 & 1.0 \\ 
 		PID-reglering & Robin Sliwa, Olav Övrebö & 2016-12-13 & 1.0 \\ 
