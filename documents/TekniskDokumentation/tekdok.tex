@@ -663,10 +663,9 @@
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	\section{Sensorenheten}
 	Sensorenheten är den enhet som ger roboten sinnen för omvärlden, så att den
-	kan navigera autonomt genom labyrinten. Sensorenheten är för
-	centralenheten ett abstrakt gränssnitt till sensorerna. Centralenheten
-	behöver alltså inte veta exakt vilka sensorer som används, utan istället
-	läser av data som "avstånd till vägg" eller "vridning relativt väggarna".
+	kan navigera autonomt genom labyrinten. Sensorenheten sköter allting som
+    rör läsning och brusreducering av sensorerna, och skickar dem till
+    centralenheten på begäran.
 
 	\subsection{Styrenhet i sensorenheten}
 	Styrenheten för sensorenheten består av AVR-processorn ATmega1284, som läser av och 
@@ -697,48 +696,48 @@
     \begin{lstlisting}
     # Main loop
 	def main():
-		port_init() # Setup hardware ports on AVR
-		timer_init(timer8)
-		timer_init(timer16)
-		spi_init()
-    	ir_init()
-		ir_queue_init(ir_queue) # Setup queue for scheduling of ir sensors
-		adc_init() # Setup interna A/D-converter on avr
-		lidar_init(lidar)
+        port_init() # Setup hardware ports on AVR
+        timer_init(timer8)
+        timer_init(timer16)
+        spi_init()
+        ir_init()
+        ir_queue_init(ir_queue) # Setup queue for scheduling of ir sensors
+        adc_init() # Setup interna A/D-converter on avr
+        lidar_init(lidar)
         
-		for ir in NUM_SENSORS:
-        	schedule(ir)
+        for ir in NUM_SENSORS:
+            schedule(ir)
         
         # Contains data ready to be sent to central unit
-		table_init(table)
+        table_init(table)
         
-		while(true):
+        while(true):
 
-			if (has_new_value(ir_queue)):
-				ir = dequeue(ir_queue)
-				ir_add_data(ir, adc_read(ir))
-				ir_reduce_noise(ir)
-				schedule(ir_queue, ir)
+            if (has_new_value(ir_queue)):
+                ir = dequeue(ir_queue)
+                ir_add_data(ir, adc_read(ir))
+                ir_reduce_noise(ir)
+                schedule(ir_queue, ir)
         		
-				lidar_measure(lidar)
+                lidar_measure(lidar)
         	
-        	# Update table with new data values
-			update(table, lidar)
+            # Update table with new data values
+            update(table, lidar)
         
     # Schedule ir sensor to read it when has new value
     def schedule(ir_queue, ir):
-    	e = ir
-    	e.last_time_measured = time(ir_queue.timer)
+        e = ir
+        e.last_time_measured = time(ir_queue.timer)
 
-    	ir_queue.elements[ir_queue.current_size] = e;
-	    ir_queue.current_size++
+        ir_queue.elements[ir_queue.current_size] = e
+        ir_queue.current_size++
 	    
 	# Calculate if ir sensor has new value
 	def has_new_value(ir_queue):
-    	if (ir_queue.current_size == 0) 
-    		return false
-    	else:
-    		return time(ir_queue.timer) - ir_queue.elements[0].last_time_measured >= IR_UPDATE_TIME
+        if (ir_queue.current_size == 0) 
+            return false
+        else:
+            return time(ir_queue.timer) - ir_queue.elements[0].last_time_measured >= IR_UPDATE_TIME
 	    
     \end{lstlisting}
 
