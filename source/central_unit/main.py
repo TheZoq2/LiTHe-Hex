@@ -195,10 +195,12 @@ def do_manual_mode_iteration(sensor_spi, motor_spi, send_queue, receive_queue,
     packet = receive_server_packet(receive_queue)
 
     if packet is not None:
-        
+        print("HERE1")
         if packet.auto is not None:
             auto = packet.auto
+            print("HERE2")
         if packet.has_motion_command():
+            print("HERE3")
             print(packet.raw)
             servo_speed = (int)(packet.thrust * constants.MAX_16BIT_SIZE)
             
