@@ -86,7 +86,7 @@ void write_servo_data(uint8_t id, uint8_t address, const uint8_t* data, uint8_t 
 	}
 	
 	send_servo_command(id, WRITE_DATA_INSTRUCTION, (void*)new_data, new_data_amount);
-	
+
 	free(new_data);
 }
 
