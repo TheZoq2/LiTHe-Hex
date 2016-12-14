@@ -750,7 +750,8 @@ float work_towards_goal(float rot, Point2D goal, Point2D * current){
     float requestedDownscale = scale_goal(& goal); //allows for detailed steering with small joystick tilts.
 
     if (goal.x == 0 && goal.y == 0 && rot == 0){
-        return 1;   //no movement
+        for (uint32_t i = 0; i < 1000; ++i);
+		return 1;   //no movement
 	}
 	
     Point2D targ[NUM_LEGS];
