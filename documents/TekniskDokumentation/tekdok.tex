@@ -22,7 +22,6 @@
 \usepackage{listings}
 \usepackage{color}
 
-\usepackage[colorinlistoftodos,prependcaption,textsize=tiny]{todonotes}
 
 \definecolor{dkgreen}{rgb}{0,0.6,0}
 \definecolor{gray}{rgb}{0.5,0.5,0.5}
@@ -70,7 +69,6 @@
 \posttitle{\end{center}}
 
 \begin{document}
-\listoftodos
 	\title{\LARGE
 		\textbf{Teknisk dokumentation för sexbent robot} \\
 		\vspace*{0.5\baselineskip}
@@ -241,7 +239,7 @@
 	att svara med ett "acknowledgemeddelande".
 
     \newpage
-	\begin{longtable}[c]{ l l l }
+	\begin{longtable}[c]{ l l p{7cm}}
 		\textbf{Syfte} & \textbf{ID} & \textbf{Data} \\ \midrule
 		\textbf{Generella} \\ \midrule
 		Send fail & 1F & -- \\ \midrule
@@ -366,7 +364,6 @@
     vrida sig tillbaka till mitten. Ju närmare mitten den är desto mindre kommer
     den att vrida sig mot mitten.
 
-    \todo{Lägg till pseudokod för korridorreglering}%
     \begin{lstlisting}
     def regulate(sensor_data, decision_packet):
     \end{lstlisting}
