@@ -532,21 +532,21 @@
 	gångstilen, se figur \ref{fig:walkflow0}.
 	
 	%start exempel pseudokod, som referens. Ta bort.
-	def get_decision(sensor_data, decision_packet):
-        corridors_and_dead_angles = get_corridors_and_dead_angles(sensor_data)
+	%def get_decision(sensor_data, decision_packet):
+    %    corridors_and_dead_angles = get_corridors_and_dead_angles(sensor_data)
 
-        for value in corridors_and_dead_ends:
-            if 3 corridors detected:
-                decision = TURN_LEFT
-            
-            elif 2 corridors detected:
-                if distance forward is greater than DEAD_END_DISTANCE:
-                    decision = GO_FORWARD
-                else:
-                    if left corridor detected:
-                        decision = TURN_LEFT
-                    else:
-                        decision = TURN_RIGHT
+    %    for value in corridors_and_dead_ends:
+    %        if 3 corridors detected:
+    %            decision = TURN_LEFT
+    %        
+    %        elif 2 corridors detected:
+    %            if distance forward is greater than DEAD_END_DISTANCE:
+    %                decision = GO_FORWARD
+    %            else:
+    %                if left corridor detected:
+    %                    decision = TURN_LEFT
+    %                else:
+    %                    decision = TURN_RIGHT
 	%end exempel pseudokod, som referens. Ta bort.
     	Nedan finns pseudokod för den mainloop som körs på motorikenheten. Besluten fattas 
 	utifrån en struct som ändras av SPI via interrupts.
@@ -563,8 +563,9 @@
 				take_one_step_in_requested_direction
 	\end{lstlisting}
 	
-	Vidare beskrivs nedan förenklat funktionaliteten för work_towards_goal i gangstil.c, i pseudokoden skriven 
-	som take_one_step_in_requested_direction för tydlighet:
+    Vidare beskrivs nedan förenklat funktionaliteten för
+    \textit{work\_towards\_goal} i gangstil.c, i pseudokoden skriven 
+    som \textit{take\_one\_step\_in\_requested\_direction} för tydlighet:
 
 	\begin{lstlisting}
 	
