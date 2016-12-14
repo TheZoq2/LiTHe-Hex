@@ -186,7 +186,7 @@
 	\section{Kommunikation mellan enheterna}
 	Kommunikation mellan centralenheten och de två AVR-processorerna sker
 	med SPI. Sensor- och motorikenhetens SPI-portar är kopplade till varsin
-  SPI-port på centralenheten. Detta illustreras i figur \ref{fig:central_circuit}.
+	SPI-port på centralenheten. Detta illustreras i figur \ref{fig:central_circuit}.
 	All kommunikation inleds med att centralenheten skickar ett kommando 
     eller en databegäran till slavenheterna.
 	Slavenheterna utför sedan kommandot eller svarar med den begärda data.
@@ -356,6 +356,7 @@
 	skickar kommandon till motorikenheten.
   
 	\subsubsection{Autonomt läge}
+	\label{sec:central-autonom} 
 	I det autonoma läget frågar centralenheten om data från sensorenheten
     varje gång det ska fattas ett beslut. Detta gör att centralenheten själv
     bestämmer när den ska ha ny data för att den inte ska bli avbruten eller missa
@@ -478,7 +479,7 @@
 
 	\begin{figure}[htpb]
 		\centering
-		\includegraphics[width=0.6\linewidth]{charts/motor/motorik.pdf}
+		\includegraphics[width=1.0\linewidth]{charts/motor/motorik.pdf}
 		\caption{Kretsschema för motorikenheten}
 		\label{fig:motorik}
 	\end{figure}
@@ -552,14 +553,14 @@
 
 	\begin{lstlisting}
 	def motorik_mainloop():
-	stand_robot
+        stand_robot
 
-	while true:
-		if should move or rotate:
-			if autonomous and only rotation:
-				rotate_until_done
-			else
-				take_one_step_in_requested_direction
+        while true:
+            if should move or rotate:
+                if autonomous and only rotation:
+                    rotate_until_done
+                else
+                    take_one_step_in_requested_direction
 	\end{lstlisting}
 	
     Vidare beskrivs nedan förenklat funktionaliteten för
@@ -954,6 +955,13 @@
 	\begin{longtable}[c]{l l l l}
 		\textbf{Program} & \textbf{Programmerare} & \textbf{Datum}& \textbf{Version} \\ \midrule
 		Inverterad Kinematik & Emil Segerbäck, Hannes Tuhkala & 2016-12-02 & 1.0 \\
+		Gångstil & & & \\ 
+		Kommunikation med SPI & & & \\ 
+		Webbserver/GUI & & & \\ 
+		Beslutsfattning & & & \\ 
+		PID-reglering & & & \\ 
+		Motorik & & & \\ 
+		Servokontroll & & & \\ 
 		
 		\caption{Lista över program \label{table:programlisting}}
 	\end{longtable}
