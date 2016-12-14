@@ -30,6 +30,7 @@ const size_t RM = 3;
 const size_t LB = 4;
 const size_t RB = 5;
 
+const int   TARG_NEUTRAL_RATIO          = 4;
 const float FRONT_LEG_JOINT_X           = 0.12;
 const float FRONT_LEG_JOINT_Y           = 0.06;
 const float MID_LEG_JOINT_Y             = 0.1;
@@ -623,8 +624,13 @@ void direct_legs(float rot, Point2D * targ, Point2D * current, Point2D goal, boo
 //            }
 
         }
-        targ[leg].x = (targ[leg].x - joint.x + neutral.x) * 0.5;
-        targ[leg].y = (targ[leg].y - joint.y + neutral.y) * 0.5;
+        targ[leg].x = targ[leg].x - joint.x;
+        targ[leg].y = targ[leg].y - joint.y;
+
+        if (goal.x != 0 || goal.y != 0){
+            targ[leg].x = (targ[leg].x * TARG_NEUTRAL_RATIO + neutral.x)/(TARG_NEUTRAL_RATIO + 1);
+            targ[leg].y = (targ[leg].y * TARG_NEUTRAL_RATIO + neutral.y)/(TARG_NEUTRAL_RATIO + 1);
+        }
     }
 
 }
