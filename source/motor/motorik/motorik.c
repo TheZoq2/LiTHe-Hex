@@ -22,11 +22,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-<<<<<<< HEAD
-CurrentStatus* current_status;
-=======
 volatile CurrentStatus* current_status;
->>>>>>> 09f38ef7f37e3b5cc6af72cfb333bef74c78e459
 
 #ifndef IS_X86
 void build_spi_reply_frame(Frame *frame_trans);
@@ -144,12 +140,12 @@ int main(void)
 	for(;;)
 	{
 		Point2D goal;
-		goal.x = rand() % 3 - 1;
-		goal.y = rand() % 3 - 1;
+		goal.x = 1;
+		goal.y = 0;
 
 		//printf("Walking one step\n\n\n\n");
 
-		work_towards_goal(0, goal, current_position);
+		work_towards_goal(0.5, goal, current_position);
 	}
 #endif
 

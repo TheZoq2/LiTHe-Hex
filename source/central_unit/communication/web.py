@@ -42,8 +42,8 @@ class ServerReceivedPacket(object):
         """
         data = json.loads(json_string)
         self.raw = data
-        self.y = data.get('x', None)
-        self.x = data.get('y', None)
+        self.x = data.get('x', None)
+        self.y = data.get('y', None)
         self.rotation = data.get('rotation', None)
         self.thrust = data.get('thrust', None)
         self.auto = data.get('auto', None)

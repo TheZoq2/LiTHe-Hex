@@ -1,4 +1,5 @@
 EESchema Schematic File Version 2
+LIBS:motor-rescue
 LIBS:power
 LIBS:device
 LIBS:transistors
@@ -29,6 +30,7 @@ LIBS:atmel
 LIBS:contrib
 LIBS:valves
 LIBS:hex
+LIBS:motor-cache
 EELAYER 25 0
 EELAYER END
 $Descr A4 11693 8268
@@ -66,7 +68,7 @@ F 3 "" H 8650 4350 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L RaspberryPi3 Rpi
+L RaspberryPi3-RESCUE-motor Rpi
 U 1 1 581A2F39
 P 1350 1600
 F 0 "Rpi" H 1300 1550 60  0000 C CNN

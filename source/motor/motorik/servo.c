@@ -85,16 +85,8 @@ void write_servo_data(uint8_t id, uint8_t address, const uint8_t* data, uint8_t 
 		new_data[i+1] = data[i];
 	}
 	
-<<<<<<< HEAD
-	send_servo_command(id, WRITE_DATA_INSTRUCTION, (void*)new_data, new_data_amount);
-=======
-	//spi_set_interrupts(false);
-	
 	send_servo_command(id, WRITE_DATA_INSTRUCTION, (void*)new_data, new_data_amount);
 
-	//spi_set_interrupts(true);
->>>>>>> 09f38ef7f37e3b5cc6af72cfb333bef74c78e459
-	
 	free(new_data);
 }
 
@@ -153,20 +145,9 @@ void send_servo_action(uint16_t threshold)
 #else
 void send_servo_action(uint16_t threshold)
 {
-<<<<<<< HEAD
-=======
-	//spi_set_interrupts(false);
->>>>>>> 09f38ef7f37e3b5cc6af72cfb333bef74c78e459
 	send_servo_command(BROADCAST_ID, ACTION_INSTRUCTION, 0, 0);
-	//TODO: Olavs fel
-	//_delay_ms(200);
 	while(!servos_are_done_rotating(threshold))
 		;
-<<<<<<< HEAD
-=======
-		
-	//spi_set_interrupts(true);
->>>>>>> 09f38ef7f37e3b5cc6af72cfb333bef74c78e459
 }
 #endif
 
@@ -183,7 +164,6 @@ ServoReply receive_servo_reply()
 	set_bit(PORTD, PIN_RX_TOGGLE);
 	usart_set_direction(RX);
 
-	//send_servo_command(1, 0, 0, 0);
 	
 	ServoReply servo_reply;
 
