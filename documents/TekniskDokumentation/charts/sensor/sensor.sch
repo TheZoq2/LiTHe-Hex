@@ -28,7 +28,6 @@ LIBS:opto
 LIBS:atmel
 LIBS:contrib
 LIBS:valves
-LIBS:sensor-cache
 EELAYER 25 0
 EELAYER END
 $Descr A4 11693 8268
@@ -62,36 +61,10 @@ Text Notes 5650 4550 0    60   ~ 0
 JTAG
 Text Notes 8750 4100 0    60   ~ 0
 LIDAR
-$Comp
-L C 680µF
-U 1 1 57FDF7AD
-P 8150 4050
-F 0 "680µF" H 8175 4150 50  0000 L CNN
-F 1 "C" H 8175 3950 50  0001 L CNN
-F 2 "" H 8188 3900 50  0000 C CNN
-F 3 "" H 8150 4050 50  0000 C CNN
-	1    8150 4050
-	1    0    0    -1  
-$EndComp
 Text Label 8450 3900 0    39   ~ 0
 GND
 Text Label 8450 4200 0    39   ~ 0
 Vcc
-Text Label 8550 4450 0    39   ~ 0
-SDA
-Text Label 8550 4550 0    39   ~ 0
-SCL
-$Comp
-L R R?
-U 1 1 57FDFADA
-P 6450 4150
-F 0 "R?" V 6530 4150 50  0001 C CNN
-F 1 "4.7k" V 6450 4150 50  0000 C CNN
-F 2 "" V 6380 4150 50  0000 C CNN
-F 3 "" H 6450 4150 50  0000 C CNN
-	1    6450 4150
-	1    0    0    -1  
-$EndComp
 $Comp
 L GND #PWR?
 U 1 1 57FDFF7C
@@ -235,20 +208,125 @@ F 3 "" H 6500 2700 50  0000 C CNN
 $EndComp
 Text Notes 7900 4150 0    60   ~ 0
 5V
-Text Label 9050 2100 0    39   ~ 0
-PD0
-Text Label 9050 2200 0    39   ~ 0
-PD1
-Text Label 9050 2300 0    39   ~ 0
-PD2
-Text Label 9050 2400 0    39   ~ 0
-PD3
-Text Label 9050 2500 0    39   ~ 0
-PD4
-Text Notes 9250 3900 0    60   ~ 0
-PD0...PD4
-Text Notes 5050 1850 0    60   ~ 0
-Gyro
+$Comp
+L GND #PWR?
+U 1 1 58506406
+P 4550 1400
+F 0 "#PWR?" H 4550 1150 50  0001 C CNN
+F 1 "GND" H 4550 1250 50  0000 C CNN
+F 2 "" H 4550 1400 50  0000 C CNN
+F 3 "" H 4550 1400 50  0000 C CNN
+	1    4550 1400
+	1    0    0    -1  
+$EndComp
+$Comp
+L C C?
+U 1 1 58506418
+P 4100 1200
+F 0 "C?" H 4125 1300 50  0001 L CNN
+F 1 "100nF" H 4125 1100 50  0000 L CNN
+F 2 "" H 4138 1050 50  0000 C CNN
+F 3 "" H 4100 1200 50  0000 C CNN
+	1    4100 1200
+	0    -1   -1   0   
+$EndComp
+Text Notes 3900 950  0    60   ~ 0
+5V
+$Comp
+L GND #PWR?
+U 1 1 585065B2
+P 3750 1400
+F 0 "#PWR?" H 3750 1150 50  0001 C CNN
+F 1 "GND" H 3750 1250 50  0000 C CNN
+F 2 "" H 3750 1400 50  0000 C CNN
+F 3 "" H 3750 1400 50  0000 C CNN
+	1    3750 1400
+	1    0    0    -1  
+$EndComp
+$Comp
+L C C?
+U 1 1 585065B8
+P 3300 1200
+F 0 "C?" H 3325 1300 50  0001 L CNN
+F 1 "100nF" H 3325 1100 50  0000 L CNN
+F 2 "" H 3338 1050 50  0000 C CNN
+F 3 "" H 3300 1200 50  0000 C CNN
+	1    3300 1200
+	0    -1   -1   0   
+$EndComp
+Text Notes 3100 950  0    60   ~ 0
+5V
+$Comp
+L GND #PWR?
+U 1 1 58506627
+P 2600 2900
+F 0 "#PWR?" H 2600 2650 50  0001 C CNN
+F 1 "GND" H 2600 2750 50  0000 C CNN
+F 2 "" H 2600 2900 50  0000 C CNN
+F 3 "" H 2600 2900 50  0000 C CNN
+	1    2600 2900
+	1    0    0    -1  
+$EndComp
+$Comp
+L C C?
+U 1 1 5850662D
+P 2150 2700
+F 0 "C?" H 2175 2800 50  0001 L CNN
+F 1 "100nF" H 2175 2600 50  0000 L CNN
+F 2 "" H 2188 2550 50  0000 C CNN
+F 3 "" H 2150 2700 50  0000 C CNN
+	1    2150 2700
+	0    -1   -1   0   
+$EndComp
+Text Notes 1950 2450 0    60   ~ 0
+5V
+Text Notes 9250 2350 0    60   ~ 0
+5V
+$Comp
+L GND #PWR?
+U 1 1 58506770
+P 3950 5800
+F 0 "#PWR?" H 3950 5550 50  0001 C CNN
+F 1 "GND" H 3950 5650 50  0000 C CNN
+F 2 "" H 3950 5800 50  0000 C CNN
+F 3 "" H 3950 5800 50  0000 C CNN
+	1    3950 5800
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR?
+U 1 1 5850677B
+P 3750 5800
+F 0 "#PWR?" H 3750 5550 50  0001 C CNN
+F 1 "GND" H 3750 5650 50  0000 C CNN
+F 2 "" H 3750 5800 50  0000 C CNN
+F 3 "" H 3750 5800 50  0000 C CNN
+	1    3750 5800
+	1    0    0    -1  
+$EndComp
+Text Label 7500 2100 0    39   ~ 0
+Vo
+Text Label 7500 2200 0    39   ~ 0
+Vo
+Text Label 7500 2300 0    39   ~ 0
+Vo
+Text Label 7500 2400 0    39   ~ 0
+Vo
+Text Label 7500 2500 0    39   ~ 0
+Vo
+Text Label 8850 4300 0    39   ~ 0
+MODE
+$Comp
+L R R?
+U 1 1 5850685E
+P 7300 4600
+F 0 "R?" V 7380 4600 50  0001 C CNN
+F 1 "1k" V 7300 4600 50  0000 C CNN
+F 2 "" V 7230 4600 50  0000 C CNN
+F 3 "" H 7300 4600 50  0000 C CNN
+	1    7300 4600
+	0    1    1    0   
+$EndComp
 Connection ~ 8550 3150
 Connection ~ 8700 3150
 Connection ~ 8850 3150
@@ -289,44 +367,16 @@ Wire Wire Line
 	5900 4100 5900 4400
 Connection ~ 8650 3900
 Connection ~ 8650 4200
-Connection ~ 8150 3900
-Connection ~ 8150 4200
 Wire Wire Line
 	7950 3900 8650 3900
-Wire Wire Line
-	7950 4200 8650 4200
 Connection ~ 8800 4200
-Connection ~ 8950 4200
-Wire Wire Line
-	4950 3900 7800 3900
-Wire Wire Line
-	7800 3900 7800 4450
-Wire Wire Line
-	7800 4450 8800 4450
-Wire Wire Line
-	8800 4450 8800 4200
-Wire Wire Line
-	4950 4000 7650 4000
-Wire Wire Line
-	7650 4000 7650 4550
-Wire Wire Line
-	7650 4550 8950 4550
-Wire Wire Line
-	8950 4550 8950 4200
-Connection ~ 7950 4200
 Wire Wire Line
 	7950 3900 7950 3800
 Wire Wire Line
 	7950 3800 6850 3800
-Connection ~ 6450 4000
-Wire Wire Line
-	6850 4300 6450 4300
 Connection ~ 7850 2900
 Wire Wire Line
 	5450 2900 7850 2900
-Connection ~ 6850 3800
-Wire Wire Line
-	6850 2900 6850 4300
 Connection ~ 6850 2900
 Connection ~ 8250 2100
 Connection ~ 8250 2200
@@ -404,39 +454,61 @@ Wire Wire Line
 Wire Wire Line
 	6500 2850 6500 2900
 Connection ~ 5450 2900
-Connection ~ 9200 1950
-Wire Bus Line
-	9200 1950 9200 5650
-Connection ~ 9200 5650
+Connection ~ 7950 4200
 Wire Wire Line
-	4950 4800 9200 4800
+	7950 4200 8650 4200
 Wire Wire Line
-	4950 4900 9200 4900
+	6850 3800 6850 2900
 Wire Wire Line
-	4950 5000 9200 5000
+	4550 1200 4550 1400
 Wire Wire Line
-	4950 5100 9200 5100
+	4550 1200 4250 1200
 Wire Wire Line
-	4950 5200 9200 5200
-Connection ~ 9200 4800
-Connection ~ 9200 4900
-Connection ~ 9200 5000
-Connection ~ 9200 5100
-Connection ~ 9200 5200
+	3950 1000 3950 1800
+Connection ~ 3950 1200
+Connection ~ 3950 1000
 Wire Wire Line
-	4950 2600 5150 2600
+	3750 1200 3750 1400
 Wire Wire Line
-	5150 2600 5150 1900
-Connection ~ 5150 1900
-Text Notes 5750 1850 0    60   ~ 0
-5V
-Connection ~ 5700 1800
-Connection ~ 5300 1800
+	3750 1200 3450 1200
 Wire Wire Line
-	5300 1800 5700 1800
-Text Notes 2050 2150 0    60   ~ 0
-Reset
-Connection ~ 2350 2100
+	3150 1000 3150 1800
+Connection ~ 3150 1200
+Connection ~ 3150 1000
 Wire Wire Line
-	2350 2100 2950 2100
+	3150 1800 3750 1800
+Wire Wire Line
+	2600 2700 2600 2900
+Wire Wire Line
+	2600 2700 2300 2700
+Wire Wire Line
+	2000 2500 2000 3300
+Connection ~ 2000 2700
+Connection ~ 2000 2500
+Wire Wire Line
+	2000 3300 2950 3300
+Wire Wire Line
+	2950 2100 2000 2100
+Wire Wire Line
+	2000 2100 2000 2300
+Connection ~ 2000 2300
+Wire Wire Line
+	8800 4200 8800 4600
+Wire Wire Line
+	8800 4600 7450 4600
+Connection ~ 7550 4600
+Wire Wire Line
+	7550 4600 7550 3800
+Connection ~ 7550 3800
+Wire Wire Line
+	7150 4600 6050 4600
+Wire Wire Line
+	6050 4600 6050 5300
+Wire Wire Line
+	6050 5300 4950 5300
+Connection ~ 7850 2600
+Wire Wire Line
+	7850 2900 7850 2600
+Text Label 7900 2650 0    39   ~ 0
+GND_for_all_IR
 $EndSCHEMATC
