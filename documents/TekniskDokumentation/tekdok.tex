@@ -643,8 +643,8 @@
 	varje servo så räknas rotationen som klar och funktionen returnerar.
 
 	\subsubsection{Undantag för kommunikation}
-	På grund av ett okänt fel i hård- eller mjukvaran blir UART signalen fel om data 
-	begärs från de 3 första servona på roboten en bild på fenomenet kan ses i figur 
+	På grund av ett okänt fel i hård- eller mjukvaran blir UART-signalen fel om data 
+	begärs från de 3 första servona på roboten. en bild på fenomenet kan ses i figur 
 	\ref{fig:servo_tri_state_bug}. Eftersom att flera ben kommer att göra ungefär samma 
 	rörelser samtidigt ignoreras därför de tre första servona vid beräkningar där data
 	från servona behövs.
@@ -652,8 +652,7 @@
 	\begin{figure}[htpb]
 		\centering
 		\includegraphics[width=0.8\linewidth]{images/uart_tri_state.jpg}
-		\caption{UART signal när svar begärs från de tre första servona. 
-			Signalen som skiftar mellan 3 lägen ska vara en digital signal}
+		\caption{Felaktig servokontrollsignal}
 		\label{fig:servo_tri_state_bug}
 	\end{figure}
 
