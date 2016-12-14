@@ -153,12 +153,16 @@
 	
 	\subsection{Ansluta till webbsidan}
 	Servern startas på port 4000 och för att komma till webbsidan behöver man
-    också pi:ens ip-adress. För att ta reda på pi:ens ip-adress kan man gå in
+    också pi:ens ip-adress. För att ta reda på Raspberry pi:ens ip-adress kan man gå in
     på telegram-kanalen https://telegram.me/lithehexbot. Det kräver dock att
     man har ett telegram-konto.
 	
 	Vi antar att ip-adressen är 127.0.0.1 och då skulle man i adressfältet i
     webbläsaren skriva 127.0.0.1:4000 för att komma till webbsidan.
+    
+    % TODO Är detta korrekt nedan?
+    Det finns möjlighet att koppla in Raspberry pi till en skärm för att på så sätt ta reda på 
+    vilken ip-aderss som den har. 
 	
 	När man har anslutit till webbsidan finns det två olika flikar man kan välja
     mellan: Control och Debug. De beskrivs nedan i \ref{gui:control} och
@@ -183,8 +187,8 @@
 	
 	När man har öppnat controlsidan antas det att en joystick är inkopplad i
     datorn. Om det finns en joystick inkopplad så kan man styra roboten med den.
-    Om man drar joysticken åt ett håll rör sig roboten i den riktningen, En
-    vridning av joysticken kommer göra att roboten vrider sig. På joysticken
+    Om man drar joysticken åt ett håll rör sig roboten i den riktningen. En
+    rotation av joysticken kommer göra att roboten roterar. På joysticken
     finns också ett gasreglage som styr hur snabbt roboten går och en
     återställningsknapp som gör att roboten återgår till sitt ursprungsläge och
     ställer sig upp igen.
@@ -194,7 +198,7 @@
 	
 	Det finns en knapp som heter stop som stoppar roboten. Längst upp finns
     också en knapp för att välja mellan autonomt och manuellt läge. Manuellt
-    läge är grundvärden. Se figur \ref{fig:gui-control} för att se hur webbsidan
+    läge är standardvärde. Se figur \ref{fig:gui-control} för att se hur webbsidan
     ser ut.
 	
     \newpage
@@ -204,8 +208,8 @@
 		\includegraphics[width=0.5\linewidth]{images/gui-debug.png}
 		\caption{Det grafiska gränssnittet för control\label{fig:gui-debug}}
 	\end{figure}
-	När man öppnat debug så finns det nio stycken olika grafer som visar olika
-    sensordata för roboten vid det här tillfället. Graferna uppdateras tio
+	När man öppnat debug fliken på hemsidan finns det nio stycken olika grafer som visar 
+    olika sensordata för roboten vid det här tillfället. Graferna uppdateras tio
     gånger i sekunden för de nya värden som kommer in. Se figur
     \ref{fig:gui-debug} för hur debugsidan ser ut.
 	
