@@ -73,8 +73,8 @@ def main():
 
         else:
             # Manual mode
-            # os.system('clear')
-            print("Entering manual mode!")
+            #os.system('clear')
+            #print("Entering manual mode!")
             auto, prev_speed, prev_x, prev_y, prev_rot = do_manual_mode_iteration(
                 sensor_spi, motor_spi, send_queue, receive_queue, 
                 prev_speed, prev_x, prev_y, prev_rot)
@@ -195,7 +195,6 @@ def do_manual_mode_iteration(sensor_spi, motor_spi, send_queue, receive_queue,
     packet = receive_server_packet(receive_queue)
 
     if packet is not None:
-        print("HERE1")
         if packet.auto is not None:
             auto = packet.auto
             print("HERE2")
@@ -210,10 +209,11 @@ def do_manual_mode_iteration(sensor_spi, motor_spi, send_queue, receive_queue,
                 avr_communication.back_to_neutral(motor_spi)
 
             if prev_speed != servo_speed:
+                # x_speed from server = -y_speed and y_speed from server = -x_speed
                 avr_communication.set_servo_speed(motor_spi, servo_speed, 100)
 
-            x_speed = convert_to_sendable_byte(packet.x)
-            y_speed = convert_to_sendable_byte(packet.y)
+            x_speed = convert_to_sendable_byte(-packet.y)
+            y_speed = convert_to_sendable_byte(-packet.x)
             rotation = convert_to_sendable_byte(packet.rotation)
 
             if x_speed != prev_x or y_speed != prev_y or rotation != prev_rot:
