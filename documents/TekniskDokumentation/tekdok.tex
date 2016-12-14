@@ -941,9 +941,15 @@
 	make test
 	\end{lstlisting}
 
-	i motorikmappen.
+	i motorikmappen. Det kompilerar motorikkoden med avr-specifik kod utbytt mot
+	kod som går att köra på en vanlig dator och som skriver och läser från filer 
+	istället för att kommunicera med servon.
 
-
+	Simulatorn själv kör man genom att köra
+	\begin{lstlisting}
+	cargo run
+	\end{lstlisting}
+	i simulators/walk
 
 	\section{Slutsatser}
     Det som skulle kunna förbättras är bland annat implementation av hindergång
