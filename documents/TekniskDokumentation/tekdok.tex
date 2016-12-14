@@ -148,12 +148,12 @@
 	översiktlig beskrivning av robotens styrande processorer ("enheter", vilka kopplas till ett färdigt 
 	PhantomX AX Metal Hexapod Mark III chassi från TrossenRobotics). Dessa enheter (central-, 
 	motorik- och sensorenhet), kommunikation mellan dessa, samt användargränssnitt specificeras 
-	sedan i större noggrannhet under egna avdelningar.
+	i större noggrannhet under egna rubriker.
 	
 	\section{Komponentbudget}
 	
 	Tabell \ref{table:components} visar komponenter som ingår i
-	roboten, utöver chassiet, lödplattor och andra diverse
+	roboten, utöver chassiet, virkort och andra diverse
 	mindre komponenter.
 	
 	\begin{longtable}[c]{l l}
@@ -162,9 +162,8 @@
 		ATmega1284 & 2 \\
 		GP2D120 & 1 \\
 		GP2Y0A02YK & 4 \\
-		MLX90609 & 1 \\
 		LIDAR Lite V3 & 1 \\
-		74LS240 & 8 \\
+		74LS244 & 1 \\
 		Extern 16 MHz-klocka EXO-3 & 1 \\
 		TXB0104 & 2 \\
 		\caption{De komponenter som beräknas att gå åt \label{table:components}}
@@ -183,14 +182,14 @@
 	verkar. Vid manuell styrning vidarebefordras endast data från styrdatorn.
 
 	De två andra enheterna (slavarna till centralenheten) utgörs av AVR-processorer och styr 
-	mer generella uppgifter. Den ena, motorikenheten, översätter generella indikationer om 
-	förflyttning från centralenheten till faktiska kommandon för robotens servon och skickar 
-	vidare dessa. Den kan även förse centralenheten med bland annat debugdata om så efterfrågas.
-	
-	Den andra AVR-processorn utgör en sensorenhet, vilken styr och läser robotens sensorsvit. 
-	Den svarar även för att översätta råa sensordata till mer konkreta former (som vinklar och 
-	avstånd), samt att brusreducera dessa efter behov. Figur \ref{fig:overview} ger en översiktsbild av
-	systemet.
+	mer specifika uppgifter. Den ena, motorikenheten, översätter generella indikationer om 
+	förflyttning från centralenheten till faktiska kommandon för robotens
+    servon och exekverar dem.
+    
+    Den andra AVR-processorn utgör en sensorenhet, vilken styr och läser
+    robotens sensorsvit.  Den svarar även för att brusreducera sensorernas råa indata. 
+    
+    Figur \ref{fig:overview} ger en översiktsbild av systemet.
 	
 	% Ska det stå servon eftersom det står sensorer?
 	\begin{figure}[h!]
@@ -198,8 +197,6 @@
 		\includegraphics[width=0.5\linewidth]{../images/overview.png}
 		\caption{Översikt av systemet\label{fig:overview}}
 	\end{figure}
-
-	\newpage
 
 	\section{Kommunikation mellan enheterna}
 	Kommunikation mellan centralenheten och de två AVR-processorerna sker
@@ -236,7 +233,7 @@
 	är dynamisk är första byten i meddelandet längden av resten av meddelandet.
 
 	De två sista bitarna i första byten är paritetsbitar. Bit 7 är en  paritetsbit
-	för meddelandets innehåll medan bit 8 är paritetsbit för de 7 tidigare bitarna.
+	för meddelandets innehåll, inklusive längd-byten, medan bit 8 är paritetsbit för de 7 tidigare bitarna.
 
 	Om någon av paritetsbitarna är fel så kommer enheten som tog emot meddelandet att svara
 	med ett speciellt meddelande för att indikera sändningsfel. Annars kommer den 
@@ -278,7 +275,7 @@
     Centralenheten använder SpiDev-modulen för python för kommunikation med
     motorik- och sensorenheten över SPI. Den skapar en instans av SpiDev för
     varje enhet, då centralenheten använder två separata SPI-bussar för varje
-    enhet. Alla funktioner i som rör kommunikationen till AVR-processorerna tar
+    enhet. Alla funktioner i centralenheten som rör kommunikationen till AVR-processorerna tar
     alltså in instansen för den enhet som ska kommuniceras till.
 
     Pseudokoden för läsning av spi-meddelanden beskrivs som följande:
@@ -336,7 +333,7 @@
 
 	\end{lstlisting}
     \textit{Frame} syftar på en datastruktur som innehåller all relevant
-    information om meddelandet. som typ, längd och data
+    information om meddelandet som typ, längd och data.
 
 	\section{Centralenheten}
         Centralenheten har två ansvarsområden: navigation/beslutsfattning samt
@@ -373,19 +370,18 @@
     def regulate(sensor_data, decision_packet):
     \end{lstlisting}
 
-    Förutom de fyra IR-sensorerna på sidorna används även LIDAR när beslut ska fattas. LIDAR-sensorn som är riktad framåt används
-    för att undvika ingång i återvändsgränder framåt. När ett beslut om korridor
-    eller återvändsgränd fattas används sidosensorerna för att detektera och
-    bekräfta det som detekterats. Inget beslut fattas innan båda sidosensorerna
-    har detekterat samma sak så att risken för felbeslut minskar.
+    Förutom de fyra IR-sensorerna på sidorna används även LIDAR när beslut ska fattas. 
+    LIDAR-sensorn används för att undvika ingång i återvändsgränder framåt. 
+    För att detektera korridorer och återvändsgränderna på sidorna används
+    sidosensorerna. Inget beslut fattas innan båda sidosensorerna på samma sida
+    har detekterat samma sak, så att risken för felbeslut minskar.
 
-    När ett beslut om vändning har tagits väntar koden tills att en hel vändning
-    har skett. Detta görs genom att vänta tills roboten står rakt framåt m.h.a.
+    När ett beslut om rotation har tagits väntar centralenheten tills att en hel
+    rotation har skett. Detta görs genom att vänta tills roboten står rakt framåt m.h.a.
     den uträknade vinkeln men även genom att vänta tills motorikenheten svarar
-    att en hel vändning har gjorts klart. När en hel vändning har skett går
-    roboten framåt tills den har kommit in i den nya korridoren innan den börjar
-    fatta beslut med sensordata den får in. Detta för att ignorera korridoren
-    som roboten kom från. Se pseudokoden nedan. 
+    med att en hel rotation har gjorts klart.  
+
+    Pseudokoden nedan beskriver hur beslutsfattning sker på centralenheten.
     
     \begin{lstlisting}
     def get_decision(sensor_data, decision_packet):
@@ -439,10 +435,11 @@
     \end{lstlisting}
     
     \subsubsection{Manuell navigation}
-    För den manuella navigationen används RabbitMQ som är en kommunikationsserver mellan webbservern
+    För den manuella navigationen används RabbitMQ, som är en kommunikationsserver 
+    mellan webbservern
     och centralenheten. Det kommer in ett nytt meddelande med data för varje
-    knapptryck/händelse som sker på GUI:t som centralenheten tolkar och överför
-    till motorikenheten.
+    knapptryck/händelse som sker på GUI:t. Detta tolkas av centralenheten och
+    överförs till motorikenheten.
 
 	\subsection{Kommunikation}
 	Centralenheten kommunicerar med en dator över WiFi. Datorns webbläsare 
@@ -450,10 +447,13 @@
 	via webbgränssnittet styra roboten samt läsa av robotens olika data. 
 		
 	\subsubsection{Kommunikation med webbserver}
-	Centralenheten skickar och hämtar kontinuerligt meddelanden ifrån RabbitMQ servern och är i JSON-format. Centralenheten skickar den data som GUI:t
-	behöver till RabbitMQ servern och webbservern läser sedan in den data som finns där.
+	Centralenheten skickar och hämtar kontinuerligt meddelanden i JSON-format från
+    RabbitMQ-servern. Centralenheten skickar den data som GUI:t
+	behöver till RabbitMQ-servern och webbservern läser sedan in den data som finns där.
 	Den data som skickas mellan centralenheten till webbservern kan ses i
-	tabell \ref{table:guimessagesfromcentral} och den data som skickas från webbservern till centralenheten kan ses i tabell \ref{table:guimessagestocentral} vid sektion \ref{gui:kommunikation}.
+	tabell \ref{table:guimessagesfromcentral} och den data som skickas från
+    webbservern till centralenheten kan ses i tabell
+    \ref{table:guimessagestocentral} i avsnitt \ref{gui:kommunikation}.
 
 	% TODO: Den ger fel sektion ovan! Det ska vara 7.4 och inte 7.3.
 
