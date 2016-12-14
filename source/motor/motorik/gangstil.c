@@ -595,22 +595,33 @@ float scale_legs(Point2D * targ, Point2D * curr, float * scale, bool lrlRaised){
  * determine what direction each leg should be moved, relative to the body (away
  * from target, with negative rotation, if feet are grounded).
  */
-void direct_legs(float rot, Point2D * targ, Point2D * current, Point2D req, bool lrlRaised){
-    Point2D legRelativeRobotMid;
+void direct_legs(float rot, Point2D * targ, Point2D * current, Point2D goal, bool lrl_raised){
+    Point2D leg_rel_robot_mid;
 
     for(size_t leg = LF; leg < NUM_LEGS; ++leg){
         Point2D joint = joint_position(leg);
-        legRelativeRobotMid.x = current[leg].x + joint.x;
-        legRelativeRobotMid.y = current[leg].y + joint.y;
+        leg_rel_robot_mid.x = current[leg].x + joint.x;
+        leg_rel_robot_mid.y = current[leg].y + joint.y;
+        Point2D neutral = get_default_leg_position(leg);
 
+        if (lrl_raised == (leg == 0 || leg == 3 || leg == 4)){ //move legs "away" from position (body towards)
 
-        if (lrlRaised == (leg == 0 || leg == 3 || leg == 4)){ //move legs "away" from position (body towards)
-            targ[leg].x =  req.x + cos(rot) * legRelativeRobotMid.x - sin(rot) * legRelativeRobotMid.y;
-            targ[leg].y =  req.y + sin(rot) * legRelativeRobotMid.x + cos(rot) * legRelativeRobotMid.y;
+            targ[leg].x =  goal.x + cos(rot) * leg_rel_robot_mid.x - sin(rot) * leg_rel_robot_mid.y;
+            targ[leg].y =  goal.y + sin(rot) * leg_rel_robot_mid.x + cos(rot) * leg_rel_robot_mid.y;
+            if (goal.x != 0 || goal.y != 0){
+                targ[leg].x = (targ[leg].x + goal.x + cos(rot) * neutral.x - sin(rot) * neutral.y)/2;
+                targ[leg].x = (targ[leg].x + goal.x + sin(rot) * neutral.x + cos(rot) * neutral.y)/2;
+            }
         }
         else{   //move legs "towards" target position (step)
-            targ[leg].x =   - req.x  + cos(rot) * legRelativeRobotMid.x + sin(rot) * legRelativeRobotMid.y;
-            targ[leg].y =   - req.y  - sin(rot) * legRelativeRobotMid.x + cos(rot) * legRelativeRobotMid.y;
+            targ[leg].x =   - goal.x  + cos(rot) * leg_rel_robot_mid.x + sin(rot) * leg_rel_robot_mid.y;
+            targ[leg].y =   - goal.y  - sin(rot) * leg_rel_robot_mid.x + cos(rot) * leg_rel_robot_mid.y;
+
+            if (goal.x != 0 || goal.y != 0){
+                targ[leg].x = (targ[leg].x - goal.x + cos(rot) * neutral.x + sin(rot) * neutral.y)/2;
+                targ[leg].x = (targ[leg].x - goal.x - sin(rot) * neutral.x + cos(rot) * neutral.y)/2;
+            }
+
         }
         targ[leg].x = targ[leg].x - joint.x;
         targ[leg].y = targ[leg].y - joint.y;
