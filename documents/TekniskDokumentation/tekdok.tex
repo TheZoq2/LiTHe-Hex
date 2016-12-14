@@ -527,11 +527,10 @@
 	att steglängd kan justeras av användaren. Om ingen rörelse anges, kommmer roboten att förbli 
 	stillastående.
 
-	Bestämningen av benposition sker endast i planet; höjdled tas i beräkning endast inför åberopning 
+	Beräkningen av benposition sker endast i planet; höjdled tas i beräkning endast inför åberopning 
 	av inverterad kinematik, för bestämning av servovinklar. Själva klivet sker genom en sekvens av 
-	positionsinställningar med höjning och sänkning av ben, och stegvis övergång från gällande till 
-	önskad position. Vidare anpassas servonas aktuationshastighet för att ge en unison rörelse 
-	över alla ben (hanterat i kommandot för servohandling). För en översiktlig inblick i 
+	positionsinställningar med höjning och sänkning av ben, och stegvis övergång från nuvarande till 
+	önskad position. För en översiktlig inblick i 
 	gångstilen, se figur \ref{fig:walkflow0}. Figuren visar beteendet specifikt i manuellt läge;
 	i autonomt läge tillkommer möjligheten att med ett funktionsanrop rotera en strikt vinkel.
 	Detta görs genom att upprepade åberopningar av koden för ensamt steg, illustrerat i figuren, 
@@ -539,7 +538,8 @@
 	roboten en återgång till en neutral position före och efter själva rotationen.
 	
     	Nedan finns pseudokod för den mainloop som körs på motorikenheten. Besluten fattas utifrån en 
-	struct som ändras av SPI via interrupts.
+	struct som ändras av SPI via avbrott.
+	%TODO omformulera texten om fixed rotation
 
 	\begin{lstlisting}
 	def motorik_mainloop():
@@ -610,7 +610,7 @@
 
 	\subsection{Kommunikation med servon}
 	Kommunikation med servona sker via en half-duplex UART-länk. AVR-processorns RX
-	och TX pinnar är kopplade till var sin port på 74LS241 tri-state-grind. Portens riktning
+	och TX pinnar är kopplade till var sin port på en 74LS241 tri-state-grind. Portens riktning
 	styrs med en vanlig IO pinne på processorn som sätts till HIGH när data ska skickas 
 	och LOW när data tas emot. 
 
@@ -630,17 +630,17 @@
 	\subsubsection{Väntning på servorotation}
 	För att inte behöva gissa hur lång tid ett steg kommer att ta så returnerar inte
 	send\_servo\_action fören alla servon är nära sin målvinkel. Vad som räknas som "nära"
-	beror på vilken del av steget som utför och skickas som parameter till 
+	beror på vilken del av steget som utförs och skickas som parameter till 
 	send\_servo\_action.
 
 	För att se när rotationen är klar läses först varje servos nuvarande målvinkel in och
 	sparas i en array. Varje servos nuvarande vinkel läses sedan in och jämförs med målet.
-	Om skilnaden mellan nuvarande vinkel och målvinkel är under gränsen för "närhet" för
+	Om skillnaden mellan nuvarande vinkel och målvinkel är under gränsen för "närhet" för
 	varje servo så räknas rotationen som klar och funktionen returnerar.
 
 	\subsubsection{Undantag för kommunikation}
 	På grund av ett okänt fel i hård- eller mjukvaran blir UART-signalen fel om data 
-	begärs från de 3 första servona på roboten. en bild på fenomenet kan ses i figur 
+	begärs från de 3 första servona på roboten. En bild på fenomenet kan ses i figur 
 	\ref{fig:servo_tri_state_bug}. Eftersom att flera ben kommer att göra ungefär samma 
 	rörelser samtidigt ignoreras därför de tre första servona vid beräkningar där data
 	från servona behövs.
@@ -662,13 +662,13 @@
     rör läsning och brusreducering av sensorerna, och skickar dem till
     centralenheten på begäran.
 
-	\subsection{Styrenhet i sensorenheten}
-	Styrenheten för sensorenheten består av AVR-processorn ATmega1284, som läser av och 
-	behandlar informationen från robotens sensorer. Styrenheten sköter även
-	kommunikationen med centralenheten -- den tar emot förfrågningar om data och
+	\subsection{Processorn i sensorenheten}
+	Sensorenheten innehållr en ATmega1284-processor, som läser av och 
+	behandlar informationen från robotens sensorer. Sensorenheten sköter även
+	kommunikationen med centralenheten. Den tar emot förfrågningar om data och
 	skickar behandlad data på begäran.
 
-	Styrenheten behandlar den råa sensordata till den grad att
+	Sensorenheten behandlar den råa sensordatan till den grad att
 	centralenheten inte behöver göra allt för många egna beräkningar på
 	sensorinformationen. Den sköter därför bland annat brusreducering av
 	data. ATmega1284 har tillräckligt med 
@@ -742,13 +742,10 @@
         \item Avbrott 20 genereras när någon bit i registret för SPI-kommunikationen
         ändras. Det används för kommunikationen över SPI med centralenheten. 
         Avbrottsrutinen för SPI genereras vid första byte från centralenheten 
-        sedan sköts läsning av resterande byte samt evenetuellt svar i samma 
+        sedan sköts läsning av resterande bytes samt evenetuellt svar i samma 
         avbrott. 
-		\item Avbrott 16 genereras när Counter1 blir sitt maxvärde (overflow). 
-		Det användas för att räkna upp antal overflow vilket gör att vi hela tiden 
-		vet hur lång tid det passerat sedan start. 
-		\item Avbrott 19 genereras när Counter0 blir sitt maxvärde (overflow). 
-		Det användas för att räkna upp antal overflow vilket gör att vi hela tiden 
+		\item Avbrott 16/19 genereras när Counter1/0 når sitt maxvärde (overflow). 
+		Det användas för att räkna upp antal overflows vilket gör att vi hela tiden 
 		vet hur lång tid det passerat sedan start. 
     \end{itemize}
 	
@@ -772,7 +769,7 @@
         Detta spann gör det möjligt att navigera i korridorer och upptäcka
         återvändsgränder. Med två IR-sensorer på varje sida möjliggörs mätning av hur
         roboten är vriden i en rak korridor, vinkeln roboten har jämfört med
-        korridoren användas av regleralgoritmen i centralenheten.
+        korridoren används av regleralgoritmen i centralenheten.
 
 	    Monteringen av dessa sensorer illustreras i Figur \ref{fig:sensor_mount}.
 
@@ -793,7 +790,7 @@
 
     Ett antal lågpass-filter används för filtrering av brus från IR-sensorerna
     och utgörs av en kondenstator på 10nF och en 18kOhm-resistor för varje
-    sensor. Filtret är kopplad mellan sensorerna och de analoga PA-ingångarna på
+    sensor. Filtret är kopplat mellan sensorerna och de analoga PA-ingångarna på
     processorn.
 
     LIDAR-sensorn är ansluten via PWM till PD5 på processorn.
@@ -807,7 +804,7 @@
     roboten inte är gjord för hindergång, men sensorenheten mäter ändå
     det analoga värdet från porten där sensorn skulle kopplats in och skickar
     det till centralenheten, som skickar värdet vidare till GUI:t.
-    Det enda som behöver göras för mätning av
+    Det enda som behöver göras för mätning och
     användningen av den sensorn är således att koppla in den enligt
     kretsschemat i figur \ref{fig:schem_sensor} samt behandla värdet i
     centralenheten.
@@ -920,7 +917,7 @@
     webbläsaren för att visualisera den inverterade kinematiken. Den här
     simuleringen är skriven i Elm.
 	
-	\subsection{Simulering för korridorföljning}
+	\subsection{Simulator för korridorföljning}
 	Simulering för korridorföljning kan testa olika regleralgoritmer utan att
     behöva testa dem på en gående robot. Simuleringen ritar ut en korridor och
     en robot som går framåt. Simulatorn skickar ut sensorvärden till en fil,
@@ -931,12 +928,24 @@
     roboten efter det. Det finns möjlighet att lägga till en störningsfunktion
     som till exempel kan vara att roboten alltid går med en liten rotation.
 	
-	\subsection{Simulering för gångstil}
+	\subsection{Simulator för gångstil}
 	Simulatorn för gångstil fungerar på samma sätt som
     korridorföljningssimulatorn. Motorikenhetens kod skriver informationen som
     på roboten skulle skickas till servona till en fil som simulatorn läser.
-    Simulatorn visualiserar resultatet av kommandona och skriver data som
-    servona skulle svara med till en annan fil som motorikkoden kan läsa.
+    Simulatorn visualiserar resultatet av kommandona med hjälp av en 3d-rendering 
+	av benens lägen och skriver data som servona skulle svara med till en annan 
+	fil som motorikkoden kan läsa. Simulatorn är skriven i Rust och använder 
+	biblioteket Kiss3D för rendering.
+
+	För att simulera motorikenheten körs kommandot 
+
+	\begin{lstlisting}
+	make test
+	\end{lstlisting}
+
+	i motorikmappen.
+
+
 
 	\section{Slutsatser}
 	Vilka förbättringar skulle kunna göras?
