@@ -20,6 +20,7 @@ void status_init(volatile CurrentStatus* status) {
     status->servo_speed = 0.0;
     status->return_to_neutral = false;
     status->auto_mode = false;
+	status->servo_speed = false;
 }
 
 void status_set_speed(volatile CurrentStatus* status, uint8_t x_speed, uint8_t y_speed) {
