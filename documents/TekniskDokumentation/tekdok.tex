@@ -841,26 +841,28 @@
     joystickdata och om det autonoma läget ska köras eller inte. Från backend
     till frontend skickas debugdata som IR-sensorer, LIDAR samt vinklar.
 	
+	% TODO inkoncekvent? front-end-delen, front-end
+	
 	Backend skickar styrdata till RabbitMQ servern som centralenheten sedan
-	läser av. Det skickas varje 0.5 sekund till RabbitMQ servern.
+	läser av. Det skickas två gånger per sekund till RabbitMQ servern.
 
     \subsection{Styrning}
-    Under styrning kan man välja om roboten ska köras autonomt eller i manuellt läge.
+    Under styrning kan man välja om roboten ska köras i autonomt eller manuellt läge.
     För att ändra vilket läge roboten ska köras i finns en knapp som växlar dess läge.
     
     \subsubsection{Autonomt läge}
-    Användaren klickar på en knapp som då sätter roboten i autonomt läge. Detta beskrivs i sektion \ref{sec:central-autonom}.
+    Användaren klickar på en knapp som då sätter roboten i autonomt läge. Detta beskrivs i 
+    sektion \ref{sec:central-autonom}.
     
     \subsubsection{Manuell Styrning}
-    Under styrning man man styra roboten med en joystick. Man kan även
-    styra roboten med knappar/reglage på skärmen. Med de kan man styra
-    roboten som då säger åt roboten att gå i en riktning,
-    att vrida sig åt ett håll eller att stanna.
+    Under styrning kan man styra roboten med en joystick. Det finns även möjlighet att
+    styra roboten med knappar/reglage på skärmen. Med dessa kan roboten styras i en viss 
+    riktning, rotera eller stanna.
 
     \subsection{Debug}
 	Under debug visas robotens olika inställningar samt sensordata vid
     tillfället. Sidan uppdateras 10 gånger per sekund och klienten får den
-    uppdaterade data:n med hjälp av JSON. Det finns också flera grafer
+    uppdaterade datan med hjälp av JSON. Det finns också flera grafer
     som beskriver några av de olika sensorernas data. Man kan också ändra
     styrparametrarna till regleralgoritmen.
 	
@@ -910,8 +912,8 @@
     korridorföljning och gångstil.
 
 	\subsection{Simulering för inverterad kinematik}
-	Simuleringen går till genom att implementera algoritmen för 2D som beskrivs
-    i avsnitt \ref{sub:inverterad-kinematik}. Simuleringen ritas sedan ut i
+	Simuleringen för inverterad kinematik användes för att implementera algoritmen för 2D som 
+	beskrivs i avsnitt \ref{sub:inverterad-kinematik}. Simuleringen ritas sedan ut i
     webbläsaren för att visualisera den inverterade kinematiken. Den här
     simuleringen är skriven i Elm.
 	
