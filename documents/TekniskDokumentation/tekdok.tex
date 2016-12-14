@@ -149,6 +149,26 @@
 	PhantomX AX Metal Hexapod Mark III chassi från TrossenRobotics). Dessa enheter (central-, 
 	motorik- och sensorenhet), kommunikation mellan dessa, samt användargränssnitt specificeras 
 	sedan i större noggrannhet under egna avdelningar.
+	
+	\section{Komponentbudget}
+	
+	Tabell \ref{table:components} visar komponenter som ingår i
+	roboten, utöver chassiet, lödplattor och andra diverse
+	mindre komponenter.
+	
+	\begin{longtable}[c]{l l}
+		\textbf{Komponent} & \textbf{Antal} \\ \midrule
+		Raspberry Pi 3 & 1 \\
+		ATmega1284 & 2 \\
+		GP2D120 & 1 \\
+		GP2Y0A02YK & 4 \\
+		MLX90609 & 1 \\
+		LIDAR Lite V3 & 1 \\
+		74LS240 & 8 \\
+		Extern 16 MHz-klocka EXO-3 & 1 \\
+		TXB0104 & 2 \\
+		\caption{De komponenter som beräknas att gå åt \label{table:components}}
+	\end{longtable}
 
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%						Översikt
@@ -167,8 +187,6 @@
 	förflyttning från centralenheten till faktiska kommandon för robotens servon och skickar 
 	vidare dessa. Den kan även förse centralenheten med bland annat debugdata om så efterfrågas.
 	
-	% Tror inte vi använde brusreducering va? Ta bort den delen
-	% isf.
 	Den andra AVR-processorn utgör en sensorenhet, vilken styr och läser robotens sensorsvit. 
 	Den svarar även för att översätta råa sensordata till mer konkreta former (som vinklar och 
 	avstånd), samt att brusreducera dessa efter behov. Figur \ref{fig:overview} ger en översiktsbild av
@@ -197,9 +215,6 @@
 		\caption{Kopplingsschema för centralenheten}
 		\label{fig:central_circuit}
 	\end{figure}
-
-
-
 
 	\subsection{Kommunikationsprotokoll}
 	\label{ssub:Kommunikationsprotokoll}
@@ -323,27 +338,6 @@
     \textit{Frame} syftar på en datastruktur som innehåller all relevant
     information om meddelandet. som typ, längd och data
 
-	\section{Komponentbudget}
-
-    Tabell \ref{table:components} visar komponenter som ingår i
-    roboten, utöver chassiet, lödplattor och andra diverse
-    mindre komponenter.
-
-	\begin{longtable}[c]{l l}
-		\textbf{Komponent} & \textbf{Antal} \\ \midrule
-		Raspberry Pi 3 & 1 \\
-		ATmega1284 & 2 \\
-		GP2D120 & 1 \\
-		GP2Y0A02YK & 4 \\
-		MLX90609 & 1 \\
-		LIDAR Lite V3 & 1 \\
-	    74LS240 & 8 \\
-        Extern 16 MHz-klocka EXO-3 & 1 \\
-        TXB0104 & 2 \\
-        \caption{De komponenter som beräknas att gå åt \label{table:components}}
-	\end{longtable}
-	
-    \newpage
 	\section{Centralenheten}
         Centralenheten har två ansvarsområden: navigation/beslutsfattning samt
         kommunikation med omvärlden. Detta görs i två lägen, manuellt och autonomt
