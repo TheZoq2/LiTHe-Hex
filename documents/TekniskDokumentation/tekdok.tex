@@ -345,8 +345,10 @@
 	
     \newpage
 	\section{Centralenheten}
-	Centralenheten har tre ansvarsområden: navigation/beslutsfattning, hinderdetektion samt
-	kommunikation med omvärlden.
+        Centralenheten har två ansvarsområden: navigation/beslutsfattning samt
+        kommunikation med omvärlden. Detta görs i två lägen, manuellt och autonomt
+        läge. För att byta mellan dessa två lägen kan man antingen använda sig av den
+        fysiska knappen eller knappen i användargränssnittet.
 
 	\subsection{Navigation och beslutsfattning}
 	Centralenheten sköter all beslutsfattning om hur roboten ska röra sig
@@ -484,7 +486,7 @@
 		\subsection{Kommandotolkning}
 	Motorikenheten  tar in ett flyttalspar med koordinater för önskad målposition (önskat 
 	center för roboten efter förflyttning), med x-koordinat fram och 
-	y-koordinat åt vänster om roboten, med origo i robotens mittpunkt. Om totalavståndet 
+	y-koordinat åt vänster om roboten, och med origo i robotens mittpunkt. Om totalavståndet 
 	origo till målposition är mindre än 1 enhet skalas rörelsen ned utifrån detta avstånd. 
 	Det vill säga, om roboten ombeds gå 0,5 enheter framåt, tar den ett kliv med halva 
 	steglängden av om den ombetts gå en meter, även om inget av kliven är i närheten av 
@@ -507,9 +509,13 @@
 	det läge indikerat av centralenheten. Sedan avgörs den nedskalning av rörelsen som för 
 	varje set om tre ben (vänster-, höger-, vänster-ben och höger-, vänster-, höger-ben, taget 
 	frammifrån bakåt) är nödvändig för att robotbenen skall kunna nå positionen utan att ben 
-	skär varandra, och utan att gå utanför benens räckvidd eller in under roboten. Detta görs 
-	två gånger, en med vardera set ben höjt, och roboten använder sig av det alternativ där 
-	markfästa bens förflyttning nedskalas minst för att omberäkna benrörelsen. 
+        skär varandra, och utan att gå utanför benens räckvidd eller in under roboten. Skalningen 
+        görs först utan rotation, så att målförflyttningen är precist uppnåbar, varefter omberäkning 
+        och skalning görs med rotation och ny, nedskalad målposition, så att rotationen inte skall 
+        försvinna i nedskalning gjord i första hand för förflyttningens skull. Denna dubbla skalning 
+        görs två gånger, en med vardera uppsättning ben höjd, och roboten använder sig av det 
+        alternativ där markfästa bens förflyttning är störst för att omberäkna benrörelsen, då dessa 
+        ger den faktiska förflyttningen av chassit. 
 
 	Beräkning av nedskalning sker i tre avseenden. För det första skalas benförflyttningarna 
 	ner så att de inte tar benen utanför benens räckvidd. För det andra skalas  rörelserna så 
@@ -847,12 +853,15 @@
     Under styrning kan man välja om roboten ska köras autonomt eller i manuellt läge.
     För att ändra vilket läge roboten ska köras i finns en knapp som växlar dess läge.
     
+        \subsubsection{Autonomt läge}
+        Användaren klickar på en knapp som sätter roboten i autonomt läge. Detta beskrivs i sektion \ref{sec:central-autonom}.
+    
     % TODO: Kan man verkligen styra med tangentbordet??
     \subsubsection{Manuell Styrning}
     Under styrning man man styra roboten med en joystick. Man kan även
-    styra roboten med tangentbord eller knappar på skärmen. För att styra
-    roboten finns knappar som säger åt roboten att gå i en riktning,
-    att vrida sig åt ett håll och att stanna.
+    styra roboten med knappar/reglage på skärmen. Med de kan man styra
+    roboten som då säger åt roboten att gå i en riktning,
+    att vrida sig åt ett håll eller att stanna.
 
 	% TODO: Stämmer det med 10 gånger per sekund? Kan man ändra styrparamterarna till regleralgoritmen?
     \subsection{Debug}
@@ -918,7 +927,7 @@
     behöva testa dem på en gående robot. Simuleringen ritar ut en korridor och
     en robot som går framåt. Simulatorn skickar ut sensorvärden till en fil,
     regleralgoritmen läser in sensorvärden och tar sedan beslut. Roboten i
-    simulatorn använder 2 IR-sensorer på varje sida som pekar rakt ut från
+    simulatorn använder två IR-sensorer på varje sida som pekar rakt ut från
     roboten, det går att välja var på roboten som sensorerna ska sitta. Beslutet
     av regleralgoritmen skrivs till en fil som simulatorn läser in och styr
     roboten efter det. Det finns möjlighet att lägga till en störningsfunktion
