@@ -86,7 +86,7 @@
 		Grupp 9 \\
 		\small
 		\vspace*{0.5\baselineskip}
-		Version 0.1}
+		Version 1.0}
 
 	\date{\today}
 
@@ -108,7 +108,7 @@
 		\textbf{Version} & \textbf{Datum} & \textbf{Utförda förändringar} 
 		& \textbf{Utförda av} & \textbf{Granskad} \\ \midrule
 		
-		0.1 & 2016--10--20 & Första utkastet & Projektgruppen &
+	    1.0 & 2016--12--14 & Första versionen & Projektgruppen &
         Projektgruppen \\
             
 	\end{longtable}
@@ -129,6 +129,7 @@
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	
 	\section{Roboten}
+    Vid påslag av strömmen startar roboten alla system automatiskt.
     På roboten finns en knapp med vilken man kan byta mellan autonomt och
     manuellt läge.
 
@@ -141,16 +142,20 @@
 	Här beskrivs hur man använder det grafiska användargränssnittet för roboten.
 	
 	\subsection{Starta webbservern}
+    I vanliga fall ska webbservern på pi:en startas automatiskt av ett skript.
+    I annat fall kan man göra det manuellt.
 	Man startar servern genom att gå till mappen "/var/www/gui/" och skriva "mix
     phoenix.server". Se exempel nedan:
 	
 	\begin{lstlisting}[style=linux]
-	/var/www/gui$ mix phoenix.server
+	/var/www/gui>> mix phoenix.server
 	\end{lstlisting}
 	
 	\subsection{Ansluta till webbsidan}
 	Servern startas på port 4000 och för att komma till webbsidan behöver man
-    också pi:ens ip-adress. För att ta reda på pi:ens ip-adress
+    också pi:ens ip-adress. För att ta reda på pi:ens ip-adress kan man gå in
+    på telegram-kanalen https://telegram.me/lithehexbot. Det kräver dock att
+    man har ett telegram-konto.
 	
 	Vi antar att ip-adressen är 127.0.0.1 och då skulle man i adressfältet i
     webbläsaren skriva 127.0.0.1:4000 för att komma till webbsidan.
@@ -192,17 +197,17 @@
     läge är grundvärden. Se figur \ref{fig:gui-control} för att se hur webbsidan
     ser ut.
 	
+    \newpage
 	\subsection{Debug}\label{gui:debug}
-	När man öppnat debug så finns det nio stycken olika grafer som visar olika
-    sensordata för roboten vid det här tillfället. Graferna uppdateras tio
-    gånger i sekunden för de nya värden som kommer in. Se figur
-    \ref{fig:gui-debug} för hur debugsidan ser ut.
-	
 	\begin{figure}[h]
 		\centering
 		\includegraphics[width=0.5\linewidth]{images/gui-debug.png}
 		\caption{Det grafiska gränssnittet för control\label{fig:gui-debug}}
 	\end{figure}
+	När man öppnat debug så finns det nio stycken olika grafer som visar olika
+    sensordata för roboten vid det här tillfället. Graferna uppdateras tio
+    gånger i sekunden för de nya värden som kommer in. Se figur
+    \ref{fig:gui-debug} för hur debugsidan ser ut.
 	
 	% TODO: Ta med om man behöver uppdatera t.ex. phoenix eller liknande?
 
