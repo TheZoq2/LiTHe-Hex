@@ -345,10 +345,8 @@
 	
     \newpage
 	\section{Centralenheten}
-	Centralenheten har två ansvarsområden: navigation/beslutsfattning samt
-	kommunikation med omvärlden. Detta görs i två lägen, manuellt och autonomt
-  läge. För att byta mellan dessa två lägen kan man antingen använda sig av den
-  fysiska knappen eller knappen i användargränssnittet.
+	Centralenheten har tre ansvarsområden: navigation/beslutsfattning, hinderdetektion samt
+	kommunikation med omvärlden.
 
 	\subsection{Navigation och beslutsfattning}
 	Centralenheten sköter all beslutsfattning om hur roboten ska röra sig
@@ -356,7 +354,7 @@
 	skickar kommandon till motorikenheten.
   
 	\subsubsection{Autonomt läge}
-	\label{sec:central-autonom}
+	\label{sec:central-autonom} 
 	I det autonoma läget frågar centralenheten om data från sensorenheten
     varje gång det ska fattas ett beslut. Detta gör att centralenheten själv
     bestämmer när den ska ha ny data för att den inte ska bli avbruten eller missa
@@ -364,8 +362,8 @@
     fattar centralenheten beslut om hexapodens färdriktning.
 
     I beslutsfattning ingår bland annat korridorreglering, svänga in i korridorer samt detektera
-    och undvika återvändsgränder.
-
+    och undvika återvändsgränder. Beslutsfattningen innehåller en lista med de tre senaste besluten och det är endast när alla dessa beslut är samma som beslutet uträttas. 
+    
     Korridorregleringen sker med hjälp av de fyra IR-sensorerna som sitter på
     sidorna av roboten. En vinkel räknas ut med data från dessa som säger
     hur roboten är vinklad i en korridor. Regleringen sker samtidigt som när
@@ -487,7 +485,7 @@
 		\subsection{Kommandotolkning}
 	Motorikenheten  tar in ett flyttalspar med koordinater för önskad målposition (önskat 
 	center för roboten efter förflyttning), med x-koordinat fram och 
-	y-koordinat åt vänster om roboten, och med origo i robotens mittpunkt. Om totalavståndet 
+	y-koordinat åt vänster om roboten, med origo i robotens mittpunkt. Om totalavståndet 
 	origo till målposition är mindre än 1 enhet skalas rörelsen ned utifrån detta avstånd. 
 	Det vill säga, om roboten ombeds gå 0,5 enheter framåt, tar den ett kliv med halva 
 	steglängden av om den ombetts gå en meter, även om inget av kliven är i närheten av 
@@ -510,13 +508,9 @@
 	det läge indikerat av centralenheten. Sedan avgörs den nedskalning av rörelsen som för 
 	varje set om tre ben (vänster-, höger-, vänster-ben och höger-, vänster-, höger-ben, taget 
 	frammifrån bakåt) är nödvändig för att robotbenen skall kunna nå positionen utan att ben 
-	skär varandra, och utan att gå utanför benens räckvidd eller in under roboten. Skalningen 
-	görs först utan rotation, så att målförflyttningen är precist uppnåbar, varefter omberäkning 
-	och skalning görs med rotation och ny, nedskalad målposition, så att rotationen inte skall 
-	försvinna i nedskalning gjord i första hand för förflyttningens skull. Denna dubbla skalning 
-	görs två gånger, en med vardera uppsättning ben höjd, och roboten använder sig av det 
-	alternativ där markfästa bens förflyttning är störst för att omberäkna benrörelsen, då dessa 
-	ger den faktiska förflyttningen av chassit. 
+	skär varandra, och utan att gå utanför benens räckvidd eller in under roboten. Detta görs 
+	två gånger, en med vardera set ben höjt, och roboten använder sig av det alternativ där 
+	markfästa bens förflyttning nedskalas minst för att omberäkna benrörelsen. 
 
 	Beräkning av nedskalning sker i tre avseenden. För det första skalas benförflyttningarna 
 	ner så att de inte tar benen utanför benens räckvidd. För det andra skalas  rörelserna så 
@@ -532,39 +526,40 @@
 	gångstilen, se figur \ref{fig:walkflow0}.
 	
 	%start exempel pseudokod, som referens. Ta bort.
-	def get_decision(sensor_data, decision_packet):
-        corridors_and_dead_angles = get_corridors_and_dead_angles(sensor_data)
+	%def get_decision(sensor_data, decision_packet):
+    %    corridors_and_dead_angles = get_corridors_and_dead_angles(sensor_data)
 
-        for value in corridors_and_dead_ends:
-            if 3 corridors detected:
-                decision = TURN_LEFT
-            
-            elif 2 corridors detected:
-                if distance forward is greater than DEAD_END_DISTANCE:
-                    decision = GO_FORWARD
-                else:
-                    if left corridor detected:
-                        decision = TURN_LEFT
-                    else:
-                        decision = TURN_RIGHT
+    %    for value in corridors_and_dead_ends:
+    %        if 3 corridors detected:
+    %            decision = TURN_LEFT
+    %        
+    %        elif 2 corridors detected:
+    %            if distance forward is greater than DEAD_END_DISTANCE:
+    %                decision = GO_FORWARD
+    %            else:
+    %                if left corridor detected:
+    %                    decision = TURN_LEFT
+    %                else:
+    %                    decision = TURN_RIGHT
 	%end exempel pseudokod, som referens. Ta bort.
     	Nedan finns pseudokod för den mainloop som körs på motorikenheten. Besluten fattas 
 	utifrån en struct som ändras av SPI via interrupts.
 
 	\begin{lstlisting}
 	def motorik_mainloop():
-	stand_robot
+        stand_robot
 
-	while true:
-		if should move or rotate:
-			if autonomous and only rotation:
-				rotate_until_done
-			else
-				take_one_step_in_requested_direction
+        while true:
+            if should move or rotate:
+                if autonomous and only rotation:
+                    rotate_until_done
+                else
+                    take_one_step_in_requested_direction
 	\end{lstlisting}
 	
-	Vidare beskrivs nedan förenklat funktionaliteten för work_towards_goal i gangstil.c, i pseudokoden skriven 
-	som take_one_step_in_requested_direction för tydlighet:
+    Vidare beskrivs nedan förenklat funktionaliteten för
+    \textit{work\_towards\_goal} i gangstil.c, i pseudokoden skriven 
+    som \textit{take\_one\_step\_in\_requested\_direction} för tydlighet:
 
 	\begin{lstlisting}
 	
@@ -582,15 +577,13 @@
 		return downscale_of_movement
 	\end{lstlisting}
 
-		
-
 	% TODO: Fix "typos" in figure
 	\begin{figure}[h]
 		\centering
 		\includegraphics[width=0.5\linewidth]{images/gangstil_flowchart.png}
 		\caption{Flödesschema för normal gångstil hos roboten
         \label{fig:walkflow0}}
-        %TODO: Chart out of date, update
+        %TODO: Chart slightly out of date, update
 	\end{figure}
 
 	\subsection{Inverterad kinematik}
@@ -855,15 +848,14 @@
     Under styrning kan man välja om roboten ska köras autonomt eller i manuellt läge.
     För att ändra vilket läge roboten ska köras i finns en knapp som växlar dess läge.
     
-    \subsubsection{Autonomt läge}
-    Användaren klickar på en knapp som sätter roboten i autonomt läge. Detta beskrivs i sektion \ref{sec:central-autonom}.
-    
+    % TODO: Kan man verkligen styra med tangentbordet??
     \subsubsection{Manuell Styrning}
     Under styrning man man styra roboten med en joystick. Man kan även
-    styra roboten med knappar/reglage på skärmen. Med de kan man styra
-    roboten som då säger åt roboten att gå i en riktning,
-    att vrida sig åt ett håll eller att stanna.
+    styra roboten med tangentbord eller knappar på skärmen. För att styra
+    roboten finns knappar som säger åt roboten att gå i en riktning,
+    att vrida sig åt ett håll och att stanna.
 
+	% TODO: Stämmer det med 10 gånger per sekund? Kan man ändra styrparamterarna till regleralgoritmen?
     \subsection{Debug}
 	Under debug visas robotens olika inställningar samt sensordata vid
     tillfället. Sidan uppdateras 10 gånger per sekund och klienten får den
@@ -942,8 +934,11 @@
 
 	\section{Slutsatser}
 	Vilka förbättringar skulle kunna göras?
-	
+
 	\appendix
+	\section{Kopplingsschema}
+	HÄR VAR DET SCHEMAN
+	
 	\section{Programlistning}
 	Här visas en lista på de olika program roboten
 	använder sig av.
@@ -951,13 +946,13 @@
 	\begin{longtable}[c]{l l l l}
 		\textbf{Program} & \textbf{Programmerare} & \textbf{Datum}& \textbf{Version} \\ \midrule
 		Inverterad Kinematik & Emil Segerbäck, Hannes Tuhkala & 2016-12-02 & 1.0 \\
-		Gångstil & & & \\
-		Kommunikation med SPI & & & \\
-		Webbserver/GUI & & & \\
-		Beslutsfattning & & & \\
-		PID-reglering & & & \\
-		Motorik & & & \\
-		Servokontroll & & & \\
+		Gångstil & & & \\ 
+		Kommunikation med SPI & & & \\ 
+		Webbserver/GUI & & & \\ 
+		Beslutsfattning & & & \\ 
+		PID-reglering & & & \\ 
+		Motorik & & & \\ 
+		Servokontroll & & & \\ 
 		
 		\caption{Lista över program \label{table:programlisting}}
 	\end{longtable}
