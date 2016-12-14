@@ -186,7 +186,6 @@ def do_manual_mode_iteration(sensor_spi, motor_spi, send_queue, receive_queue,
     try:
         sensor_data = avr_communication.get_sensor_data(sensor_spi)
         send_queue.put(web.ServerSendPacket(sensor_data))
-        print("Sent sensor data")
     except avr_communication.CommunicationError as e:
         print("Could not read sensor data: " + str(e))
 
@@ -197,10 +196,7 @@ def do_manual_mode_iteration(sensor_spi, motor_spi, send_queue, receive_queue,
     if packet is not None:
         if packet.auto is not None:
             auto = packet.auto
-            print("HERE2")
         if packet.has_motion_command():
-            print("HERE3")
-            print(packet.raw)
             servo_speed = (int)(packet.thrust * constants.MAX_16BIT_SIZE)
             
             return_to_neutral = packet.return_to_neutral
