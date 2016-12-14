@@ -198,15 +198,15 @@ def do_manual_mode_iteration(sensor_spi, motor_spi, send_queue, receive_queue,
         if packet.auto is not None:
             auto = packet.auto
             print("HERE2")
-        if packet.has_motion_command():
+        elif packet.return_to_neutral is not None and packet.return_to_neutral:
+            avr_communication.back_to_neutral(motor_spi)
+
+        elif packet.has_motion_command():
             print("HERE3")
             print(packet.raw)
             servo_speed = (int)(packet.thrust * constants.MAX_16BIT_SIZE)
             
             return_to_neutral = packet.return_to_neutral
-
-            if return_to_neutral is not None and return_to_neutral:
-                avr_communication.back_to_neutral(motor_spi)
 
             if prev_speed != servo_speed:
                 # x_speed from server = -y_speed and y_speed from server = -x_speed
