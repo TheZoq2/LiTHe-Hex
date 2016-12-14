@@ -198,6 +198,7 @@
 		\caption{Översikt av systemet\label{fig:overview}}
 	\end{figure}
 
+    \newpage
 	\section{Kommunikation mellan enheterna}
 	Kommunikation mellan centralenheten och de två AVR-processorerna sker
 	med SPI. Sensor- och motorikenhetens SPI-portar är kopplade till varsin
@@ -209,7 +210,7 @@
 	\begin{figure}[htpb]
 		\centering
 		\includegraphics[width=1.0\linewidth]{charts/central/centralenhet.pdf}
-		\caption{Kopplingsschema för centralenheten}
+		\caption{Kopplingsschema för centralenheten och SPI-kommunikationen}
 		\label{fig:central_circuit}
 	\end{figure}
 
@@ -278,6 +279,8 @@
     enhet. Alla funktioner i centralenheten som rör kommunikationen till AVR-processorerna tar
     alltså in instansen för den enhet som ska kommuniceras till.
 
+    \newpage
+
     Pseudokoden för läsning av spi-meddelanden beskrivs som följande:
 
 	\begin{lstlisting}
@@ -333,7 +336,7 @@
 
 	\end{lstlisting}
     \textit{Frame} syftar på en datastruktur som innehåller all relevant
-    information om meddelandet som typ, längd och data.
+    information om meddelandet, alltså typ, längd och data.
 
 	\section{Centralenheten}
         Centralenheten har två ansvarsområden: navigation/beslutsfattning samt
@@ -365,10 +368,6 @@
     vrida sig tillbaka till mitten. Ju närmare mitten den är desto mindre kommer
     den att vrida sig mot mitten.
 
-    \begin{lstlisting}
-    def regulate(sensor_data, decision_packet):
-    \end{lstlisting}
-
     Förutom de fyra IR-sensorerna på sidorna används även LIDAR när beslut ska fattas. 
     LIDAR-sensorn används för att undvika ingång i återvändsgränder framåt. 
     För att detektera korridorer och återvändsgränderna på sidorna används
@@ -380,6 +379,7 @@
     den uträknade vinkeln men även genom att vänta tills motorikenheten svarar
     med att en hel rotation har gjorts klart.  
 
+    \newpage
     Pseudokoden nedan beskriver hur beslutsfattning sker på centralenheten.
     
     \begin{lstlisting}
@@ -427,7 +427,6 @@
         decision = GO_FORWARD
         previous_decision = COMPLETE_TURN
         
-        # if the robot has entered the new corridor
         if robot is inside a corridor:
             previous_decision = GO_FORWARD
         
@@ -647,6 +646,7 @@
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%						Sensorenheten
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    \newpage
 	\section{Sensorenheten}
 	Sensorenheten är den enhet som ger roboten sinnen för omvärlden, så att den
 	kan navigera autonomt genom labyrinten. Sensorenheten sköter allting som
@@ -942,6 +942,7 @@
 	\end{lstlisting}
 	i simulators/walk
 
+    \newpage
 	\section{Slutsatser}
     Det som skulle kunna förbättras är bland annat implementation av hindergång
     för roboten, då roboten redan är förberedd för detektion av hinder i
@@ -952,6 +953,9 @@
     istället för med hårdkodade gränser.
 
 	\appendix
+    \newpage
+
+    \section*{Bilagor}
 	\section{Programlistning}
 	Här visas en lista på de olika program roboten
 	använder sig av.
