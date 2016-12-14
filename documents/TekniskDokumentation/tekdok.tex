@@ -771,8 +771,6 @@
 
 	    Monteringen av dessa sensorer illustreras i Figur \ref{fig:sensor_mount}.
 
-
-	%% TODO ta bort ir-sesnor som pekar nedåt
     \begin{figure}[h]
         \includegraphics[width=17cm, trim=2cm 18cm 0cm 0cm]{images/sensor_mount.pdf}
         \caption{Montering av avståndssensorer\label{fig:sensor_mount}}
@@ -835,15 +833,13 @@
 
 	\subsection{Webbserver}
 	Webbservern är skriven i Elixir och använder webbramverket Phoenix.
-    Kommunikationen mellan frontend och backend sker via en channel. En channel
+    Kommunikationen mellan front-end och back-end sker via en channel. En channel
     är en socket som tillåter kommunikation mellan en klient och en server. I
-    channeln så skickas det från frontend till backend styrdata, d.v.s,
-    joystickdata och om det autonoma läget ska köras eller inte. Från backend
-    till frontend skickas debugdata som IR-sensorer, LIDAR samt vinklar.
-	
-	% TODO inkoncekvent? front-end-delen, front-end
-	
-	Backend skickar styrdata till RabbitMQ servern som centralenheten sedan
+    channeln så skickas det från front-end till back-end styrdata, d.v.s,
+    joystickdata och om det autonoma läget ska köras eller inte. Från back-end
+    till front-end skickas debugdata som IR-sensorer, LIDAR samt vinklar.
+		
+	Back-end skickar styrdata till RabbitMQ servern som centralenheten sedan
 	läser av. Det skickas två gånger per sekund till RabbitMQ servern.
 
     \subsection{Styrning}
