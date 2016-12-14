@@ -160,7 +160,6 @@
 		\textbf{Komponent} & \textbf{Antal} \\ \midrule
 		Raspberry Pi 3 & 1 \\
 		ATmega1284 & 2 \\
-		GP2D120 & 1 \\
 		GP2Y0A02YK & 4 \\
 		LIDAR Lite V3 & 1 \\
 		74LS244 & 1 \\
@@ -441,12 +440,11 @@
     knapptryck/händelse som sker på GUI:t. Detta tolkas av centralenheten och
     överförs till motorikenheten.
 
-	\subsection{Kommunikation}
+	\subsection{Kommunikation med webbserver}
 	Centralenheten kommunicerar med en dator över WiFi. Datorns webbläsare 
 	ansluter till centralenhetens webbserver och då kan man
 	via webbgränssnittet styra roboten samt läsa av robotens olika data. 
 		
-	\subsubsection{Kommunikation med webbserver}
 	Centralenheten skickar och hämtar kontinuerligt meddelanden i JSON-format från
     RabbitMQ-servern. Centralenheten skickar den data som GUI:t
 	behöver till RabbitMQ-servern och webbservern läser sedan in den data som finns där.
@@ -455,6 +453,16 @@
     webbservern till centralenheten kan ses i tabell
     \ref{table:guimessagestocentral} i avsnitt \ref{gui:kommunikation}.
 
+    För att resten av centralenheten ska ha så enkel interaktion med
+    webbservern som möjligt, skapas två stycken trådsäkra köar, en för mottagning av
+    meddelanden och en för att skicka meddelanden till servern. Dessa köar
+    skickas till en separat tråd som i sin tur skapar en tråd som kontinuerligt
+    lägger meddelanden från servern i mottagningskön, och en tråd som skickar
+    meddelanden som lagts i sändningskön. Detta gör att resten av
+    centralenheten endast behöver lägga paket i sändningskön för att skicka
+    data, och hämta ett datapaket ur mottagningskön för att ta emot data, då
+    alla detaljer med kommunikation till servern sker i bakgrunden.
+    
 	% TODO: Den ger fel sektion ovan! Det ska vara 7.4 och inte 7.3.
 
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -691,7 +699,7 @@
     möjligt att läsa en IR-sensor innan tiden passerat. Om det det finns ett nytt värde 
     görs en A/D-omvandling. Data från omvandlingen sparas för den ir-sensorn 
     tillsammans med äldre värden och sen utförs en brusreducering. När det inte finns 
-    någon IR-sensor som har ett nytt värde läses det värde som Lidar skickar. Sedan 
+    någon IR-sensor som har ett nytt värde läses det värde som LIDAR skickar. Sedan 
     uppdateras den tabell som innehåller den data som är klar att skickas till 
     centralenheten. Pseudo-kod för huvudloopen kan ses nedan. 
     
@@ -807,6 +815,17 @@
 
     PC2 upp till PC5 används som anslutning till JTAG, för programmering av
     processorn, och PB4 upp till PB7 är anslutna via SPI till centralenheten.
+
+    Sensorenheten är även förberedd för montering av en IR-avståndssensor av
+    typen GP2D120, med mätspann 4-30 cm, som skulle kunna användas för
+    detektion av hinder. Denna sensor är dock för närvarande inte ansluten, då
+    roboten inte är gjord för hindergång, men sensorenheten mäter ändå
+    det analoga värdet från porten där sensorn skulle kopplats in och skickar
+    det till centralenheten, som skickar värdet vidare till GUI:t.
+    Det enda som behöver göras för mätning av
+    användningen av den sensorn är således att koppla in den enligt
+    kretsschemat i figur \ref{fig:schem_sensor} samt behandla värdet i
+    centralenheten.
 
     Figur \ref{fig:schem_sensor} visar ett kretschema över sensorenheten.
 
