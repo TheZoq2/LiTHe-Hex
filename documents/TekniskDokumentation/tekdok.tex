@@ -22,7 +22,6 @@
 \usepackage{listings}
 \usepackage{color}
 
-\usepackage[colorinlistoftodos,prependcaption,textsize=tiny]{todonotes}
 
 \definecolor{dkgreen}{rgb}{0,0.6,0}
 \definecolor{gray}{rgb}{0.5,0.5,0.5}
@@ -64,13 +63,13 @@
 \pretitle{%
 	\begin{center}
 		\LARGE
-		\includegraphics[width=6cm]{../images/logo_full.png}\\[\bigskipamount]
+		\includegraphics[width=12cm]{images/robot.jpg}\\[\bigskipamount]
+		%\includegraphics[width=6cm]{../images/logo_full.png}\\[\bigskipamount]
 }
 
 \posttitle{\end{center}}
 
 \begin{document}
-\listoftodos
 	\title{\LARGE
 		\textbf{Teknisk dokumentation för sexbent robot} \\
 		\vspace*{0.5\baselineskip}
@@ -152,7 +151,7 @@
 	motorik- och sensorenhet), kommunikation mellan dessa, samt användargränssnitt specificeras 
 	i större noggrannhet under egna rubriker.
 	
-	\section{Komponentbudget}
+	\section{Komponenter}
 	
 	Tabell \ref{table:components} visar komponenter som ingår i
 	roboten, utöver chassiet, virkort och andra diverse
@@ -167,7 +166,7 @@
 		74LS244 & 1 \\
 		Extern 16 MHz-klocka EXO-3 & 1 \\
 		TXB0104 & 2 \\
-		\caption{De komponenter som beräknas att gå åt \label{table:components}}
+		\caption{Komponenter som ingår i roboten \label{table:components}}
 	\end{longtable}
 
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -180,7 +179,7 @@
 	med omgivningen genom en webbserver som datorer kan koppla upp sig mot för att styra roboten 
 	eller få tillgång till debugdata. I autonomt läge är det även denna enhet som utifrån 
 	insamlad data fattar alla styrande beslut utifrån vilka de andra enheterna 
-	verkar. Vid manuell styrning vidarebefordras endast data från styrdatorn.
+	verkar. Vid manuell styrning vidarebefordras data från styrdatorn.
 
 	De två andra enheterna (slavarna till centralenheten) utgörs av AVR-processorer och styr 
 	mer specifika uppgifter. Den ena, motorikenheten, översätter generella indikationer om 
@@ -199,6 +198,7 @@
 		\caption{Översikt av systemet\label{fig:overview}}
 	\end{figure}
 
+    \newpage
 	\section{Kommunikation mellan enheterna}
 	Kommunikation mellan centralenheten och de två AVR-processorerna sker
 	med SPI. Sensor- och motorikenhetens SPI-portar är kopplade till varsin
@@ -210,7 +210,7 @@
 	\begin{figure}[htpb]
 		\centering
 		\includegraphics[width=1.0\linewidth]{charts/central/centralenhet.pdf}
-		\caption{Kopplingsschema för centralenheten}
+		\caption{Kopplingsschema för centralenheten och SPI-kommunikationen}
 		\label{fig:central_circuit}
 	\end{figure}
 
@@ -241,7 +241,7 @@
 	att svara med ett "acknowledgemeddelande".
 
     \newpage
-	\begin{longtable}[c]{ l l l }
+	\begin{longtable}[c]{ l l p{7cm}}
 		\textbf{Syfte} & \textbf{ID} & \textbf{Data} \\ \midrule
 		\textbf{Generella} \\ \midrule
 		Send fail & 1F & -- \\ \midrule
@@ -278,6 +278,8 @@
     varje enhet, då centralenheten använder två separata SPI-bussar för varje
     enhet. Alla funktioner i centralenheten som rör kommunikationen till AVR-processorerna tar
     alltså in instansen för den enhet som ska kommuniceras till.
+
+    \newpage
 
     Pseudokoden för läsning av spi-meddelanden beskrivs som följande:
 
@@ -334,7 +336,7 @@
 
 	\end{lstlisting}
     \textit{Frame} syftar på en datastruktur som innehåller all relevant
-    information om meddelandet som typ, längd och data.
+    information om meddelandet, alltså typ, längd och data.
 
 	\section{Centralenheten}
         Centralenheten har två ansvarsområden: navigation/beslutsfattning samt
@@ -366,11 +368,6 @@
     vrida sig tillbaka till mitten. Ju närmare mitten den är desto mindre kommer
     den att vrida sig mot mitten.
 
-    \todo{Lägg till pseudokod för korridorreglering}%
-    \begin{lstlisting}
-    def regulate(sensor_data, decision_packet):
-    \end{lstlisting}
-
     Förutom de fyra IR-sensorerna på sidorna används även LIDAR när beslut ska fattas. 
     LIDAR-sensorn används för att undvika ingång i återvändsgränder framåt. 
     För att detektera korridorer och återvändsgränderna på sidorna används
@@ -382,6 +379,7 @@
     den uträknade vinkeln men även genom att vänta tills motorikenheten svarar
     med att en hel rotation har gjorts klart.  
 
+    \newpage
     Pseudokoden nedan beskriver hur beslutsfattning sker på centralenheten.
     
     \begin{lstlisting}
@@ -429,7 +427,6 @@
         decision = GO_FORWARD
         previous_decision = COMPLETE_TURN
         
-        # if the robot has entered the new corridor
         if robot is inside a corridor:
             previous_decision = GO_FORWARD
         
@@ -649,6 +646,7 @@
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%						Sensorenheten
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    \newpage
 	\section{Sensorenheten}
 	Sensorenheten är den enhet som ger roboten sinnen för omvärlden, så att den
 	kan navigera autonomt genom labyrinten. Sensorenheten sköter allting som
@@ -775,7 +773,7 @@
     \subsection{Krets}
 
     \begin{figure}[h]
-        \includegraphics[width=15cm]{images/schematic_sensor.png}
+        \includegraphics[width=15cm]{charts/sensor/sensor.pdf}
         \caption{Kretschema över sensorenheten\label{fig:schem_sensor}}
     \end{figure}
 
@@ -944,6 +942,7 @@
 	\end{lstlisting}
 	i simulators/walk
 
+    \newpage
 	\section{Slutsatser}
     Det som skulle kunna förbättras är bland annat implementation av hindergång
     för roboten, då roboten redan är förberedd för detektion av hinder i
@@ -954,6 +953,9 @@
     istället för med hårdkodade gränser.
 
 	\appendix
+    \newpage
+
+    \section*{Bilagor}
 	\section{Programlistning}
 	Här visas en lista på de olika program roboten
 	använder sig av.
