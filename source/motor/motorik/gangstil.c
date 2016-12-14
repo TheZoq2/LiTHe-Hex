@@ -608,23 +608,23 @@ void direct_legs(float rot, Point2D * targ, Point2D * current, Point2D goal, boo
 
             targ[leg].x =  goal.x + cos(rot) * leg_rel_robot_mid.x - sin(rot) * leg_rel_robot_mid.y;
             targ[leg].y =  goal.y + sin(rot) * leg_rel_robot_mid.x + cos(rot) * leg_rel_robot_mid.y;
-            if (goal.x != 0 || goal.y != 0){
-                targ[leg].x = (targ[leg].x + goal.x + cos(rot) * neutral.x - sin(rot) * neutral.y)/2;
-                targ[leg].x = (targ[leg].x + goal.x + sin(rot) * neutral.x + cos(rot) * neutral.y)/2;
-            }
+//            if (goal.x != 0 || goal.y != 0){
+//                targ[leg].x = (targ[leg].x + goal.x + cos(rot) * neutral.x - sin(rot) * neutral.y)/2;
+//                targ[leg].x = (targ[leg].x + goal.x + sin(rot) * neutral.x + cos(rot) * neutral.y)/2;
+//            }
         }
         else{   //move legs "towards" target position (step)
             targ[leg].x =   - goal.x  + cos(rot) * leg_rel_robot_mid.x + sin(rot) * leg_rel_robot_mid.y;
             targ[leg].y =   - goal.y  - sin(rot) * leg_rel_robot_mid.x + cos(rot) * leg_rel_robot_mid.y;
 
-            if (goal.x != 0 || goal.y != 0){
-                targ[leg].x = (targ[leg].x - goal.x + cos(rot) * neutral.x + sin(rot) * neutral.y)/2;
-                targ[leg].x = (targ[leg].x - goal.x - sin(rot) * neutral.x + cos(rot) * neutral.y)/2;
-            }
+//            if (goal.x != 0 || goal.y != 0){
+//                targ[leg].x = (targ[leg].x - goal.x + cos(rot) * neutral.x + sin(rot) * neutral.y)/2;
+//                targ[leg].x = (targ[leg].x - goal.x - sin(rot) * neutral.x + cos(rot) * neutral.y)/2;
+//            }
 
         }
-        targ[leg].x = targ[leg].x - joint.x;
-        targ[leg].y = targ[leg].y - joint.y;
+        targ[leg].x = (targ[leg].x - joint.x + neutral.x) * 0.5;
+        targ[leg].y = (targ[leg].y - joint.y + neutral.y) * 0.5;
     }
 
 }
