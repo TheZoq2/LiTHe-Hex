@@ -27,7 +27,7 @@ except ImportError:
 
 import time
 import math
-import communication.angle_calculation as angle_calculation
+import angle_calculation
 import pdb
 import constants
 
