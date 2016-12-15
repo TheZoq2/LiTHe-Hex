@@ -33,6 +33,6 @@ void status_set_rotation(volatile CurrentStatus* status, uint8_t rotation) {
 }
 
 void status_set_servo_speed(volatile CurrentStatus* status, uint8_t speed_lsb, uint8_t speed_msb) {
-    status->servo_speed = (float)(speed_lsb | (speed_msb << 8)) / MAX_16_BIT;
+    status->servo_speed = (uint16_t)(speed_lsb | (speed_msb << 8));
 }
 

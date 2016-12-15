@@ -272,6 +272,9 @@ void set_servo_speed(uint16_t servo_speed) {
 	if(servo_speed > MAX_SERVO_SPEED) {
 		servo_speed = MAX_SERVO_SPEED;
 	}
+	if(servo_speed == 0) {
+		servo_speed = 0x0001;
+	}
 	for(uint8_t i = 1; i < 19; ++i) {
 		set_servo_rotation_speed(i, servo_speed);
 	}
