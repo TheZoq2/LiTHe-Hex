@@ -260,9 +260,6 @@
 		Debugsträng & 23 & len, "debugsträng i utf-8" \\ \midrule
 		Upptagen med rotation? & 03 & ja: 0x01, nej: 0x00 \\ \midrule
 		\\
-		\textbf{Centralenhet $\to$ sensorenhet} \\ \midrule
-		Återställ orientering & 03 & -- \\ \midrule
-		\\
 		\textbf{Centralenhet $ \gets $ sensorenhet}\\ \midrule
 		Behandlad sensordata & 24 & len,ir-ner, ir-fv, ir-bv, ir-fh, ir-bh,
         lidar-lsd, lidar-msb \\ \midrule
@@ -883,6 +880,7 @@
         Rotation & "rotation" & float \\
         Thrust & "thrust" & float \\
         Självgående läge & "auto" & bool \\
+        Återgå till neutralläge & "reset" & bool \\
 
 		\caption{Format på JSON-strängen till
         centralenheten\label{table:guimessagestocentral}}
