@@ -30,7 +30,7 @@ output_file = "/tmp/hexsim/command"
 
 CORRIDOR_WIDTH = 0.8
 SENSOR_OFFSET = 0.1
-ANGLE_SCALEDOWN = 0.1
+ANGLE_SCALEDOWN = 0.2
 MOVEMENT_SCALEDOWN = 0.1
 COMMAND_Y_THRESHOLD = 0.03
 ANGLE_THRESHOLD = 0.1
@@ -107,6 +107,7 @@ def regulate(sensor_data, decision_packet):
     
     elif (abs(temp_sensor_data.left_angle - temp_sensor_data.right_angle) > ANGLE_DIFF_THRESHOLD) :
         angle = 0
+        offset = 0
     
     else:
         offset = ((CORRIDOR_WIDTH/2 - avg_left) + (avg_right - CORRIDOR_WIDTH/2))/2
