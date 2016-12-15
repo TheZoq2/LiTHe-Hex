@@ -40,6 +40,7 @@ except ImportError:
 AUTO_BUTTON_PIN = 37
 SLEEP_TIME_AUTO_MODE = 0.05
 SLEEP_TIME_MANUAL_MODE = 0.1
+SERVO_SPEED_SCALER = 120
 
 def main():
 
@@ -105,7 +106,7 @@ def setup_avr_communication():
 
 def setup_variables():
     prev_x = prev_y = prev_rot = prev_speed = None
-    auto = True
+    auto = False 
     button_temp = 0
     decision_packet = decision_making.DecisionPacket()
     return prev_x, prev_y, prev_rot, prev_speed, auto, button_temp, decision_packet
@@ -200,7 +201,7 @@ def do_manual_mode_iteration(sensor_spi, motor_spi, send_queue, receive_queue,
             avr_communication.back_to_neutral(motor_spi)
 
         elif packet.has_motion_command():
-            servo_speed = (int)(packet.thrust * constants.MAX_16BIT_SIZE)
+            servo_speed = (int)(packet.thrust * constants.MAX_16BIT_SIZE / SERVO_SPEED_SCALER)
 
             return_to_neutral = packet.return_to_neutral
 
