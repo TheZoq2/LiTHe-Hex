@@ -29,12 +29,11 @@ TILE_SIZE = 0.8
 
 # Distances to different objects in meters
 DEAD_END_DISTANCE = 1.2
-LIDAR_STOP_DISTANCE = 0.42
+LIDAR_STOP_DISTANCE = 0.35
 DISTANCE_TO_OBSTACLE = 0.0
 DISTANCE_TO_WALL_IN_CORRIDOR = 0.5
 
-# Time it takes for the robot to turn
-TIME_NEEDED_TO_TURN = 5
+AUTONOMOUS_SPEED = 0x006F
 
 
 class DecisionPacket():
@@ -42,12 +41,12 @@ class DecisionPacket():
         self.decision = GO_FORWARD
         self.decisions = [GO_FORWARD, GO_FORWARD, GO_FORWARD]
         self.previous_decision = GO_FORWARD
-        self.speed = 1
+        self.speed = AUTONOMOUS_SPEED 
         self.regulate_base_movement = 0;
         self.regulate_command_y = 0;
         self.regulate_goal_angle = 0;
-        self.regulate_angle_scaledown = 0.5
-        self.regulate_movement_scaledown = 0.1
+        self.regulate_angle_scaledown = 2.5
+        self.regulate_movement_scaledown = 4
         self.regulate_angular_adjustment_border = 0.1
 
 
