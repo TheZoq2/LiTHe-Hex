@@ -270,7 +270,7 @@ void execute_step(Point2D * current, Point2D * target, bool lrlRaised){
 	float z[NUM_LEGS];
 
     for (size_t leg = 0; leg < NUM_LEGS; ++leg){
-        if (target[leg].x == NAN || target[leg].y == NAN){
+        if (isnan(target[leg].x) || isnan(target[leg].y)){
             target[leg] = get_default_leg_position(leg);
         }
     }
