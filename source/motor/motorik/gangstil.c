@@ -30,7 +30,7 @@ const size_t RM = 3;
 const size_t LB = 4;
 const size_t RB = 5;
 
-const int   TARG_NEUTRAL_RATIO          = 4;
+const int   TARG_NEUTRAL_RATIO          = 2;
 const float FRONT_LEG_JOINT_X           = 0.12;
 const float FRONT_LEG_JOINT_Y           = 0.06;
 const float MID_LEG_JOINT_Y             = 0.1;
@@ -233,6 +233,7 @@ Point2D vector_between_points(Point2D current, Point2D target)
 	return result;
 }
 
+
 Point2D divide_point2D(Point2D vector, float divisor)
 {
 	Point2D result;
@@ -241,6 +242,7 @@ Point2D divide_point2D(Point2D vector, float divisor)
 
 	return result;
 }
+
 
 Point2D add_point2D(Point2D point1, Point2D point2)
 {
@@ -340,8 +342,8 @@ Point2D get_default_leg_position(size_t leg){
 }
 
 
-Point2D get_leg_position_from_radius
-			(size_t leg, float distance_from_body, float outer_leg_x_offset){
+//Frans, comment your code. This is starting to get to me.
+Point2D get_leg_position_from_radius(size_t leg, float distance_from_body, float outer_leg_x_offset){
     Point2D res;
     if (leg < 2){   //front
         res.x = distance_from_body / sqrt(2) + outer_leg_x_offset;
@@ -605,35 +607,26 @@ void direct_legs(float rot, Point2D * targ, Point2D * current, Point2D goal, boo
         leg_rel_robot_mid.y = current[leg].y + joint.y;
         Point2D neutral = get_default_leg_position(leg);
 
-        if (lrl_raised == (leg == 0 || leg == 3 || leg == 4)){ //move legs "away" from position (body towards)
+        if (lrl_raised == (leg == 0 || leg == 3 || leg == 4)){
 
             targ[leg].x =  goal.x + cos(rot) * leg_rel_robot_mid.x - sin(rot) * leg_rel_robot_mid.y;
             targ[leg].y =  goal.y + sin(rot) * leg_rel_robot_mid.x + cos(rot) * leg_rel_robot_mid.y;
-//            if (goal.x != 0 || goal.y != 0){
-//                targ[leg].x = (targ[leg].x + goal.x + cos(rot) * neutral.x - sin(rot) * neutral.y)/2;
-//                targ[leg].x = (targ[leg].x + goal.x + sin(rot) * neutral.x + cos(rot) * neutral.y)/2;
-//            }
         }
-        else{   //move legs "towards" target position (step)
+        else{
             targ[leg].x =   - goal.x  + cos(rot) * leg_rel_robot_mid.x + sin(rot) * leg_rel_robot_mid.y;
             targ[leg].y =   - goal.y  - sin(rot) * leg_rel_robot_mid.x + cos(rot) * leg_rel_robot_mid.y;
-
-//            if (goal.x != 0 || goal.y != 0){
-//                targ[leg].x = (targ[leg].x - goal.x + cos(rot) * neutral.x + sin(rot) * neutral.y)/2;
-//                targ[leg].x = (targ[leg].x - goal.x - sin(rot) * neutral.x + cos(rot) * neutral.y)/2;
-//            }
-
         }
         targ[leg].x = targ[leg].x - joint.x;
         targ[leg].y = targ[leg].y - joint.y;
 
-        if (goal.x != 0 || goal.y != 0){
+        if (/*(goal.x != 0 || goal.y != 0) &&*/ lrl_raised == (leg == 0 || leg == 3 || leg == 4)){ //normalize raised legs, prevents jumbling of legs
             targ[leg].x = (targ[leg].x * TARG_NEUTRAL_RATIO + neutral.x)/(TARG_NEUTRAL_RATIO + 1);
             targ[leg].y = (targ[leg].y * TARG_NEUTRAL_RATIO + neutral.y)/(TARG_NEUTRAL_RATIO + 1);
         }
     }
-
 }
+
+
 /**
  * @brief assume_standardized_stance Positions the robot in the default position by moving
  * 3 legs at a time.
@@ -872,4 +865,3 @@ void rotate_set_angle(float angle, Point2D * current){
 
     assume_standardized_stance(current);
 }
-
