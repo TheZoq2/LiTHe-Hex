@@ -21,6 +21,7 @@
 import sys
 import math
 import angle_calculation
+import constants
 
 
 input_file = "/tmp/hexsim/sensors"
@@ -65,8 +66,8 @@ def regulate(sensor_data, decision_packet):
     avg_left = _avg(sensor_data.ir_front_left, sensor_data.ir_back_left)
     avg_right = _avg(sensor_data.ir_front_right, sensor_data.ir_back_right)
     angle = _to_radians(sensor_data.average_angle)
-    dist_to_left_wall = cos(angle) * (constants.SENSOR_Y_DIST / 2 + avg_left)
-    dist_to_right_wall = cos(angle) * (constants.SENSOR_Y_DIST / 2 + avg_right)
+    dist_to_left_wall = math.cos(angle) * (constants.SENSOR_Y_DIST / 2 + avg_left)
+    dist_to_right_wall = math.cos(angle) * (constants.SENSOR_Y_DIST / 2 + avg_right)
 
     offset = dist_to_left_wall - dist_to_right_wall # negative to left, positive to right
 
