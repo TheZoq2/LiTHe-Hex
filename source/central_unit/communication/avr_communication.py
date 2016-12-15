@@ -247,7 +247,7 @@ def set_servo_speed(spi, speed, timeout=None):
                                    SET_SERVO_SPEED_LENGTH, least, most)
             _check_response(response)
             print("")
-            print("Sent speed")
+            print("Sent speed: " + str(speed))
             break
         except CommunicationError:
             count += 1

@@ -36,8 +36,6 @@ typedef struct {
     volatile bool return_to_neutral;
 
     volatile bool auto_mode;
-	
-	volatile bool speed_changed;
 
 } CurrentStatus;
 

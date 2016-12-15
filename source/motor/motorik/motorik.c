@@ -99,6 +99,8 @@ int main(void)
 	
 	uint16_t servo_speed = 0;
 
+    bool speed_changed = false;
+
 	while(1)
 	{
 		
@@ -115,15 +117,15 @@ int main(void)
             float y_speed = current_status->y_speed;
             float rotation = current_status->rotation;
 			if (servo_speed != current_status->servo_speed) {
-				current_status->speed_changed = true;
+				speed_changed = true;
 			} else {
-				current_status->speed_changed = false;	
+				speed_changed = false;	
 			}
             servo_speed = current_status->servo_speed;
             bool auto_mode = current_status->auto_mode;
 			spi_set_interrupts(true);
 			
-			if(current_status->speed_changed) {
+			if (speed_changed) {
 				set_servo_speed(current_status->servo_speed);
 			}
 			
