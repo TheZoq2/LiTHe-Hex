@@ -31,7 +31,7 @@ enum ID {
     SEND_FAIL = 0x1F, ACKNOWLEDGE = 0x0F, DATA_REQUEST = 0x02, 
     BUSY_ROTATING = 0x03, SET_SERVO_SPEED = 0x20, WALK_COMMAMD = 0x21, 
     RETURN_TO_NEUTRAL = 0x05, SERVO_STATUS = 0x22, DEBUG_STRING = 0x23, 
-	SENSOR_DATA = 0x24, CORRIDOR_DATA = 0x25
+    SENSOR_DATA = 0x24, CORRIDOR_DATA = 0x25
 };
 
 typedef struct Frame {
@@ -62,3 +62,4 @@ void send_frame(Frame* frame_send);
 uint8_t get_id(Frame* frame_recv);
 
 #endif /* ifndef COMMUNICATION_H */
+
