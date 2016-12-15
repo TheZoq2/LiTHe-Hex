@@ -426,8 +426,19 @@ float scale_to_range_bounds(float targLength, float currLength, float diffLength
     if (targLength <= MAX_DIST || absf(diffLength) < 0.0001)
         return 1; //no scaling down needed
 
-    float alpha = acos((powf(diffLength, 2) + powf(currLength, 2) - powf(targLength, 2))//no n/0 since diffLength & currLength > 0 if statement is entered
-                       / (2 * diffLength * currLength));    // a = acos ((B2 + C2 - A2)/2BC), cosine trig formula
+	float acos_input = (powf(diffLength, 2) + powf(currLength, 2) - powf(targLength, 2))//no n/0 since diffLength & currLength > 0 if statement is entered
+                       / (2 * diffLength * currLength);
+
+	if(acos_input < -1)
+	{
+		acos_input = -1;
+	}
+	else if(acos_input > 1)
+	{
+		acos_input = 1;
+	}
+
+    float alpha = acos(acos_input);// a = acos ((B2 + C2 - A2)/2BC), cosine trig formula
 	float max_dist = MAX_DIST;
     float beta = asin(currLength * sin(alpha) / max_dist);     // b = asin (B * sin(a)/A ) // sin(b)/B = sin(a)/A, sine trig formula
     float gamma = M_PI - alpha - beta;                      //sum internal angles = PI
@@ -793,7 +804,7 @@ float work_towards_goal(float rot, Point2D goal, Point2D * current){
 
     //rlr
     if (rot != 0){
-    direct_legs(0, targ, current, goal, false);
+    	direct_legs(0, targ, current, goal, false);
         goal_scaledown_rlr = scale_legs(targ, current, scale, false);
     }
     scaledGoal.x = goal_scaledown_rlr * goal.x;
