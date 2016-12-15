@@ -20,6 +20,8 @@
 
 import sys
 import math
+import angle_calculation
+import constants
 
 
 input_file = "/tmp/hexsim/sensors"
@@ -53,7 +55,7 @@ def regulate(sensor_data, decision_packet):
 
     # offset for the robot length from mid in a corridor
     # offset = (
-    #         CORRIDOR_WIDTH * (sensor_data.ir_front_left + SENSOR_OFFSET) / 
+    #         CORRIDOR_WIDTH * (sensor_data.ir_front_left + SENSOR_OFFSET) /
     #         (
     #             sensor_data.ir_front_right +
     #             (2 * SENSOR_OFFSET)
@@ -61,22 +63,27 @@ def regulate(sensor_data, decision_packet):
     #         )
     #         ) - (CORRIDOR_WIDTH/2)
 
+    avg_left = _avg(sensor_data.ir_front_left, sensor_data.ir_back_left)
+    avg_right = _avg(sensor_data.ir_front_right, sensor_data.ir_back_right)
+    angle = _to_radians(sensor_data.average_angle)
+    dist_to_left_wall = math.cos(angle) * (constants.SENSOR_Y_DIST / 2 + avg_left)
+    dist_to_right_wall = math.cos(angle) * (constants.SENSOR_Y_DIST / 2 + avg_right)
 
-    decision_packet.command_y = (sensor_data.ir_front_right - sensor_data.ir_front_left) * \
-            decision_packet.regulate_movement_scaledown
-    # TODO: fix a check for if one angle is way off. If it happens do not use it
-    # TODO: fix so that we do not use positive angle all the time
+    offset = dist_to_left_wall - dist_to_right_wall # negative to left, positive to right
 
-    if abs(offset) > decision_packet.regulate_angular_adjustment_border:
-        decision_packet.regulate_goal_angle = -_to_radians(sensor_data.average_angle) - \
-                math.pi * offset * decision_packet.regulate_angle_scaledown
-    else:
-        decision_packet.regulate_goal_angle = -_to_radians(sensor_data.average_angle)
-        decision_packet.regulate_base_movement;
+    decision_packet.regulate_command_y = (dist_to_left_wall - dist_to_right_wall) * \
+            decision_packet.regulate_movement_scaledown / CORRIDOR_WIDTH
+    decision_packet.regulate_command_y = min(max(decision_packet.regulate_command_y, -1), 1)
 
+
+
+    # if abs(offset) > decision_packet.regulate_angular_adjustment_border:
+    #     decision_packet.regulate_goal_angle = -_to_radians(sensor_data.average_angle) - \
+    #             math.pi * offset * decision_packet.regulate_angle_scaledown
+    # else:
+    #     decision_packet.regulate_goal_angle = -_to_radians(sensor_data.average_angle)
+    #     decision_packet.regulate_base_movement;
+
+    decision_packet.regulate_goal_angle = math.pow(-angle,3)
     #Cap -1 < regulate_goal_angle < 1
-    if decision_packet.regulate_goal_angle > 1:
-        decision_packet.regulate_goal_angle = 1
-    elif decision_packet.regulate_goal_angle < -1:
-        decision_packet.regulate_goal_angle = -1
-
+    decision_packet.regulate_goal_angle = min(max(decision_packet.regulate_goal_angle, -1), 1)
