@@ -22,12 +22,12 @@ import constants
 # All these functions return angles in degrees
 def get_right_angle(sensor_data):
     return math.atan((sensor_data.ir_front_right - sensor_data.ir_back_right) / 
-                     constants.DISTANCE_BETWEEN_SENSORS) * (180/math.pi)
+                     constants.SENSOR_Y_DIST) * (180/math.pi)
 
 
 def get_left_angle(sensor_data):
     return math.atan((sensor_data.ir_front_left - sensor_data.ir_back_left) / 
-                     constants.DISTANCE_BETWEEN_SENSORS) * (180/math.pi)
+                     constants.SENSOR_Y_DIST) * (180/math.pi)
 
 
 def get_average_angle(sensor_data):
