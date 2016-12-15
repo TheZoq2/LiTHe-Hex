@@ -245,7 +245,7 @@ void set_servo_rotation_speed(uint8_t id, uint16_t angle)
 
 void set_servo_compliance_thresholds(uint8_t id)
 {
-	uint8_t data[4] = {0x40, 0x01, 0x01, 0x40};
+	uint8_t data[4] = {0x02, 0x01, 0x01, 0x02};
 
 	write_servo_data(id, CCW_COMPLIANCE_SLOPE_ADDRESS, data, 4);
 }
@@ -261,7 +261,7 @@ void init_all_servos()
 		_delay_ms(1);
 		reset_servo_bounds(i);
 		_delay_ms(1);
-		set_servo_rotation_speed(i, 0x006f);
+		set_servo_rotation_speed(i, 0x00ff);
 		_delay_ms(1);
 		set_servo_compliance_thresholds(i);
 		_delay_ms(1);
@@ -271,6 +271,9 @@ void init_all_servos()
 void set_servo_speed(uint16_t servo_speed) {
 	if(servo_speed > MAX_SERVO_SPEED) {
 		servo_speed = MAX_SERVO_SPEED;
+	}
+	if(servo_speed == 0) {
+		servo_speed = 0x0001;
 	}
 	for(uint8_t i = 1; i < 19; ++i) {
 		set_servo_rotation_speed(i, servo_speed);
