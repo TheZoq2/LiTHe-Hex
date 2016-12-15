@@ -245,7 +245,7 @@ void set_servo_rotation_speed(uint8_t id, uint16_t angle)
 
 void set_servo_compliance_thresholds(uint8_t id)
 {
-	uint8_t data[4] = {0x40, 0x01, 0x01, 0x40};
+	uint8_t data[4] = {0x02, 0x01, 0x01, 0x02};
 
 	write_servo_data(id, CCW_COMPLIANCE_SLOPE_ADDRESS, data, 4);
 }
@@ -261,7 +261,7 @@ void init_all_servos()
 		_delay_ms(1);
 		reset_servo_bounds(i);
 		_delay_ms(1);
-		set_servo_rotation_speed(i, 0x006f);
+		set_servo_rotation_speed(i, 0x00ff);
 		_delay_ms(1);
 		set_servo_compliance_thresholds(i);
 		_delay_ms(1);

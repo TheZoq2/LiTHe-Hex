@@ -34,8 +34,8 @@ const int   TARG_NEUTRAL_RATIO          = 2;
 const float FRONT_LEG_JOINT_X           = 0.12;
 const float FRONT_LEG_JOINT_Y           = 0.06;
 const float MID_LEG_JOINT_Y             = 0.1;
-const float HIGH                        = 0.03;
-const float GROUNDED                    = -0.14;
+const float HIGH                        = 0.02;
+const float GROUNDED                    = -0.13;
 const float MAX_DIST                    = 0.14;
 const float VERT_MID_LEG_BORDER_OFFSET  = 0.06;
 const float VERT_HEAD_LEG_BORDER_OFFSET = -0.03;
@@ -54,7 +54,7 @@ const float STANDUP_LEG_DISTANCE = 0.16;
 const uint16_t STANDARD_THRESHOLD = 100;
 const uint16_t HIGH_PRECISION_THRESHOLD = 20;
 #else //AVR constants
-const uint16_t STANDARD_THRESHOLD = 150;
+const uint16_t STANDARD_THRESHOLD = 100;
 const uint16_t HIGH_PRECISION_THRESHOLD = 100;
 #endif
 
@@ -282,7 +282,7 @@ void execute_step(Point2D * current, Point2D * target, bool lrlRaised){
         z[RB] = GROUNDED + HIGH;
     }
 
-	const uint8_t STEP_AMOUNT = 2;
+	const uint8_t STEP_AMOUNT = 1;
 
 	Point2D intermediate_positions[NUM_LEGS];
 	Point2D step_lengths[NUM_LEGS];
