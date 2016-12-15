@@ -774,6 +774,7 @@ float work_towards_goal(float rot, Point2D goal, Point2D * current){
     //printf("Working towards goal \n");
     float goal_scaledown_lrl = 1;
     float goal_scaledown_rlr = 1;
+
     //lrl
     if (rot != 0){
     direct_legs(0, targ, current, goal, true);
@@ -799,7 +800,7 @@ float work_towards_goal(float rot, Point2D goal, Point2D * current){
     scaledGoal.y = goal_scaledown_rlr * goal.y;
 
     direct_legs(rot*(goal_scaledown_rlr + ROT_INDEPENDENCE_FROM_MOV_RATIO)/
-                (ROT_INDEPENDENCE_FROM_MOV_RATIO + 1), targ, current, goal, false);
+                (ROT_INDEPENDENCE_FROM_MOV_RATIO + 1), targ, current, scaledGoal, false);
     float scaledown_rlr = scale_legs(targ, current, scale, false);
 
     float rlr_leg_move_dist = sqrtf(powf(targ[LF].x - current[LF].x, 2) + powf(targ[LF].y - current[LF].y, 2));
