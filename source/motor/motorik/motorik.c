@@ -146,11 +146,11 @@ int main(void)
 	{
 		Point2D goal;
 		goal.x = 1;
-		goal.y = 0;
+		goal.y = 1;
 
 		//printf("Walking one step\n\n\n\n");
 
-		work_towards_goal(0, goal, current_position);
+		work_towards_goal(-1, goal, current_position);
 	}
 #endif
 
