@@ -30,6 +30,7 @@ const size_t RM = 3;
 const size_t LB = 4;
 const size_t RB = 5;
 
+const int   ROT_INDEPENDENCE_FROM_MOV_RATIO = 2;
 const int   TARG_NEUTRAL_RATIO          = 2;
 const float FRONT_LEG_JOINT_X           = 0.12;
 const float FRONT_LEG_JOINT_Y           = 0.06;
@@ -777,10 +778,11 @@ float work_towards_goal(float rot, Point2D goal, Point2D * current){
     }
 
     Point2D scaledGoal;
-    scaledGoal.x = goal_scaledown_lrl * goal.x;
-    scaledGoal.y = goal_scaledown_lrl * goal.y;
+    scaledGoal.x = (goal_scaledown_lrl * goal.x);
+    scaledGoal.y = (goal_scaledown_lrl * goal.y);
 
-    direct_legs(rot, targ, current, scaledGoal, true);
+    direct_legs(rot*(goal_scaledown_lrl + ROT_INDEPENDENCE_FROM_MOV_RATIO)/
+                (ROT_INDEPENDENCE_FROM_MOV_RATIO + 1), targ, current, scaledGoal, true);
     float scaledown0 = scale_legs(targ, current, scale, true);
 
     float lrlLegMoveDist = sqrtf(powf(targ[RF].x - current[RF].x, 2) + powf(targ[RF].y - current[RF].y, 2));
@@ -793,7 +795,8 @@ float work_towards_goal(float rot, Point2D goal, Point2D * current){
     scaledGoal.x = goal_scaledown_rlr * goal.x;
     scaledGoal.y = goal_scaledown_rlr * goal.y;
 
-    direct_legs(rot, targ, current, goal, false);
+    direct_legs(rot*(goal_scaledown_lrl + ROT_INDEPENDENCE_FROM_MOV_RATIO)/
+                (ROT_INDEPENDENCE_FROM_MOV_RATIO + 1), targ, current, goal, false);
     float scaledown_rlr = scale_legs(targ, current, scale, false);
 
     float rlr_leg_move_dist = sqrtf(powf(targ[LF].x - current[LF].x, 2) + powf(targ[LF].y - current[LF].y, 2));
