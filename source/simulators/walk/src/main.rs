@@ -233,7 +233,7 @@ fn main() {
     while window.render() 
     {
         let new_time = time::precise_time_s() as f32;
-        let delta_time = new_time - old_time;
+        let delta_time = (new_time - old_time) * constants::TIME_MODIFIER;
         old_time = new_time;
 
         let leg_targets = read_target_angles();
