@@ -35,6 +35,7 @@ const uint8_t BROADCAST_ID = 0xFE;
 const uint8_t NUM_SERVOS = 18;
 
 const uint16_t MAX_SERVO_SPEED = 0x01ff;
+const uint16_t MIN_SERVO_SPEED = 0x001f;
 
 //const uint16_t SERVO_TARGET_COMPLIANCE_MARGIN = 100;
 
@@ -274,6 +275,11 @@ void set_servo_speed(uint16_t servo_speed) {
 	if(servo_speed > MAX_SERVO_SPEED) {
 		servo_speed = MAX_SERVO_SPEED;
 	}
+	else if(servo_speed < MIN_SERVO_SPEED)
+	{
+		servo_speed = MIN_SERVO_SPEED;
+	}
+
 	if(servo_speed == 0) {
 		servo_speed = 0x0001;
 	}
@@ -299,7 +305,7 @@ void set_leg_angles(enum LegIds leg_index, uint16_t* angles)
 */
 void read_servo_target_positions(uint16_t* buffer)
 {
-	for (uint8_t i = 3; i < NUM_SERVOS; ++i) 
+	for (uint8_t i = 0; i < NUM_SERVOS; ++i) 
 	{
 #ifdef IS_X86
 		float servo_angle = read_servo_target_angle(i);
@@ -348,7 +354,7 @@ bool servos_are_done_rotating(uint16_t threshold)
 
 	read_servo_target_positions(servo_targets);
 
-	for(uint8_t i = 3; i < NUM_SERVOS; i++)
+	for(uint8_t i = 0; i < NUM_SERVOS; i++)
 	{
 		if(check_servo_done_rotating(i, servo_targets[i], threshold) == false)
 		{
