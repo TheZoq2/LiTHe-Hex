@@ -57,6 +57,16 @@
 
 		return UDR0;
 	}
+
+	void clear_uart_buffer()
+	{
+		//Wait for data to arrive
+		uint8_t buffer = 0;
+		while((UCSR0A & (1<<RXC0)))
+		{
+			buffer = UDR0;
+		}
+	}
 #else
 	void usart_init()
 	{
@@ -94,5 +104,9 @@
 			//printf("Setting usart direction to TX\n");
 			break;
 		}
+	}
+
+	void clear_uart_buffer()
+	{
 	}
 #endif

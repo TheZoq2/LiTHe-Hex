@@ -600,27 +600,29 @@ float scale_legs(Point2D * targ, Point2D * curr, float * scale, bool lrlRaised){
  * from target, with negative rotation, if feet are grounded).
  */
 void direct_legs(float rot, Point2D * targ, Point2D * current, Point2D goal, bool lrl_raised){
-    Point2D leg_rel_robot_mid;
+    for(size_t leg = 0; leg < NUM_LEGS; ++leg){
+    	Point2D leg_rel_robot_mid;
 
-    for(size_t leg = LF; leg < NUM_LEGS; ++leg){
         Point2D joint = joint_position(leg);
         leg_rel_robot_mid.x = current[leg].x + joint.x;
         leg_rel_robot_mid.y = current[leg].y + joint.y;
         Point2D neutral = get_default_leg_position(leg);
 
-        if (lrl_raised == (leg == 0 || leg == 3 || leg == 4)){
+		bool leg_should_be_raised = lrl_raised == (leg == LF || leg == RM || leg == LB);
 
-            targ[leg].x =  goal.x + cos(rot) * leg_rel_robot_mid.x - sin(rot) * leg_rel_robot_mid.y;
-            targ[leg].y =  goal.y + sin(rot) * leg_rel_robot_mid.x + cos(rot) * leg_rel_robot_mid.y;
+        if (leg_should_be_raised){
+
+            targ[leg].x = goal.x + cos(rot) * leg_rel_robot_mid.x - sin(rot) * leg_rel_robot_mid.y;
+            targ[leg].y = goal.y + sin(rot) * leg_rel_robot_mid.x + cos(rot) * leg_rel_robot_mid.y;
         }
         else{
-            targ[leg].x =   - goal.x  + cos(rot) * leg_rel_robot_mid.x + sin(rot) * leg_rel_robot_mid.y;
-            targ[leg].y =   - goal.y  - sin(rot) * leg_rel_robot_mid.x + cos(rot) * leg_rel_robot_mid.y;
+            targ[leg].x = - goal.x  + cos(rot) * leg_rel_robot_mid.x + sin(rot) * leg_rel_robot_mid.y;
+            targ[leg].y = - goal.y  - sin(rot) * leg_rel_robot_mid.x + cos(rot) * leg_rel_robot_mid.y;
         }
         targ[leg].x = targ[leg].x - joint.x;
         targ[leg].y = targ[leg].y - joint.y;
 
-        if (/*(goal.x != 0 || goal.y != 0) &&*/ lrl_raised == (leg == 0 || leg == 3 || leg == 4)){ //normalize raised legs, prevents jumbling of legs
+        if (leg_should_be_raised){ //normalize raised legs, prevents jumbling of legs
             targ[leg].x = (targ[leg].x * TARG_NEUTRAL_RATIO + neutral.x)/(TARG_NEUTRAL_RATIO + 1);
             targ[leg].y = (targ[leg].y * TARG_NEUTRAL_RATIO + neutral.y)/(TARG_NEUTRAL_RATIO + 1);
         }
@@ -761,7 +763,8 @@ float work_towards_goal(float rot, Point2D goal, Point2D * current){
     float requestedDownscale = scale_goal(& goal); //allows for detailed steering with small joystick tilts.
 
     if (goal.x == 0 && goal.y == 0 && rot == 0){
-        for (uint32_t i = 0; i < 1000; ++i);
+        for (uint32_t i = 0; i < 1000; ++i)
+			;
 		return 1;   //no movement
 	}
 	
@@ -771,6 +774,7 @@ float work_towards_goal(float rot, Point2D goal, Point2D * current){
     //printf("Working towards goal \n");
     float goal_scaledown_lrl = 1;
     float goal_scaledown_rlr = 1;
+
     //lrl
     if (rot != 0){
     direct_legs(0, targ, current, goal, true);
@@ -796,7 +800,7 @@ float work_towards_goal(float rot, Point2D goal, Point2D * current){
     scaledGoal.y = goal_scaledown_rlr * goal.y;
 
     direct_legs(rot*(goal_scaledown_rlr + ROT_INDEPENDENCE_FROM_MOV_RATIO)/
-                (ROT_INDEPENDENCE_FROM_MOV_RATIO + 1), targ, current, goal, false);
+                (ROT_INDEPENDENCE_FROM_MOV_RATIO + 1), targ, current, scaledGoal, false);
     float scaledown_rlr = scale_legs(targ, current, scale, false);
 
     float rlr_leg_move_dist = sqrtf(powf(targ[LF].x - current[LF].x, 2) + powf(targ[LF].y - current[LF].y, 2));

@@ -76,9 +76,9 @@ impl Limb
         //    self.current_angle -= self.turn_speed * delta_time;
         //}
 
-        const scaling: f32 = 0.1;
+        const scaling: f32 = 1.5;
 
-        self.current_angle += angle_diff * scaling;
+        self.current_angle += angle_diff * scaling * delta_time;
 
 
         self.node.set_local_rotation(

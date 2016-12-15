@@ -94,6 +94,8 @@ void write_servo_data(uint8_t id, uint8_t address, const uint8_t* data, uint8_t 
 
 ServoReply read_servo_data(uint8_t id, uint8_t address, uint8_t length)
 {
+	clear_uart_buffer();
+
 	spi_set_interrupts(false);
 	//Send datarequest instruction
 	uint8_t* new_data = (uint8_t*)malloc(2);

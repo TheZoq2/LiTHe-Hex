@@ -49,14 +49,6 @@ ISR(SPI_STC_vect) {
 }
 #endif
 
-void rotate_to_position(float x, float y, float r, Point2D* current)
-{
-	Point2D point;
-	point.x = x;
-	point.y = y;
-	
-	work_towards_goal(r, point, current);
-}
 
 int main(void)
 {
@@ -158,7 +150,7 @@ int main(void)
 
 		//printf("Walking one step\n\n\n\n");
 
-		work_towards_goal(0.5, goal, current_position);
+		work_towards_goal(0, goal, current_position);
 	}
 #endif
 

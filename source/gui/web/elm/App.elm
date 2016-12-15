@@ -65,6 +65,7 @@ type Msg
     | SendParameters
     | ToggleAuto
     | MoveSlider Keyboard.KeyCode
+    | ResetBot
     | Mdl (Material.Msg Msg)
 
 
@@ -259,6 +260,14 @@ update msg model =
                         ( model.phxSocket, Cmd.none )
             in
                 ( { model | phxSocket = phxSocket, joystick = data }, phxCmd )
+
+        ResetBot ->
+            let
+                ( phxSocket, phxCmd ) =
+                    sendControlMessage model.phxSocket
+                        (JE.object [ ( "reset", JE.bool True ) ])
+            in
+                ( { model | phxSocket = phxSocket }, phxCmd )
 
         SelectTab num ->
             ( { model | selectedTab = num }, Cmd.none )
@@ -457,6 +466,11 @@ viewSliderControl model =
                         |> Button.onClick
                     ]
                     [ text "Stop" ]
+                , Button.render Mdl
+                    [ 1 ]
+                    model.mdl
+                    [ Button.onClick ResetBot ]
+                    [ text "Reset" ]
                 ]
             ]
 
