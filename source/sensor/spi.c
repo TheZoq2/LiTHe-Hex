@@ -53,3 +53,11 @@ void spi_transmit_ack() {
 void spi_transmit_fail() {
     spi_transmit_byte(FAIL);
 }
+
+void spi_set_interrupts(bool value) {
+	if(value) {
+		SPCR = (1<<SPE) | (1<<SPIE);
+	} else {
+		SPCR = 0;
+	}
+}
