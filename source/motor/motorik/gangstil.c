@@ -778,8 +778,8 @@ float work_towards_goal(float rot, Point2D goal, Point2D * current){
     }
 
     Point2D scaledGoal;
-    scaledGoal.x = (goal_scaledown_lrl * goal.x);
-    scaledGoal.y = (goal_scaledown_lrl * goal.y);
+    scaledGoal.x = goal_scaledown_lrl * goal.x;
+    scaledGoal.y = goal_scaledown_lrl * goal.y;
 
     direct_legs(rot*(goal_scaledown_lrl + ROT_INDEPENDENCE_FROM_MOV_RATIO)/
                 (ROT_INDEPENDENCE_FROM_MOV_RATIO + 1), targ, current, scaledGoal, true);
@@ -795,7 +795,7 @@ float work_towards_goal(float rot, Point2D goal, Point2D * current){
     scaledGoal.x = goal_scaledown_rlr * goal.x;
     scaledGoal.y = goal_scaledown_rlr * goal.y;
 
-    direct_legs(rot*(goal_scaledown_lrl + ROT_INDEPENDENCE_FROM_MOV_RATIO)/
+    direct_legs(rot*(goal_scaledown_rlr + ROT_INDEPENDENCE_FROM_MOV_RATIO)/
                 (ROT_INDEPENDENCE_FROM_MOV_RATIO + 1), targ, current, goal, false);
     float scaledown_rlr = scale_legs(targ, current, scale, false);
 
@@ -822,7 +822,8 @@ float work_towards_goal(float rot, Point2D goal, Point2D * current){
         return best_scale; //too little movement to be relevant executing
     }
 
-    rot = rot * best_scale;      //note: requested downscale dependant on joystick tilt; unrelated to rotation
+    rot = rot * best_scale *(best_goal_scale + ROT_INDEPENDENCE_FROM_MOV_RATIO)/
+            (ROT_INDEPENDENCE_FROM_MOV_RATIO + 1);
     goal.x = goal.x * best_scale * requestedDownscale * best_goal_scale;
     goal.y = goal.y * best_scale * requestedDownscale * best_goal_scale;
 
@@ -831,7 +832,8 @@ float work_towards_goal(float rot, Point2D goal, Point2D * current){
 	////spi_set_interrupts(false);
     execute_step(current, targ, lrl_raised);
 	////spi_set_interrupts(true);
-    return best_scale;
+    return best_scale * (best_goal_scale + ROT_INDEPENDENCE_FROM_MOV_RATIO)/
+            (ROT_INDEPENDENCE_FROM_MOV_RATIO + 1);
 }
 
 
