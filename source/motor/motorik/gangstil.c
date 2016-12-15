@@ -600,27 +600,29 @@ float scale_legs(Point2D * targ, Point2D * curr, float * scale, bool lrlRaised){
  * from target, with negative rotation, if feet are grounded).
  */
 void direct_legs(float rot, Point2D * targ, Point2D * current, Point2D goal, bool lrl_raised){
-    Point2D leg_rel_robot_mid;
+    for(size_t leg = 0; leg < NUM_LEGS; ++leg){
+    	Point2D leg_rel_robot_mid;
 
-    for(size_t leg = LF; leg < NUM_LEGS; ++leg){
         Point2D joint = joint_position(leg);
         leg_rel_robot_mid.x = current[leg].x + joint.x;
         leg_rel_robot_mid.y = current[leg].y + joint.y;
         Point2D neutral = get_default_leg_position(leg);
 
-        if (lrl_raised == (leg == 0 || leg == 3 || leg == 4)){
+		bool leg_should_be_raised = lrl_raised == (leg == LF || leg == RM || leg == LB);
 
-            targ[leg].x =  goal.x + cos(rot) * leg_rel_robot_mid.x - sin(rot) * leg_rel_robot_mid.y;
-            targ[leg].y =  goal.y + sin(rot) * leg_rel_robot_mid.x + cos(rot) * leg_rel_robot_mid.y;
+        if (leg_should_be_raised){
+
+            targ[leg].x = goal.x + cos(rot) * leg_rel_robot_mid.x - sin(rot) * leg_rel_robot_mid.y;
+            targ[leg].y = goal.y + sin(rot) * leg_rel_robot_mid.x + cos(rot) * leg_rel_robot_mid.y;
         }
         else{
-            targ[leg].x =   - goal.x  + cos(rot) * leg_rel_robot_mid.x + sin(rot) * leg_rel_robot_mid.y;
-            targ[leg].y =   - goal.y  - sin(rot) * leg_rel_robot_mid.x + cos(rot) * leg_rel_robot_mid.y;
+            targ[leg].x = - goal.x  + cos(rot) * leg_rel_robot_mid.x + sin(rot) * leg_rel_robot_mid.y;
+            targ[leg].y = - goal.y  - sin(rot) * leg_rel_robot_mid.x + cos(rot) * leg_rel_robot_mid.y;
         }
         targ[leg].x = targ[leg].x - joint.x;
         targ[leg].y = targ[leg].y - joint.y;
 
-        if (/*(goal.x != 0 || goal.y != 0) &&*/ lrl_raised == (leg == 0 || leg == 3 || leg == 4)){ //normalize raised legs, prevents jumbling of legs
+        if (leg_should_be_raised){ //normalize raised legs, prevents jumbling of legs
             targ[leg].x = (targ[leg].x * TARG_NEUTRAL_RATIO + neutral.x)/(TARG_NEUTRAL_RATIO + 1);
             targ[leg].y = (targ[leg].y * TARG_NEUTRAL_RATIO + neutral.y)/(TARG_NEUTRAL_RATIO + 1);
         }
