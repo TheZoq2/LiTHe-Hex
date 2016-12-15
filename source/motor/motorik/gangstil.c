@@ -186,6 +186,9 @@ void get_angle_set(Point2D * target, float * height, struct Leg* res){
  */
 void execute_position(Point2D * target, float * z, uint16_t threshold){
     //struct Leg* ik = get_angle_set(target, z);
+
+
+
 	struct Leg ik[NUM_LEGS];
 	get_angle_set(target, z, ik);
 
@@ -265,6 +268,12 @@ Point2D add_point2D(Point2D point1, Point2D point2)
  */
 void execute_step(Point2D * current, Point2D * target, bool lrlRaised){	
 	float z[NUM_LEGS];
+
+    for (size_t leg = 0; leg < NUM_LEGS; ++leg){
+        if (target[leg].x == NAN || target[leg].y == NAN){
+            target[leg] = get_default_leg_position(leg);
+        }
+    }
 
     if(lrlRaised){
         z[LF] = GROUNDED + HIGH;
