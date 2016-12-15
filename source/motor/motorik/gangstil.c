@@ -30,7 +30,7 @@ const size_t RM = 3;
 const size_t LB = 4;
 const size_t RB = 5;
 
-const int   ROT_INDEPENDENCE_FROM_MOV_RATIO = 2;
+const int   ROT_INDEPENDENCE_FROM_MOV_RATIO = 100;
 const int   TARG_NEUTRAL_RATIO          = 2;
 const float FRONT_LEG_JOINT_X           = 0.12;
 const float FRONT_LEG_JOINT_Y           = 0.06;
