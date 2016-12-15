@@ -15,38 +15,16 @@
 // You should have received a copy of the GNU General Public License
 // along with LiTHe Hex.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef STATUS_H
-#define STATUS_H 
+#ifndef SPI_H
+#define SPI_H
 
-#include <stdint.h>
-#include <stdbool.h>
+#include <avr/io.h>
+#include <avr/interrupt.h>
 
-typedef struct {
+void spi_init();
+uint8_t spi_receive_byte();
+uint8_t spi_transmit_byte(uint8_t data);
+void spi_transmit_ack();
+void spi_transmit_fail();
 
-    volatile float x_speed;
-
-    volatile float y_speed;
-
-    volatile float rotation;
-	
-	volatile bool is_rotating;
-
-    volatile uint16_t servo_speed;
-
-    volatile bool return_to_neutral;
-
-    volatile bool auto_mode;
-
-} CurrentStatus;
-
-void status_init(volatile CurrentStatus* status);
-void status_set_speed(volatile CurrentStatus* status, uint8_t x_speed, uint8_t y_speed);
-void status_set_rotation(volatile CurrentStatus* status, uint8_t rotation);
-void status_set_servo_speed(volatile CurrentStatus* status, uint8_t speed_lsb, uint8_t speed_msb);
-
-#ifdef IS_UNIT_TEST
-float uint8_to_float(uint8_t original);
-#endif
-
-
-#endif /* ifndef STATUS_H */
+#endif /* ifndef SPI_H */

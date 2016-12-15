@@ -34,6 +34,8 @@ const uint8_t BROADCAST_ID = 0xFE;
 
 const uint8_t NUM_SERVOS = 18;
 
+const uint16_t MAX_SERVO_SPEED = 0x01ff;
+
 //const uint16_t SERVO_TARGET_COMPLIANCE_MARGIN = 100;
 
 
@@ -85,21 +87,15 @@ void write_servo_data(uint8_t id, uint8_t address, const uint8_t* data, uint8_t 
 		new_data[i+1] = data[i];
 	}
 	
-<<<<<<< HEAD
-	send_servo_command(id, WRITE_DATA_INSTRUCTION, (void*)new_data, new_data_amount);
-=======
-	//spi_set_interrupts(false);
-	
 	send_servo_command(id, WRITE_DATA_INSTRUCTION, (void*)new_data, new_data_amount);
 
-	//spi_set_interrupts(true);
->>>>>>> 09f38ef7f37e3b5cc6af72cfb333bef74c78e459
-	
 	free(new_data);
 }
 
 ServoReply read_servo_data(uint8_t id, uint8_t address, uint8_t length)
 {
+	clear_uart_buffer();
+
 	spi_set_interrupts(false);
 	//Send datarequest instruction
 	uint8_t* new_data = (uint8_t*)malloc(2);
@@ -153,18 +149,9 @@ void send_servo_action(uint16_t threshold)
 #else
 void send_servo_action(uint16_t threshold)
 {
-<<<<<<< HEAD
-=======
-	//spi_set_interrupts(false);
->>>>>>> 09f38ef7f37e3b5cc6af72cfb333bef74c78e459
 	send_servo_command(BROADCAST_ID, ACTION_INSTRUCTION, 0, 0);
 	while(!servos_are_done_rotating(threshold))
 		;
-<<<<<<< HEAD
-=======
-		
-	//spi_set_interrupts(true);
->>>>>>> 09f38ef7f37e3b5cc6af72cfb333bef74c78e459
 }
 #endif
 
@@ -260,7 +247,7 @@ void set_servo_rotation_speed(uint8_t id, uint16_t angle)
 
 void set_servo_compliance_thresholds(uint8_t id)
 {
-	uint8_t data[4] = {0x40, 0x01, 0x01, 0x40};
+	uint8_t data[4] = {0x02, 0x01, 0x01, 0x02};
 
 	write_servo_data(id, CCW_COMPLIANCE_SLOPE_ADDRESS, data, 4);
 }
@@ -276,14 +263,24 @@ void init_all_servos()
 		_delay_ms(1);
 		reset_servo_bounds(i);
 		_delay_ms(1);
-		set_servo_rotation_speed(i, 0x006f);
+		set_servo_rotation_speed(i, 0x00ff);
 		_delay_ms(1);
 		set_servo_compliance_thresholds(i);
 		_delay_ms(1);
 	}
 }
 
-
+void set_servo_speed(uint16_t servo_speed) {
+	if(servo_speed > MAX_SERVO_SPEED) {
+		servo_speed = MAX_SERVO_SPEED;
+	}
+	if(servo_speed == 0) {
+		servo_speed = 0x0001;
+	}
+	for(uint8_t i = 1; i < 19; ++i) {
+		set_servo_rotation_speed(i, servo_speed);
+	}
+}
 
 void set_leg_angles(enum LegIds leg_index, uint16_t* angles)
 {

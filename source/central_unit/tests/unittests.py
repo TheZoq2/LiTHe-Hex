@@ -26,7 +26,7 @@ import main
 import math
 import pdb
 import queue
-import communication.angle_calculation as angle_calculation
+import angle_calculation
 
 SENSOR_ARGS = (1, 2, 3, 4, 5, 0x01, 0xFE)
 DEBUG_STRING_NORMAL = "hello"

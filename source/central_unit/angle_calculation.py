@@ -16,11 +16,19 @@
 # You should have received a copy of the GNU General Public License
 # along with LiTHe Hex.  If not, see <http://www.gnu.org/licenses/>.
 
-MAX_BYTE_SIZE = 255
-MAX_SIGNED_BYTE_SIZE = 127
-MAX_16BIT_SIZE = (MAX_BYTE_SIZE + 1)**2 - 1
+import math
+import constants
 
-SENSOR_Y_DIST = 0.14
-SENSOR_X_DIST = 0.16
+# All these functions return angles in degrees
+def get_right_angle(sensor_data):
+    return math.atan((sensor_data.ir_front_right - sensor_data.ir_back_right) / 
+                     constants.SENSOR_Y_DIST) * (180/math.pi)
 
 
+def get_left_angle(sensor_data):
+    return math.atan((sensor_data.ir_front_left - sensor_data.ir_back_left) / 
+                     constants.SENSOR_Y_DIST) * (180/math.pi)
+
+
+def get_average_angle(sensor_data):
+    return ((get_left_angle(sensor_data) + get_right_angle(sensor_data))/2)

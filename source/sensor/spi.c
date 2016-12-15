@@ -15,38 +15,41 @@
 // You should have received a copy of the GNU General Public License
 // along with LiTHe Hex.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef STATUS_H
-#define STATUS_H 
+#include "spi.h"
 
-#include <stdint.h>
-#include <stdbool.h>
+#define ACK 0x0F
+#define FAIL 0x1F
 
-typedef struct {
+void spi_init() {
+    // Set MISO output, all others input
+    DDRB &= 0x0F;
+    DDRB |= (1 << DDB6);
+	// Enable SPI and interrupt enable bit
+	SPCR = (1<<SPE) | (1<<SPIE);
+}
 
-    volatile float x_speed;
+uint8_t spi_receive_byte() {
 
-    volatile float y_speed;
+	// Wait for reception complete 
+	while(!((SPSR) & (1<<SPIF)));
 
-    volatile float rotation;
-	
-	volatile bool is_rotating;
+	// Return Data Register
+	return SPDR;
+}
 
-    volatile uint16_t servo_speed;
+uint8_t spi_transmit_byte(uint8_t data) {
+	SPDR = data;
+	// Wait for reception complete
+	while(!((SPSR) & (1<<SPIF)));
 
-    volatile bool return_to_neutral;
+	// Return Data Register
+	return SPDR;
+}
 
-    volatile bool auto_mode;
+void spi_transmit_ack() {
+    spi_transmit_byte(ACK);
+}
 
-} CurrentStatus;
-
-void status_init(volatile CurrentStatus* status);
-void status_set_speed(volatile CurrentStatus* status, uint8_t x_speed, uint8_t y_speed);
-void status_set_rotation(volatile CurrentStatus* status, uint8_t rotation);
-void status_set_servo_speed(volatile CurrentStatus* status, uint8_t speed_lsb, uint8_t speed_msb);
-
-#ifdef IS_UNIT_TEST
-float uint8_to_float(uint8_t original);
-#endif
-
-
-#endif /* ifndef STATUS_H */
+void spi_transmit_fail() {
+    spi_transmit_byte(FAIL);
+}

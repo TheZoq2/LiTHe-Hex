@@ -20,6 +20,7 @@ void status_init(volatile CurrentStatus* status) {
     status->servo_speed = 0.0;
     status->return_to_neutral = false;
     status->auto_mode = false;
+	status->servo_speed = false;
 }
 
 void status_set_speed(volatile CurrentStatus* status, uint8_t x_speed, uint8_t y_speed) {
@@ -32,6 +33,6 @@ void status_set_rotation(volatile CurrentStatus* status, uint8_t rotation) {
 }
 
 void status_set_servo_speed(volatile CurrentStatus* status, uint8_t speed_lsb, uint8_t speed_msb) {
-    status->servo_speed = (float)(speed_lsb | (speed_msb << 8)) / MAX_16_BIT;
+    status->servo_speed = (uint16_t)(speed_lsb | (speed_msb << 8));
 }
 

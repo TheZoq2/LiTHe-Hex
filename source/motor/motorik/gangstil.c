@@ -30,11 +30,13 @@ const size_t RM = 3;
 const size_t LB = 4;
 const size_t RB = 5;
 
+const int   ROT_INDEPENDENCE_FROM_MOV_RATIO = 100;
+const int   TARG_NEUTRAL_RATIO          = 2;
 const float FRONT_LEG_JOINT_X           = 0.12;
 const float FRONT_LEG_JOINT_Y           = 0.06;
 const float MID_LEG_JOINT_Y             = 0.1;
-const float HIGH                        = 0.03;
-const float GROUNDED                    = -0.14;
+const float HIGH                        = 0.02;
+const float GROUNDED                    = -0.13;
 const float MAX_DIST                    = 0.14;
 const float VERT_MID_LEG_BORDER_OFFSET  = 0.06;
 const float VERT_HEAD_LEG_BORDER_OFFSET = -0.03;
@@ -53,7 +55,7 @@ const float STANDUP_LEG_DISTANCE = 0.16;
 const uint16_t STANDARD_THRESHOLD = 100;
 const uint16_t HIGH_PRECISION_THRESHOLD = 20;
 #else //AVR constants
-const uint16_t STANDARD_THRESHOLD = 150;
+const uint16_t STANDARD_THRESHOLD = 100;
 const uint16_t HIGH_PRECISION_THRESHOLD = 100;
 #endif
 
@@ -232,6 +234,7 @@ Point2D vector_between_points(Point2D current, Point2D target)
 	return result;
 }
 
+
 Point2D divide_point2D(Point2D vector, float divisor)
 {
 	Point2D result;
@@ -240,6 +243,7 @@ Point2D divide_point2D(Point2D vector, float divisor)
 
 	return result;
 }
+
 
 Point2D add_point2D(Point2D point1, Point2D point2)
 {
@@ -279,7 +283,7 @@ void execute_step(Point2D * current, Point2D * target, bool lrlRaised){
         z[RB] = GROUNDED + HIGH;
     }
 
-	const uint8_t STEP_AMOUNT = 2;
+	const uint8_t STEP_AMOUNT = 1;
 
 	Point2D intermediate_positions[NUM_LEGS];
 	Point2D step_lengths[NUM_LEGS];
@@ -339,8 +343,8 @@ Point2D get_default_leg_position(size_t leg){
 }
 
 
-Point2D get_leg_position_from_radius
-			(size_t leg, float distance_from_body, float outer_leg_x_offset){
+//Frans, comment your code. This is starting to get to me.
+Point2D get_leg_position_from_radius(size_t leg, float distance_from_body, float outer_leg_x_offset){
     Point2D res;
     if (leg < 2){   //front
         res.x = distance_from_body / sqrt(2) + outer_leg_x_offset;
@@ -595,28 +599,37 @@ float scale_legs(Point2D * targ, Point2D * curr, float * scale, bool lrlRaised){
  * determine what direction each leg should be moved, relative to the body (away
  * from target, with negative rotation, if feet are grounded).
  */
-void direct_legs(float rot, Point2D * targ, Point2D * current, Point2D req, bool lrlRaised){
-    Point2D legRelativeRobotMid;
+void direct_legs(float rot, Point2D * targ, Point2D * current, Point2D goal, bool lrl_raised){
+    for(size_t leg = 0; leg < NUM_LEGS; ++leg){
+    	Point2D leg_rel_robot_mid;
 
-    for(size_t leg = LF; leg < NUM_LEGS; ++leg){
         Point2D joint = joint_position(leg);
-        legRelativeRobotMid.x = current[leg].x + joint.x;
-        legRelativeRobotMid.y = current[leg].y + joint.y;
+        leg_rel_robot_mid.x = current[leg].x + joint.x;
+        leg_rel_robot_mid.y = current[leg].y + joint.y;
+        Point2D neutral = get_default_leg_position(leg);
 
+		bool leg_should_be_raised = lrl_raised == (leg == LF || leg == RM || leg == LB);
 
-        if (lrlRaised == (leg == 0 || leg == 3 || leg == 4)){ //move legs "away" from position (body towards)
-            targ[leg].x =  req.x + cos(rot) * legRelativeRobotMid.x - sin(rot) * legRelativeRobotMid.y;
-            targ[leg].y =  req.y + sin(rot) * legRelativeRobotMid.x + cos(rot) * legRelativeRobotMid.y;
+        if (leg_should_be_raised){
+
+            targ[leg].x = goal.x + cos(rot) * leg_rel_robot_mid.x - sin(rot) * leg_rel_robot_mid.y;
+            targ[leg].y = goal.y + sin(rot) * leg_rel_robot_mid.x + cos(rot) * leg_rel_robot_mid.y;
         }
-        else{   //move legs "towards" target position (step)
-            targ[leg].x =   - req.x  + cos(rot) * legRelativeRobotMid.x + sin(rot) * legRelativeRobotMid.y;
-            targ[leg].y =   - req.y  - sin(rot) * legRelativeRobotMid.x + cos(rot) * legRelativeRobotMid.y;
+        else{
+            targ[leg].x = - goal.x  + cos(rot) * leg_rel_robot_mid.x + sin(rot) * leg_rel_robot_mid.y;
+            targ[leg].y = - goal.y  - sin(rot) * leg_rel_robot_mid.x + cos(rot) * leg_rel_robot_mid.y;
         }
         targ[leg].x = targ[leg].x - joint.x;
         targ[leg].y = targ[leg].y - joint.y;
-    }
 
+        if (leg_should_be_raised){ //normalize raised legs, prevents jumbling of legs
+            targ[leg].x = (targ[leg].x * TARG_NEUTRAL_RATIO + neutral.x)/(TARG_NEUTRAL_RATIO + 1);
+            targ[leg].y = (targ[leg].y * TARG_NEUTRAL_RATIO + neutral.y)/(TARG_NEUTRAL_RATIO + 1);
+        }
+    }
 }
+
+
 /**
  * @brief assume_standardized_stance Positions the robot in the default position by moving
  * 3 legs at a time.
@@ -750,35 +763,44 @@ float work_towards_goal(float rot, Point2D goal, Point2D * current){
     float requestedDownscale = scale_goal(& goal); //allows for detailed steering with small joystick tilts.
 
     if (goal.x == 0 && goal.y == 0 && rot == 0){
-        return 1;   //no movement
+        for (uint32_t i = 0; i < 1000; ++i)
+			;
+		return 1;   //no movement
 	}
 	
     Point2D targ[NUM_LEGS];
     float scale[NUM_LEGS];
 
     //printf("Working towards goal \n");
+    float goal_scaledown_lrl = 1;
+    float goal_scaledown_rlr = 1;
 
     //lrl
+    if (rot != 0){
     direct_legs(0, targ, current, goal, true);
-    float goalScaledown_lrl = scale_legs(targ, current, scale, true);
+        goal_scaledown_lrl = scale_legs(targ, current, scale, true);
+    }
 
     Point2D scaledGoal;
-    scaledGoal.x = goalScaledown_lrl * goal.x;
-    scaledGoal.y = goalScaledown_lrl * goal.y;
+    scaledGoal.x = goal_scaledown_lrl * goal.x;
+    scaledGoal.y = goal_scaledown_lrl * goal.y;
 
-    direct_legs(rot, targ, current, scaledGoal, true);
+    direct_legs(rot*(goal_scaledown_lrl + ROT_INDEPENDENCE_FROM_MOV_RATIO)/
+                (ROT_INDEPENDENCE_FROM_MOV_RATIO + 1), targ, current, scaledGoal, true);
     float scaledown0 = scale_legs(targ, current, scale, true);
 
     float lrlLegMoveDist = sqrtf(powf(targ[RF].x - current[RF].x, 2) + powf(targ[RF].y - current[RF].y, 2));
 
     //rlr
+    if (rot != 0){
     direct_legs(0, targ, current, goal, false);
-    float goal_scaledown_rlr = scale_legs(targ, current, scale, false);
-
+        goal_scaledown_rlr = scale_legs(targ, current, scale, false);
+    }
     scaledGoal.x = goal_scaledown_rlr * goal.x;
     scaledGoal.y = goal_scaledown_rlr * goal.y;
 
-    direct_legs(rot, targ, current, goal, false);
+    direct_legs(rot*(goal_scaledown_rlr + ROT_INDEPENDENCE_FROM_MOV_RATIO)/
+                (ROT_INDEPENDENCE_FROM_MOV_RATIO + 1), targ, current, scaledGoal, false);
     float scaledown_rlr = scale_legs(targ, current, scale, false);
 
     float rlr_leg_move_dist = sqrtf(powf(targ[LF].x - current[LF].x, 2) + powf(targ[LF].y - current[LF].y, 2));
@@ -790,7 +812,7 @@ float work_towards_goal(float rot, Point2D goal, Point2D * current){
 
     if (lrlLegMoveDist > rlr_leg_move_dist){
         best_scale = scaledown0 * 0.9;
-        best_goal_scale = goalScaledown_lrl;
+        best_goal_scale = goal_scaledown_lrl;
         lrl_raised = true;
     }
     else {
@@ -800,21 +822,22 @@ float work_towards_goal(float rot, Point2D goal, Point2D * current){
     }
 
     //float bestscale = maxf(scaledown0, scaledown1) * 0.9;
-    if (best_scale < 0.001){
+    if (best_scale < 0.01){
         return best_scale; //too little movement to be relevant executing
     }
 
-    rot = rot * best_scale;      //note: requested downscale dependant on joystick tilt; unrelated to rotation
+    rot = rot * best_scale *(best_goal_scale + ROT_INDEPENDENCE_FROM_MOV_RATIO)/
+            (ROT_INDEPENDENCE_FROM_MOV_RATIO + 1);
     goal.x = goal.x * best_scale * requestedDownscale * best_goal_scale;
     goal.y = goal.y * best_scale * requestedDownscale * best_goal_scale;
 
     direct_legs(rot, targ, current, goal, lrl_raised);
 
-
 	////spi_set_interrupts(false);
     execute_step(current, targ, lrl_raised);
 	////spi_set_interrupts(true);
-    return best_scale;
+    return best_scale * (best_goal_scale + ROT_INDEPENDENCE_FROM_MOV_RATIO)/
+            (ROT_INDEPENDENCE_FROM_MOV_RATIO + 1);
 }
 
 
@@ -851,4 +874,3 @@ void rotate_set_angle(float angle, Point2D * current){
 
     assume_standardized_stance(current);
 }
-

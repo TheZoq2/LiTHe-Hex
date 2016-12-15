@@ -22,11 +22,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-<<<<<<< HEAD
-CurrentStatus* current_status;
-=======
 volatile CurrentStatus* current_status;
->>>>>>> 09f38ef7f37e3b5cc6af72cfb333bef74c78e459
 
 #ifndef IS_X86
 void build_spi_reply_frame(Frame *frame_trans);
@@ -53,14 +49,6 @@ ISR(SPI_STC_vect) {
 }
 #endif
 
-void rotate_to_position(float x, float y, float r, Point2D* current)
-{
-	Point2D point;
-	point.x = x;
-	point.y = y;
-	
-	work_towards_goal(r, point, current);
-}
 
 int main(void)
 {
@@ -100,6 +88,10 @@ int main(void)
 #ifndef IS_X86
 	
 	spi_set_interrupts(true);
+	
+	uint16_t servo_speed = 0;
+
+    bool speed_changed = false;
 
 	while(1)
 	{
@@ -116,9 +108,18 @@ int main(void)
             float x_speed = current_status->x_speed;
             float y_speed = current_status->y_speed;
             float rotation = current_status->rotation;
-            float servo_speed = current_status->servo_speed;
+			if (servo_speed != current_status->servo_speed) {
+				speed_changed = true;
+			} else {
+				speed_changed = false;	
+			}
+            servo_speed = current_status->servo_speed;
             bool auto_mode = current_status->auto_mode;
 			spi_set_interrupts(true);
+			
+			if (speed_changed) {
+				set_servo_speed(current_status->servo_speed);
+			}
 			
             if (x_speed != 0.0 || y_speed != 0.0 || !auto_mode) {
 
@@ -149,7 +150,7 @@ int main(void)
 
 		//printf("Walking one step\n\n\n\n");
 
-		work_towards_goal(0.5, goal, current_position);
+		work_towards_goal(0, goal, current_position);
 	}
 #endif
 

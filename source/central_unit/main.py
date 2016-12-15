@@ -37,9 +37,10 @@ try:
 except ImportError:
     pass
 
-AUTO_BUTTON_PIN = 37 
+AUTO_BUTTON_PIN = 37
 SLEEP_TIME_AUTO_MODE = 0.05
 SLEEP_TIME_MANUAL_MODE = 0.1
+SERVO_SPEED_SCALER = 120
 
 def main():
 
@@ -53,7 +54,7 @@ def main():
     prev_x, prev_y, prev_rot, \
         prev_speed, auto, button_temp, decision_packet = setup_variables()
     motor_spi, sensor_spi = setup_avr_communication()
-        
+
 
     # Main loop
     while True:
@@ -65,7 +66,7 @@ def main():
             os.system('clear')
             print("Auto mode!")
             auto, prev_speed, prev_x, prev_y, prev_rot = do_auto_mode_iteration(
-                sensor_spi, motor_spi, send_queue, 
+                sensor_spi, motor_spi, send_queue,
                 receive_queue, decision_packet,
                 prev_speed, prev_x, prev_y, prev_rot);
             # TODO increase frequency
@@ -73,10 +74,10 @@ def main():
 
         else:
             # Manual mode
-            # os.system('clear')
-            print("Entering manual mode!")
+            #os.system('clear')
+            #print("Entering manual mode!")
             auto, prev_speed, prev_x, prev_y, prev_rot = do_manual_mode_iteration(
-                sensor_spi, motor_spi, send_queue, receive_queue, 
+                sensor_spi, motor_spi, send_queue, receive_queue,
                 prev_speed, prev_x, prev_y, prev_rot)
             time.sleep(SLEEP_TIME_MANUAL_MODE)
 
@@ -105,7 +106,7 @@ def setup_avr_communication():
 
 def setup_variables():
     prev_x = prev_y = prev_rot = prev_speed = None
-    auto = True 
+    auto = False 
     button_temp = 0
     decision_packet = decision_making.DecisionPacket()
     return prev_x, prev_y, prev_rot, prev_speed, auto, button_temp, decision_packet
@@ -131,7 +132,7 @@ def receive_server_packet(receive_queue):
     packets from building up in the queue. Returns the latest
     packet.
     """
-    packet = None 
+    packet = None
     while not receive_queue.empty():
         packet = receive_queue.get()
     return packet
@@ -186,7 +187,6 @@ def do_manual_mode_iteration(sensor_spi, motor_spi, send_queue, receive_queue,
     try:
         sensor_data = avr_communication.get_sensor_data(sensor_spi)
         send_queue.put(web.ServerSendPacket(sensor_data))
-        print("Sent sensor data")
     except avr_communication.CommunicationError as e:
         print("Could not read sensor data: " + str(e))
 
@@ -195,23 +195,22 @@ def do_manual_mode_iteration(sensor_spi, motor_spi, send_queue, receive_queue,
     packet = receive_server_packet(receive_queue)
 
     if packet is not None:
-        
         if packet.auto is not None:
             auto = packet.auto
-        if packet.has_motion_command():
-            print(packet.raw)
-            servo_speed = (int)(packet.thrust * constants.MAX_16BIT_SIZE)
-            
+        elif packet.return_to_neutral is not None and packet.return_to_neutral:
+            avr_communication.back_to_neutral(motor_spi)
+
+        elif packet.has_motion_command():
+            servo_speed = (int)(packet.thrust * constants.MAX_16BIT_SIZE / SERVO_SPEED_SCALER)
+
             return_to_neutral = packet.return_to_neutral
 
-            if return_to_neutral is not None and return_to_neutral:
-                avr_communication.back_to_neutral(motor_spi)
-
             if prev_speed != servo_speed:
+                # x_speed from server = -y_speed and y_speed from server = -x_speed
                 avr_communication.set_servo_speed(motor_spi, servo_speed, 100)
 
-            x_speed = convert_to_sendable_byte(packet.x)
-            y_speed = convert_to_sendable_byte(packet.y)
+            x_speed = convert_to_sendable_byte(-packet.y)
+            y_speed = convert_to_sendable_byte(-packet.x)
             rotation = convert_to_sendable_byte(packet.rotation)
 
             if x_speed != prev_x or y_speed != prev_y or rotation != prev_rot:
@@ -233,8 +232,8 @@ def send_decision_avr(spi, decision_packet, prev_speed, prev_x, prev_y, prev_rot
 
     if decision_packet.decision == decision_making.GO_FORWARD:
         x_speed = convert_to_sendable_byte(1)
-        y_speed = convert_to_sendable_byte(0)
-        rotation = convert_to_sendable_byte(0)
+        y_speed = convert_to_sendable_byte(decision_packet.regulate_command_y)
+        rotation = convert_to_sendable_byte(decision_packet.regulate_goal_angle)
         # print("Goal angle:", decision_packet.regulate_goal_angle)
 
     elif decision_packet.decision == decision_making.TURN_LEFT:
@@ -251,7 +250,7 @@ def send_decision_avr(spi, decision_packet, prev_speed, prev_x, prev_y, prev_rot
         x_speed = convert_to_sendable_byte(0)
         y_speed = convert_to_sendable_byte(0)
         rotation = convert_to_sendable_byte(0)
-    
+
     # Only send command if it is different from last time
     if prev_speed != decision_packet.speed:
         avr_communication.set_servo_speed(spi, decision_packet.speed, timeout=100)
