@@ -130,11 +130,36 @@ def receive_server_packet(receive_queue):
     Receives the latest data packet from the server
     by dequeueing all elements from the queue, to prevent
     packets from building up in the queue. Returns the latest
-    packet.
+    packet. If one of the packets contain an auto_mode command,
+    it makes sure that the packet being returned contains that
+    command.
     """
     packet = None
-    while not receive_queue.empty():
+    if not receive_queue.empty():
         packet = receive_queue.get()
+        while not receive_queue.empty():
+            temp = receive_queue.get()
+            if temp.x is not None:
+                packet.x = temp.x
+                packet.y = temp.y
+                packet.rotation = temp.rotation
+                packet.thrust = temp.thrust
+            if temp.auto is not None:
+                packet.auto = temp.auto
+            if temp.base_movement is not None:
+                packet.base_movement = temp.base_movement
+            if temp.command_y is not None:
+                packet.command_y = temp.command_y
+            if temp.goal_angle is not None:
+                packet.goal_angle = temp.goal_angle
+            if temp.angle_scaledown is not None:
+                packet.angle_scaledown = temp.angle_scaledown
+            if temp.movement_scaledown is not None:
+                packet.movement_scaledown = temp.movement_scaledown
+            if temp.angle_adjustment_border is not None:
+                packet.angle_adjustment_border = temp.angle_adjustment_border
+            if temp.return_to_neutral is not None:
+                packet.return_to_neutral = temp.return_to_neutral
     return packet
 
 
