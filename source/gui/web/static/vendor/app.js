@@ -21487,7 +21487,7 @@ var _user$project$Sensors$sensorNames = {
 								return _.lidar;
 							},
 							_1: 'LIDAR',
-							_2: {ctor: '_Tuple2', _0: 0, _1: 20}
+							_2: {ctor: '_Tuple2', _0: 0, _1: 5}
 						},
 						_1: {
 							ctor: '::',

@@ -31,4 +31,4 @@ def get_left_angle(sensor_data):
 
 
 def get_average_angle(sensor_data):
-    return ((get_left_angle(sensor_data) + get_right_angle(sensor_data))/2)
+    return ((math.fabs(get_left_angle(sensor_data)) + math.fabs(get_right_angle(sensor_data)))/2)
