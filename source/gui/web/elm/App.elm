@@ -561,6 +561,14 @@ viewSliderControl model =
                 , Button.render Mdl
                     [ 1 ]
                     model.mdl
+                    [ { joy | rotation = 0 }
+                        |> AxisData
+                        |> Button.onClick
+                    ]
+                    [ text "Stop rotation" ]
+                , Button.render Mdl
+                    [ 2 ]
+                    model.mdl
                     [ Button.onClick ResetBot ]
                     [ text "Reset" ]
                 ]

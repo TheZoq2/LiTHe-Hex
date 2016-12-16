@@ -22292,15 +22292,41 @@ var _user$project$App$viewSliderControl = function (model) {
 														model.mdl,
 														{
 															ctor: '::',
-															_0: _MichaelCombs28$elm_mdl$Material_Button$onClick(_user$project$App$ResetBot),
+															_0: _MichaelCombs28$elm_mdl$Material_Button$onClick(
+																_user$project$App$AxisData(
+																	_elm_lang$core$Native_Utils.update(
+																		joy,
+																		{rotation: 0}))),
 															_1: {ctor: '[]'}
 														},
 														{
 															ctor: '::',
-															_0: _elm_lang$html$Html$text('Reset'),
+															_0: _elm_lang$html$Html$text('Stop rotation'),
 															_1: {ctor: '[]'}
 														}),
-													_1: {ctor: '[]'}
+													_1: {
+														ctor: '::',
+														_0: A5(
+															_MichaelCombs28$elm_mdl$Material_Button$render,
+															_user$project$App$Mdl,
+															{
+																ctor: '::',
+																_0: 2,
+																_1: {ctor: '[]'}
+															},
+															model.mdl,
+															{
+																ctor: '::',
+																_0: _MichaelCombs28$elm_mdl$Material_Button$onClick(_user$project$App$ResetBot),
+																_1: {ctor: '[]'}
+															},
+															{
+																ctor: '::',
+																_0: _elm_lang$html$Html$text('Reset'),
+																_1: {ctor: '[]'}
+															}),
+														_1: {ctor: '[]'}
+													}
 												}
 											}
 										}
