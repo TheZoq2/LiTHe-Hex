@@ -30,11 +30,11 @@ output_file = "/tmp/hexsim/command"
 
 CORRIDOR_WIDTH = 0.8
 SENSOR_OFFSET = 0.1
-ANGLE_SCALEDOWN = 0.2
+ANGLE_SCALEDOWN = 0.6
 MOVEMENT_SCALEDOWN = 0.1
-COMMAND_Y_THRESHOLD = 0.03
-ANGLE_THRESHOLD = 0.1
-ANGLE_DIFF_THRESHOLD = 20
+COMMAND_Y_THRESHOLD = 0.04
+ANGLE_THRESHOLD = 8
+ANGLE_DIFF_THRESHOLD = 30
 BASE_MOVEMENT = "0.1" #placeholder forward movement.
 
 
@@ -85,7 +85,7 @@ def regulate(sensor_data, decision_packet):
 
     avg_left = _avg(temp_sensor_data.ir_front_left, temp_sensor_data.ir_back_left)
     avg_right = _avg(temp_sensor_data.ir_front_right, temp_sensor_data.ir_back_right)
-    angle = _check_angle(temp_sensor_data, _to_radians(temp_sensor_data.average_angle))
+    angle = _check_angle(temp_sensor_data, temp_sensor_data.average_angle)
 
     #dist_to_left_wall = math.cos(angle) * (constants.SENSOR_Y_DIST / 2 + avg_left)
     #dist_to_right_wall = math.cos(angle) * (constants.SENSOR_Y_DIST / 2 + avg_right)
@@ -96,18 +96,19 @@ def regulate(sensor_data, decision_packet):
     print("average left: ", avg_left)
     print("average right: ", avg_right)
     
-    if (avg_left == 0):
+    
+    if (avg_right == 0 and avg_left == 0):
+        offset = 0
+
+    elif (avg_left == 0):
         offset = avg_right + constants.SENSOR_X_DIST/2 - CORRIDOR_WIDTH/2
     
     elif (avg_right == 0):
-        offset = CORRIDOR_WIDTH/2 - avg_left + constants.SENSOR_X_DIST/2
+        offset = -(avg_left + constants.SENSOR_X_DIST/2 - CORRIDOR_WIDTH/2)
     
-    elif (avg_right == 0 and avg_left == 0):
-        offset = 0
-    
-    elif (abs(temp_sensor_data.left_angle - temp_sensor_data.right_angle) > ANGLE_DIFF_THRESHOLD) :
+    elif (abs(temp_sensor_data.left_angle + temp_sensor_data.right_angle) > ANGLE_DIFF_THRESHOLD) :
         angle = 0
-        offset = 0
+        #offset = 0
     
     else:
         offset = ((CORRIDOR_WIDTH/2 - avg_left) + (avg_right - CORRIDOR_WIDTH/2))/2
@@ -121,17 +122,20 @@ def regulate(sensor_data, decision_packet):
             
     decision_packet.regulate_command_y = min(max(decision_packet.regulate_command_y, -1), 1)
 
-    print("angle: ", angle)
+
     if (angle <= ANGLE_THRESHOLD and angle >= -ANGLE_THRESHOLD):
         angle = 0
-        
-    decision_packet.regulate_goal_angle = angle * ANGLE_SCALEDOWN
+    
+    print("angle: ", angle)
+    print("offset: ", offset)
+
+    print("command_y: ", decision_packet.regulate_command_y)
+    decision_packet.regulate_goal_angle = _to_radians(angle) * ANGLE_SCALEDOWN
     #Cap -1 < regulate_goal_angle < 1
     decision_packet.regulate_goal_angle = min(max(decision_packet.regulate_goal_angle, -1), 1)
+    print("goal_angle: ", decision_packet.regulate_goal_angle)
     # scale down with 0.2
     #TODO: test this again, because scaledown was added after last test.
     #decision_packet.regulate_goal_angle *= 0.2
 
-    print("offset: ", offset)
-    print("goal_angle: ", decision_packet.regulate_goal_angle)
-    print("command_y: ", decision_packet.regulate_command_y)
+
