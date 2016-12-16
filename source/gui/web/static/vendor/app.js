@@ -22123,6 +22123,89 @@ var _user$project$App$createInputField = F3(
 				}
 			});
 	});
+var _user$project$App$viewParameters = function (model) {
+	return {
+		ctor: '::',
+		_0: A2(
+			_MichaelCombs28$elm_mdl$Material_Card$view,
+			{
+				ctor: '::',
+				_0: _MichaelCombs28$elm_mdl$Material_Elevation$e2,
+				_1: {ctor: '[]'}
+			},
+			{
+				ctor: '::',
+				_0: A2(
+					_MichaelCombs28$elm_mdl$Material_Card$title,
+					{ctor: '[]'},
+					{
+						ctor: '::',
+						_0: A2(
+							_MichaelCombs28$elm_mdl$Material_Card$head,
+							{ctor: '[]'},
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html$text('Regulation parameters'),
+								_1: {ctor: '[]'}
+							}),
+						_1: {ctor: '[]'}
+					}),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_MichaelCombs28$elm_mdl$Material_Card$actions,
+						{
+							ctor: '::',
+							_0: _MichaelCombs28$elm_mdl$Material_Card$border,
+							_1: {ctor: '[]'}
+						},
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							A2(
+								_elm_lang$core$List$indexedMap,
+								_user$project$App$createInputField(model),
+								{
+									ctor: '::',
+									_0: {ctor: '_Tuple2', _0: 'Angle scaledown', _1: 'angle_scaledown'},
+									_1: {
+										ctor: '::',
+										_0: {ctor: '_Tuple2', _0: 'Movement scaledown', _1: 'movement_scaledown'},
+										_1: {
+											ctor: '::',
+											_0: {ctor: '_Tuple2', _0: 'Angle adjustment', _1: 'angle_adjustment_border'},
+											_1: {ctor: '[]'}
+										}
+									}
+								}),
+							{
+								ctor: '::',
+								_0: A5(
+									_MichaelCombs28$elm_mdl$Material_Button$render,
+									_user$project$App$Mdl,
+									{
+										ctor: '::',
+										_0: 0,
+										_1: {ctor: '[]'}
+									},
+									model.mdl,
+									{
+										ctor: '::',
+										_0: _MichaelCombs28$elm_mdl$Material_Button$onClick(_user$project$App$SendParameters),
+										_1: {ctor: '[]'}
+									},
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html$text('duck'),
+										_1: {ctor: '[]'}
+									}),
+								_1: {ctor: '[]'}
+							})),
+					_1: {ctor: '[]'}
+				}
+			}),
+		_1: {ctor: '[]'}
+	};
+};
 var _user$project$App$SelectTab = function (a) {
 	return {ctor: 'SelectTab', _0: a};
 };
@@ -22292,15 +22375,41 @@ var _user$project$App$viewSliderControl = function (model) {
 														model.mdl,
 														{
 															ctor: '::',
-															_0: _MichaelCombs28$elm_mdl$Material_Button$onClick(_user$project$App$ResetBot),
+															_0: _MichaelCombs28$elm_mdl$Material_Button$onClick(
+																_user$project$App$AxisData(
+																	_elm_lang$core$Native_Utils.update(
+																		joy,
+																		{rotation: 0}))),
 															_1: {ctor: '[]'}
 														},
 														{
 															ctor: '::',
-															_0: _elm_lang$html$Html$text('Reset'),
+															_0: _elm_lang$html$Html$text('Stop rotation'),
 															_1: {ctor: '[]'}
 														}),
-													_1: {ctor: '[]'}
+													_1: {
+														ctor: '::',
+														_0: A5(
+															_MichaelCombs28$elm_mdl$Material_Button$render,
+															_user$project$App$Mdl,
+															{
+																ctor: '::',
+																_0: 2,
+																_1: {ctor: '[]'}
+															},
+															model.mdl,
+															{
+																ctor: '::',
+																_0: _MichaelCombs28$elm_mdl$Material_Button$onClick(_user$project$App$ResetBot),
+																_1: {ctor: '[]'}
+															},
+															{
+																ctor: '::',
+																_0: _elm_lang$html$Html$text('Reset'),
+																_1: {ctor: '[]'}
+															}),
+														_1: {ctor: '[]'}
+													}
 												}
 											}
 										}
@@ -22379,92 +22488,16 @@ var _user$project$App$viewControl = function (model) {
 			_1: {
 				ctor: '::',
 				_0: (!model.autoMode) ? ((!_elm_lang$core$Native_Utils.eq(model.joystickIndex, _elm_lang$core$Maybe$Nothing)) ? _user$project$Joystick$joystickDisplay(model.joystick) : _user$project$App$viewSliderControl(model)) : A2(
-					_MichaelCombs28$elm_mdl$Material_Card$view,
-					{
-						ctor: '::',
-						_0: _MichaelCombs28$elm_mdl$Material_Elevation$e2,
-						_1: {ctor: '[]'}
-					},
-					{
-						ctor: '::',
-						_0: A2(
-							_MichaelCombs28$elm_mdl$Material_Card$title,
-							{ctor: '[]'},
-							{
-								ctor: '::',
-								_0: A2(
-									_MichaelCombs28$elm_mdl$Material_Card$head,
-									{ctor: '[]'},
-									{
-										ctor: '::',
-										_0: _elm_lang$html$Html$text('Regulation parameters'),
-										_1: {ctor: '[]'}
-									}),
-								_1: {ctor: '[]'}
-							}),
-						_1: {
-							ctor: '::',
-							_0: A2(
-								_MichaelCombs28$elm_mdl$Material_Card$actions,
-								{
-									ctor: '::',
-									_0: _MichaelCombs28$elm_mdl$Material_Card$border,
-									_1: {ctor: '[]'}
-								},
-								A2(
-									_elm_lang$core$Basics_ops['++'],
-									A2(
-										_elm_lang$core$List$indexedMap,
-										_user$project$App$createInputField(model),
-										{
-											ctor: '::',
-											_0: {ctor: '_Tuple2', _0: 'Angle scaledown', _1: 'angle_scaledown'},
-											_1: {
-												ctor: '::',
-												_0: {ctor: '_Tuple2', _0: 'Movement scaledown', _1: 'movement_scaledown'},
-												_1: {
-													ctor: '::',
-													_0: {ctor: '_Tuple2', _0: 'Angle adjustment', _1: 'angle_adjustment_border'},
-													_1: {ctor: '[]'}
-												}
-											}
-										}),
-									{
-										ctor: '::',
-										_0: A5(
-											_MichaelCombs28$elm_mdl$Material_Button$render,
-											_user$project$App$Mdl,
-											{
-												ctor: '::',
-												_0: 0,
-												_1: {
-													ctor: '::',
-													_0: 2,
-													_1: {ctor: '[]'}
-												}
-											},
-											model.mdl,
-											{
-												ctor: '::',
-												_0: _MichaelCombs28$elm_mdl$Material_Button$onClick(_user$project$App$SendParameters),
-												_1: {ctor: '[]'}
-											},
-											{
-												ctor: '::',
-												_0: _elm_lang$html$Html$text('duck'),
-												_1: {ctor: '[]'}
-											}),
-										_1: {ctor: '[]'}
-									})),
-							_1: {ctor: '[]'}
-						}
-					}),
+					_elm_lang$html$Html$div,
+					{ctor: '[]'},
+					{ctor: '[]'}),
 				_1: {ctor: '[]'}
 			}
 		});
 };
 var _user$project$App$viewBody = function (model) {
-	return _elm_lang$core$Native_Utils.eq(model.selectedTab, 0) ? A2(
+	var currentTab = _elm_lang$core$Native_Utils.eq(model.selectedTab, 0) ? _user$project$App$viewControl(model) : (_elm_lang$core$Native_Utils.eq(model.selectedTab, 1) ? _user$project$App$viewDebug(model) : _user$project$App$viewParameters(model));
+	return A2(
 		_elm_lang$html$Html$div,
 		{
 			ctor: '::',
@@ -22476,19 +22509,7 @@ var _user$project$App$viewBody = function (model) {
 				}),
 			_1: {ctor: '[]'}
 		},
-		_user$project$App$viewControl(model)) : A2(
-		_elm_lang$html$Html$div,
-		{
-			ctor: '::',
-			_0: _elm_lang$html$Html_Attributes$style(
-				{
-					ctor: '::',
-					_0: {ctor: '_Tuple2', _0: 'padding', _1: '2rem'},
-					_1: {ctor: '[]'}
-				}),
-			_1: {ctor: '[]'}
-		},
-		_user$project$App$viewDebug(model));
+		currentTab);
 };
 var _user$project$App$view = function (model) {
 	return A4(
@@ -22554,7 +22575,11 @@ var _user$project$App$view = function (model) {
 					_1: {
 						ctor: '::',
 						_0: _elm_lang$html$Html$text('Debug'),
-						_1: {ctor: '[]'}
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$html$Html$text('Regulation parameters'),
+							_1: {ctor: '[]'}
+						}
 					}
 				},
 				_1: {ctor: '[]'}
