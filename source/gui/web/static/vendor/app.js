@@ -21414,6 +21414,25 @@ var _user$project$Joystick$axisData = _elm_lang$core$Native_Platform.incomingPor
 				A2(_elm_lang$core$Json_Decode$field, 'y', _elm_lang$core$Json_Decode$float));
 		},
 		A2(_elm_lang$core$Json_Decode$field, 'x', _elm_lang$core$Json_Decode$float)));
+var _user$project$Joystick$getElementPosition = _elm_lang$core$Native_Platform.outgoingPort(
+	'getElementPosition',
+	function (v) {
+		return v;
+	});
+var _user$project$Joystick$elementPosition = _elm_lang$core$Native_Platform.incomingPort(
+	'elementPosition',
+	A2(
+		_elm_lang$core$Json_Decode$andThen,
+		function (x) {
+			return A2(
+				_elm_lang$core$Json_Decode$andThen,
+				function (y) {
+					return _elm_lang$core$Json_Decode$succeed(
+						{x: x, y: y});
+				},
+				A2(_elm_lang$core$Json_Decode$field, 'y', _elm_lang$core$Json_Decode$int));
+		},
+		A2(_elm_lang$core$Json_Decode$field, 'x', _elm_lang$core$Json_Decode$int)));
 var _user$project$Joystick$JoystickData = F5(
 	function (a, b, c, d, e) {
 		return {x: a, y: b, rotation: c, thrust: d, reset: e};
@@ -21808,6 +21827,8 @@ var _user$project$KeyCode$s = 83;
 var _user$project$KeyCode$a = 65;
 var _user$project$KeyCode$w = 87;
 
+var _user$project$App$clickControlHeight = 300;
+var _user$project$App$clickControlWidth = 300;
 var _user$project$App$showMessage = function (str) {
 	return A2(
 		_MichaelCombs28$elm_mdl$Material_List$li,
@@ -21850,15 +21871,217 @@ var _user$project$App$viewDebug = function (model) {
 	};
 };
 var _user$project$App$initialJoystick = {x: 0, y: 0, rotation: 0, thrust: 1, reset: false};
-var _user$project$App$Model = F9(
-	function (a, b, c, d, e, f, g, h, i) {
-		return {phxSocket: a, messages: b, joystick: c, joystickIndex: d, sensorData: e, autoMode: f, selectedTab: g, parameters: h, mdl: i};
-	});
+var _user$project$App$Model = function (a) {
+	return function (b) {
+		return function (c) {
+			return function (d) {
+				return function (e) {
+					return function (f) {
+						return function (g) {
+							return function (h) {
+								return function (i) {
+									return function (j) {
+										return {phxSocket: a, mdl: b, messages: c, joystick: d, joystickIndex: e, sensorData: f, autoMode: g, selectedTab: h, parameters: i, lastClick: j};
+									};
+								};
+							};
+						};
+					};
+				};
+			};
+		};
+	};
+};
 var _user$project$App$Flags = function (a) {
 	return {host: a};
 };
 var _user$project$App$Mdl = function (a) {
 	return {ctor: 'Mdl', _0: a};
+};
+var _user$project$App$ElementPosition = function (a) {
+	return {ctor: 'ElementPosition', _0: a};
+};
+var _user$project$App$OnControlClick = function (a) {
+	return {ctor: 'OnControlClick', _0: a};
+};
+var _user$project$App$onClickLocation = A2(
+	_elm_lang$html$Html_Events$on,
+	'click',
+	A2(
+		_elm_lang$core$Json_Decode$map,
+		_user$project$App$OnControlClick,
+		A3(
+			_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
+			'pageY',
+			_elm_lang$core$Json_Decode$int,
+			A3(
+				_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
+				'pageX',
+				_elm_lang$core$Json_Decode$int,
+				_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(_elm_lang$mouse$Mouse$Position)))));
+var _user$project$App$viewClickControl = function (data) {
+	var middle = function (x) {
+		return _elm_lang$core$Basics$toString(
+			_elm_lang$core$Basics$floor(50 + (50 * x)));
+	};
+	return A2(
+		_elm_lang$html$Html$div,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$style(
+				{
+					ctor: '::',
+					_0: {
+						ctor: '_Tuple2',
+						_0: 'width',
+						_1: _elm_lang$core$Basics$toString(_user$project$App$clickControlWidth)
+					},
+					_1: {
+						ctor: '::',
+						_0: {
+							ctor: '_Tuple2',
+							_0: 'height',
+							_1: _elm_lang$core$Basics$toString(_user$project$App$clickControlHeight)
+						},
+						_1: {ctor: '[]'}
+					}
+				}),
+			_1: {
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$id('control'),
+				_1: {
+					ctor: '::',
+					_0: _user$project$App$onClickLocation,
+					_1: {ctor: '[]'}
+				}
+			}
+		},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$svg$Svg$svg,
+				{
+					ctor: '::',
+					_0: _elm_lang$svg$Svg_Attributes$version('1.1'),
+					_1: {
+						ctor: '::',
+						_0: _elm_lang$svg$Svg_Attributes$x('0'),
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$svg$Svg_Attributes$y('0'),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$svg$Svg_Attributes$viewBox('0 0 100 100'),
+								_1: {ctor: '[]'}
+							}
+						}
+					}
+				},
+				{
+					ctor: '::',
+					_0: A2(
+						_elm_lang$svg$Svg$circle,
+						{
+							ctor: '::',
+							_0: _elm_lang$svg$Svg_Attributes$fill('#F0F9F0'),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$svg$Svg_Attributes$cx('50'),
+								_1: {
+									ctor: '::',
+									_0: _elm_lang$svg$Svg_Attributes$cy('50'),
+									_1: {
+										ctor: '::',
+										_0: _elm_lang$svg$Svg_Attributes$r('50'),
+										_1: {ctor: '[]'}
+									}
+								}
+							}
+						},
+						{ctor: '[]'}),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_elm_lang$svg$Svg$rect,
+							{
+								ctor: '::',
+								_0: _elm_lang$svg$Svg_Attributes$fill('#000000'),
+								_1: {
+									ctor: '::',
+									_0: _elm_lang$svg$Svg_Attributes$x('49'),
+									_1: {
+										ctor: '::',
+										_0: _elm_lang$svg$Svg_Attributes$y('30'),
+										_1: {
+											ctor: '::',
+											_0: _elm_lang$svg$Svg_Attributes$width('2'),
+											_1: {
+												ctor: '::',
+												_0: _elm_lang$svg$Svg_Attributes$height('40'),
+												_1: {ctor: '[]'}
+											}
+										}
+									}
+								}
+							},
+							{ctor: '[]'}),
+						_1: {
+							ctor: '::',
+							_0: A2(
+								_elm_lang$svg$Svg$rect,
+								{
+									ctor: '::',
+									_0: _elm_lang$svg$Svg_Attributes$fill('#000000'),
+									_1: {
+										ctor: '::',
+										_0: _elm_lang$svg$Svg_Attributes$y('49'),
+										_1: {
+											ctor: '::',
+											_0: _elm_lang$svg$Svg_Attributes$x('30'),
+											_1: {
+												ctor: '::',
+												_0: _elm_lang$svg$Svg_Attributes$height('2'),
+												_1: {
+													ctor: '::',
+													_0: _elm_lang$svg$Svg_Attributes$width('40'),
+													_1: {ctor: '[]'}
+												}
+											}
+										}
+									}
+								},
+								{ctor: '[]'}),
+							_1: {
+								ctor: '::',
+								_0: A2(
+									_elm_lang$svg$Svg$circle,
+									{
+										ctor: '::',
+										_0: _elm_lang$svg$Svg_Attributes$fill('#FFB0B0'),
+										_1: {
+											ctor: '::',
+											_0: _elm_lang$svg$Svg_Attributes$cx(
+												middle(data.x)),
+											_1: {
+												ctor: '::',
+												_0: _elm_lang$svg$Svg_Attributes$cy(
+													middle(data.y)),
+												_1: {
+													ctor: '::',
+													_0: _elm_lang$svg$Svg_Attributes$r('5'),
+													_1: {ctor: '[]'}
+												}
+											}
+										}
+									},
+									{ctor: '[]'}),
+								_1: {ctor: '[]'}
+							}
+						}
+					}
+				}),
+			_1: {ctor: '[]'}
+		});
 };
 var _user$project$App$ResetBot = {ctor: 'ResetBot'};
 var _user$project$App$MoveSlider = function (a) {
@@ -21996,109 +22219,85 @@ var _user$project$App$viewSliderControl = function (model) {
 					},
 					{
 						ctor: '::',
-						_0: _elm_lang$html$Html$text(
-							A2(
-								_elm_lang$core$Basics_ops['++'],
-								'X [A/D] ',
-								_elm_lang$core$Basics$toString(joy.x))),
+						_0: _elm_lang$html$Html$text('Direction to go [WASD]'),
 						_1: {
 							ctor: '::',
-							_0: A3(
-								viewSlider,
-								{ctor: '_Tuple2', _0: -100, _1: 100},
-								joy.x,
-								setX),
+							_0: _user$project$App$viewClickControl(joy),
 							_1: {
 								ctor: '::',
 								_0: _elm_lang$html$Html$text(
 									A2(
 										_elm_lang$core$Basics_ops['++'],
-										'Y [W/S] ',
-										_elm_lang$core$Basics$toString(joy.y))),
+										'Rotation [Q/E] ',
+										_elm_lang$core$Basics$toString(-1 * joy.rotation))),
 								_1: {
 									ctor: '::',
 									_0: A3(
 										viewSlider,
 										{ctor: '_Tuple2', _0: -100, _1: 100},
-										joy.y,
-										setY),
+										joy.rotation,
+										setRot),
 									_1: {
 										ctor: '::',
 										_0: _elm_lang$html$Html$text(
 											A2(
 												_elm_lang$core$Basics_ops['++'],
-												'Rotation [Q/E] ',
-												_elm_lang$core$Basics$toString(-1 * joy.rotation))),
+												'Thrust [R/C] ',
+												_elm_lang$core$Basics$toString(joy.thrust))),
 										_1: {
 											ctor: '::',
 											_0: A3(
 												viewSlider,
-												{ctor: '_Tuple2', _0: -100, _1: 100},
-												joy.rotation,
-												setRot),
+												{ctor: '_Tuple2', _0: 0, _1: 100},
+												joy.thrust,
+												setThrust),
 											_1: {
 												ctor: '::',
-												_0: _elm_lang$html$Html$text(
-													A2(
-														_elm_lang$core$Basics_ops['++'],
-														'Thrust [R/C] ',
-														_elm_lang$core$Basics$toString(joy.thrust))),
+												_0: A5(
+													_MichaelCombs28$elm_mdl$Material_Button$render,
+													_user$project$App$Mdl,
+													{
+														ctor: '::',
+														_0: 0,
+														_1: {ctor: '[]'}
+													},
+													model.mdl,
+													{
+														ctor: '::',
+														_0: _MichaelCombs28$elm_mdl$Material_Button$onClick(
+															_user$project$App$AxisData(
+																_elm_lang$core$Native_Utils.update(
+																	_user$project$App$initialJoystick,
+																	{thrust: joy.thrust}))),
+														_1: {ctor: '[]'}
+													},
+													{
+														ctor: '::',
+														_0: _elm_lang$html$Html$text('Stop'),
+														_1: {ctor: '[]'}
+													}),
 												_1: {
 													ctor: '::',
-													_0: A3(
-														viewSlider,
-														{ctor: '_Tuple2', _0: 0, _1: 100},
-														joy.thrust,
-														setThrust),
-													_1: {
-														ctor: '::',
-														_0: A5(
-															_MichaelCombs28$elm_mdl$Material_Button$render,
-															_user$project$App$Mdl,
-															{
-																ctor: '::',
-																_0: 0,
-																_1: {ctor: '[]'}
-															},
-															model.mdl,
-															{
-																ctor: '::',
-																_0: _MichaelCombs28$elm_mdl$Material_Button$onClick(
-																	_user$project$App$AxisData(
-																		_elm_lang$core$Native_Utils.update(
-																			_user$project$App$initialJoystick,
-																			{thrust: joy.thrust}))),
-																_1: {ctor: '[]'}
-															},
-															{
-																ctor: '::',
-																_0: _elm_lang$html$Html$text('Stop'),
-																_1: {ctor: '[]'}
-															}),
-														_1: {
+													_0: A5(
+														_MichaelCombs28$elm_mdl$Material_Button$render,
+														_user$project$App$Mdl,
+														{
 															ctor: '::',
-															_0: A5(
-																_MichaelCombs28$elm_mdl$Material_Button$render,
-																_user$project$App$Mdl,
-																{
-																	ctor: '::',
-																	_0: 1,
-																	_1: {ctor: '[]'}
-																},
-																model.mdl,
-																{
-																	ctor: '::',
-																	_0: _MichaelCombs28$elm_mdl$Material_Button$onClick(_user$project$App$ResetBot),
-																	_1: {ctor: '[]'}
-																},
-																{
-																	ctor: '::',
-																	_0: _elm_lang$html$Html$text('Reset'),
-																	_1: {ctor: '[]'}
-																}),
+															_0: 1,
 															_1: {ctor: '[]'}
-														}
-													}
+														},
+														model.mdl,
+														{
+															ctor: '::',
+															_0: _MichaelCombs28$elm_mdl$Material_Button$onClick(_user$project$App$ResetBot),
+															_1: {ctor: '[]'}
+														},
+														{
+															ctor: '::',
+															_0: _elm_lang$html$Html$text('Reset'),
+															_1: {ctor: '[]'}
+														}),
+													_1: {ctor: '[]'}
 												}
 											}
 										}
@@ -22384,7 +22583,8 @@ var _user$project$App$init = function (_p5) {
 			autoMode: false,
 			selectedTab: 0,
 			parameters: _elm_lang$core$Dict$empty,
-			mdl: _MichaelCombs28$elm_mdl$Material$model
+			mdl: _MichaelCombs28$elm_mdl$Material$model,
+			lastClick: {x: 0, y: 0}
 		},
 		{
 			ctor: '::',
@@ -22430,7 +22630,11 @@ var _user$project$App$subscriptions = function (model) {
 								_1: {
 									ctor: '::',
 									_0: _elm_lang$keyboard$Keyboard$downs(_user$project$App$MoveSlider),
-									_1: {ctor: '[]'}
+									_1: {
+										ctor: '::',
+										_0: _user$project$Joystick$elementPosition(_user$project$App$ElementPosition),
+										_1: {ctor: '[]'}
+									}
 								}
 							}
 						}
@@ -22772,7 +22976,7 @@ var _user$project$App$update = F2(
 						{autoMode: !model.autoMode, phxSocket: phxSocket}),
 					_1: phxCmd
 				};
-			default:
+			case 'MoveSlider':
 				var _p30 = _p9._0;
 				var joy = model.joystick;
 				var keyDiff = F2(
@@ -22809,7 +23013,7 @@ var _user$project$App$update = F2(
 										slide,
 										{ctor: '_Tuple2', _0: -1, _1: 1},
 										joy.y,
-										{ctor: '_Tuple2', _0: _user$project$KeyCode$s, _1: _user$project$KeyCode$w}),
+										{ctor: '_Tuple2', _0: _user$project$KeyCode$w, _1: _user$project$KeyCode$s}),
 									rotation: A3(
 										slide,
 										{ctor: '_Tuple2', _0: -1, _1: 1},
@@ -22822,6 +23026,31 @@ var _user$project$App$update = F2(
 										{ctor: '_Tuple2', _0: _user$project$KeyCode$c, _1: _user$project$KeyCode$r})
 								})
 						}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'OnControlClick':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{lastClick: _p9._0}),
+					_1: _user$project$Joystick$getElementPosition('control')
+				};
+			default:
+				var _p31 = _p9._0;
+				var joy = model.joystick;
+				var localY = model.lastClick.y - _p31.y;
+				var normY = (_elm_lang$core$Basics$toFloat(localY) / (_user$project$App$clickControlHeight / 2)) - 1;
+				var localX = model.lastClick.x - _p31.x;
+				var normX = (_elm_lang$core$Basics$toFloat(localX) / (_user$project$App$clickControlWidth / 2)) - 1;
+				var newJoystick = _elm_lang$core$Native_Utils.update(
+					joy,
+					{x: normX, y: normY});
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{joystick: newJoystick}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 		}

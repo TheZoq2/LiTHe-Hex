@@ -1,9 +1,10 @@
-port module Joystick exposing (joystickDisplay, connected, disconnected, poll, axisData, JoystickData)
+port module Joystick exposing (joystickDisplay, connected, disconnected, poll, axisData, getElementPosition, elementPosition, JoystickData)
 
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
 import Html exposing (Html)
 import Html.Attributes
+import Html.Events
 
 
 {-
@@ -57,6 +58,14 @@ port poll : Int -> Cmd msg
 index is sent to poll.
 -}
 port axisData : (JoystickData -> msg) -> Sub msg
+
+
+{-| Port to send to when you want the position of an element
+-}
+port getElementPosition : String -> Cmd msg
+
+
+port elementPosition : ({x : Int, y : Int} -> msg) -> Sub msg
 
 
 thrustRect : Float -> Svg a

@@ -47,6 +47,19 @@ function pollRequestReceived(gamePadIndex) {
     elmApp.ports.axisData.send(data);
 }
 
+function elementPositionRequestReceived(id) {
+    const elem = document.querySelector('#' + id)
+    if (elem) {
+        const rect = elem.getBoundingClientRect();
+        elmApp.ports.elementPosition.send({
+            x: Math.round(rect.left),
+            y: Math.round(rect.top)
+        });
+    } else {
+        console.log("Could not find element " + id);
+    }
+}
+
 function removeGamepad(gamepad) {
     console.log("Gamepad with index " + gamepad.index + " has been disconnected");
     elmApp.ports.disconnected.send(gamepad.index);
@@ -71,6 +84,7 @@ const elmDiv = document.querySelector('#elm-container');
 const elmApp = Elm.App.embed(elmDiv, {host: location.host});
 
 elmApp.ports.poll.subscribe(pollRequestReceived);
+elmApp.ports.getElementPosition.subscribe(elementPositionRequestReceived);
 
 window.addEventListener("gamepadconnected", function(e) {
     addGamepad(e.gamepad);
