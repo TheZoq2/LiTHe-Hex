@@ -391,11 +391,13 @@ update msg model =
                     model.lastClick.y - elemPos.y
 
                 normX =
-                    (toFloat localX / (clickControlWidth / 2)) - 1
+                    (toFloat localX / (clickControlWidth / 2))
+                        - 1
                         |> clamp -1 1
 
                 normY =
-                    (toFloat localY / (clickControlHeight / 2)) - 1
+                    (toFloat localY / (clickControlHeight / 2))
+                        - 1
                         |> clamp -1 1
 
                 joy =
@@ -458,7 +460,7 @@ view model =
                 ]
             ]
         , drawer = []
-        , tabs = ( [ text "Control", text "Debug" ], [] )
+        , tabs = ( [ text "Control", text "Debug", text "Regulation parameters" ], [] )
         , main = [ viewBody model ]
         }
 
@@ -604,22 +606,7 @@ viewControl model =
                 else
                     viewSliderControl model
               else
-                Card.view [ Elevation.e2 ]
-                    [ Card.title [] [ Card.head [] [ text "Regulation parameters" ] ]
-                    , Card.actions [ Card.border ]
-                        (List.indexedMap (createInputField model)
-                            [ ( "Angle scaledown", "angle_scaledown" )
-                            , ( "Movement scaledown", "movement_scaledown" )
-                            , ( "Angle adjustment", "angle_adjustment_border" )
-                            ]
-                            ++ [ Button.render Mdl
-                                    [ 0, 2 ]
-                                    model.mdl
-                                    [ Button.onClick SendParameters ]
-                                    [ text "duck" ]
-                               ]
-                        )
-                    ]
+                div [] []
             ]
 
 
@@ -633,14 +620,43 @@ viewDebug model =
     ]
 
 
+{-| Show regulation parameter
+-}
+viewParameters : Model -> List (Html Msg)
+viewParameters model =
+    [ Card.view [ Elevation.e2 ]
+        [ Card.title [] [ Card.head [] [ text "Regulation parameters" ] ]
+        , Card.actions [ Card.border ]
+            (List.indexedMap (createInputField model)
+                [ ( "Angle scaledown", "angle_scaledown" )
+                , ( "Movement scaledown", "movement_scaledown" )
+                , ( "Angle adjustment", "angle_adjustment_border" )
+                ]
+                ++ [ Button.render Mdl
+                        [ 0 ]
+                        model.mdl
+                        [ Button.onClick SendParameters ]
+                        [ text "duck" ]
+                   ]
+            )
+        ]
+    ]
+
+
 {-| Show control or debug tab depending on which is selected
 -}
 viewBody : Model -> Html Msg
 viewBody model =
-    if model.selectedTab == 0 then
-        div [ Html.Attributes.style [ ( "padding", "2rem" ) ] ] (viewControl model)
-    else
-        div [ Html.Attributes.style [ ( "padding", "2rem" ) ] ] (viewDebug model)
+    let
+        currentTab =
+            if model.selectedTab == 0 then
+                viewControl model
+            else if model.selectedTab == 1 then
+                viewDebug model
+            else
+                viewParameters model
+    in
+        div [ Html.Attributes.style [ ( "padding", "2rem" ) ] ] currentTab
 
 
 main : Program Flags Model Msg
