@@ -29,10 +29,11 @@ TILE_SIZE = 0.8
 
 # Distances to different objects in meters
 DEAD_END_DISTANCE = 1.35
-LIDAR_DEAD_END_DISTANCE = 1.15
+LIDAR_DEAD_END_DISTANCE = 1.08
 LIDAR_STOP_DISTANCE = 0.35
 DISTANCE_TO_OBSTACLE = 0.0
 DISTANCE_TO_WALL_IN_CORRIDOR = 0.5
+FAULTY_LIDAR_DISTANCE = 0.05
 
 AUTONOMOUS_SPEED = 0x006F
 
@@ -46,7 +47,7 @@ class DecisionPacket():
         self.regulate_base_movement = 0;
         self.regulate_command_y = 0;
         self.regulate_goal_angle = 0;
-        self.regulate_angle_scaledown = 2.5
+        self.regulate_angle_scaledown = 5
         self.regulate_movement_scaledown = 4
         self.regulate_angular_adjustment_border = 0.1
 
@@ -55,7 +56,7 @@ class DecisionPacket():
 def _get_corridors_and_dead_ends(sensor_data):
     corridors_and_dead_ends = [DEAD_END, DEAD_END, DEAD_END]
 
-    if (sensor_data.lidar >= LIDAR_DEAD_END_DISTANCE):
+    if (sensor_data.lidar >= LIDAR_DEAD_END_DISTANCE or sensor_data.lidar <= FAULTY_LIDAR_DISTANCE):
         corridors_and_dead_ends[FRONT] = CORRIDOR
     else:
         corridors_and_dead_ends[FRONT] = DEAD_END

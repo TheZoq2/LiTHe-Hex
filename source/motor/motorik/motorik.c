@@ -49,6 +49,16 @@ ISR(SPI_STC_vect) {
 }
 #endif
 
+void set_servo_id(uint8_t old_id, new_id)
+{
+	write_servo_single_byte(old_id, 0x03, new_id);
+
+	send_servo_action(100);
+	while(1)
+	{
+
+	}
+}
 
 int main(void)
 {
@@ -67,8 +77,9 @@ int main(void)
 	set_ddr(DDRD, 0xfE);
 	
 	usart_init();
-	
+
 	_delay_ms(100);
+	set_servo_id(1, 8)
 	
 	init_all_servos();
 	
