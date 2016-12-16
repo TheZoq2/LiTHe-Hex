@@ -162,7 +162,7 @@ void write_servo_single_byte(uint8_t id, uint8_t address, uint8_t value)
 
 #define uart_receive_with_error(var) {\
 									UartResult result = usart_receive(); \
-									if(result.error != Ok) \
+									if(result.error == Ok) \
 									{ \
 									    var = result.value; \
 									} \
