@@ -263,6 +263,7 @@ def send_decision_avr(spi, decision_packet, prev_speed, prev_x, prev_y, prev_rot
 
     if decision_packet.decision == decision_making.GO_FORWARD:
         x_speed = convert_to_sendable_byte(1)
+        rotation = convert_to_sendable_byte(0.015)
         #y_speed = convert_to_sendable_byte(0)
        
         if (decision_packet.regulate_goal_angle != 0):
