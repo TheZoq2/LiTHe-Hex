@@ -28,7 +28,8 @@ ANGLE_10_DEGREE = 10
 TILE_SIZE = 0.8
 
 # Distances to different objects in meters
-DEAD_END_DISTANCE = 1.15
+DEAD_END_DISTANCE = 1.35
+LIDAR_DEAD_END_DISTANCE = 1.15
 LIDAR_STOP_DISTANCE = 0.35
 DISTANCE_TO_OBSTACLE = 0.0
 DISTANCE_TO_WALL_IN_CORRIDOR = 0.5
@@ -54,7 +55,7 @@ class DecisionPacket():
 def _get_corridors_and_dead_ends(sensor_data):
     corridors_and_dead_ends = [DEAD_END, DEAD_END, DEAD_END]
 
-    if (sensor_data.lidar >= DEAD_END_DISTANCE):
+    if (sensor_data.lidar >= LIDAR_DEAD_END_DISTANCE):
         corridors_and_dead_ends[FRONT] = CORRIDOR
     else:
         corridors_and_dead_ends[FRONT] = DEAD_END
@@ -91,7 +92,7 @@ def _get_corridors_and_dead_ends(sensor_data):
 def _found_obstacle(sensor_data):
     obstacle_found = False
     if (sensor_data.ir_down <= DISTANCE_TO_OBSTACLE and
-        sensor_data.lidar >= DEAD_END_DISTANCE):
+        sensor_data.lidar >= LIDAR_DEAD_END_DISTANCE):
         obstacle_found = True
     else:
         obstacle_found = False
@@ -139,10 +140,10 @@ def get_decision(sensor_data, decision_packet, motor_spi):
         for value in corridors_and_dead_ends:
             # If more than one corridor to choose from
             if (corridors_and_dead_ends.count(CORRIDOR) == 3):
-                decision_packet.decisions[0] = TURN_LEFT;
+                decision_packet.decisions[0] = GO_FORWARD;
 
             elif (corridors_and_dead_ends.count(CORRIDOR) == 2):
-                if (sensor_data.lidar > DEAD_END_DISTANCE):
+                if (sensor_data.lidar > LIDAR_DEAD_END_DISTANCE):
                     decision_packet.decisions[0] = GO_FORWARD
                 else:
                     if (corridors_and_dead_ends[LEFT] == CORRIDOR):
