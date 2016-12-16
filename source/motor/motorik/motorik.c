@@ -49,11 +49,14 @@ ISR(SPI_STC_vect) {
 }
 #endif
 
-void set_servo_id(uint8_t old_id, new_id)
+void set_servo_id(uint8_t old_id, uint8_t new_id)
 {
-	write_servo_single_byte(old_id, 0x03, new_id);
+	//write_servo_single_byte(old_id, 0x03, new_id);
+	uint8_t data[2] = {0x03, new_id};
+	send_servo_command(old_id, 0x03, data, 2);
 
-	send_servo_action(100);
+	set_servo_angle(10, 0x1ff);
+	//send_servo_action(100);
 	while(1)
 	{
 
@@ -79,8 +82,8 @@ int main(void)
 	usart_init();
 
 	_delay_ms(100);
-	set_servo_id(1, 8)
 	
+	//set_servo_angle(12, 0x1ff);
 	init_all_servos();
 	
 	_delay_ms(100);
