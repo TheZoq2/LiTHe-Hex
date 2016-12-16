@@ -160,6 +160,17 @@ void write_servo_single_byte(uint8_t id, uint8_t address, uint8_t value)
 	write_servo_data(id, address, &value, 1);
 }
 
+#define uart_receive_with_error(var) {\
+									UartResult result = usart_receive(); \
+									if(result.error != Ok) \
+									{ \
+									    var = result.value; \
+									} \
+									else \
+									{ \
+										goto failure; \
+									} \
+									} \
 
 ServoReply receive_servo_reply()
 {
@@ -176,10 +187,11 @@ ServoReply receive_servo_reply()
 	usart_receive();
 	usart_receive();
 
-	servo_reply.id = usart_receive();
-	servo_reply.length = usart_receive();
+	//servo_reply.id = usart_receive();
+	uart_receive_with_error(servo_reply.id);
+	uart_receive_with_error(servo_reply.length);
 	servo_reply.parameter_amount = servo_reply.length - 2; //See ax12 datasheet
-	servo_reply.error = usart_receive();
+	uart_receive_with_error(servo_reply.error);
 
 	//TODO: This is dangerous. make sure the amount of parameters is correct
 	if(servo_reply.error != 0)
@@ -191,20 +203,23 @@ ServoReply receive_servo_reply()
 
 	for(uint8_t i = 0; i < servo_reply.parameter_amount; ++i)
 	{
-		servo_reply.parameters[i] = usart_receive();
+		//servo_reply.parameters[i] = usart_receive();
+		uart_receive_with_error(servo_reply.parameters[i]);
 	}
 
 	//TODO: Check the checksum
-	servo_reply.checksum = usart_receive();
+	//servo_reply.checksum = usart_receive();
+	uart_receive_with_error(servo_reply.checksum);
+
+failure:
+	servo_reply.error = 1;
+	servo_reply.parameter_amount = 0;
 
 	//Reset the tri-state gate
 	clear_bit(PORTD, PIN_RX_TOGGLE);
 	usart_set_direction(TX);
-
 	
 	_delay_ms(5);
-	
-	//spi_set_interrupts(true);
 	
 	return servo_reply;
 }

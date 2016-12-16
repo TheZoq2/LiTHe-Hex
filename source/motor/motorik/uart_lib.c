@@ -46,16 +46,27 @@
 		UDR0 = data;
 	}
 
-	uint8_t usart_receive()
+#define USART_TIMEOUT 100000
+	UartResult usart_receive()
 	{
+		
 		//Wait for data to arrive
 		uint32_t i = 0;
-		while(!(UCSR0A & (1<<RXC0)) && i < 100000)
+		while(!(UCSR0A & (1<<RXC0)) && i < USART_TIMEOUT)
 		{
 			i++;
 		}
 
-		return UDR0;
+		UartResult result;
+		result.value = UDR0;
+		result.error = Ok;
+
+		if(i == USART_TIMEOUT)
+		{
+			result.error = Timeout;
+		}
+
+		return result;
 	}
 
 	void clear_uart_buffer()
@@ -83,9 +94,12 @@
 		//printf("Transmitting %#04X\n", data);
 	}
 
-	uint8_t usart_receive()
+	UartResult usart_receive()
 	{
-		return 0;
+		UartResult result;
+		result.value = 0;
+		result.error = Ok;
+		return result;
 	}
 
 	void _delay_ms(int ms)
