@@ -34,8 +34,11 @@ LIDAR_STOP_DISTANCE = 0.35
 DISTANCE_TO_OBSTACLE = 0.0
 DISTANCE_TO_WALL_IN_CORRIDOR = 0.5
 FAULTY_LIDAR_DISTANCE = 0.05
+ANGLE_SCALEDOWN = 0.6
+MOVEMENT_SCALEDOWN = 4
+ANGLE_THRESHOLD = 8
 
-AUTONOMOUS_SPEED = 0x006F
+AUTONOMOUS_SPEED = 0x00FF
 
 
 class DecisionPacket():
@@ -47,9 +50,9 @@ class DecisionPacket():
         self.regulate_base_movement = 0;
         self.regulate_command_y = 0;
         self.regulate_goal_angle = 0;
-        self.regulate_angle_scaledown = 5
-        self.regulate_movement_scaledown = 4
-        self.regulate_angular_adjustment_border = 0.1
+        self.regulate_angle_scaledown = ANGLE_SCALEDOWN
+        self.regulate_movement_scaledown = MOVEMENT_SCALEDOWN
+        self.regulate_angular_adjustment_border = ANGLE_THRESHOLD
         self.speed = 200
 
 

@@ -21881,7 +21881,9 @@ var _user$project$App$Model = function (a) {
 							return function (h) {
 								return function (i) {
 									return function (j) {
-										return {phxSocket: a, mdl: b, messages: c, joystick: d, joystickIndex: e, sensorData: f, autoMode: g, selectedTab: h, parameters: i, lastClick: j};
+										return function (k) {
+											return {phxSocket: a, mdl: b, messages: c, joystick: d, joystickIndex: e, sensorData: f, autoMode: g, selectedTab: h, parameters: i, lastClick: j, sending: k};
+										};
 									};
 								};
 							};
@@ -21898,6 +21900,7 @@ var _user$project$App$Flags = function (a) {
 var _user$project$App$Mdl = function (a) {
 	return {ctor: 'Mdl', _0: a};
 };
+var _user$project$App$ToggleCommunication = {ctor: 'ToggleCommunication'};
 var _user$project$App$ElementPosition = function (a) {
 	return {ctor: 'ElementPosition', _0: a};
 };
@@ -22311,133 +22314,154 @@ var _user$project$App$viewSliderControl = function (model) {
 		});
 };
 var _user$project$App$viewControl = function (model) {
-	return {
-		ctor: '::',
-		_0: A5(
-			_MichaelCombs28$elm_mdl$Material_Toggles$switch,
-			_user$project$App$Mdl,
-			{
-				ctor: '::',
-				_0: 0,
-				_1: {
-					ctor: '::',
-					_0: 1,
-					_1: {ctor: '[]'}
-				}
-			},
-			model.mdl,
-			{
-				ctor: '::',
-				_0: _MichaelCombs28$elm_mdl$Material_Toggles$onClick(_user$project$App$ToggleAuto),
-				_1: {
-					ctor: '::',
-					_0: _MichaelCombs28$elm_mdl$Material_Toggles$value(model.autoMode),
-					_1: {ctor: '[]'}
-				}
-			},
-			{
-				ctor: '::',
-				_0: _elm_lang$html$Html$text('Autonomous mode'),
-				_1: {ctor: '[]'}
-			}),
-		_1: {
+	return A2(
+		_elm_lang$core$Basics_ops['++'],
+		{
 			ctor: '::',
-			_0: (!model.autoMode) ? ((!_elm_lang$core$Native_Utils.eq(model.joystickIndex, _elm_lang$core$Maybe$Nothing)) ? _user$project$Joystick$joystickDisplay(model.joystick) : _user$project$App$viewSliderControl(model)) : A2(
-				_MichaelCombs28$elm_mdl$Material_Card$view,
+			_0: A5(
+				_MichaelCombs28$elm_mdl$Material_Toggles$switch,
+				_user$project$App$Mdl,
 				{
 					ctor: '::',
-					_0: _MichaelCombs28$elm_mdl$Material_Elevation$e2,
-					_1: {ctor: '[]'}
+					_0: 0,
+					_1: {
+						ctor: '::',
+						_0: 0,
+						_1: {ctor: '[]'}
+					}
+				},
+				model.mdl,
+				{
+					ctor: '::',
+					_0: _MichaelCombs28$elm_mdl$Material_Toggles$onClick(_user$project$App$ToggleCommunication),
+					_1: {
+						ctor: '::',
+						_0: _MichaelCombs28$elm_mdl$Material_Toggles$value(model.sending),
+						_1: {ctor: '[]'}
+					}
 				},
 				{
 					ctor: '::',
-					_0: A2(
-						_MichaelCombs28$elm_mdl$Material_Card$title,
-						{ctor: '[]'},
-						{
-							ctor: '::',
-							_0: A2(
-								_MichaelCombs28$elm_mdl$Material_Card$head,
-								{ctor: '[]'},
-								{
-									ctor: '::',
-									_0: _elm_lang$html$Html$text('PID parameters'),
-									_1: {ctor: '[]'}
-								}),
-							_1: {ctor: '[]'}
-						}),
-					_1: {
-						ctor: '::',
-						_0: A2(
-							_MichaelCombs28$elm_mdl$Material_Card$actions,
-							{
-								ctor: '::',
-								_0: _MichaelCombs28$elm_mdl$Material_Card$border,
-								_1: {ctor: '[]'}
-							},
-							A2(
-								_elm_lang$core$Basics_ops['++'],
-								A2(
-									_elm_lang$core$List$indexedMap,
-									_user$project$App$createInputField(model),
-									{
-										ctor: '::',
-										_0: {ctor: '_Tuple2', _0: 'Base movement', _1: 'base_movement'},
-										_1: {
-											ctor: '::',
-											_0: {ctor: '_Tuple2', _0: 'Command Y', _1: 'command_y'},
-											_1: {
-												ctor: '::',
-												_0: {ctor: '_Tuple2', _0: 'Goal angle', _1: 'goal_angle'},
-												_1: {
-													ctor: '::',
-													_0: {ctor: '_Tuple2', _0: 'Angle scaledown', _1: 'angle_scaledown'},
-													_1: {
-														ctor: '::',
-														_0: {ctor: '_Tuple2', _0: 'Movement scaledown', _1: 'movement_scaledown'},
-														_1: {
-															ctor: '::',
-															_0: {ctor: '_Tuple2', _0: 'Angle adjustment', _1: 'angle_adjustment_border'},
-															_1: {ctor: '[]'}
-														}
-													}
-												}
-											}
-										}
-									}),
-								{
-									ctor: '::',
-									_0: A5(
-										_MichaelCombs28$elm_mdl$Material_Button$render,
-										_user$project$App$Mdl,
-										{
-											ctor: '::',
-											_0: 0,
-											_1: {
-												ctor: '::',
-												_0: 0,
-												_1: {ctor: '[]'}
-											}
-										},
-										model.mdl,
-										{
-											ctor: '::',
-											_0: _MichaelCombs28$elm_mdl$Material_Button$onClick(_user$project$App$SendParameters),
-											_1: {ctor: '[]'}
-										},
-										{
-											ctor: '::',
-											_0: _elm_lang$html$Html$text('duck'),
-											_1: {ctor: '[]'}
-										}),
-									_1: {ctor: '[]'}
-								})),
-						_1: {ctor: '[]'}
-					}
+					_0: _elm_lang$html$Html$text('Enable server communication'),
+					_1: {ctor: '[]'}
 				}),
 			_1: {ctor: '[]'}
-		}
-	};
+		},
+		(!model.sending) ? {ctor: '[]'} : {
+			ctor: '::',
+			_0: A5(
+				_MichaelCombs28$elm_mdl$Material_Toggles$switch,
+				_user$project$App$Mdl,
+				{
+					ctor: '::',
+					_0: 0,
+					_1: {
+						ctor: '::',
+						_0: 1,
+						_1: {ctor: '[]'}
+					}
+				},
+				model.mdl,
+				{
+					ctor: '::',
+					_0: _MichaelCombs28$elm_mdl$Material_Toggles$onClick(_user$project$App$ToggleAuto),
+					_1: {
+						ctor: '::',
+						_0: _MichaelCombs28$elm_mdl$Material_Toggles$value(model.autoMode),
+						_1: {ctor: '[]'}
+					}
+				},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html$text('Autonomous mode'),
+					_1: {ctor: '[]'}
+				}),
+			_1: {
+				ctor: '::',
+				_0: (!model.autoMode) ? ((!_elm_lang$core$Native_Utils.eq(model.joystickIndex, _elm_lang$core$Maybe$Nothing)) ? _user$project$Joystick$joystickDisplay(model.joystick) : _user$project$App$viewSliderControl(model)) : A2(
+					_MichaelCombs28$elm_mdl$Material_Card$view,
+					{
+						ctor: '::',
+						_0: _MichaelCombs28$elm_mdl$Material_Elevation$e2,
+						_1: {ctor: '[]'}
+					},
+					{
+						ctor: '::',
+						_0: A2(
+							_MichaelCombs28$elm_mdl$Material_Card$title,
+							{ctor: '[]'},
+							{
+								ctor: '::',
+								_0: A2(
+									_MichaelCombs28$elm_mdl$Material_Card$head,
+									{ctor: '[]'},
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html$text('Regulation parameters'),
+										_1: {ctor: '[]'}
+									}),
+								_1: {ctor: '[]'}
+							}),
+						_1: {
+							ctor: '::',
+							_0: A2(
+								_MichaelCombs28$elm_mdl$Material_Card$actions,
+								{
+									ctor: '::',
+									_0: _MichaelCombs28$elm_mdl$Material_Card$border,
+									_1: {ctor: '[]'}
+								},
+								A2(
+									_elm_lang$core$Basics_ops['++'],
+									A2(
+										_elm_lang$core$List$indexedMap,
+										_user$project$App$createInputField(model),
+										{
+											ctor: '::',
+											_0: {ctor: '_Tuple2', _0: 'Angle scaledown', _1: 'angle_scaledown'},
+											_1: {
+												ctor: '::',
+												_0: {ctor: '_Tuple2', _0: 'Movement scaledown', _1: 'movement_scaledown'},
+												_1: {
+													ctor: '::',
+													_0: {ctor: '_Tuple2', _0: 'Angle adjustment', _1: 'angle_adjustment_border'},
+													_1: {ctor: '[]'}
+												}
+											}
+										}),
+									{
+										ctor: '::',
+										_0: A5(
+											_MichaelCombs28$elm_mdl$Material_Button$render,
+											_user$project$App$Mdl,
+											{
+												ctor: '::',
+												_0: 0,
+												_1: {
+													ctor: '::',
+													_0: 2,
+													_1: {ctor: '[]'}
+												}
+											},
+											model.mdl,
+											{
+												ctor: '::',
+												_0: _MichaelCombs28$elm_mdl$Material_Button$onClick(_user$project$App$SendParameters),
+												_1: {ctor: '[]'}
+											},
+											{
+												ctor: '::',
+												_0: _elm_lang$html$Html$text('duck'),
+												_1: {ctor: '[]'}
+											}),
+										_1: {ctor: '[]'}
+									})),
+							_1: {ctor: '[]'}
+						}
+					}),
+				_1: {ctor: '[]'}
+			}
+		});
 };
 var _user$project$App$viewBody = function (model) {
 	return _elm_lang$core$Native_Utils.eq(model.selectedTab, 0) ? A2(
@@ -22576,6 +22600,7 @@ var _user$project$App$init = function (_p5) {
 		_elm_lang$core$Platform_Cmd_ops['!'],
 		{
 			phxSocket: phxSocket,
+			mdl: _MichaelCombs28$elm_mdl$Material$model,
 			messages: {ctor: '[]'},
 			joystick: _user$project$App$initialJoystick,
 			joystickIndex: _elm_lang$core$Maybe$Nothing,
@@ -22583,8 +22608,8 @@ var _user$project$App$init = function (_p5) {
 			autoMode: false,
 			selectedTab: 0,
 			parameters: _elm_lang$core$Dict$empty,
-			mdl: _MichaelCombs28$elm_mdl$Material$model,
-			lastClick: {x: 0, y: 0}
+			lastClick: {x: 0, y: 0},
+			sending: true
 		},
 		{
 			ctor: '::',
@@ -22593,19 +22618,23 @@ var _user$project$App$init = function (_p5) {
 		});
 };
 var _user$project$App$sendControlMessage = F2(
-	function (socket, payload) {
-		var push = A2(
-			_fbonetti$elm_phoenix_socket$Phoenix_Push$withPayload,
-			payload,
-			A2(_fbonetti$elm_phoenix_socket$Phoenix_Push$init, 'joystick', 'client'));
-		var _p8 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$push, push, socket);
-		var phxSocket = _p8._0;
-		var phxCmd = _p8._1;
-		return {
-			ctor: '_Tuple2',
-			_0: phxSocket,
-			_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$App$PhoenixMsg, phxCmd)
-		};
+	function (model, payload) {
+		if (model.sending) {
+			var push = A2(
+				_fbonetti$elm_phoenix_socket$Phoenix_Push$withPayload,
+				payload,
+				A2(_fbonetti$elm_phoenix_socket$Phoenix_Push$init, 'joystick', 'client'));
+			var _p8 = A2(_fbonetti$elm_phoenix_socket$Phoenix_Socket$push, push, model.phxSocket);
+			var phxSocket = _p8._0;
+			var phxCmd = _p8._1;
+			return {
+				ctor: '_Tuple2',
+				_0: phxSocket,
+				_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$App$PhoenixMsg, phxCmd)
+			};
+		} else {
+			return {ctor: '_Tuple2', _0: model.phxSocket, _1: _elm_lang$core$Platform_Cmd$none};
+		}
 	});
 var _user$project$App$subscriptions = function (model) {
 	return _elm_lang$core$Platform_Sub$batch(
@@ -22788,7 +22817,7 @@ var _user$project$App$update = F2(
 			case 'SendControlToServer':
 				var _p15 = A2(
 					_user$project$App$sendControlMessage,
-					model.phxSocket,
+					model,
 					_elm_lang$core$Json_Encode$object(
 						{
 							ctor: '::',
@@ -22856,7 +22885,7 @@ var _user$project$App$update = F2(
 				var _p17 = _p9._0;
 				var _p16 = (_p17.reset && (!model.joystick.reset)) ? A2(
 					_user$project$App$sendControlMessage,
-					model.phxSocket,
+					model,
 					_elm_lang$core$Json_Encode$object(
 						{
 							ctor: '::',
@@ -22879,7 +22908,7 @@ var _user$project$App$update = F2(
 			case 'ResetBot':
 				var _p18 = A2(
 					_user$project$App$sendControlMessage,
-					model.phxSocket,
+					model,
 					_elm_lang$core$Json_Encode$object(
 						{
 							ctor: '::',
@@ -22943,7 +22972,7 @@ var _user$project$App$update = F2(
 							};
 						},
 						_elm_lang$core$Dict$toList(model.parameters)));
-				var _p24 = A2(_user$project$App$sendControlMessage, model.phxSocket, payload);
+				var _p24 = A2(_user$project$App$sendControlMessage, model, payload);
 				var phxSocket = _p24._0;
 				var phxCmd = _p24._1;
 				return {
@@ -22956,7 +22985,7 @@ var _user$project$App$update = F2(
 			case 'ToggleAuto':
 				var _p25 = A2(
 					_user$project$App$sendControlMessage,
-					model.phxSocket,
+					model,
 					_elm_lang$core$Json_Encode$object(
 						{
 							ctor: '::',
@@ -23036,13 +23065,21 @@ var _user$project$App$update = F2(
 						{lastClick: _p9._0}),
 					_1: _user$project$Joystick$getElementPosition('control')
 				};
-			default:
+			case 'ElementPosition':
 				var _p31 = _p9._0;
 				var joy = model.joystick;
 				var localY = model.lastClick.y - _p31.y;
-				var normY = (_elm_lang$core$Basics$toFloat(localY) / (_user$project$App$clickControlHeight / 2)) - 1;
+				var normY = A3(
+					_elm_lang$core$Basics$clamp,
+					-1,
+					1,
+					(_elm_lang$core$Basics$toFloat(localY) / (_user$project$App$clickControlHeight / 2)) - 1);
 				var localX = model.lastClick.x - _p31.x;
-				var normX = (_elm_lang$core$Basics$toFloat(localX) / (_user$project$App$clickControlWidth / 2)) - 1;
+				var normX = A3(
+					_elm_lang$core$Basics$clamp,
+					-1,
+					1,
+					(_elm_lang$core$Basics$toFloat(localX) / (_user$project$App$clickControlWidth / 2)) - 1);
 				var newJoystick = _elm_lang$core$Native_Utils.update(
 					joy,
 					{x: normX, y: normY});
@@ -23051,6 +23088,14 @@ var _user$project$App$update = F2(
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
 						{joystick: newJoystick}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			default:
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{sending: !model.sending}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 		}

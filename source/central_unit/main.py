@@ -192,10 +192,16 @@ def do_auto_mode_iteration(sensor_spi, motor_spi, send_queue,
         # Regulate algorithm parameters
         if packet.angle_scaledown is not None:
             decision_packet.regulate_angle_scaledown = packet.angle_scaledown
+            print(packet.angle_scaledown)
+            #pdb.set_trace()
         if packet.movement_scaledown is not None:
-            decision_packet.regulate_set_movement_scaledown = packet.movement_scaledown
+            decision_packet.regulate_movement_scaledown = packet.movement_scaledown
+            print(packet.movement_scaledown)
+            #pdb.set_trace()
         if packet.angle_adjustment_border is not None:
-            decision_packet.regulate_angle_adjustment_border = packet.angle_adjustment_border
+            decision_packet.regulate_angular_adjustment_border = packet.angle_adjustment_border
+            print(packet.movement_scaledown)
+            #pdb.set_trace()
     return auto, prev_speed, prev_x, prev_y, prev_rot
 
    # print("sensor_data:", sensor_data)
