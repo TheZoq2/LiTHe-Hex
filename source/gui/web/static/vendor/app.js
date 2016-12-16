@@ -21487,7 +21487,7 @@ var _user$project$Sensors$sensorNames = {
 								return _.lidar;
 							},
 							_1: 'LIDAR',
-							_2: {ctor: '_Tuple2', _0: 0, _1: 20}
+							_2: {ctor: '_Tuple2', _0: 0, _1: 5}
 						},
 						_1: {
 							ctor: '::',
@@ -21849,7 +21849,7 @@ var _user$project$App$viewDebug = function (model) {
 		}
 	};
 };
-var _user$project$App$initialJoystick = {x: 0, y: 0, rotation: 0, thrust: 0, reset: false};
+var _user$project$App$initialJoystick = {x: 0, y: 0, rotation: 0, thrust: 1, reset: false};
 var _user$project$App$Model = F9(
 	function (a, b, c, d, e, f, g, h, i) {
 		return {phxSocket: a, messages: b, joystick: c, joystickIndex: d, sensorData: e, autoMode: f, selectedTab: g, parameters: h, mdl: i};
@@ -22028,7 +22028,7 @@ var _user$project$App$viewSliderControl = function (model) {
 											A2(
 												_elm_lang$core$Basics_ops['++'],
 												'Rotation [Q/E] ',
-												_elm_lang$core$Basics$toString(joy.rotation))),
+												_elm_lang$core$Basics$toString(-1 * joy.rotation))),
 										_1: {
 											ctor: '::',
 											_0: A3(
@@ -22064,7 +22064,10 @@ var _user$project$App$viewSliderControl = function (model) {
 															{
 																ctor: '::',
 																_0: _MichaelCombs28$elm_mdl$Material_Button$onClick(
-																	_user$project$App$AxisData(_user$project$App$initialJoystick)),
+																	_user$project$App$AxisData(
+																		_elm_lang$core$Native_Utils.update(
+																			_user$project$App$initialJoystick,
+																			{thrust: joy.thrust}))),
 																_1: {ctor: '[]'}
 															},
 															{
@@ -22602,7 +22605,7 @@ var _user$project$App$update = F2(
 									_0: {
 										ctor: '_Tuple2',
 										_0: 'rotation',
-										_1: _elm_lang$core$Json_Encode$float(model.joystick.rotation)
+										_1: _elm_lang$core$Json_Encode$float(-1 * model.joystick.rotation)
 									},
 									_1: {
 										ctor: '::',
