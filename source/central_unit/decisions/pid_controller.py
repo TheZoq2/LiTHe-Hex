@@ -25,15 +25,13 @@ import constants
 import copy
 
 
+
 input_file = "/tmp/hexsim/sensors"
 output_file = "/tmp/hexsim/command"
 
 CORRIDOR_WIDTH = 0.8
 SENSOR_OFFSET = 0.1
-ANGLE_SCALEDOWN = 0.6
-MOVEMENT_SCALEDOWN = 0.1
 COMMAND_Y_THRESHOLD = 0.04
-ANGLE_THRESHOLD = 8
 ANGLE_DIFF_THRESHOLD = 30
 BASE_MOVEMENT = "0.1" #placeholder forward movement.
 
@@ -119,18 +117,20 @@ def regulate(sensor_data, decision_packet):
         offset = 0
     
     decision_packet.regulate_command_y = -offset * decision_packet.regulate_movement_scaledown
+    print("Regulate movement scaledown: ", decision_packet.regulate_movement_scaledown)
             
     decision_packet.regulate_command_y = min(max(decision_packet.regulate_command_y, -1), 1)
 
+    print("Regulate adjustment border: ", decision_packet.regulate_angular_adjustment_border)
 
-    if (angle <= ANGLE_THRESHOLD and angle >= -ANGLE_THRESHOLD):
+    if (angle <= decision_packet.regulate_angular_adjustment_border and angle >= -decision_packet.regulate_angular_adjustment_border):
         angle = 0
     
     print("angle: ", angle)
     print("offset: ", offset)
 
     print("command_y: ", decision_packet.regulate_command_y)
-    decision_packet.regulate_goal_angle = _to_radians(angle) * ANGLE_SCALEDOWN
+    decision_packet.regulate_goal_angle = _to_radians(angle) * decision_packet.regulate_angle_scaledown
     #Cap -1 < regulate_goal_angle < 1
     decision_packet.regulate_goal_angle = min(max(decision_packet.regulate_goal_angle, -1), 1)
     print("goal_angle: ", decision_packet.regulate_goal_angle)
