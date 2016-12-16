@@ -1,16 +1,20 @@
 module App exposing (..)
 
 import Html exposing (Html, h1, img, text, div, input, br, form)
-import Html.Attributes exposing (style, value, src, placeholder)
+import Html.Attributes exposing (style, id, value, src, placeholder)
 import Html.Lazy exposing (lazy)
+import Html.Events exposing (on)
+import Svg
+import Svg.Attributes
 import Json.Encode as JE
 import Json.Decode as JD
-import Json.Decode.Pipeline exposing (decode, required)
+import Json.Decode.Pipeline exposing (decode, required, requiredAt, optionalAt)
 import Time exposing (Time, millisecond)
 import Dict exposing (Dict)
 import String
 import Debug
 import Keyboard
+import Mouse
 import Phoenix.Socket exposing (Socket)
 import Phoenix.Channel
 import Phoenix.Push
@@ -66,11 +70,14 @@ type Msg
     | ToggleAuto
     | MoveSlider Keyboard.KeyCode
     | ResetBot
+    | OnControlClick Mouse.Position
+    | ElementPosition { x : Int, y : Int }
     | Mdl (Material.Msg Msg)
 
 
 type alias Model =
     { phxSocket : Socket Msg
+    , mdl : Material.Model
     , messages : List String
     , joystick : Joystick.JoystickData
     , joystickIndex : Maybe Int
@@ -78,7 +85,7 @@ type alias Model =
     , autoMode : Bool
     , selectedTab : Int
     , parameters : Dict String Float
-    , mdl : Material.Model
+    , lastClick : Mouse.Position
     }
 
 
@@ -115,6 +122,7 @@ init { host } =
         , selectedTab = 0
         , parameters = Dict.empty
         , mdl = Material.model
+        , lastClick = { x = 0, y = 0 }
         }
             ! [ Cmd.map PhoenixMsg phxCmd ]
 
@@ -139,7 +147,7 @@ autoMessageDecoder =
 -}
 sensorMessageDecoder : JD.Decoder BotMessage
 sensorMessageDecoder =
-    decode (Sensors.SensorData)
+    decode Sensors.SensorData
         |> required "ir_down" JD.float
         |> required "ir_fl" JD.float
         |> required "ir_fr" JD.float
@@ -157,6 +165,15 @@ sensorMessageDecoder =
 serverMessageDecoder : JD.Decoder BotMessage
 serverMessageDecoder =
     JD.oneOf [ debugMessageDecoder, autoMessageDecoder, sensorMessageDecoder ]
+
+
+onClickLocation : Html.Attribute Msg
+onClickLocation =
+    decode Mouse.Position
+        |> required "pageX" JD.int
+        |> required "pageY" JD.int
+        |> JD.map OnControlClick
+        |> on "click"
 
 
 {-| Send a message to the robot about joystick state, auto mode or PID parameters
@@ -346,13 +363,43 @@ update msg model =
                     | joystick =
                         { joy
                             | x = slide ( -1, 1 ) joy.x ( KC.a, KC.d )
-                            , y = slide ( -1, 1 ) joy.y ( KC.s, KC.w )
+                            , y = slide ( -1, 1 ) joy.y ( KC.w, KC.s )
                             , rotation = slide ( -1, 1 ) joy.rotation ( KC.q, KC.e )
                             , thrust = slide ( 0, 1 ) joy.thrust ( KC.c, KC.r )
                         }
                   }
                 , Cmd.none
                 )
+
+        OnControlClick pos ->
+            ( { model | lastClick = pos}
+            , Joystick.getElementPosition "control"
+            )
+
+        ElementPosition elemPos ->
+            let
+                localX =
+                    model.lastClick.x - elemPos.x
+
+                localY =
+                    model.lastClick.y - elemPos.y
+
+                normX =
+                    (toFloat localX / (clickControlWidth / 2)) - 1
+
+                normY =
+                    (toFloat localY / (clickControlHeight / 2)) - 1
+
+                joy =
+                    model.joystick
+
+                newJoystick =
+                    { joy
+                        | x = normX
+                        , y = normY
+                    }
+            in
+                ( { model | joystick = newJoystick }, Cmd.none )
 
 
 subscriptions : Model -> Sub Msg
@@ -364,6 +411,7 @@ subscriptions model =
     , Time.every (millisecond * 10) UpdateControlDisplay
     , Time.every (millisecond * 500) SendControlToServer
     , Keyboard.downs MoveSlider
+    , Joystick.elementPosition ElementPosition
     ]
         |> Sub.batch
 
@@ -416,6 +464,69 @@ createInputField model idx ( desc, field ) =
         ]
 
 
+clickControlWidth : number
+clickControlWidth =
+    300
+
+clickControlHeight : number
+clickControlHeight =
+    300
+
+{-| View X and Y control to use when no joystick is connected
+-}
+viewClickControl : Joystick.JoystickData -> Html Msg
+viewClickControl data =
+    let
+        middle x =
+            50 + 50 * x |> floor |> toString
+    in
+        div
+            [ style [ ( "width", toString clickControlWidth )
+                    , ( "height", toString clickControlHeight )
+                    ]
+            , id "control"
+            , onClickLocation
+            ]
+            [ Svg.svg
+                [ Svg.Attributes.version "1.1"
+                , Svg.Attributes.x "0"
+                , Svg.Attributes.y "0"
+                , Svg.Attributes.viewBox "0 0 100 100"
+                ]
+                [ Svg.circle
+                    [ Svg.Attributes.fill "#F0F9F0"
+                    , Svg.Attributes.cx "50"
+                    , Svg.Attributes.cy "50"
+                    , Svg.Attributes.r "50"
+                    ]
+                    []
+                , Svg.rect
+                      [ Svg.Attributes.fill "#000000"
+                      , Svg.Attributes.x "49"
+                      , Svg.Attributes.y "30"
+                      , Svg.Attributes.width "2"
+                      , Svg.Attributes.height "40"
+                      ]
+                      []
+                , Svg.rect
+                      [ Svg.Attributes.fill "#000000"
+                      , Svg.Attributes.y "49"
+                      , Svg.Attributes.x "30"
+                      , Svg.Attributes.height "2"
+                      , Svg.Attributes.width "40"
+                      ]
+                      []
+                , Svg.circle
+                    [ Svg.Attributes.fill "#FFB0B0"
+                    , Svg.Attributes.cx (middle data.x)
+                    , Svg.Attributes.cy (middle data.y)
+                    , Svg.Attributes.r "5"
+                    ]
+                    []
+                ]
+            ]
+
+
 {-| View sliders for control when no joystick is connected
 -}
 viewSliderControl : Model -> Html Msg
@@ -450,10 +561,8 @@ viewSliderControl model =
                 , text "Set control values manually below"
                 ]
             , Card.actions [ Card.border ]
-                [ text ("X [A/D] " ++ toString joy.x)
-                , viewSlider ( -100, 100 ) joy.x setX
-                , text ("Y [W/S] " ++ toString joy.y)
-                , viewSlider ( -100, 100 ) joy.y setY
+                [ text ("Direction to go [WASD]")
+                , viewClickControl joy
                 , text ("Rotation [Q/E] " ++ toString (-1 * joy.rotation))
                 , viewSlider ( -100, 100 ) joy.rotation setRot
                 , text ("Thrust [R/C] " ++ toString joy.thrust)
