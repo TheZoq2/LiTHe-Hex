@@ -63,7 +63,7 @@ def main():
 
         if auto:
             # Auto mode
-            os.system('clear')
+            #os.system('clear')
             print("Auto mode!")
             auto, prev_speed, prev_x, prev_y, prev_rot = do_auto_mode_iteration(
                 sensor_spi, motor_spi, send_queue,
@@ -257,19 +257,29 @@ def send_decision_avr(spi, decision_packet, prev_speed, prev_x, prev_y, prev_rot
 
     if decision_packet.decision == decision_making.GO_FORWARD:
         x_speed = convert_to_sendable_byte(1)
-        y_speed = convert_to_sendable_byte(decision_packet.regulate_command_y)
-        rotation = convert_to_sendable_byte(decision_packet.regulate_goal_angle)
+        #y_speed = convert_to_sendable_byte(0)
+       
+        if (decision_packet.regulate_goal_angle != 0):
+            #x_speed = convert_to_sendable_byte(1)
+            rotation = convert_to_sendable_byte(-decision_packet.regulate_goal_angle)
+             
+        elif (decision_packet.regulate_command_y != 0):
+            #x_speed = convert_to_sendable_byte(0)
+            y_speed = convert_to_sendable_byte(decision_packet.regulate_command_y)
+    
+       
+        #rotation = convert_to_sendable_byte(0)
         # print("Goal angle:", decision_packet.regulate_goal_angle)
 
     elif decision_packet.decision == decision_making.TURN_LEFT:
         x_speed = convert_to_sendable_byte(0)
         y_speed = convert_to_sendable_byte(0)
-        rotation = convert_to_sendable_byte(1)
+        rotation = convert_to_sendable_byte(0.5)
 
     elif decision_packet.decision == decision_making.TURN_RIGHT:
         x_speed = convert_to_sendable_byte(0)
         y_speed = convert_to_sendable_byte(0)
-        rotation = convert_to_sendable_byte(-1)
+        rotation = convert_to_sendable_byte(-0.5)
 
     elif decision_packet.decision == decision_making.STOP:
         x_speed = convert_to_sendable_byte(0)
