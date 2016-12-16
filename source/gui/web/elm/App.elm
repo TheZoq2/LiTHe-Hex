@@ -3,7 +3,7 @@ module App exposing (..)
 import Html exposing (Html, h1, img, text, div, input, br, form)
 import Html.Attributes exposing (style, id, value, src, placeholder)
 import Html.Lazy exposing (lazy)
-import Html.Events exposing (on)
+import Html.Events exposing (on, onSubmit)
 import Svg exposing (svg)
 import Svg.Attributes exposing (fill, version, x, y, r, viewBox, cx, cy, width, height)
 import Json.Encode as JE
@@ -465,18 +465,6 @@ view model =
         }
 
 
-{-| Create input for regulation parameters
--}
-createInputField : Model -> Int -> ( String, RegulationParameter ) -> Html Msg
-createInputField model idx ( desc, field ) =
-    Textfield.render Mdl
-        [ 1, idx ]
-        model.mdl
-        [ Textfield.onInput (ChangeParameter field)
-        , Textfield.label desc
-        ]
-
-
 clickControlWidth : number
 clickControlWidth =
     300
@@ -620,6 +608,18 @@ viewDebug model =
     ]
 
 
+{-| Create input for regulation parameters
+-}
+createInputField : Model -> Int -> ( String, RegulationParameter ) -> Html Msg
+createInputField model idx ( desc, field ) =
+    Textfield.render Mdl
+        [ 1, idx ]
+        model.mdl
+        [ Textfield.onInput (ChangeParameter field)
+        , Textfield.label desc
+        ]
+
+
 {-| Show regulation parameter
 -}
 viewParameters : Model -> List (Html Msg)
@@ -627,18 +627,21 @@ viewParameters model =
     [ Card.view [ Elevation.e2 ]
         [ Card.title [] [ Card.head [] [ text "Regulation parameters" ] ]
         , Card.actions [ Card.border ]
-            (List.indexedMap (createInputField model)
-                [ ( "Angle scaledown", "angle_scaledown" )
-                , ( "Movement scaledown", "movement_scaledown" )
-                , ( "Angle adjustment", "angle_adjustment_border" )
-                ]
-                ++ [ Button.render Mdl
-                        [ 0 ]
-                        model.mdl
-                        [ Button.onClick SendParameters ]
-                        [ text "duck" ]
-                   ]
-            )
+            [ (form [ onSubmit SendParameters ]
+                (List.indexedMap (createInputField model)
+                    [ ( "Angle scaledown", "angle_scaledown" )
+                    , ( "Movement scaledown", "movement_scaledown" )
+                    , ( "Angle adjustment", "angle_adjustment_border" )
+                    ]
+                    ++ [ Button.render Mdl
+                            [ 0 ]
+                            model.mdl
+                            [ Button.onClick SendParameters ]
+                            [ text "duck" ]
+                       ]
+                )
+              )
+            ]
         ]
     ]
 

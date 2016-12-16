@@ -22159,47 +22159,58 @@ var _user$project$App$viewParameters = function (model) {
 							_0: _MichaelCombs28$elm_mdl$Material_Card$border,
 							_1: {ctor: '[]'}
 						},
-						A2(
-							_elm_lang$core$Basics_ops['++'],
-							A2(
-								_elm_lang$core$List$indexedMap,
-								_user$project$App$createInputField(model),
+						{
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$form,
 								{
 									ctor: '::',
-									_0: {ctor: '_Tuple2', _0: 'Angle scaledown', _1: 'angle_scaledown'},
-									_1: {
-										ctor: '::',
-										_0: {ctor: '_Tuple2', _0: 'Movement scaledown', _1: 'movement_scaledown'},
-										_1: {
+									_0: _elm_lang$html$Html_Events$onSubmit(_user$project$App$SendParameters),
+									_1: {ctor: '[]'}
+								},
+								A2(
+									_elm_lang$core$Basics_ops['++'],
+									A2(
+										_elm_lang$core$List$indexedMap,
+										_user$project$App$createInputField(model),
+										{
 											ctor: '::',
-											_0: {ctor: '_Tuple2', _0: 'Angle adjustment', _1: 'angle_adjustment_border'},
-											_1: {ctor: '[]'}
-										}
-									}
-								}),
-							{
-								ctor: '::',
-								_0: A5(
-									_MichaelCombs28$elm_mdl$Material_Button$render,
-									_user$project$App$Mdl,
+											_0: {ctor: '_Tuple2', _0: 'Angle scaledown', _1: 'angle_scaledown'},
+											_1: {
+												ctor: '::',
+												_0: {ctor: '_Tuple2', _0: 'Movement scaledown', _1: 'movement_scaledown'},
+												_1: {
+													ctor: '::',
+													_0: {ctor: '_Tuple2', _0: 'Angle adjustment', _1: 'angle_adjustment_border'},
+													_1: {ctor: '[]'}
+												}
+											}
+										}),
 									{
 										ctor: '::',
-										_0: 0,
+										_0: A5(
+											_MichaelCombs28$elm_mdl$Material_Button$render,
+											_user$project$App$Mdl,
+											{
+												ctor: '::',
+												_0: 0,
+												_1: {ctor: '[]'}
+											},
+											model.mdl,
+											{
+												ctor: '::',
+												_0: _MichaelCombs28$elm_mdl$Material_Button$onClick(_user$project$App$SendParameters),
+												_1: {ctor: '[]'}
+											},
+											{
+												ctor: '::',
+												_0: _elm_lang$html$Html$text('duck'),
+												_1: {ctor: '[]'}
+											}),
 										_1: {ctor: '[]'}
-									},
-									model.mdl,
-									{
-										ctor: '::',
-										_0: _MichaelCombs28$elm_mdl$Material_Button$onClick(_user$project$App$SendParameters),
-										_1: {ctor: '[]'}
-									},
-									{
-										ctor: '::',
-										_0: _elm_lang$html$Html$text('duck'),
-										_1: {ctor: '[]'}
-									}),
-								_1: {ctor: '[]'}
-							})),
+									})),
+							_1: {ctor: '[]'}
+						}),
 					_1: {ctor: '[]'}
 				}
 			}),
