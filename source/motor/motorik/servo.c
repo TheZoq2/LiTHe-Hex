@@ -37,6 +37,8 @@ const uint8_t NUM_SERVOS = 18;
 const uint16_t MAX_SERVO_SPEED = 0x01ff;
 const uint16_t MIN_SERVO_SPEED = 0x001f;
 
+
+
 //const uint16_t SERVO_TARGET_COMPLIANCE_MARGIN = 100;
 
 
@@ -151,8 +153,9 @@ void send_servo_action(uint16_t threshold)
 void send_servo_action(uint16_t threshold)
 {
 	send_servo_command(BROADCAST_ID, ACTION_INSTRUCTION, 0, 0);
-	while(!servos_are_done_rotating(threshold))
-		;
+	_delay_ms(100);
+	//while(!servos_are_done_rotating(threshold))
+	//	;
 }
 #endif
 

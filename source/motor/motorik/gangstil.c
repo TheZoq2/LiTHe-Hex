@@ -35,7 +35,7 @@ const int   TARG_NEUTRAL_RATIO          = 2;
 const float FRONT_LEG_JOINT_X           = 0.12;
 const float FRONT_LEG_JOINT_Y           = 0.06;
 const float MID_LEG_JOINT_Y             = 0.1;
-const float HIGH                        = 0.035;
+const float HIGH                        = 0.04;
 const float GROUNDED                    = -0.13;
 const float MAX_DIST                    = 0.14;
 const float VERT_MID_LEG_BORDER_OFFSET  = 0.06;
@@ -53,7 +53,7 @@ const float STANDUP_LEG_DISTANCE = 0.16;
 
 #ifdef IS_X86
 const uint16_t STANDARD_THRESHOLD = 100;
-const uint16_t HIGH_PRECISION_THRESHOLD = 20;
+const uint16_t HIGH_PRECISION_THRESHOLD = 50;
 #else //AVR constants
 const uint16_t STANDARD_THRESHOLD = 100;
 const uint16_t HIGH_PRECISION_THRESHOLD = 100;
