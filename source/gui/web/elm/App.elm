@@ -4,8 +4,8 @@ import Html exposing (Html, h1, img, text, div, input, br, form)
 import Html.Attributes exposing (style, id, value, src, placeholder)
 import Html.Lazy exposing (lazy)
 import Html.Events exposing (on)
-import Svg
-import Svg.Attributes
+import Svg exposing (svg)
+import Svg.Attributes exposing (fill, version, x, y, r, viewBox, cx, cy, width, height)
 import Json.Encode as JE
 import Json.Decode as JD
 import Json.Decode.Pipeline exposing (decode, required, requiredAt, optionalAt)
@@ -52,7 +52,7 @@ import KeyCode as KC
 -}
 
 
-type alias PIDParameter =
+type alias RegulationParameter =
     String
 
 
@@ -65,13 +65,14 @@ type Msg
     | UpdateControlDisplay Time
     | SendControlToServer Time
     | SelectTab Int
-    | ChangeParameter PIDParameter String
+    | ChangeParameter RegulationParameter String
     | SendParameters
     | ToggleAuto
     | MoveSlider Keyboard.KeyCode
     | ResetBot
     | OnControlClick Mouse.Position
     | ElementPosition { x : Int, y : Int }
+    | ToggleCommunication
     | Mdl (Material.Msg Msg)
 
 
@@ -86,6 +87,7 @@ type alias Model =
     , selectedTab : Int
     , parameters : Dict String Float
     , lastClick : Mouse.Position
+    , sending : Bool
     }
 
 
@@ -114,6 +116,7 @@ init { host } =
                 |> Phoenix.Socket.join (Phoenix.Channel.init "client")
     in
         { phxSocket = phxSocket
+        , mdl = Material.model
         , messages = []
         , joystick = initialJoystick
         , joystickIndex = Nothing
@@ -121,8 +124,8 @@ init { host } =
         , autoMode = False
         , selectedTab = 0
         , parameters = Dict.empty
-        , mdl = Material.model
         , lastClick = { x = 0, y = 0 }
+        , sending = True
         }
             ! [ Cmd.map PhoenixMsg phxCmd ]
 
@@ -176,19 +179,22 @@ onClickLocation =
         |> on "click"
 
 
-{-| Send a message to the robot about joystick state, auto mode or PID parameters
+{-| Send a message to the robot about joystick state, auto mode or regulation parameters
 -}
-sendControlMessage : Socket Msg -> JE.Value -> ( Socket Msg, Cmd Msg )
-sendControlMessage socket payload =
-    let
-        push =
-            Phoenix.Push.init "joystick" "client"
-                |> Phoenix.Push.withPayload payload
+sendControlMessage : Model -> JE.Value -> ( Socket Msg, Cmd Msg )
+sendControlMessage model payload =
+    if model.sending then
+        let
+            push =
+                Phoenix.Push.init "joystick" "client"
+                    |> Phoenix.Push.withPayload payload
 
-        ( phxSocket, phxCmd ) =
-            Phoenix.Socket.push push socket
-    in
-        ( phxSocket, Cmd.map PhoenixMsg phxCmd )
+            ( phxSocket, phxCmd ) =
+                Phoenix.Socket.push push model.phxSocket
+        in
+            ( phxSocket, Cmd.map PhoenixMsg phxCmd )
+    else
+        ( model.phxSocket, Cmd.none )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -246,7 +252,7 @@ update msg model =
         SendControlToServer _ ->
             let
                 ( phxSocket, phxCmd ) =
-                    sendControlMessage model.phxSocket
+                    sendControlMessage model
                         <| JE.object
                             [ ( "x", JE.float model.joystick.x )
                             , ( "y", JE.float model.joystick.y )
@@ -271,7 +277,7 @@ update msg model =
             let
                 ( phxSocket, phxCmd ) =
                     if data.reset && not model.joystick.reset then
-                        sendControlMessage model.phxSocket
+                        sendControlMessage model
                             (JE.object [ ( "reset", JE.bool True ) ])
                     else
                         ( model.phxSocket, Cmd.none )
@@ -281,7 +287,7 @@ update msg model =
         ResetBot ->
             let
                 ( phxSocket, phxCmd ) =
-                    sendControlMessage model.phxSocket
+                    sendControlMessage model
                         (JE.object [ ( "reset", JE.bool True ) ])
             in
                 ( { model | phxSocket = phxSocket }, phxCmd )
@@ -319,7 +325,7 @@ update msg model =
                         |> JE.object
 
                 ( phxSocket, phxCmd ) =
-                    sendControlMessage model.phxSocket payload
+                    sendControlMessage model payload
             in
                 ( { model
                     | phxSocket = phxSocket
@@ -330,7 +336,7 @@ update msg model =
         ToggleAuto ->
             let
                 ( phxSocket, phxCmd ) =
-                    sendControlMessage model.phxSocket
+                    sendControlMessage model
                         <| JE.object [ ( "auto", JE.bool (not model.autoMode) ) ]
             in
                 ( { model
@@ -372,7 +378,7 @@ update msg model =
                 )
 
         OnControlClick pos ->
-            ( { model | lastClick = pos}
+            ( { model | lastClick = pos }
             , Joystick.getElementPosition "control"
             )
 
@@ -386,9 +392,11 @@ update msg model =
 
                 normX =
                     (toFloat localX / (clickControlWidth / 2)) - 1
+                        |> clamp -1 1
 
                 normY =
                     (toFloat localY / (clickControlHeight / 2)) - 1
+                        |> clamp -1 1
 
                 joy =
                     model.joystick
@@ -400,6 +408,9 @@ update msg model =
                     }
             in
                 ( { model | joystick = newJoystick }, Cmd.none )
+
+        ToggleCommunication ->
+            ( { model | sending = not model.sending }, Cmd.none )
 
 
 subscriptions : Model -> Sub Msg
@@ -452,9 +463,9 @@ view model =
         }
 
 
-{-| Create input for PID parameters
+{-| Create input for regulation parameters
 -}
-createInputField : Model -> Int -> ( String, PIDParameter ) -> Html Msg
+createInputField : Model -> Int -> ( String, RegulationParameter ) -> Html Msg
 createInputField model idx ( desc, field ) =
     Textfield.render Mdl
         [ 1, idx ]
@@ -468,9 +479,11 @@ clickControlWidth : number
 clickControlWidth =
     300
 
+
 clickControlHeight : number
 clickControlHeight =
     300
+
 
 {-| View X and Y control to use when no joystick is connected
 -}
@@ -481,48 +494,18 @@ viewClickControl data =
             50 + 50 * x |> floor |> toString
     in
         div
-            [ style [ ( "width", toString clickControlWidth )
-                    , ( "height", toString clickControlHeight )
-                    ]
+            [ style
+                [ ( "width", toString clickControlWidth )
+                , ( "height", toString clickControlHeight )
+                ]
             , id "control"
             , onClickLocation
             ]
-            [ Svg.svg
-                [ Svg.Attributes.version "1.1"
-                , Svg.Attributes.x "0"
-                , Svg.Attributes.y "0"
-                , Svg.Attributes.viewBox "0 0 100 100"
-                ]
-                [ Svg.circle
-                    [ Svg.Attributes.fill "#F0F9F0"
-                    , Svg.Attributes.cx "50"
-                    , Svg.Attributes.cy "50"
-                    , Svg.Attributes.r "50"
-                    ]
-                    []
-                , Svg.rect
-                      [ Svg.Attributes.fill "#000000"
-                      , Svg.Attributes.x "49"
-                      , Svg.Attributes.y "30"
-                      , Svg.Attributes.width "2"
-                      , Svg.Attributes.height "40"
-                      ]
-                      []
-                , Svg.rect
-                      [ Svg.Attributes.fill "#000000"
-                      , Svg.Attributes.y "49"
-                      , Svg.Attributes.x "30"
-                      , Svg.Attributes.height "2"
-                      , Svg.Attributes.width "40"
-                      ]
-                      []
-                , Svg.circle
-                    [ Svg.Attributes.fill "#FFB0B0"
-                    , Svg.Attributes.cx (middle data.x)
-                    , Svg.Attributes.cy (middle data.y)
-                    , Svg.Attributes.r "5"
-                    ]
-                    []
+            [ Svg.svg [ version "1.1", x "0", y "0", viewBox "0 0 100 100" ]
+                [ Svg.circle [ fill "#F0F9F0", cx "50", cy "50", r "50" ] []
+                , Svg.rect [ fill "#000000", x "49", y "30", width "2", height "40" ] []
+                , Svg.rect [ fill "#000000", y "49", x "30", height "2", width "40" ] []
+                , Svg.circle [ fill "#FFB0B0", cx (middle data.x), cy (middle data.y), r "5" ] []
                 ]
             ]
 
@@ -590,38 +573,46 @@ been connected
 viewControl : Model -> List (Html Msg)
 viewControl model =
     [ Toggles.switch Mdl
-        [ 0, 1 ]
+        [ 0, 0 ]
         model.mdl
-        [ Toggles.onClick ToggleAuto
-        , Toggles.value model.autoMode
+        [ Toggles.onClick ToggleCommunication
+        , Toggles.value model.sending
         ]
-        [ text "Autonomous mode" ]
-    , if not model.autoMode then
-        if model.joystickIndex /= Nothing then
-            Joystick.joystickDisplay model.joystick
-        else
-            viewSliderControl model
-      else
-        Card.view [ Elevation.e2 ]
-            [ Card.title [] [ Card.head [] [ text "PID parameters" ] ]
-            , Card.actions [ Card.border ]
-                (List.indexedMap (createInputField model)
-                    [ ( "Base movement", "base_movement" )
-                    , ( "Command Y", "command_y" )
-                    , ( "Goal angle", "goal_angle" )
-                    , ( "Angle scaledown", "angle_scaledown" )
-                    , ( "Movement scaledown", "movement_scaledown" )
-                    , ( "Angle adjustment", "angle_adjustment_border" )
-                    ]
-                    ++ [ Button.render Mdl
-                            [ 0, 0 ]
-                            model.mdl
-                            [ Button.onClick SendParameters ]
-                            [ text "duck" ]
-                       ]
-                )
-            ]
+        [ text "Enable server communication" ]
     ]
+        ++ if not model.sending then
+            []
+           else
+            [ Toggles.switch Mdl
+                [ 0, 1 ]
+                model.mdl
+                [ Toggles.onClick ToggleAuto
+                , Toggles.value model.autoMode
+                ]
+                [ text "Autonomous mode" ]
+            , if not model.autoMode then
+                if model.joystickIndex /= Nothing then
+                    Joystick.joystickDisplay model.joystick
+                else
+                    viewSliderControl model
+              else
+                Card.view [ Elevation.e2 ]
+                    [ Card.title [] [ Card.head [] [ text "Regulation parameters" ] ]
+                    , Card.actions [ Card.border ]
+                        (List.indexedMap (createInputField model)
+                            [ ( "Angle scaledown", "angle_scaledown" )
+                            , ( "Movement scaledown", "movement_scaledown" )
+                            , ( "Angle adjustment", "angle_adjustment_border" )
+                            ]
+                            ++ [ Button.render Mdl
+                                    [ 0, 2 ]
+                                    model.mdl
+                                    [ Button.onClick SendParameters ]
+                                    [ text "duck" ]
+                               ]
+                        )
+                    ]
+            ]
 
 
 {-| Show list of debug messages
