@@ -93,7 +93,7 @@ void write_servo_data(uint8_t id, uint8_t address, const uint8_t* data, uint8_t 
 	free(new_data);
 }
 
-ServoReply read_servo_data(uint8_t id, uint8_t address, uint8_t length)
+ServoReply read_servo_data(uint8_t id, uint8_t address, uint8_t length, uint8_t* buffer)
 {
 	clear_uart_buffer();
 
@@ -110,7 +110,7 @@ ServoReply read_servo_data(uint8_t id, uint8_t address, uint8_t length)
 
 	free(new_data);
 
-	ServoReply reply = receive_servo_reply();
+	ServoReply reply = receive_servo_reply(buffer);
 	spi_set_interrupts(true);
 	//Read the data
 	return reply;
@@ -118,7 +118,9 @@ ServoReply read_servo_data(uint8_t id, uint8_t address, uint8_t length)
 
 Uint16Result read_uint16_from_servo(uint8_t id, uint8_t address)
 {
-	ServoReply reply = read_servo_data(id, address, 2);
+	uint8_t buffer[2];
+
+	ServoReply reply = read_servo_data(id, address, 2, buffer);
 
 	Uint16Result result;
 
@@ -130,11 +132,11 @@ Uint16Result read_uint16_from_servo(uint8_t id, uint8_t address)
 	}
 	else
 	{
-		result.result = (reply.parameters[1] << 8) + reply.parameters[0];
+		result.result = (buffer[1] << 8) + buffer[0];
 		result.is_error = false;
 	}
 
-	free_servo_reply(reply);
+	//free_servo_reply(reply);
 
 	return result;
 }
@@ -169,11 +171,12 @@ void write_servo_single_byte(uint8_t id, uint8_t address, uint8_t value)
 									} \
 									else \
 									{ \
+										servo_reply.error = 1; \
 										goto failure; \
 									} \
 									} \
 
-ServoReply receive_servo_reply()
+ServoReply receive_servo_reply(uint8_t* buffer)
 {
 	//spi_set_interrupts(false);
 	//Switch the direction of the tri-state gate
@@ -200,33 +203,27 @@ ServoReply receive_servo_reply()
 		servo_reply.length = 0;
 	}
 
-	servo_reply.parameters = (uint8_t*) malloc(sizeof(uint8_t) * servo_reply.parameter_amount);
-
 	for(uint8_t i = 0; i < servo_reply.parameter_amount; ++i)
 	{
-		//servo_reply.parameters[i] = usart_receive();
-		uart_receive_with_error(servo_reply.parameters[i]);
+		//uart_receive_with_error(servo_reply.parameters[i]);
+		uart_receive_with_error(buffer[i]);
 	}
 
 	//TODO: Check the checksum
-	//servo_reply.checksum = usart_receive();
 	uart_receive_with_error(servo_reply.checksum);
 
 failure:
-	servo_reply.error = 1;
-	servo_reply.parameter_amount = 0;
-
 	//Reset the tri-state gate
 	clear_bit(PORTD, PIN_RX_TOGGLE);
 	usart_set_direction(TX);
 	
-	_delay_ms(5);
+	_delay_ms(1);
 	
 	return servo_reply;
 }
 void free_servo_reply(ServoReply reply)
 {
-	free(reply.parameters);
+	//free(reply.parameters);
 }
 
 
