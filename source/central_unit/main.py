@@ -189,6 +189,7 @@ def do_auto_mode_iteration(sensor_spi, motor_spi, send_queue,
     if packet is not None:
         if packet.auto is not None:
             auto = packet.auto
+            avr_communication.walk(motor_spi, 0, 0, 0, False, 100)
         # Regulate algorithm parameters
         if packet.angle_scaledown is not None:
             decision_packet.regulate_angle_scaledown = packet.angle_scaledown
@@ -228,6 +229,8 @@ def do_manual_mode_iteration(sensor_spi, motor_spi, send_queue, receive_queue,
     if packet is not None:
         if packet.auto is not None:
             auto = packet.auto
+            avr_communication.walk(motor_spi, 0, 0, 0, False, 100)
+
         elif packet.return_to_neutral is not None and packet.return_to_neutral:
             avr_communication.back_to_neutral(motor_spi)
 
