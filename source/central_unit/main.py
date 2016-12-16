@@ -280,12 +280,12 @@ def send_decision_avr(spi, decision_packet, prev_speed, prev_x, prev_y, prev_rot
     elif decision_packet.decision == decision_making.TURN_LEFT:
         x_speed = convert_to_sendable_byte(0)
         y_speed = convert_to_sendable_byte(0)
-        rotation = convert_to_sendable_byte(0.5)
+        rotation = convert_to_sendable_byte(0.43)
 
     elif decision_packet.decision == decision_making.TURN_RIGHT:
         x_speed = convert_to_sendable_byte(0)
         y_speed = convert_to_sendable_byte(0)
-        rotation = convert_to_sendable_byte(-0.5)
+        rotation = convert_to_sendable_byte(-0.43)
 
     elif decision_packet.decision == decision_making.STOP:
         x_speed = convert_to_sendable_byte(0)
@@ -301,6 +301,7 @@ def send_decision_avr(spi, decision_packet, prev_speed, prev_x, prev_y, prev_rot
         avr_communication.walk(spi, x_speed, y_speed, rotation,
                                auto_mode=True, timeout=100)
 
+    print("Auto speed: ", decision_packet.speed)
     prev_speed = decision_packet.speed
     prev_x = x_speed
     prev_y = y_speed

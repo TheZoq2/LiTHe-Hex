@@ -53,6 +53,7 @@ class DecisionPacket():
         self.regulate_angle_scaledown = ANGLE_SCALEDOWN
         self.regulate_movement_scaledown = MOVEMENT_SCALEDOWN
         self.regulate_angular_adjustment_border = ANGLE_THRESHOLD
+        self.speed = 200
 
 
 # Returns the dead ends and corridors detected in the maze
