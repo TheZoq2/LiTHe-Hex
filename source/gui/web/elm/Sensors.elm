@@ -63,7 +63,7 @@ sensorNames =
     , ( .irFr, "IR Front right", ( 0, 1.5 ) )
     , ( .irBl, "IR Back left", ( 0, 1.5 ) )
     , ( .irBr, "IR Back right", ( 0, 1.5 ) )
-    , ( .lidar, "LIDAR", ( 0, 20 ))
+    , ( .lidar, "LIDAR", ( 0, 5 ))
     , ( .angleL, "Angle left", ( -180, 180 ) )
     , ( .angleR, "Angle right", ( -180, 180 ) )
     , ( .angleAvg, "Average angle", ( -180, 180 ) )

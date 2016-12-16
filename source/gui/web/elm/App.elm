@@ -94,7 +94,7 @@ type alias Flags =
 
 initialJoystick : Joystick.JoystickData
 initialJoystick =
-    { x = 0, y = 0, rotation = 0, thrust = 0, reset = False }
+    { x = 0, y = 0, rotation = 0, thrust = 1, reset = False }
 
 
 init : Flags -> ( Model, Cmd Msg )
@@ -233,7 +233,7 @@ update msg model =
                         <| JE.object
                             [ ( "x", JE.float model.joystick.x )
                             , ( "y", JE.float model.joystick.y )
-                            , ( "rotation", JE.float model.joystick.rotation )
+                            , ( "rotation", JE.float (-1 * model.joystick.rotation) )
                             , ( "thrust", JE.float model.joystick.thrust )
                             ]
             in
@@ -454,14 +454,14 @@ viewSliderControl model =
                 , viewSlider ( -100, 100 ) joy.x setX
                 , text ("Y [W/S] " ++ toString joy.y)
                 , viewSlider ( -100, 100 ) joy.y setY
-                , text ("Rotation [Q/E] " ++ toString joy.rotation)
+                , text ("Rotation [Q/E] " ++ toString (-1 * joy.rotation))
                 , viewSlider ( -100, 100 ) joy.rotation setRot
                 , text ("Thrust [R/C] " ++ toString joy.thrust)
                 , viewSlider ( 0, 100 ) joy.thrust setThrust
                 , Button.render Mdl
                     [ 0 ]
                     model.mdl
-                    [ initialJoystick
+                    [ { initialJoystick | thrust = joy.thrust }
                         |> AxisData
                         |> Button.onClick
                     ]
