@@ -643,7 +643,12 @@ void direct_legs(float rot, Point2D * targ, Point2D * current, Point2D goal, boo
         targ[leg].y = targ[leg].y - joint.y;
 
         if (leg_should_be_raised){ //normalize raised legs, prevents jumbling of legs
-            targ[leg].x = (targ[leg].x * TARG_NEUTRAL_RATIO + neutral.x)/(TARG_NEUTRAL_RATIO + 1);
+            targ[leg].x = current[leg].x + ((targ[leg] - current[leg].x) *
+                                            (TARG_NEUTRAL_RATIO + 1)/TARG_NEUTRAL_RATIO);
+            targ[leg].y = current[leg].y + ((targ[leg] - current[leg].y) *
+                                            (TARG_NEUTRAL_RATIO + 1)/TARG_NEUTRAL_RATIO);
+
+            targ[leg].x = (targ[leg].x * TARG_NEUTRAL_RATIO  + neutral.x)/(TARG_NEUTRAL_RATIO + 1);
             targ[leg].y = (targ[leg].y * TARG_NEUTRAL_RATIO + neutral.y)/(TARG_NEUTRAL_RATIO + 1);
         }
     }
