@@ -38,9 +38,10 @@ except ImportError:
     pass
 
 AUTO_BUTTON_PIN = 37
-SLEEP_TIME_AUTO_MODE = 0.05
+SLEEP_TIME_AUTO_MODE = 0.025
 SLEEP_TIME_MANUAL_MODE = 0.1
 SERVO_SPEED_SCALER = 120
+FULL_TURN_AMOUNT = 0.41
 
 def main():
 
@@ -269,13 +270,13 @@ def send_decision_avr(spi, decision_packet, prev_speed, prev_x, prev_y, prev_rot
         rotation = convert_to_sendable_byte(0.015)
         #y_speed = convert_to_sendable_byte(0)
        
-        if (decision_packet.regulate_goal_angle != 0):
+        #if (decision_packet.regulate_goal_angle != 0):
             #x_speed = convert_to_sendable_byte(1)
-            rotation = convert_to_sendable_byte(-decision_packet.regulate_goal_angle)
+        rotation = convert_to_sendable_byte(-decision_packet.regulate_goal_angle)
              
-        elif (decision_packet.regulate_command_y != 0):
+        #elif (decision_packet.regulate_command_y != 0):
             #x_speed = convert_to_sendable_byte(0)
-            y_speed = convert_to_sendable_byte(decision_packet.regulate_command_y)
+        y_speed = convert_to_sendable_byte(decision_packet.regulate_command_y)
     
        
         #rotation = convert_to_sendable_byte(0)
@@ -284,7 +285,7 @@ def send_decision_avr(spi, decision_packet, prev_speed, prev_x, prev_y, prev_rot
     elif decision_packet.decision == decision_making.TURN_LEFT:
         x_speed = convert_to_sendable_byte(0)
         y_speed = convert_to_sendable_byte(0)
-        rotation = convert_to_sendable_byte(0.43)
+        rotation = convert_to_sendable_byte(FULL_TURN_AMOUNT)
 
     elif decision_packet.decision == decision_making.TURN_RIGHT:
         x_speed = convert_to_sendable_byte(0)

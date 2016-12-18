@@ -64,11 +64,11 @@ def _change_sensor_values(temp_sensor_data):
 
 # better name pls
 def _check_angle(temp_sensor_data, angle):
-    if (temp_sensor_data.left_angle < 0 and temp_sensor_data.right_angle > 0):
-        return angle
-    else:
-        return -angle
-        
+    #if (temp_sensor_data.left_angle < 0 and temp_sensor_data.right_angle > 0):
+    #    return angle
+    #else:
+    #    return -angle
+    return angle
 
 def regulate(sensor_data, decision_packet):
 
