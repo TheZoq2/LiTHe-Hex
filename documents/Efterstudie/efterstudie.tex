@@ -127,7 +127,7 @@
 			\textbf{Version} & \textbf{Datum} & \textbf{Utförda förändringar} 
 			& \textbf{Utförda av} & \textbf{Granskad} \\ \midrule
 			
-			0.1 & 2016--12--21 & Första utkastet & Projektgruppen &
+			1.0 & 2016--12--20 & Första versionen & Projektgruppen &
 			Projektgruppen \\
 			
 		\end{longtable}
@@ -152,9 +152,9 @@
 	
 	\begin{longtable}[c]{l l l }
 		\textbf{Fas} & \textbf{Planerad tid i timmar} & \textbf{Använd tid i timmar} \\ \midrule
-		Före &  &  \\
-		Under &  &  \\
-		Efter &  &  \\
+		Före & wat & wat \\
+		Under & 1120 & 1329 \\
+		Efter & wat & wat \\
 	\end{longtable}
 	
 	\section{Analys av arbete och problem}
@@ -170,7 +170,9 @@
 	Nu är det dags för Hannes
 	
 	\subsection{Hur fungerade relationen med beställaren?}
-	Nu är det dags för Hannes
+    % TODO review
+    Relationen med beställaren har gått bra. Tidrapporter har skickats i tid
+    varje vecka och statusrapporter på begäran. 
 	
 	\subsection{Hur fungerade relationen med handledaren?}
 	Nu är det dags för Hannes
@@ -179,13 +181,44 @@
 	Beskriv de 3 besvärligaste problemen som ni har haft under projektet. 
 	Rangordna problemen där 1 är mest besvärlig i betydelsen tog längst tid att fixa.
 	Beskriv för varje problem:
+
 	a. felets typ - ange t.ex.  hårdvarufel, mjukvarufel, systemintegrationsfel 
+
 	b. kort beskrivning av felets symptom 
+
 	c. kort beskrivning av felets orsak t.ex. logiskt fel i programmering, timing-fel, glappkontakt, missförstånd av spec., felaktig design. 
+
 	d. kort beskrivning av hur ni fixade felet. T.ex. hur ni fixade mjukvarubuggen, fick ny hårdvara, virade om, gick runt problemet.
+
 	e. ungefärlig skattning av hur mycket tid som ni ägnade åt felsökningen (dvs. tid som kunde tjänats in om felet inte hade uppstått)
 	
-	
+    % TODO kanske SPI-bussen, servokommunikation, tornadon, LIDARens I2C?
+    % TODO ska vi skriva problem 3 först?
+
+    \subsubsection{Problem 3: Här var det problem}
+
+    Problem     Problem     Problem     Problem     Problem     Problem
+    Problem     Problem     Problem     Problem     Problem     Problem 
+
+    \subsubsection{Problem 2: Här var det problem}
+
+    Problem     Problem     Problem     Problem     Problem     Problem
+    Problem     Problem     Problem     Problem     Problem     Problem 
+
+    \subsubsection{Problem 1: Instabil SPI-buss}
+
+    Detta hårdvarufel uppkom i slutet av vecka 49. SPI-kommunikationen visade
+    sig vara oerhört instabil när både motorikenheten och sensorenheten
+    användes tillsammans på bussen. Undersökning med oscilloskåp visade att
+    signalerna hade mycket störningar, som gjorde kommunikationen svår,
+    särskilt till sensorenheten.
+
+    Lösningen på detta problem var helt enkelt att korta ner kablarna som
+    används i SPI-bussen, så att de blev så korta som möjligt.
+
+    Hade korta och mer strukturerat virade kablar använts, hade runt 56 timmar
+    sparats. % TODO check
+
 	\section{Måluppfyllelse}
 	Nu är det dags för Hannes
 	
