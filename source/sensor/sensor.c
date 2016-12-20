@@ -20,7 +20,6 @@
 #include "ir_queue.h"
 #include <avr/interrupt.h>
 #include "timer.h"
-#include "gyro.h"
 #include "lidar.h"
 #include "table.h"
 #include "communication.h"
