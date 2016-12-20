@@ -40,18 +40,19 @@ void update(MainTable* table, Lidar* lidar) {
 
 void get_sensor_data(Frame* frame) {
         for(uint8_t i = 0; i < NUM_SENSORS; i++) {
-		frame->msg[i] = mainTable->ir_list[i].value;
+		frame->msg[i] = main_table->ir_list[i].value;
 	}
-	frame->msg[NUM_SENSORS] = (uint8_t)(mainTable->front_distance >> 8);
-	frame->msg[NUM_SENSORS + 1] = (uint8_t)mainTable->front_distance;
+	frame->msg[NUM_SENSORS] = (uint8_t)(main_table->front_distance >> 8);
+	frame->msg[NUM_SENSORS + 1] = (uint8_t)main_table->front_distance;
 	frame->len = NUM_SENSORS + 2;
 }
 
 void get_wall_data(Frame* frame) {
-    frame->msg[0] = (uint8_t)(mainTable->front_distance >> 8);
-    frame->msg[1] = (uint8_t)mainTable->front_distance;
-    frame->msg[2] = mainTable->down_distance;
-    frame->msg[3] = mainTable->left_distance;
-    frame->msg[4] = mainTable->right_distance;
+    frame->msg[0] = (uint8_t)(main_table->front_distance >> 8);
+    frame->msg[1] = (uint8_t)main_table->front_distance;
+    frame->msg[2] = main_table->down_distance;
+    frame->msg[3] = main_table->left_distance;
+    frame->msg[4] = main_table->right_distance;
     frame->len = 5;
 }
+

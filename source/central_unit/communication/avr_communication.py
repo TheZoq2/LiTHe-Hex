@@ -222,16 +222,6 @@ def motor_communication_init():
     return spi
 
 
-# def set_obstacle_mode(spi, value):
-#     """Sets the obstacle mode to either True or False on the motor unit"""
-#     if value not in (True, False):
-#         raise InvalidCommandException("Value \"{}\" is not a valid mode.".format(value))
-#     # yes i'm paranoid
-#     value = 0x01 if value else 0x00
-#     response = _send_bytes(spi, _add_parity(SET_OBSTACLE, value), value)
-#     _check_response(response)
-# 
-
 def set_servo_speed(spi, speed, timeout=None):
     """Sets the global servo speed on the motor unit"""
     count = 0
@@ -299,21 +289,6 @@ def back_to_neutral(spi, timeout=None):
                 print("Timeout reached after {} tries".format(count))
                 return
             print("Tried sending back to neutral (times): " + str(count), end="\r")
-
-
-
-# def get_servo_status(spi):
-#     """Fetches the servo status"""
-#     # TODO create appropriate data structure
-#     data = _request_data(spi, SERVO_STATUS)
-#     return data
-# 
-# 
-# def get_motor_debug(spi):
-#     """Gets a motor unit debug string"""
-#     # TODO create string
-#     data = _request_data(spi, MOTOR_DEBUG)
-#     return data
 
 
 def is_busy_rotating(spi, timeout=None):

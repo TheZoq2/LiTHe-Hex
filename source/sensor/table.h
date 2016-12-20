@@ -22,6 +22,11 @@
 #include "lidar.h"
 #include "communication.h"
 
+/*
+ * Data structure that stores all sensor
+ * values that are ready to send to the 
+ * central unit.
+ */
 typedef struct MainTable {
 
     IR* ir_list;
@@ -38,10 +43,19 @@ typedef struct MainTable {
 
 } MainTable;
 
-MainTable* mainTable;
+/*
+ * A global pointer to the main table
+ */
+MainTable* main_table;
 
+/*
+ * Initializes the MainTable
+ */
 void table_init(MainTable* table, IR ir_list[NUM_SENSORS]);
 
+/*
+ * Updates the values in the MainTable
+ */
 void update(MainTable* table, Lidar* lidar);
 
 void get_sensor_data(Frame* frame);

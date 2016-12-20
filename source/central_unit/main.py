@@ -75,8 +75,6 @@ def main():
 
         else:
             # Manual mode
-            #os.system('clear')
-            #print("Entering manual mode!")
             auto, prev_speed, prev_x, prev_y, prev_rot = do_manual_mode_iteration(
                 sensor_spi, motor_spi, send_queue, receive_queue,
                 prev_speed, prev_x, prev_y, prev_rot)
@@ -167,14 +165,15 @@ def receive_server_packet(receive_queue):
 def do_auto_mode_iteration(sensor_spi, motor_spi, send_queue,
                            receive_queue, decision_packet,
                            prev_speed, prev_x, prev_y, prev_rot):
+    """
+    Does one iteration of the auto mode
+    """
     sensor_data = avr_communication.get_sensor_data(sensor_spi)
     decision_making.get_decision(sensor_data, decision_packet, motor_spi)
 
     print("Decision: ", decision_making.int_to_string_command(decision_packet.decision))
 
     pid_controller.regulate(sensor_data, decision_packet)
-   # print("Pid controller command: ", decision_packet.regulate_base_movement,
-   #       ", ", decision_packet.regulate_command_y, ", ", decision_packet.regulate_goal_angle)
     send_decision_avr(motor_spi, decision_packet, prev_speed, prev_x, prev_y, prev_rot)
 
     # Send decision to server
@@ -195,28 +194,20 @@ def do_auto_mode_iteration(sensor_spi, motor_spi, send_queue,
         if packet.angle_scaledown is not None:
             decision_packet.regulate_angle_scaledown = packet.angle_scaledown
             print(packet.angle_scaledown)
-            #pdb.set_trace()
         if packet.movement_scaledown is not None:
             decision_packet.regulate_movement_scaledown = packet.movement_scaledown
             print(packet.movement_scaledown)
-            #pdb.set_trace()
         if packet.angle_adjustment_border is not None:
             decision_packet.regulate_angular_adjustment_border = packet.angle_adjustment_border
             print(packet.movement_scaledown)
-            #pdb.set_trace()
     return auto, prev_speed, prev_x, prev_y, prev_rot
-
-   # print("sensor_data:", sensor_data)
-
-   # print("Right_angle: ",sensor_data.right_angle)
-   # print("Left_angle: ",sensor_data.left_angle)
-   # print("Average angle: ", sensor_data.average_angle)
-
-
 
 
 def do_manual_mode_iteration(sensor_spi, motor_spi, send_queue, receive_queue,
                              prev_speed, prev_x, prev_y, prev_rot):
+    """
+    Does one iteration of the manual mode
+    """
     try:
         sensor_data = avr_communication.get_sensor_data(sensor_spi)
         send_queue.put(web.ServerSendPacket(sensor_data))
@@ -268,20 +259,8 @@ def send_decision_avr(spi, decision_packet, prev_speed, prev_x, prev_y, prev_rot
     if decision_packet.decision == decision_making.GO_FORWARD:
         x_speed = convert_to_sendable_byte(1)
         rotation = convert_to_sendable_byte(0.015)
-        #y_speed = convert_to_sendable_byte(0)
-       
-        #if (decision_packet.regulate_goal_angle != 0):
-            #x_speed = convert_to_sendable_byte(1)
-        rotation = convert_to_sendable_byte(-decision_packet.regulate_goal_angle)
-             
-        #elif (decision_packet.regulate_command_y != 0):
-            #x_speed = convert_to_sendable_byte(0)
         y_speed = convert_to_sendable_byte(decision_packet.regulate_command_y)
-    
        
-        #rotation = convert_to_sendable_byte(0)
-        # print("Goal angle:", decision_packet.regulate_goal_angle)
-
     elif decision_packet.decision == decision_making.TURN_LEFT:
         x_speed = convert_to_sendable_byte(0)
         y_speed = convert_to_sendable_byte(0)

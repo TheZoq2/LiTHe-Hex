@@ -86,10 +86,10 @@ int main(void) {
 	IR ir_list[NUM_SENSORS];
 	ir_init(ir_list);
 
-        // Setup interna A/D-converter on avr
-        adc_init();
-	
-        // Setup queue for scheduling of ir sensors
+    // Setup interna A/D-converter on avr
+    adc_init();
+
+    // Setup queue for scheduling of ir sensors
 	IRQueue ir_queue;
 	ir_queue_init(&ir_queue, timer8);
 	
@@ -101,10 +101,10 @@ int main(void) {
 	Lidar lidar;
 	lidar_init(&lidar, timer16);
 	
-        // Contains data ready to be sent to central unit
-	MainTable mainTableData;
-	mainTable = &mainTableData;
-	table_init(mainTable, ir_list);
+    // Contains data ready to be sent to central unit
+	MainTable main_table_data;
+	main_table = &main_table_data;
+	table_init(main_table, ir_list);
 
 	while(1) {
 		
@@ -116,12 +116,7 @@ int main(void) {
 			schedule(&ir_queue, port);
 		}
 	
-       // Disable global interrupts for lidar
-	   // to not interrupt reading of 16 bits
-       //cli();
        lidar_measure(&lidar);
-       //sei();
-
-		update(mainTable, &lidar);
+       update(main_table, &lidar);
 	}
 }

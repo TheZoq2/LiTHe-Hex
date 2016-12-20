@@ -42,6 +42,10 @@ AUTONOMOUS_SPEED = 200
 
 
 class DecisionPacket():
+    """
+    Data structure containing information regarding decision making
+    and corridor regulation.
+    """
     def __init__(self):
         self.decision = GO_FORWARD
         self.decisions = [GO_FORWARD, GO_FORWARD, GO_FORWARD]

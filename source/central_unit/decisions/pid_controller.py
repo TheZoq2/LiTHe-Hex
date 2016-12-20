@@ -36,20 +36,13 @@ ANGLE_DIFF_THRESHOLD = 30
 BASE_MOVEMENT = "0.1" #placeholder forward movement.
 
 
-# def write_output_command(command):
-#     """
-#     Writes the command to the output file
-#     """
-#     with open(output_file, 'w') as txt:
-#         txt.write(command)
-
-
 def _to_radians(deg):
     return (math.pi / 180) * deg
 
 
 def _avg(*args):
     return sum(args) / len(args)
+
 
 def _change_sensor_values(temp_sensor_data):
     if (temp_sensor_data.ir_front_left >= 0.6 or 
@@ -62,13 +55,6 @@ def _change_sensor_values(temp_sensor_data):
         temp_sensor_data.ir_front_right = 0
         temp_sensor_data.ir_back_right = 0
 
-# better name pls
-def _check_angle(temp_sensor_data, angle):
-    #if (temp_sensor_data.left_angle < 0 and temp_sensor_data.right_angle > 0):
-    #    return angle
-    #else:
-    #    return -angle
-    return angle
 
 def regulate(sensor_data, decision_packet):
 
@@ -83,14 +69,8 @@ def regulate(sensor_data, decision_packet):
 
     avg_left = _avg(temp_sensor_data.ir_front_left, temp_sensor_data.ir_back_left)
     avg_right = _avg(temp_sensor_data.ir_front_right, temp_sensor_data.ir_back_right)
-    angle = _check_angle(temp_sensor_data, temp_sensor_data.average_angle)
+    angle = temp_sensor_data.average_angle
 
-    #dist_to_left_wall = math.cos(angle) * (constants.SENSOR_Y_DIST / 2 + avg_left)
-    #dist_to_right_wall = math.cos(angle) * (constants.SENSOR_Y_DIST / 2 + avg_right)
-    
-    #offset = dist_to_left_wall - dist_to_right_wall # negative to left, positive to right
-    
-    
     print("average left: ", avg_left)
     print("average right: ", avg_right)
     
@@ -134,8 +114,5 @@ def regulate(sensor_data, decision_packet):
     #Cap -1 < regulate_goal_angle < 1
     decision_packet.regulate_goal_angle = min(max(decision_packet.regulate_goal_angle, -1), 1)
     print("goal_angle: ", decision_packet.regulate_goal_angle)
-    # scale down with 0.2
-    #TODO: test this again, because scaledown was added after last test.
-    #decision_packet.regulate_goal_angle *= 0.2
 
 
