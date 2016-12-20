@@ -26,7 +26,7 @@ import json
 CENTRAL_UNIT_KEY_RECEIVE = 'to_pi'
 CENTRAL_UNIT_KEY_SEND = 'from_pi'
 
-QUEUE_CHECK_DELAY = 0.05
+QUEUE_CHECK_DELAY = 0.001
 
 
 class ServerReceivedPacket(object):
