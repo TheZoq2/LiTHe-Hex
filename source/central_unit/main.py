@@ -177,7 +177,6 @@ def do_auto_mode_iteration(sensor_spi, motor_spi, send_queue,
     send_decision_avr(motor_spi, decision_packet, prev_speed, prev_x, prev_y, prev_rot)
 
     # Send decision to server
-    print("Sending sensor data to server: " + str(sensor_data))
     send_queue.put(web.ServerSendPacket(sensor_data_packet=sensor_data))
     send_queue.put(web.ServerSendPacket(debug_string=
         decision_making.int_to_string_command(decision_packet.decision)))
@@ -193,13 +192,10 @@ def do_auto_mode_iteration(sensor_spi, motor_spi, send_queue,
         # Regulate algorithm parameters
         if packet.angle_scaledown is not None:
             decision_packet.regulate_angle_scaledown = packet.angle_scaledown
-            print(packet.angle_scaledown)
         if packet.movement_scaledown is not None:
             decision_packet.regulate_movement_scaledown = packet.movement_scaledown
-            print(packet.movement_scaledown)
         if packet.angle_adjustment_border is not None:
             decision_packet.regulate_angular_adjustment_border = packet.angle_adjustment_border
-            print(packet.movement_scaledown)
     return auto, prev_speed, prev_x, prev_y, prev_rot
 
 
@@ -285,7 +281,6 @@ def send_decision_avr(spi, decision_packet, prev_speed, prev_x, prev_y, prev_rot
         avr_communication.walk(spi, x_speed, y_speed, rotation,
                                auto_mode=True, timeout=100)
 
-    print("Auto speed: ", decision_packet.speed)
     prev_speed = decision_packet.speed
     prev_x = x_speed
     prev_y = y_speed

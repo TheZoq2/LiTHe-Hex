@@ -92,7 +92,6 @@ def _get_corridors_and_dead_ends(sensor_data):
     else:
         corridors_and_dead_ends[RIGHT] = DEAD_END
 
-    print(corridors_and_dead_ends)
     return corridors_and_dead_ends
 
 
@@ -181,7 +180,6 @@ def get_decision(sensor_data, decision_packet, motor_spi):
     # the sensor data because they will give bad values during a turn.
     if (decision_packet.previous_decision == TURN_LEFT or
         decision_packet.previous_decision == TURN_RIGHT):
-        #print("Robot is turning left!")
 
         # After the robot has started turning the angle will be
         # larger than 5 (0 ideally), so we don't make new decisions until
@@ -190,7 +188,6 @@ def get_decision(sensor_data, decision_packet, motor_spi):
             not avr_communication.is_busy_rotating(motor_spi, timeout=0)):
             decision_packet.decisions[0] = GO_FORWARD
             decision_packet.previous_decision = COMPLETE_TURN
-            #print("Turning left complete.")
 
     # When the robot has rotated but yet not entered the new corridor
     elif (decision_packet.previous_decision == COMPLETE_TURN):
@@ -207,7 +204,6 @@ def average_decision(decision_packet):
     decision_packet.decisions[1] = decision_packet.decisions[0]
     if (decision_packet.decisions[0] == decision_packet.decisions[1] and 
         decision_packet.decisions[0] == decision_packet.decisions[2]):
-        
         decision_packet.decision = decision_packet.decisions[0]
 
 def int_to_string_command(command):

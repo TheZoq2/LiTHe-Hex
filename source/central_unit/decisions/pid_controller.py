@@ -25,15 +25,10 @@ import constants
 import copy
 
 
-
-input_file = "/tmp/hexsim/sensors"
-output_file = "/tmp/hexsim/command"
-
 CORRIDOR_WIDTH = 0.8
 SENSOR_OFFSET = 0.1
 COMMAND_Y_THRESHOLD = 0.04
 ANGLE_DIFF_THRESHOLD = 30
-BASE_MOVEMENT = "0.1" #placeholder forward movement.
 
 
 def _to_radians(deg):
@@ -43,7 +38,7 @@ def _to_radians(deg):
 def _avg(*args):
     return sum(args) / len(args)
 
-
+# If sensor data is more then 0.6m, do not use for regulate
 def _change_sensor_values(temp_sensor_data):
     if (temp_sensor_data.ir_front_left >= 0.6 or 
         temp_sensor_data.ir_back_left >= 0.6):
@@ -69,50 +64,37 @@ def regulate(sensor_data, decision_packet):
 
     avg_left = _avg(temp_sensor_data.ir_front_left, temp_sensor_data.ir_back_left)
     avg_right = _avg(temp_sensor_data.ir_front_right, temp_sensor_data.ir_back_right)
-    angle = temp_sensor_data.average_angle
-
-    print("average left: ", avg_left)
-    print("average right: ", avg_right)
+    angle = temp_sensor_data.average_angle    
     
-    
+    # No wall to left or right, no regulate
     if (avg_right == 0 and avg_left == 0):
         offset = 0
 
+    # No wall to left, use right side
     elif (avg_left == 0):
         offset = avg_right + constants.SENSOR_X_DIST/2 - CORRIDOR_WIDTH/2
     
+    # No wall to right, use left side
     elif (avg_right == 0):
         offset = -(avg_left + constants.SENSOR_X_DIST/2 - CORRIDOR_WIDTH/2)
     
+    # Too much angle diff, no angle regulate 
     elif (abs(temp_sensor_data.left_angle + temp_sensor_data.right_angle) > ANGLE_DIFF_THRESHOLD) :
         angle = 0
-        #offset = 0
     
     else:
         offset = ((CORRIDOR_WIDTH/2 - avg_left) + (avg_right - CORRIDOR_WIDTH/2))/2
-
-    print("offset before: ", offset)
     
     if (offset <= COMMAND_Y_THRESHOLD and offset >= -COMMAND_Y_THRESHOLD):
         offset = 0
     
     decision_packet.regulate_command_y = -offset * decision_packet.regulate_movement_scaledown
-    print("Regulate movement scaledown: ", decision_packet.regulate_movement_scaledown)
             
     decision_packet.regulate_command_y = min(max(decision_packet.regulate_command_y, -1), 1)
 
-    print("Regulate adjustment border: ", decision_packet.regulate_angular_adjustment_border)
-
     if (angle <= decision_packet.regulate_angular_adjustment_border and angle >= -decision_packet.regulate_angular_adjustment_border):
         angle = 0
-    
-    print("angle: ", angle)
-    print("offset: ", offset)
 
-    print("command_y: ", decision_packet.regulate_command_y)
     decision_packet.regulate_goal_angle = _to_radians(angle) * decision_packet.regulate_angle_scaledown
     #Cap -1 < regulate_goal_angle < 1
     decision_packet.regulate_goal_angle = min(max(decision_packet.regulate_goal_angle, -1), 1)
-    print("goal_angle: ", decision_packet.regulate_goal_angle)
-
-
