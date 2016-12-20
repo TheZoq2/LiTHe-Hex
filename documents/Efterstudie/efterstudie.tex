@@ -160,7 +160,7 @@
     problem. Vi skulle dock i skrivandet av projektplanen lagt mer arbete på
     planering av fördelning av arbetsuppgifter. Exempelvis skulle vi ha
     analyserat den kritiska vägen bättre, samt undvika situationer där det är
-    bara en eller två personer som kännner till de tekniska detaljerna för ett
+    bara en eller två personer som känner till de tekniska detaljerna för ett
     visst område.
 
     Skrivningen av designspecifikationen under Under-fasen gick bra. Vi
@@ -197,50 +197,10 @@
     skulle ha gjort. I slutet, då alla hårdvaruproblem uppstod, tog vi ganska
     mycket råd och hjälp från handledaren.
 	
-	\subsection{Tekniska framgångar/problem}
-	Beskriv de 3 besvärligaste problemen som ni har haft under projektet. 
-	Rangordna problemen där 1 är mest besvärlig i betydelsen tog längst tid att fixa.
-	Beskriv för varje problem:
+	\subsection{Tekniska problem}
 
-	a. felets typ - ange t.ex.  hårdvarufel, mjukvarufel, systemintegrationsfel 
-
-	b. kort beskrivning av felets symptom 
-
-	c. kort beskrivning av felets orsak t.ex. logiskt fel i programmering, timing-fel, glappkontakt, missförstånd av spec., felaktig design. 
-
-	d. kort beskrivning av hur ni fixade felet. T.ex. hur ni fixade mjukvarubuggen, fick ny hårdvara, virade om, gick runt problemet.
-
-	e. ungefärlig skattning av hur mycket tid som ni ägnade åt felsökningen (dvs. tid som kunde tjänats in om felet inte hade uppstått)
-	
-    % TODO kanske SPI-bussen, servokommunikation, tornadon, LIDARens I2C?
-    % TODO ska vi skriva problem 3 först?
-
-    \subsubsection{Problem 3: Motorikenheten startade ständigt om}
-
-    Detta mjukvarufel uppstod ganska ofta på motorikenheten.
-    Roboten kunde inte gå en längre tid utan att programmet på motorikenheten
-    startade om från början, vilket gjorde att roboten lade sig ner på golvet
-    och ställde sig upp igen. Orsaken visade sig vara ett minnesfel i
-    SPI-kommunikationen, då en buffer felindexerades när längd-byten av
-    meddelandet blev fel. Lösningnen var att dels att åtgärda en bugg som
-    gjorde att den behandlade meddelanden som paritetskontrollen visat vara
-    fel, samt att kontrollera att längd-byten inte visar en omöjlig längd på
-    meddelandet.
-
-    Det är svårt att uppskatta hur mycket tid som gick förlorat på grund av
-    denna bugg, men minst 20 timmar har lagts ner på att leta efter minnesfel i
-    motorikkoden, då vi misstänkte att det var ett minnesfel.
-
-    \subsubsection{Problem 2: Konstiga svar från servon}
-
-    Detta var ett hårdvarufel som hade två huvudsymtom. Signalen på servobussen fick 
-	konstiga värden där den digitala signalen varierade mellan tre nivåer. Senare i 
-	projektet upptäckte vi även att roboten inte kunde svänga runt sin egen axel och
-	inte heller kunde gå rakt åt sidan. 
-	
-	Till slut insåg vi att problemet berodde på att två servon hade fått samma ID. 
-	När man begärde data från de servona försökte båda svara samtidigt och signalen
-	blev fel.
+    Nedan beskriver vi de tre mest tidskrävande och svårlösta buggar, rankade
+    med 1 som mest tidskrävande, och 3 minst.
 
     \subsubsection{Problem 1: Instabil SPI-buss}
 
@@ -256,8 +216,37 @@
     Hade korta och mer strukturerat virade kablar använts, hade runt 56 timmar
     sparats. % TODO check
 
+    \subsubsection{Problem 2: Konstiga svar från servon}
+
+    Detta var ett hårdvarufel som hade två huvudsymtom. Signalen på servobussen fick 
+	konstiga värden där den digitala signalen varierade mellan tre nivåer. Senare i 
+	projektet upptäckte vi även att roboten inte kunde svänga runt sin egen axel och
+	inte heller kunde gå rakt åt sidan. 
+	
+	Till slut insåg vi att problemet berodde på att två servon hade fått samma ID. 
+	När man begärde data från de servona försökte båda svara samtidigt och signalen
+	blev fel.
+
+    Ungefär 30 timmar gick åt att försöka åtgärda detta fel.
+
+    \subsubsection{Problem 3: Motorikenheten startade ständigt om}
+
+    Detta mjukvarufel uppstod ganska ofta på motorikenheten.
+    Roboten kunde inte gå en längre tid utan att programmet på motorikenheten
+    startade om från början, vilket gjorde att roboten lade sig ner på golvet
+    och ställde sig upp igen. Orsaken visade sig vara ett minnesfel i
+    SPI-kommunikationen, då en buffer felindexerades när längd-byten av
+    meddelandet blev fel. Lösningen var dels att åtgärda en bugg som
+    gjorde att enheten behandlade meddelanden som paritetskontrollen visat vara
+    fel, samt att kontrollera att längd-byten inte visar en omöjlig längd på
+    meddelandet.
+
+    Det är svårt att uppskatta hur mycket tid som gick förlorat på grund av
+    denna bugg, men minst 20 timmar har lagts ner på att leta efter minnesfel i
+    motorikkoden.
+
+
 	\section{Måluppfyllelse}
-	Nu är det dags för Hannes
 	
 	\subsection{Vad har uppnåtts?}
     Alla 1-prioritetskrav i kravspecifikationen har uppnåtts. Vi har dessutom
