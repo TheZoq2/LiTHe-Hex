@@ -21,7 +21,6 @@
 \usepackage{listings}
 \usepackage{color}
 
-\usepackage[colorinlistoftodos,prependcaption,textsize=tiny]{todonotes}
 
 \definecolor{dkgreen}{rgb}{0,0.6,0}
 \definecolor{gray}{rgb}{0.5,0.5,0.5}
@@ -69,7 +68,6 @@
 	\posttitle{\end{center}}
 
 \begin{document}
-	\listoftodos
 	\title{\LARGE
 		\textbf{Efterstudie} \\
 		\vspace*{0.5\baselineskip}
@@ -142,40 +140,62 @@
 	\raggedright
 	
 	\section{Tidsåtgång}
-	Nu är det dags för Hannes
+    Tidsåtgången för projektet har varit stor.
 	
 	\subsection{Arbetsfördelning}
-	Nu är det dags för Hannes
+    Alla i gruppen har lagt ner minst 170 timmar, men vissa har fått arbeta
+    lite mer, dels på grund av specifika hårdvarufel samt dålig fördelning av
+    uppgifter.
 	
 	\subsection{Tidsåtgång jämfört med planerad tid}
-	Nu är det dags för Hannes
-	
-	\begin{longtable}[c]{l l l }
-		\textbf{Fas} & \textbf{Planerad tid i timmar} & \textbf{Använd tid i timmar} \\ \midrule
-		Före & wat & wat \\
-		Under & 1120 & 1329 \\
-		Efter & wat & wat \\
-	\end{longtable}
+    Den planerade tidsåtgången för projektet var 1120 timmar, men 1329 timmar
+    användes.
 	
 	\section{Analys av arbete och problem}
 	Nu är det dags för Hannes
 	
-	\subsection{Vad hände under de olika faserna (bra/dåligt/orsak)?}
-	Nu är det dags för Hannes
+	\subsection{Vad hände under de olika faserna?}
+
+    Före-fasen, alltså skriving av kravspecifikation och projektplan, gick utan
+    problem. Vi skulle dock i skrivandet av projektplanen lagt mer arbete på
+    planering av fördelning av arbetsuppgifter. Exempelvis skulle vi ha
+    analyserat den kritiska vägen bättre, samt undvika situationer där det är
+    bara en eller två personer som kännner till de tekniska detaljerna för ett
+    visst område.
+
+    Skrivningen av designspecifikationen under Under-fasen gick bra. Vi
+    skulle dock ha fokuserat mer på kommunikation mellan personer som arbetade på
+    olika system, för att undvika duplicerat arbete och oenighet om
+    koordinatsystem.
+
+    Under implementationsfasen av projektet, hade vi mycket hårdvarufel och
+    problem vid integration av enheterna. Vi fick också problem med att roboten
+    inte kunde gå förrän sent i projektet, vilket gjorde det svårare för andra
+    enheter att testas ordentligt, t ex beslutsfattning och korridorsföljning.
+    Detta berodde på vår dåliga planering där motorikenheten enbart tilldelades
+    till två personer, vilket möjligtvis hade kunnat undvikas med bättre
+    kritisk-väg-analys.
+
+    Under Efter-fasen skulle vi ha lagt ner mer tid på presentationen, så att
+    folk kunde öva sina delar mer.
 	
-	\subsection{Hur vi arbetade tillsammans (ansvar, beslut, kommunikation etc.)?}
-	Nu är det dags för Hannes
+	\subsection{Hur vi arbetade tillsammans}
+    Vissa parprogrammerade, medan vissa arbetade själva med en komponent av
+    roboten. De som inte parprogrammerade skulle ha haft en bättre
+    kommunikation med resten av gruppen.
 	
 	\subsection{Hur använde vi projektmodellen?}
-	Nu är det dags för Hannes
+    Vi följde projektmodellen ganska bra. Vi utvecklade systemen, enhetstestade
+    och sedan integrationstestade dem, enligt V-modellen.
 	
 	\subsection{Hur fungerade relationen med beställaren?}
-    % TODO review
     Relationen med beställaren har gått bra. Tidrapporter har skickats i tid
-    varje vecka och statusrapporter på begäran. 
+    varje vecka och statusrapporter har skickats på begäran. 
 	
 	\subsection{Hur fungerade relationen med handledaren?}
-	Nu är det dags för Hannes
+    Till en början använde vi inte handledaren särskilt mycket, vilket vi
+    skulle ha gjort. I slutet, då alla hårdvaruproblem uppstod, tog vi ganska
+    mycket råd och hjälp från handledaren.
 	
 	\subsection{Tekniska framgångar/problem}
 	Beskriv de 3 besvärligaste problemen som ni har haft under projektet. 
@@ -200,10 +220,9 @@
     Problem     Problem     Problem     Problem     Problem     Problem
     Problem     Problem     Problem     Problem     Problem     Problem 
 
-    \subsubsection{Problem 2: Här var det problem}
+    \subsubsection{Problem 2: Konstiga svar från servon}
 
-    Problem     Problem     Problem     Problem     Problem     Problem
-    Problem     Problem     Problem     Problem     Problem     Problem 
+    Detta var ett hårdvarufel som hade två huvudsymtom. Signalen frjk
 
     \subsubsection{Problem 1: Instabil SPI-buss}
 
@@ -238,6 +257,6 @@
 	Nu är det dags för Hannes
 	
 	\subsection{Goda råd till de som ska utföra ett liknande projekt}
-	Nu är det dags för Hannes
+	Glöm inte Hannes
 	
 \end{document}
