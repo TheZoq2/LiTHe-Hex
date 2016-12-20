@@ -140,7 +140,8 @@
 	\raggedright
 	
 	\section{Tidsåtgång}
-    Tidsåtgången för projektet har varit stor.
+    Tidsåtgången för projektet har varit stor. Alldeles för mycket av den tiden
+    spenderades i slutet av projektet.
 	
 	\subsection{Arbetsfördelning}
     Alla i gruppen har lagt ner minst 170 timmar, men vissa har fått arbeta
@@ -152,7 +153,6 @@
     användes.
 	
 	\section{Analys av arbete och problem}
-	Nu är det dags för Hannes
 	
 	\subsection{Vad hände under de olika faserna?}
 
@@ -215,10 +215,21 @@
     % TODO kanske SPI-bussen, servokommunikation, tornadon, LIDARens I2C?
     % TODO ska vi skriva problem 3 först?
 
-    \subsubsection{Problem 3: Här var det problem}
+    \subsubsection{Problem 3: Motorikenheten startade ständigt om}
 
-    Problem     Problem     Problem     Problem     Problem     Problem
-    Problem     Problem     Problem     Problem     Problem     Problem 
+    Detta mjukvarufel uppstod ganska ofta på motorikenheten.
+    Roboten kunde inte gå en längre tid utan att programmet på motorikenheten
+    startade om från början, vilket gjorde att roboten lade sig ner på golvet
+    och ställde sig upp igen. Orsaken visade sig vara ett minnesfel i
+    SPI-kommunikationen, då en buffer felindexerades när längd-byten av
+    meddelandet blev fel. Lösningnen var att dels att åtgärda en bugg som
+    gjorde att den behandlade meddelanden som paritetskontrollen visat vara
+    fel, samt att kontrollera att längd-byten inte visar en omöjlig längd på
+    meddelandet.
+
+    Det är svårt att uppskatta hur mycket tid som gick förlorat på grund av
+    denna bugg, men minst 20 timmar har lagts ner på att leta efter minnesfel i
+    motorikkoden, då vi misstänkte att det var ett minnesfel.
 
     \subsubsection{Problem 2: Konstiga svar från servon}
 
@@ -242,21 +253,46 @@
 	Nu är det dags för Hannes
 	
 	\subsection{Vad har uppnåtts?}
-	Nu är det dags för Hannes
+    Alla 1-prioritetskrav i kravspecifikationen har uppnåtts. Vi har dessutom
+    mer avancerad gångstil än vad som krävdes, och roboten kom tvåa i både den
+    manuella och autonoma tävlingen.
 	
 	\subsection{Hur fungerade leveransen?}
-	Nu är det dags för Hannes
+    Leveransen blev fördröjd i någon timme, på grund av ett servofel. När
+    roboten testades efter åtgärdning av felet uppfyllde den dock alla krav.
+
+    Leveransen av vår dokumentation gick halvbra, eftersom beställaren först
+    inte kunde öppna den tekniska dokumentationen på sin dator. Problemet
+    löstes dock dagen efter.
 	
 	\subsection{Hur har studiesituationen påverkat projektet?}
-	Nu är det dags för Hannes
+    Det är snarare projektet som påverkat studiesituationen, då vi har hamnat
+    lite efter i de andra kurserna för att få roboten att fungera.
 	
 	\section{Sammanfattning}
-	Nu är det dags för Hannes
+    Vi anser att projektet har gått bra, då vi lyckades leverera en fungerande
+    robot, samt har lärt oss väldigt mycket om robotteknik och projektarbeten i
+    allmänhet.
 	
 	\subsection{De tre viktigaste erfarenheterna}
-	Nu är det dags för Hannes
+    \begin{itemize}
+        \item Det är viktigt att integrera delsystemen tidigt.
+        \item Det är bra att se till så fler personer förstår flera delsystem.
+        \item Det är bättre att göra hårdvaran (virning etc) ordentligt från början, istället
+            för att försöka förbättra den i efterhand.
+    \end{itemize}
 	
 	\subsection{Goda råd till de som ska utföra ett liknande projekt}
-	Glöm inte Hannes
+    \begin{itemize}
+        \item Använd PWM på LIDAR-sensorn, om ni endast ska mäta avstånd med
+            den.
+        \item Ha så korta och snyggt virade kablar som möjligt i digitala
+            bussar.
+        \item Skriv modulär kod som är enkel att modifiera.
+        \item Lägg mycket tid i början av projektet så att ni slipper lägga ner
+            väldigt mycket tid i slutet.
+        \item Gör simulatorer.
+    \end{itemize}
+
 	
 \end{document}
