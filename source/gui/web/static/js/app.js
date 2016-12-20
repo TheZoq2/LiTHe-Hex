@@ -79,6 +79,20 @@ function scangamepads() {
     }
 }
 
+function handleOrientation(event) {
+    // var alpha = event.alpha;
+    // var beta = event.beta;
+    // var gamma = event.gamma;
+
+    var x = event.beta;
+    var y = event.gamma;
+
+    elmApp.ports.orientation.send({
+        x: x / 90,
+        y: y / 90
+    });
+}
+
 // Set up Elm
 const elmDiv = document.querySelector('#elm-container');
 const elmApp = Elm.App.embed(elmDiv, {host: location.host});
@@ -93,6 +107,8 @@ window.addEventListener("gamepadconnected", function(e) {
 window.addEventListener("gamepaddisconnected", function(e) {
     removeGamepad(e.gamepad);
 });
+
+window.addEventListener("deviceorientation", handleOrientation, true);
 
 if (!haveEvents) {
     setInterval(scangamepads, 500);

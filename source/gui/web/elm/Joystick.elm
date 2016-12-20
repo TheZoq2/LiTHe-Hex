@@ -1,10 +1,9 @@
-port module Joystick exposing (joystickDisplay, connected, disconnected, poll, axisData, getElementPosition, elementPosition, JoystickData)
+port module Joystick exposing (joystickDisplay, connected, disconnected, poll, axisData, getElementPosition, elementPosition, orientation, JoystickData)
 
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
 import Html exposing (Html)
 import Html.Attributes
-import Html.Events
 
 
 {-
@@ -65,7 +64,12 @@ port axisData : (JoystickData -> msg) -> Sub msg
 port getElementPosition : String -> Cmd msg
 
 
-port elementPosition : ({x : Int, y : Int} -> msg) -> Sub msg
+port elementPosition : ({ x : Int, y : Int } -> msg) -> Sub msg
+
+
+{-| Device orientation events
+-}
+port orientation : ({ x : Float, y : Float } -> msg) -> Sub msg
 
 
 thrustRect : Float -> Svg a

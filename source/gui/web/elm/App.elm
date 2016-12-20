@@ -73,6 +73,8 @@ type Msg
     | OnControlClick Mouse.Position
     | ElementPosition { x : Int, y : Int }
     | ToggleCommunication
+    | ToggleOrientation
+    | Orientation { x : Float, y : Float }
     | Mdl (Material.Msg Msg)
 
 
@@ -88,6 +90,7 @@ type alias Model =
     , parameters : Dict String Float
     , lastClick : Mouse.Position
     , sending : Bool
+    , accelerometer : Bool
     }
 
 
@@ -126,6 +129,7 @@ init { host } =
         , parameters = Dict.empty
         , lastClick = { x = 0, y = 0 }
         , sending = True
+        , accelerometer = True
         }
             ! [ Cmd.map PhoenixMsg phxCmd ]
 
@@ -284,6 +288,19 @@ update msg model =
             in
                 ( { model | phxSocket = phxSocket, joystick = data }, phxCmd )
 
+        Orientation { x, y } ->
+            let
+                joy =
+                    model.joystick
+
+                newJoy =
+                    if model.accelerometer then
+                        { joy | x = x, y = y }
+                    else
+                        joy
+            in
+                ( { model | joystick = newJoy }, Cmd.none )
+
         ResetBot ->
             let
                 ( phxSocket, phxCmd ) =
@@ -414,6 +431,9 @@ update msg model =
         ToggleCommunication ->
             ( { model | sending = not model.sending }, Cmd.none )
 
+        ToggleOrientation ->
+            ( { model | accelerometer = not model.accelerometer }, Cmd.none )
+
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
@@ -425,6 +445,7 @@ subscriptions model =
     , Time.every (millisecond * 500) SendControlToServer
     , Keyboard.downs MoveSlider
     , Joystick.elementPosition ElementPosition
+    , Joystick.orientation Orientation
     ]
         |> Sub.batch
 
@@ -475,29 +496,34 @@ clickControlHeight =
     300
 
 
-{-| View X and Y control to use when no joystick is connected
--}
-viewClickControl : Joystick.JoystickData -> Html Msg
-viewClickControl data =
+controlDisplay : Float -> Float -> Html msg
+controlDisplay xp yp =
     let
         middle x =
             50 + 50 * x |> floor |> toString
     in
-        div
-            [ style
-                [ ( "width", toString clickControlWidth )
-                , ( "height", toString clickControlHeight )
-                ]
-            , id "control"
-            , onClickLocation
+        Svg.svg [ version "1.1", x "0", y "0", viewBox "0 0 100 100" ]
+            [ Svg.circle [ fill "#F0F9F0", cx "50", cy "50", r "50" ] []
+            , Svg.rect [ fill "#000000", x "49", y "30", width "2", height "40" ] []
+            , Svg.rect [ fill "#000000", y "49", x "30", height "2", width "40" ] []
+            , Svg.circle [ fill "#FFB0B0", cx (middle xp), cy (middle yp), r "5" ] []
             ]
-            [ Svg.svg [ version "1.1", x "0", y "0", viewBox "0 0 100 100" ]
-                [ Svg.circle [ fill "#F0F9F0", cx "50", cy "50", r "50" ] []
-                , Svg.rect [ fill "#000000", x "49", y "30", width "2", height "40" ] []
-                , Svg.rect [ fill "#000000", y "49", x "30", height "2", width "40" ] []
-                , Svg.circle [ fill "#FFB0B0", cx (middle data.x), cy (middle data.y), r "5" ] []
-                ]
+
+
+{-| View X and Y control to use when no joystick is connected
+-}
+viewClickControl : Joystick.JoystickData -> Html Msg
+viewClickControl data =
+    div
+        [ style
+            [ ( "width", toString clickControlWidth )
+            , ( "height", toString clickControlHeight )
             ]
+        , id "control"
+        , onClickLocation
+        ]
+        [ controlDisplay data.x data.y
+        ]
 
 
 {-| View sliders for control when no joystick is connected
@@ -534,14 +560,21 @@ viewSliderControl model =
                 , text "Set control values manually below"
                 ]
             , Card.actions [ Card.border ]
-                [ text ("Direction to go [WASD]")
+                [ Toggles.switch Mdl
+                    [ 0 ]
+                    model.mdl
+                    [ Toggles.onClick ToggleOrientation
+                    , Toggles.value model.accelerometer
+                    ]
+                    [ text "Enable accelerometer control" ]
+                , text ("Direction to go [WASD]")
                 , viewClickControl joy
                 , text ("Rotation [Q/E] " ++ toString (-1 * joy.rotation))
                 , viewSlider ( -100, 100 ) joy.rotation setRot
                 , text ("Thrust [R/C] " ++ toString joy.thrust)
                 , viewSlider ( 0, 100 ) joy.thrust setThrust
                 , Button.render Mdl
-                    [ 0 ]
+                    [ 1 ]
                     model.mdl
                     [ { initialJoystick | thrust = joy.thrust }
                         |> AxisData
@@ -549,7 +582,7 @@ viewSliderControl model =
                     ]
                     [ text "Stop" ]
                 , Button.render Mdl
-                    [ 1 ]
+                    [ 2 ]
                     model.mdl
                     [ { joy | rotation = 0 }
                         |> AxisData
@@ -557,7 +590,7 @@ viewSliderControl model =
                     ]
                     [ text "Stop rotation" ]
                 , Button.render Mdl
-                    [ 2 ]
+                    [ 3 ]
                     model.mdl
                     [ Button.onClick ResetBot ]
                     [ text "Reset" ]
