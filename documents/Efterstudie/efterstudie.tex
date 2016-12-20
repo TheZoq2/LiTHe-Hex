@@ -233,7 +233,14 @@
 
     \subsubsection{Problem 2: Konstiga svar från servon}
 
-    Detta var ett hårdvarufel som hade två huvudsymtom. Signalen frjk
+    Detta var ett hårdvarufel som hade två huvudsymtom. Signalen på servobussen fick 
+	konstiga värden där den digitala signalen varierade mellan tre nivåer. Senare i 
+	projektet upptäckte vi även att roboten inte kunde svänga runt sin egen axel och
+	inte heller kunde gå rakt åt sidan. 
+	
+	Till slut insåg vi att problemet berodde på att två servon hade fått samma ID. 
+	När man begärde data från de servona försökte båda svara samtidigt och signalen
+	blev fel.
 
     \subsubsection{Problem 1: Instabil SPI-buss}
 
